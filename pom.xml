@@ -26,7 +26,7 @@
   <groupId>org.apache.commons</groupId>
   <artifactId>commons-statistics-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>0.1-SNAPSHOT</version>
   <name>Apache Commons Statistics</name>
 
   <inceptionYear>2016</inceptionYear>
@@ -91,8 +91,8 @@
     <commons.jira.id>STATISTICS</commons.jira.id>
     <commons.jira.pid>12320623</commons.jira.pid>
     <commons.encoding>UTF-8</commons.encoding>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <statistics.pmd.version>3.5</statistics.pmd.version>
     <statistics.findbugs.version>3.0.2</statistics.findbugs.version>
     <statistics.checkstyle.version>2.17</statistics.checkstyle.version>
