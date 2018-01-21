@@ -29,7 +29,7 @@
   <version>0.1-SNAPSHOT</version>
   <name>Apache Commons Statistics</name>
 
-  <inceptionYear>2016</inceptionYear>
+  <inceptionYear>2018</inceptionYear>
   <description>The Apache Commons Statistics project provides tools for statistics.</description>
   <url>http://commons.apache.org/proper/commons-statistics/</url>
 
@@ -62,15 +62,6 @@
 
   <contributors>
   </contributors>
-
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 
   <properties>
     <!-- Do not change: "statistics" is the name of the component even if the
@@ -128,7 +119,59 @@
         Temporary workaround?
     -->
     <commons.release.name>commons-statistics-${project.version}</commons.release.name>
+    <statistics.commons.rng.version>1.0</statistics.commons.rng.version>
+    <statistics.commons.numbers.version>1.0-SNAPSHOT</statistics.commons.numbers.version> <!-- XXX -->
+    <statistics.commons.math3.version>3.6.1</statistics.commons.math3.version>
   </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-rng-client-api</artifactId>
+        <version>${statistics.commons.rng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-rng-simple</artifactId>
+        <version>${statistics.commons.rng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-rng-sampling</artifactId>
+        <version>1.1-SNAPSHOT</version> <!-- XXX -->
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-core</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-combinatorics</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-gamma</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${statistics.commons.math3.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -535,7 +578,7 @@
   </profiles>
 
   <modules>
-<!--    <module>commons-statistics-distribution</module> -->
+    <module>commons-statistics-distribution</module>
 <!--    <module>commons-statistics-regression</module> -->
   </modules>
 
