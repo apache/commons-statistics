@@ -79,7 +79,7 @@
     <commons.binary.suffix>-bin</commons.binary.suffix>
 
     <commons.jira.id>STATISTICS</commons.jira.id>
-    <commons.jira.pid>12320623</commons.jira.pid>
+    <commons.jira.pid>12321632</commons.jira.pid>
     <commons.encoding>UTF-8</commons.encoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
