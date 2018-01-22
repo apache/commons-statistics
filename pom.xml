@@ -86,7 +86,7 @@
     <statistics.pmd.version>3.8</statistics.pmd.version>
     <statistics.findbugs.version>3.0.2</statistics.findbugs.version>
     <statistics.checkstyle.version>2.17</statistics.checkstyle.version>
-    <statistics.clirr.version>2.7</statistics.clirr.version>
+    <statistics.clirr.version>2.8</statistics.clirr.version>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
 
