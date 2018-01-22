@@ -292,7 +292,7 @@ public abstract class AbstractContinuousDistribution
         /**
          * @param func Function to solve.
          * @param min Lower bound.
-         * @param init Initial guess.
+         * @param initial Initial guess.
          * @param max Upper bound.
          * @return the root.
          */

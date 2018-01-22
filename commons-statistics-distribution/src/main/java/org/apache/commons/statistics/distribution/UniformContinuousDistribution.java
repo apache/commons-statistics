@@ -25,10 +25,11 @@ import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">uniform distribution</a>.
  */
 public class UniformContinuousDistribution extends AbstractContinuousDistribution {
+    /** Lower bound of this distribution (inclusive). */
     private final double lower;
     /** Upper bound of this distribution (exclusive). */
     private final double upper;
-    
+
     /**
      * Create a standard uniform real distribution with lower bound (inclusive)
      * equal to zero and upper bound (exclusive) equal to one.
