@@ -23,7 +23,6 @@
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.apache.commons</groupId>
   <artifactId>commons-statistics-parent</artifactId>
   <packaging>pom</packaging>
   <version>0.1-SNAPSHOT</version>
