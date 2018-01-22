@@ -37,7 +37,7 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
      *
      * @param mu location parameter
      * @param beta scale parameter (must be positive)
-     * @throws IllegalArgumenException if {@code beta <= 0}
+     * @throws IllegalArgumentException if {@code beta <= 0}
      */
     public GumbelDistribution(double mu,
                               double beta) {
