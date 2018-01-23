@@ -264,7 +264,7 @@ public abstract class AbstractContinuousDistribution
      *   Dover, 2002
      *  </blockquote>
      *
-     * Used by {@link #inverseCumulativeProbability(double)}.
+     * Used by {@link AbstractContinuousDistribution#inverseCumulativeProbability(double)}.
      */
     private static class BrentSolver {
         /** Relative accuracy. */
