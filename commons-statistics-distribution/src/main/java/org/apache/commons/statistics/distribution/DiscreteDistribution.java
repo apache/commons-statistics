@@ -32,7 +32,9 @@ public interface DiscreteDistribution {
      * @return the logarithm of the value of the probability mass function at
      * {@code x}.
      */
-    double logProbability(int x);
+    default double logProbability(int x) {
+        return Math.log(probability(x));
+    }
 
     /**
      * For a random variable {@code X} whose values are distributed according
