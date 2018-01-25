@@ -26,7 +26,7 @@ import org.apache.commons.rng.sampling.distribution.DiscreteSampler;
  * implementations are provided for some of the methods that do not vary
  * from distribution to distribution.
  */
-public abstract class AbstractDiscreteDistribution
+abstract class AbstractDiscreteDistribution
     implements DiscreteDistribution {
     /**
      * {@inheritDoc}

@@ -34,7 +34,7 @@ import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
  * inversion method</a> for generating random samples that follow the
  * distribution.
  */
-public abstract class AbstractContinuousDistribution
+abstract class AbstractContinuousDistribution
     implements ContinuousDistribution {
     /**
      * For a random variable {@code X} whose values are distributed according
