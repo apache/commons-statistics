@@ -56,7 +56,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
      *
      * @param p Poisson mean.
      * @param epsilon Convergence criterion for cumulative probabilities.
-     * @param maxIterations the maximum number of iterations for cumulative
+     * @param maxIterations Maximum number of iterations for cumulative
      * probabilities.
      * @throws IllegalArgumentException if {@code p <= 0}.
      */
