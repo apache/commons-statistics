@@ -31,7 +31,9 @@ public interface ContinuousDistribution {
      * @param x Point at which the PMF is evaluated.
      * @return the value of the probability mass function at point {@code x}.
      */
-    double probability(double x);
+    default double probability(double x) {
+        return 0;
+    }
 
     /**
      * For a random variable {@code X} whose values are distributed according
@@ -68,7 +70,9 @@ public interface ContinuousDistribution {
      * @return the logarithm of the value of the probability density function
      * at {@code x}.
      */
-    double logDensity(double x);
+    default double logDensity(double x) {
+        return Math.log(density(x));
+    }
 
     /**
      * For a random variable {@code X} whose values are distributed according
