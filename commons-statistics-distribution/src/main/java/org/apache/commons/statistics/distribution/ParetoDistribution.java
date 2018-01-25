@@ -42,13 +42,6 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     private final double shape;
 
     /**
-     * Creates a Pareto distribution with a scale of {@code 1} and a shape of {@code 1}.
-     */
-    public ParetoDistribution() {
-        this(1, 1);
-    }
-
-    /**
      * Creates a Pareto distribution.
      *
      * @param scale Scale parameter of this distribution.

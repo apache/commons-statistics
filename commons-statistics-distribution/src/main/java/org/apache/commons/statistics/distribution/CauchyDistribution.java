@@ -26,14 +26,6 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     private final double scale;
 
     /**
-     * Creates a Cauchy distribution with the median equal to zero and scale
-     * equal to one.
-     */
-    public CauchyDistribution() {
-        this(0, 1);
-    }
-
-    /**
      * Creates a distribution.
      *
      * @param median Median for this distribution.

@@ -39,14 +39,6 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     private final double logStandardDeviationPlusHalfLog2Pi;
 
     /**
-     * Create a normal distribution with mean equal to zero and standard
-     * deviation equal to one.
-     */
-    public NormalDistribution() {
-        this(0, 1);
-    }
-
-    /**
      * Creates a distribution.
      *
      * @param mean Mean for this distribution.

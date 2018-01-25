@@ -31,14 +31,6 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     private final double upper;
 
     /**
-     * Create a standard uniform real distribution with lower bound (inclusive)
-     * equal to zero and upper bound (exclusive) equal to one.
-     */
-    public UniformContinuousDistribution() {
-        this(0, 1);
-    }
-
-    /**
      * Creates a uniform distribution.
      *
      * @param lower Lower bound of this distribution (inclusive).

@@ -57,17 +57,6 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     private final double logShapePlusHalfLog2Pi;
 
     /**
-     * Creates a log-normal distribution, where the mean and standard deviation
-     * of the {@link NormalDistribution normally distributed} natural
-     * logarithm of the log-normal distribution are equal to zero and one
-     * respectively. In other words, the scale of the returned distribution is
-     * {@code 0}, while its shape is {@code 1}.
-     */
-    public LogNormalDistribution() {
-        this(0, 1);
-    }
-
-    /**
      * Creates a log-normal distribution.
      *
      * @param scale Scale parameter of this distribution.
