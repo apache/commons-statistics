@@ -38,6 +38,8 @@ public interface ContinuousDistribution {
     /**
      * For a random variable {@code X} whose values are distributed according
      * to this distribution, this method returns {@code P(x0 < X <= x1)}.
+     * The default implementation uses the identity
+     * {@code P(x0 < X <= x1) = P(X <= x1) - P(X <= x0)}
      *
      * @param x0 Lower bound (exclusive).
      * @param x1 Upper bound (inclusive).
@@ -46,7 +48,13 @@ public interface ContinuousDistribution {
      * and including the upper endpoint.
      * @throws IllegalArgumentException if {@code x0 > x1}.
      */
-    double probability(double x0, double x1);
+    default double probability(double x0,
+                               double x1) {
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.TOO_LARGE, x0, x1);
+        }
+        return cumulativeProbability(x1) - cumulativeProbability(x0);
+    }
 
     /**
      * Returns the probability density function (PDF) of this distribution
