@@ -85,13 +85,13 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return Gamma.value(mu + 0.5) / Gamma.value(mu) * Math.sqrt(omega / mu);
     }
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         double v = Gamma.value(mu + 0.5) / Gamma.value(mu);
         return omega * (1 - 1 / mu * v * v);
     }

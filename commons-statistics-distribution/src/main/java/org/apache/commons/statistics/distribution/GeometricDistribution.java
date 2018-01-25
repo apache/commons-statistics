@@ -88,7 +88,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
      * For probability parameter {@code p}, the mean is {@code (1 - p) / p}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return (1 - probabilityOfSuccess) / probabilityOfSuccess;
     }
 
@@ -99,7 +99,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
      * {@code (1 - p) / (p * p)}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return (1 - probabilityOfSuccess) / (probabilityOfSuccess * probabilityOfSuccess);
     }
 

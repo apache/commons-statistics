@@ -101,13 +101,13 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return mu;
     }
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return 2.0 * beta * beta;
     }
 

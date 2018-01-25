@@ -103,14 +103,14 @@ public interface ContinuousDistribution {
      *
      * @return the mean, or {@code Double.NaN} if it is not defined.
      */
-    double getNumericalMean();
+    double getMean();
 
     /**
      * Gets the variance of this distribution.
      *
      * @return the variance, or {@code Double.NaN} if it is not defined.
      */
-    double getNumericalVariance();
+    double getVariance();
 
     /**
      * Gets the lower bound of the support.

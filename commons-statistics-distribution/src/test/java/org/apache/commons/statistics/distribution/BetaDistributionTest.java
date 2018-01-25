@@ -304,12 +304,12 @@ public class BetaDistributionTest {
         BetaDistribution dist;
 
         dist = new BetaDistribution(1, 1);
-        Assert.assertEquals(dist.getNumericalMean(), 0.5, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 1.0 / 12.0, tol);
+        Assert.assertEquals(dist.getMean(), 0.5, tol);
+        Assert.assertEquals(dist.getVariance(), 1.0 / 12.0, tol);
 
         dist = new BetaDistribution(2, 5);
-        Assert.assertEquals(dist.getNumericalMean(), 2.0 / 7.0, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 10.0 / (49.0 * 8.0), tol);
+        Assert.assertEquals(dist.getMean(), 2.0 / 7.0, tol);
+        Assert.assertEquals(dist.getVariance(), 10.0 / (49.0 * 8.0), tol);
     }
 
     @Test
@@ -326,10 +326,10 @@ public class BetaDistributionTest {
 
                 final String distribution = String.format("Beta(%.2f, %.2f)", alpha, beta);
                 Assert.assertEquals(String.format("E[%s]", distribution),
-                                    betaDistribution.getNumericalMean(),
+                                    betaDistribution.getMean(),
                                     StatUtils.mean(observed), epsilon);
                 Assert.assertEquals(String.format("Var[%s]", distribution),
-                                    betaDistribution.getNumericalVariance(),
+                                    betaDistribution.getVariance(),
                                     StatUtils.variance(observed), epsilon);
             }
         }

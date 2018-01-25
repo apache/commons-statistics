@@ -130,7 +130,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
      * </ul>
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         final int N = getNumberOfElements();
         final double s = getExponent();
 
@@ -152,7 +152,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
      * </ul>
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final int N = getNumberOfElements();
         final double s = getExponent();
 

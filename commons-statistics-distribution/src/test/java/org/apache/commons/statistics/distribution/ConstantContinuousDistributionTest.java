@@ -76,8 +76,8 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
         ConstantContinuousDistribution dist;
 
         dist = new ConstantContinuousDistribution(-1);
-        Assert.assertEquals(dist.getNumericalMean(), -1, 0d);
-        Assert.assertEquals(dist.getNumericalVariance(), 0, 0d);
+        Assert.assertEquals(dist.getMean(), -1, 0d);
+        Assert.assertEquals(dist.getVariance(), 0, 0d);
     }
 
     @Test

@@ -99,15 +99,6 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         this(p, DEFAULT_EPSILON, maxIterations);
     }
 
-    /**
-     * Get the mean for the distribution.
-     *
-     * @return the mean for the distribution.
-     */
-    public double getMean() {
-        return mean;
-    }
-
     /** {@inheritDoc} */
     @Override
     public double probability(int x) {
@@ -160,14 +151,10 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         return normal.cumulativeProbability(x + 0.5);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * For mean parameter {@code p}, the mean is {@code p}.
-     */
+    /** {@inheritDoc} */
     @Override
-    public double getNumericalMean() {
-        return getMean();
+    public double getMean() {
+        return mean;
     }
 
     /**
@@ -176,8 +163,8 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
      * For mean parameter {@code p}, the variance is {@code p}.
      */
     @Override
-    public double getNumericalVariance() {
-        return getMean();
+    public double getVariance() {
+        return mean;
     }
 
     /**

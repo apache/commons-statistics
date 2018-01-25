@@ -122,11 +122,11 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
         ExponentialDistribution dist;
 
         dist = new ExponentialDistribution(11d);
-        Assert.assertEquals(dist.getNumericalMean(), 11d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 11d * 11d, tol);
+        Assert.assertEquals(dist.getMean(), 11d, tol);
+        Assert.assertEquals(dist.getVariance(), 11d * 11d, tol);
 
         dist = new ExponentialDistribution(10.5d);
-        Assert.assertEquals(dist.getNumericalMean(), 10.5d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 10.5d * 10.5d, tol);
+        Assert.assertEquals(dist.getMean(), 10.5d, tol);
+        Assert.assertEquals(dist.getVariance(), 10.5d * 10.5d, tol);
     }
 }

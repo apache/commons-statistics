@@ -132,7 +132,7 @@ public class FDistribution extends AbstractContinuousDistribution {
      * </ul>
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         final double denominatorDF = getDenominatorDegreesOfFreedom();
 
         if (denominatorDF > 2) {
@@ -156,7 +156,7 @@ public class FDistribution extends AbstractContinuousDistribution {
      * </ul>
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double denominatorDF = getDenominatorDegreesOfFreedom();
 
         if (denominatorDF > 4) {

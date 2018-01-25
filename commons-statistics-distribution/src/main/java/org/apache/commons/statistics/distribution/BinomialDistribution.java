@@ -114,7 +114,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
      * {@code n * p}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return numberOfTrials * probabilityOfSuccess;
     }
 
@@ -125,7 +125,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
      * {@code n * p * (1 - p)}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double p = probabilityOfSuccess;
         return numberOfTrials * p * (1 - p);
     }

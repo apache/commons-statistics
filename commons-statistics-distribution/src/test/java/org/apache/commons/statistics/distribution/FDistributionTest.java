@@ -122,16 +122,16 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
         FDistribution dist;
 
         dist = new FDistribution(1, 2);
-        Assert.assertTrue(Double.isNaN(dist.getNumericalMean()));
-        Assert.assertTrue(Double.isNaN(dist.getNumericalVariance()));
+        Assert.assertTrue(Double.isNaN(dist.getMean()));
+        Assert.assertTrue(Double.isNaN(dist.getVariance()));
 
         dist = new FDistribution(1, 3);
-        Assert.assertEquals(dist.getNumericalMean(), 3d / (3d - 2d), tol);
-        Assert.assertTrue(Double.isNaN(dist.getNumericalVariance()));
+        Assert.assertEquals(dist.getMean(), 3d / (3d - 2d), tol);
+        Assert.assertTrue(Double.isNaN(dist.getVariance()));
 
         dist = new FDistribution(1, 5);
-        Assert.assertEquals(dist.getNumericalMean(), 5d / (5d - 2d), tol);
-        Assert.assertEquals(dist.getNumericalVariance(), (2d * 5d * 5d * 4d) / 9d, tol);
+        Assert.assertEquals(dist.getMean(), 5d / (5d - 2d), tol);
+        Assert.assertEquals(dist.getVariance(), (2d * 5d * 5d * 4d) / 9d, tol);
     }
 
     @Test

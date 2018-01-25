@@ -69,13 +69,13 @@ public class AbstractContinuousDistributionTest {
             }
 
             @Override
-            public double getNumericalMean() {
+            public double getMean() {
                 return ((x0 + x1) * p12 + (x2 + x3) * (1.0 - p12)) / 2.0;
             }
 
             @Override
-            public double getNumericalVariance() {
-                final double meanX = getNumericalMean();
+            public double getVariance() {
+                final double meanX = getMean();
                 final double meanX2;
                 meanX2 = ((x0 * x0 + x0 * x1 + x1 * x1) * p12 + (x2 * x2 + x2
                         * x3 + x3 * x3)
@@ -154,7 +154,7 @@ public class AbstractContinuousDistributionTest {
             }
 
             @Override
-            public double getNumericalMean() {
+            public double getMean() {
                 final UnivariateFunction f = new UnivariateFunction() {
 
                     @Override
@@ -167,8 +167,8 @@ public class AbstractContinuousDistributionTest {
             }
 
             @Override
-            public double getNumericalVariance() {
-                final double meanX = getNumericalMean();
+            public double getVariance() {
+                final double meanX = getMean();
                 final UnivariateFunction f = new UnivariateFunction() {
 
                     @Override

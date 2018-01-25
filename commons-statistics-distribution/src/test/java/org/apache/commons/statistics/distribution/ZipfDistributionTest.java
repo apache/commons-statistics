@@ -114,8 +114,8 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
         ZipfDistribution dist;
 
         dist = new ZipfDistribution(2, 0.5);
-        Assert.assertEquals(dist.getNumericalMean(), Math.sqrt(2), tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 0.24264068711928521, tol);
+        Assert.assertEquals(dist.getMean(), Math.sqrt(2), tol);
+        Assert.assertEquals(dist.getVariance(), 0.24264068711928521, tol);
     }
 
 

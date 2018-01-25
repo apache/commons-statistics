@@ -158,12 +158,12 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         GammaDistribution dist;
 
         dist = new GammaDistribution(1, 2);
-        Assert.assertEquals(dist.getNumericalMean(), 2, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 4, tol);
+        Assert.assertEquals(dist.getMean(), 2, tol);
+        Assert.assertEquals(dist.getVariance(), 4, tol);
 
         dist = new GammaDistribution(1.1, 4.2);
-        Assert.assertEquals(dist.getNumericalMean(), 1.1d * 4.2d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 1.1d * 4.2d * 4.2d, tol);
+        Assert.assertEquals(dist.getMean(), 1.1d * 4.2d, tol);
+        Assert.assertEquals(dist.getVariance(), 1.1d * 4.2d * 4.2d, tol);
     }
 
     private static final double HALF_LOG_2_PI = 0.5 * Math.log(2.0 * Math.PI);

@@ -43,15 +43,6 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
         logMean = Math.log(mean);
     }
 
-    /**
-     * Access the mean.
-     *
-     * @return the mean.
-     */
-    public double getMean() {
-        return mean;
-    }
-
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
@@ -111,14 +102,10 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
         return ret;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * For mean parameter {@code k}, the mean is {@code k}.
-     */
+    /** {@inheritDoc} */
     @Override
-    public double getNumericalMean() {
-        return getMean();
+    public double getMean() {
+        return mean;
     }
 
     /**
@@ -127,9 +114,8 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
      * For mean parameter {@code k}, the variance is {@code k^2}.
      */
     @Override
-    public double getNumericalVariance() {
-        final double m = getMean();
-        return m * m;
+    public double getVariance() {
+        return mean * mean;
     }
 
     /**

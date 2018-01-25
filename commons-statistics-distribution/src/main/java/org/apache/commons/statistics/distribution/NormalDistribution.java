@@ -65,15 +65,6 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the mean.
-     *
-     * @return the mean for this distribution.
-     */
-    public double getMean() {
-        return mean;
-    }
-
-    /**
      * Access the standard deviation.
      *
      * @return the standard deviation for this distribution.
@@ -136,14 +127,10 @@ public class NormalDistribution extends AbstractContinuousDistribution {
         return 0.5 * ErfDifference.value(v0, v1);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * For mean parameter {@code mu}, the mean is {@code mu}.
-     */
+    /** {@inheritDoc} */
     @Override
-    public double getNumericalMean() {
-        return getMean();
+    public double getMean() {
+        return mean;
     }
 
     /**
@@ -152,7 +139,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
      * For standard deviation parameter {@code s}, the variance is {@code s^2}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double s = getStandardDeviation();
         return s * s;
     }

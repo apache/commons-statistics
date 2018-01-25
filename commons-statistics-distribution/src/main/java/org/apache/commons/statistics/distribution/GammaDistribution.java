@@ -257,7 +257,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
      * mean is {@code alpha * beta}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return shape * scale;
     }
 
@@ -270,7 +270,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
      * @return {@inheritDoc}
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return shape * scale * scale;
     }
 

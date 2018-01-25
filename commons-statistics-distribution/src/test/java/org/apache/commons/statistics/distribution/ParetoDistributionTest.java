@@ -191,11 +191,11 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         ParetoDistribution dist;
 
         dist = new ParetoDistribution(1, 1);
-        Assert.assertEquals(dist.getNumericalMean(), Double.POSITIVE_INFINITY, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), Double.POSITIVE_INFINITY, tol);
+        Assert.assertEquals(dist.getMean(), Double.POSITIVE_INFINITY, tol);
+        Assert.assertEquals(dist.getVariance(), Double.POSITIVE_INFINITY, tol);
 
         dist = new ParetoDistribution(2.2, 2.4);
-        Assert.assertEquals(dist.getNumericalMean(), 3.771428571428, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 14.816326530, tol);
+        Assert.assertEquals(dist.getMean(), 3.771428571428, tol);
+        Assert.assertEquals(dist.getVariance(), 14.816326530, tol);
     }
 }

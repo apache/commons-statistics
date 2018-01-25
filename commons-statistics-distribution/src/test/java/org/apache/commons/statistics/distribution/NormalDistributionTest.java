@@ -199,15 +199,15 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
         NormalDistribution dist;
 
         dist = new NormalDistribution(0, 1);
-        Assert.assertEquals(dist.getNumericalMean(), 0, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 1, tol);
+        Assert.assertEquals(dist.getMean(), 0, tol);
+        Assert.assertEquals(dist.getVariance(), 1, tol);
 
         dist = new NormalDistribution(2.2, 1.4);
-        Assert.assertEquals(dist.getNumericalMean(), 2.2, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 1.4 * 1.4, tol);
+        Assert.assertEquals(dist.getMean(), 2.2, tol);
+        Assert.assertEquals(dist.getVariance(), 1.4 * 1.4, tol);
 
         dist = new NormalDistribution(-2000.9, 10.4);
-        Assert.assertEquals(dist.getNumericalMean(), -2000.9, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 10.4 * 10.4, tol);
+        Assert.assertEquals(dist.getMean(), -2000.9, tol);
+        Assert.assertEquals(dist.getVariance(), 10.4 * 10.4, tol);
     }
 }

@@ -65,7 +65,7 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
      * For {@code k} degrees of freedom, the mean is {@code k}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return getDegreesOfFreedom();
     }
 
@@ -75,7 +75,7 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
      * @return {@code 2 * k}, where {@code k} is the number of degrees of freedom.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return 2 * getDegreesOfFreedom();
     }
 

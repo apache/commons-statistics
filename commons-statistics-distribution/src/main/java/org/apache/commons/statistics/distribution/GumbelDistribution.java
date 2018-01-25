@@ -97,13 +97,13 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return mu + EULER * beta;
     }
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return PI_SQUARED_OVER_SIX * beta * beta;
     }
 

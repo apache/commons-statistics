@@ -85,7 +85,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
      * {@code 0.5 * (lower + upper)}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return 0.5 * upperPlusLower;
     }
 
@@ -96,7 +96,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
      * {@code n = upper - lower + 1}, the variance is {@code (n^2 - 1) / 12}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         double n = upperMinusLower + 1;
         return ONE_TWELFTH * (n * n - 1);
     }

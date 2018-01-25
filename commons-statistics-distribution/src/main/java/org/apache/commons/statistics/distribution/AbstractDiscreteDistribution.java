@@ -82,8 +82,8 @@ public abstract class AbstractDiscreteDistribution
 
         // use the one-sided Chebyshev inequality to narrow the bracket
         // cf. AbstractRealDistribution.inverseCumulativeProbability(double)
-        final double mu = getNumericalMean();
-        final double sigma = Math.sqrt(getNumericalVariance());
+        final double mu = getMean();
+        final double sigma = Math.sqrt(getVariance());
         final boolean chebyshevApplies = !(Double.isInfinite(mu) ||
                                            Double.isNaN(mu) ||
                                            Double.isInfinite(sigma) ||

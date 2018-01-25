@@ -227,24 +227,24 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
         LogNormalDistribution dist;
 
         dist = new LogNormalDistribution(0, 1);
-        Assert.assertEquals(dist.getNumericalMean(), 1.6487212707001282, tol);
-        Assert.assertEquals(dist.getNumericalVariance(),
+        Assert.assertEquals(dist.getMean(), 1.6487212707001282, tol);
+        Assert.assertEquals(dist.getVariance(),
                             4.670774270471604, tol);
 
         dist = new LogNormalDistribution(2.2, 1.4);
-        Assert.assertEquals(dist.getNumericalMean(), 24.046753552064498, tol);
-        Assert.assertEquals(dist.getNumericalVariance(),
+        Assert.assertEquals(dist.getMean(), 24.046753552064498, tol);
+        Assert.assertEquals(dist.getVariance(),
                             3526.913651880464, tol);
 
         dist = new LogNormalDistribution(-2000.9, 10.4);
-        Assert.assertEquals(dist.getNumericalMean(), 0.0, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 0.0, tol);
+        Assert.assertEquals(dist.getMean(), 0.0, tol);
+        Assert.assertEquals(dist.getVariance(), 0.0, tol);
     }
 
     @Test
     public void testTinyVariance() {
         LogNormalDistribution dist = new LogNormalDistribution(0, 1e-9);
-        double t = dist.getNumericalVariance();
+        double t = dist.getVariance();
         Assert.assertEquals(1e-18, t, 1e-20);
     }
 }

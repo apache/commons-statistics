@@ -115,7 +115,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
      * {@code beta}, the mean is {@code alpha / (alpha + beta)}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         final double a = getAlpha();
         return a / (a + getBeta());
     }
@@ -128,7 +128,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
      * {@code (alpha * beta) / [(alpha + beta)^2 * (alpha + beta + 1)]}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double a = getAlpha();
         final double b = getBeta();
         final double alphabetasum = a + b;

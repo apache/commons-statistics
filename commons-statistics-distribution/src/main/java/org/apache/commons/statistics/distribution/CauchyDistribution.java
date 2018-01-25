@@ -110,7 +110,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
      * @return mean (always Double.NaN)
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return Double.NaN;
     }
 
@@ -122,7 +122,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
      * @return variance (always Double.NaN)
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return Double.NaN;
     }
 

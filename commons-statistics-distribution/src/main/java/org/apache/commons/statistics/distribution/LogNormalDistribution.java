@@ -190,7 +190,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
      * {@code exp(m + s^2 / 2)}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         double s = shape;
         return Math.exp(scale + (s * s / 2));
     }
@@ -202,7 +202,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
      * {@code (exp(s^2) - 1) * exp(2 * m + s^2)}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double s = shape;
         final double ss = s * s;
         return (Math.expm1(ss)) * Math.exp(2 * scale + ss);

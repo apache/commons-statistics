@@ -234,11 +234,11 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         PoissonDistribution dist;
 
         dist = new PoissonDistribution(1);
-        Assert.assertEquals(dist.getNumericalMean(), 1, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 1, tol);
+        Assert.assertEquals(dist.getMean(), 1, tol);
+        Assert.assertEquals(dist.getVariance(), 1, tol);
 
         dist = new PoissonDistribution(11.23);
-        Assert.assertEquals(dist.getNumericalMean(), 11.23, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 11.23, tol);
+        Assert.assertEquals(dist.getMean(), 11.23, tol);
+        Assert.assertEquals(dist.getVariance(), 11.23, tol);
     }
 }

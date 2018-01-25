@@ -90,12 +90,12 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
         UniformDiscreteDistribution dist;
 
         dist = new UniformDiscreteDistribution(0, 5);
-        Assert.assertEquals(dist.getNumericalMean(), 2.5, 0);
-        Assert.assertEquals(dist.getNumericalVariance(), 35 / 12.0, 0);
+        Assert.assertEquals(dist.getMean(), 2.5, 0);
+        Assert.assertEquals(dist.getVariance(), 35 / 12.0, 0);
 
         dist = new UniformDiscreteDistribution(0, 1);
-        Assert.assertEquals(dist.getNumericalMean(), 0.5, 0);
-        Assert.assertEquals(dist.getNumericalVariance(), 3 / 12.0, 0);
+        Assert.assertEquals(dist.getMean(), 0.5, 0);
+        Assert.assertEquals(dist.getVariance(), 3 / 12.0, 0);
     }
 
     // MATH-1141
@@ -121,7 +121,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
         Assert.assertEquals(0.5 / hi, dist.probability(123456), tol);
         Assert.assertEquals(0.5, dist.cumulativeProbability(-1), tol);
 
-        Assert.assertTrue(Precision.equals((Math.pow(2d * hi, 2) - 1) / 12, dist.getNumericalVariance(), 1));
+        Assert.assertTrue(Precision.equals((Math.pow(2d * hi, 2) - 1) / 12, dist.getVariance(), 1));
     }
 
     // MATH-1396
@@ -134,6 +134,6 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
         Assert.assertEquals(1d / 3d, dist.probability(hi), tol);
         Assert.assertEquals(2d / 3d, dist.cumulativeProbability(hi), tol);
 
-        Assert.assertTrue(Precision.equals(hi, dist.getNumericalMean(), 1));
+        Assert.assertTrue(Precision.equals(hi, dist.getMean(), 1));
     }
 }

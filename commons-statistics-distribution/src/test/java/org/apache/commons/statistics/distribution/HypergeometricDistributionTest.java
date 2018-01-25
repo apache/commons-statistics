@@ -267,12 +267,12 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         HypergeometricDistribution dist;
 
         dist = new HypergeometricDistribution(1500, 40, 100);
-        Assert.assertEquals(dist.getNumericalMean(), 40d * 100d / 1500d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), ( 100d * 40d * (1500d - 100d) * (1500d - 40d) ) / ( (1500d * 1500d * 1499d) ), tol);
+        Assert.assertEquals(dist.getMean(), 40d * 100d / 1500d, tol);
+        Assert.assertEquals(dist.getVariance(), ( 100d * 40d * (1500d - 100d) * (1500d - 40d) ) / ( (1500d * 1500d * 1499d) ), tol);
 
         dist = new HypergeometricDistribution(3000, 55, 200);
-        Assert.assertEquals(dist.getNumericalMean(), 55d * 200d / 3000d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), ( 200d * 55d * (3000d - 200d) * (3000d - 55d) ) / ( (3000d * 3000d * 2999d) ), tol);
+        Assert.assertEquals(dist.getMean(), 55d * 200d / 3000d, tol);
+        Assert.assertEquals(dist.getVariance(), ( 200d * 55d * (3000d - 200d) * (3000d - 55d) ) / ( (3000d * 3000d * 2999d) ), tol);
     }
 
     @Test

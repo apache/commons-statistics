@@ -103,12 +103,12 @@ public class AbstractDiscreteDistributionTest {
         }
 
         @Override
-        public double getNumericalMean() {
+        public double getMean() {
             return 3.5;
         }
 
         @Override
-        public double getNumericalVariance() {
+        public double getVariance() {
             return 70/24;  // E(X^2) - E(X)^2
         }
 

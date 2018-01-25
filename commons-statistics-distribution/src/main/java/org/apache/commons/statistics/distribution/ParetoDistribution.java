@@ -144,7 +144,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
      * </ul>
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         if (shape <= 1) {
             return Double.POSITIVE_INFINITY;
         }
@@ -161,7 +161,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
      * </ul>
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         if (shape <= 2) {
             return Double.POSITIVE_INFINITY;
         }

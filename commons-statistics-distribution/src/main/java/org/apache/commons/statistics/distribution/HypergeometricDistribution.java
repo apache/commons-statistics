@@ -232,7 +232,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * size {@code n}, the mean is {@code n * m / N}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return getSampleSize() * (getNumberOfSuccesses() / (double) getPopulationSize());
     }
 
@@ -244,7 +244,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * {@code (n * m * (N - n) * (N - m)) / (N^2 * (N - 1))}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double N = getPopulationSize();
         final double m = getNumberOfSuccesses();
         final double n = getSampleSize();

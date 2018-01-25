@@ -152,7 +152,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
      * the mean is {@code r * (1 - p) / p}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         final double p = getProbabilityOfSuccess();
         final double r = getNumberOfSuccesses();
         return (r * (1 - p)) / p;
@@ -165,7 +165,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
      * the variance is {@code r * (1 - p) / p^2}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double p = getProbabilityOfSuccess();
         final double r = getNumberOfSuccesses();
         return r * (1 - p) / (p * p);

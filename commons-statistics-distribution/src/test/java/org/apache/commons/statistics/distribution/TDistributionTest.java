@@ -127,16 +127,16 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
         TDistribution dist;
 
         dist = new TDistribution(1);
-        Assert.assertTrue(Double.isNaN(dist.getNumericalMean()));
-        Assert.assertTrue(Double.isNaN(dist.getNumericalVariance()));
+        Assert.assertTrue(Double.isNaN(dist.getMean()));
+        Assert.assertTrue(Double.isNaN(dist.getVariance()));
 
         dist = new TDistribution(1.5);
-        Assert.assertEquals(dist.getNumericalMean(), 0, tol);
-        Assert.assertTrue(Double.isInfinite(dist.getNumericalVariance()));
+        Assert.assertEquals(dist.getMean(), 0, tol);
+        Assert.assertTrue(Double.isInfinite(dist.getVariance()));
 
         dist = new TDistribution(5);
-        Assert.assertEquals(dist.getNumericalMean(), 0, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), 5d / (5d - 2d), tol);
+        Assert.assertEquals(dist.getMean(), 0, tol);
+        Assert.assertEquals(dist.getVariance(), 5d / (5d - 2d), tol);
     }
 
     /*

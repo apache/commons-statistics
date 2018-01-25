@@ -102,7 +102,7 @@ public class TDistribution extends AbstractContinuousDistribution {
      * </ul>
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         final double df = getDegreesOfFreedom();
 
         if (df > 1) {
@@ -124,7 +124,7 @@ public class TDistribution extends AbstractContinuousDistribution {
      * </ul>
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double df = getDegreesOfFreedom();
 
         if (df > 2) {

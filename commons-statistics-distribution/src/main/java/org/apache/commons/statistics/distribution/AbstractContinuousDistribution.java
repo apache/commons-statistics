@@ -113,8 +113,8 @@ public abstract class AbstractContinuousDistribution
             return upperBound;
         }
 
-        final double mu = getNumericalMean();
-        final double sig = Math.sqrt(getNumericalVariance());
+        final double mu = getMean();
+        final double sig = Math.sqrt(getVariance());
         final boolean chebyshevApplies;
         chebyshevApplies = !(Double.isInfinite(mu) ||
                              Double.isNaN(mu) ||

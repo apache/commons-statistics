@@ -157,11 +157,11 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
         GeometricDistribution dist;
 
         dist = new GeometricDistribution(0.5);
-        Assert.assertEquals(dist.getNumericalMean(), (1.0d - 0.5d) / 0.5d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), (1.0d - 0.5d) / (0.5d * 0.5d), tol);
+        Assert.assertEquals(dist.getMean(), (1.0d - 0.5d) / 0.5d, tol);
+        Assert.assertEquals(dist.getVariance(), (1.0d - 0.5d) / (0.5d * 0.5d), tol);
 
         dist = new GeometricDistribution(0.3);
-        Assert.assertEquals(dist.getNumericalMean(), (1.0d - 0.3d) / 0.3d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), (1.0d - 0.3d) / (0.3d * 0.3d), tol);
+        Assert.assertEquals(dist.getMean(), (1.0d - 0.3d) / 0.3d, tol);
+        Assert.assertEquals(dist.getVariance(), (1.0d - 0.3d) / (0.3d * 0.3d), tol);
     }
 }

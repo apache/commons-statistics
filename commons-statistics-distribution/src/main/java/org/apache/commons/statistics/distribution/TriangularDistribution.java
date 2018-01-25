@@ -148,7 +148,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
      * the mean is {@code (a + b + c) / 3}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return (a + b + c) / 3;
     }
 
@@ -159,7 +159,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
      * the variance is {@code (a^2 + b^2 + c^2 - a * b - a * c - b * c) / 18}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return (a * a + b * b + c * c - a * b - a * c - b * c) / 18;
     }
 

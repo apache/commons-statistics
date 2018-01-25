@@ -95,7 +95,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
      * {@code 0.5 * (lower + upper)}.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return 0.5 * (lower + upper);
     }
 
@@ -106,7 +106,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
      * variance is {@code (upper - lower)^2 / 12}.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         double ul = upper - lower;
         return ul * ul / 12;
     }

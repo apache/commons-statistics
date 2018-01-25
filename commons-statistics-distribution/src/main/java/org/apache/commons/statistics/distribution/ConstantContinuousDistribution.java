@@ -61,7 +61,7 @@ public class ConstantContinuousDistribution extends AbstractContinuousDistributi
      * {@inheritDoc}
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return value;
     }
 
@@ -69,7 +69,7 @@ public class ConstantContinuousDistribution extends AbstractContinuousDistributi
      * {@inheritDoc}
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return 0;
     }
 

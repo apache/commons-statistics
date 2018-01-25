@@ -131,13 +131,13 @@ public class LevyDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return Double.POSITIVE_INFINITY;
     }
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return Double.POSITIVE_INFINITY;
     }
 

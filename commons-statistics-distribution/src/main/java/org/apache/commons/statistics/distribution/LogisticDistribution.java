@@ -98,13 +98,13 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         return mu;
     }
 
     /** {@inheritDoc} */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         return oneOverScale * oneOverScale * PI_SQUARED_OVER_THREE;
     }
 

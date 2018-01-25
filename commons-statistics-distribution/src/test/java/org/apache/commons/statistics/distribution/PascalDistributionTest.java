@@ -122,11 +122,11 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         PascalDistribution dist;
 
         dist = new PascalDistribution(10, 0.5);
-        Assert.assertEquals(dist.getNumericalMean(), ( 10d * 0.5d ) / 0.5d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), ( 10d * 0.5d ) / (0.5d * 0.5d), tol);
+        Assert.assertEquals(dist.getMean(), ( 10d * 0.5d ) / 0.5d, tol);
+        Assert.assertEquals(dist.getVariance(), ( 10d * 0.5d ) / (0.5d * 0.5d), tol);
 
         dist = new PascalDistribution(25, 0.7);
-        Assert.assertEquals(dist.getNumericalMean(), ( 25d * 0.3d ) / 0.7d, tol);
-        Assert.assertEquals(dist.getNumericalVariance(), ( 25d * 0.3d ) / (0.7d * 0.7d), tol);
+        Assert.assertEquals(dist.getMean(), ( 25d * 0.3d ) / 0.7d, tol);
+        Assert.assertEquals(dist.getVariance(), ( 25d * 0.3d ) / (0.7d * 0.7d), tol);
     }
 }

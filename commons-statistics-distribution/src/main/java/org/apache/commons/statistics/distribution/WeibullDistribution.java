@@ -156,7 +156,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
      * is the Gamma-function.
      */
     @Override
-    public double getNumericalMean() {
+    public double getMean() {
         final double sh = getShape();
         final double sc = getScale();
 
@@ -170,10 +170,10 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
      * where {@code Gamma()} is the Gamma-function.
      */
     @Override
-    public double getNumericalVariance() {
+    public double getVariance() {
         final double sh = getShape();
         final double sc = getScale();
-        final double mn = getNumericalMean();
+        final double mn = getMean();
 
         return (sc * sc) * Math.exp(LogGamma.value(1 + (2 / sh))) -
                (mn * mn);
