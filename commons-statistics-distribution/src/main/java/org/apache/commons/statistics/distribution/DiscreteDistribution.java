@@ -24,28 +24,24 @@ import org.apache.commons.rng.UniformRandomProvider;
 public interface DiscreteDistribution {
 
     /**
-     * For a random variable {@code X} whose values are distributed according to
-     * this distribution, this method returns {@code log(P(X = x))}, where
-     * {@code log} is the natural logarithm. In other words, this method
-     * represents the logarithm of the probability mass function (PMF) for the
-     * distribution. Note that due to the floating point precision and
-     * under/overflow issues, this method will for some distributions be more
-     * precise and faster than computing the logarithm of
-     * {@link #probability(int)}.
+     * For a random variable {@code X} whose values are distributed according
+     * to this distribution, this method returns {@code log(P(X = x))}, where
+     * {@code log} is the natural logarithm.
      *
-     * @param x the point at which the PMF is evaluated
-     * @return the logarithm of the value of the probability mass function at {@code x}
+     * @param x Point at which the PMF is evaluated.
+     * @return the logarithm of the value of the probability mass function at
+     * {@code x}.
      */
     double logProbability(int x);
 
     /**
      * For a random variable {@code X} whose values are distributed according
-     * to this distribution, this method returns {@code P(X = x)}. In other
-     * words, this method represents the probability mass function (PMF)
+     * to this distribution, this method returns {@code P(X = x)}.
+     * In other words, this method represents the probability mass function (PMF)
      * for the distribution.
      *
-     * @param x the point at which the PMF is evaluated
-     * @return the value of the probability mass function at {@code x}
+     * @param x Point at which the PMF is evaluated.
+     * @return the value of the probability mass function at {@code x}.
      */
     double probability(int x);
 
@@ -53,24 +49,24 @@ public interface DiscreteDistribution {
      * For a random variable {@code X} whose values are distributed according
      * to this distribution, this method returns {@code P(x0 < X <= x1)}.
      *
-     * @param x0 the exclusive lower bound
-     * @param x1 the inclusive upper bound
+     * @param x0 Lower bound (exclusive).
+     * @param x1 Upper bound (inclusive).
      * @return the probability that a random variable with this distribution
-     * will take a value between {@code x0} and {@code x1},
-     * excluding the lower and including the upper endpoint
-     * @throws IllegalArgumentException if {@code x0 > x1}
+     * will take a value between {@code x0} and {@code x1}, excluding the lower
+     * and including the upper endpoint.
+     * @throws IllegalArgumentException if {@code x0 > x1}.
      */
     double probability(int x0, int x1);
 
     /**
      * For a random variable {@code X} whose values are distributed according
-     * to this distribution, this method returns {@code P(X <= x)}.  In other
-     * words, this method represents the (cumulative) distribution function
-     * (CDF) for this distribution.
+     * to this distribution, this method returns {@code P(X <= x)}.
+     * In other, words, this method represents the (cumulative) distribution
+     * function (CDF) for this distribution.
      *
-     * @param x the point at which the CDF is evaluated
-     * @return the probability that a random variable with this
-     * distribution takes a value less than or equal to {@code x}
+     * @param x Point at which the CDF is evaluated.
+     * @return the probability that a random variable with this distribution
+     * takes a value less than or equal to {@code x}.
      */
     double cumulativeProbability(int x);
 
@@ -85,58 +81,57 @@ public interface DiscreteDistribution {
      * If the result exceeds the range of the data type {@code int},
      * then {@code Integer.MIN_VALUE} or {@code Integer.MAX_VALUE} is returned.
      *
-     * @param p the cumulative probability
+     * @param p Cumulative probability.
      * @return the smallest {@code p}-quantile of this distribution
-     * (largest 0-quantile for {@code p = 0})
-     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
+     * (largest 0-quantile for {@code p = 0}).
+     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}.
      */
     int inverseCumulativeProbability(double p);
 
     /**
-     * Use this method to get the numerical value of the mean of this
-     * distribution.
+     * Gets the mean of this distribution.
      *
-     * @return the mean or {@code Double.NaN} if it is not defined
+     * @return the mean, or {@code Double.NaN} if it is not defined.
      */
     double getNumericalMean();
 
     /**
-     * Use this method to get the numerical value of the variance of this
-     * distribution.
+     * Gets the variance of this distribution.
      *
-     * @return the variance (possibly {@code Double.POSITIVE_INFINITY} or
-     * {@code Double.NaN} if it is not defined)
+     * @return the variance, or {@code Double.NaN} if it is not defined.
      */
     double getNumericalVariance();
 
     /**
-     * Access the lower bound of the support. This method must return the same
-     * value as {@code inverseCumulativeProbability(0)}. In other words, this
-     * method must return
-     * <p>{@code inf {x in Z | P(X <= x) > 0}}.</p>
+     * Gets the lower bound of the support.
+     * This method must return the same value as
+     * {@code inverseCumulativeProbability(0)}, i.e.
+     * {@code inf {x in Z | P(X <= x) > 0}}.
+     * By convention, {@code Integer.MIN_VALUE} should be substituted
+     * for negative infinity.
      *
-     * @return lower bound of the support ({@code Integer.MIN_VALUE}
-     * for negative infinity)
+     * @return the lower bound of the support.
      */
     int getSupportLowerBound();
 
     /**
-     * Access the upper bound of the support. This method must return the same
-     * value as {@code inverseCumulativeProbability(1)}. In other words, this
-     * method must return
-     * <p>{@code inf {x in R | P(X <= x) = 1}}.</p>
+     * Gets the upper bound of the support.
+     * This method must return the same value as
+     * {@code inverseCumulativeProbability(1)}, i.e.
+     * {@code inf {x in R | P(X <= x) = 1}}.
+     * By convention, {@code Integer.MAX_VALUE} should be substituted
+     * for positive infinity.
      *
-     * @return upper bound of the support ({@code Integer.MAX_VALUE}
-     * for positive infinity)
+     * @return the upper bound of the support.
      */
     int getSupportUpperBound();
 
     /**
-     * Use this method to get information about whether the support is
-     * connected, i.e. whether all integers between the lower and upper bound of
-     * the support are included in the support.
+     * Indicates whether the support is connected, i.e. whether all
+     * integers between the lower and upper bound of the support are
+     * included in the support.
      *
-     * @return whether the support is connected or not
+     * @return whether the support is connected.
      */
     boolean isSupportConnected();
 
