@@ -77,7 +77,7 @@ public class TDistribution extends AbstractContinuousDistribution {
     @Override
     public double logDensity(double x) {
         final double nPlus1Over2 = dofOver2 + 0.5;
-        return factor - nPlus1Over2 * Math.log(1 + x * x / degreesOfFreedom);
+        return factor - nPlus1Over2 * Math.log1p(x * x / degreesOfFreedom);
     }
 
     /** {@inheritDoc} */
