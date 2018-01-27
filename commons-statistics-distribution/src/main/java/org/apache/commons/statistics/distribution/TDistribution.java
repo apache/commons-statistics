@@ -29,6 +29,10 @@ public class TDistribution extends AbstractContinuousDistribution {
     private final double dofOver2;
     /** Cached value. */
     private final double factor;
+    /** Cached value. */
+    private final double mean;
+    /** Cached value. */
+    private final double variance;
 
     /**
      * Creates a distribution.
@@ -47,6 +51,11 @@ public class TDistribution extends AbstractContinuousDistribution {
         factor = LogGamma.value(dofOver2 + 0.5) -
                  0.5 * (Math.log(Math.PI) + Math.log(degreesOfFreedom)) -
                  LogGamma.value(dofOver2);
+        mean = degreesOfFreedom > 1 ? 0 :
+            Double.NaN;
+        variance = degreesOfFreedom > 2 ? degreesOfFreedom / (degreesOfFreedom - 2) :
+            degreesOfFreedom > 1 && degreesOfFreedom <= 2 ? Double.POSITIVE_INFINITY :
+            Double.NaN;
     }
 
     /**
@@ -97,17 +106,13 @@ public class TDistribution extends AbstractContinuousDistribution {
      *
      * For degrees of freedom parameter {@code df}, the mean is
      * <ul>
-     *  <li>if {@code df > 1} then {@code 0},</li>
-     * <li>else undefined ({@code Double.NaN}).</li>
+     *  <li>zero if {@code df > 1}, and</li>
+     *  <li>undefined ({@code Double.NaN}) otherwise.</li>
      * </ul>
      */
     @Override
     public double getMean() {
-        if (degreesOfFreedom > 1) {
-            return 0;
-        }
-
-        return Double.NaN;
+        return mean;
     }
 
     /**
@@ -115,31 +120,20 @@ public class TDistribution extends AbstractContinuousDistribution {
      *
      * For degrees of freedom parameter {@code df}, the variance is
      * <ul>
-     *  <li>if {@code df > 2} then {@code df / (df - 2)},</li>
-     *  <li>if {@code 1 < df <= 2} then positive infinity
-     *  ({@code Double.POSITIVE_INFINITY}),</li>
-     *  <li>else undefined ({@code Double.NaN}).</li>
+     *  <li>{@code df / (df - 2)} if {@code df > 2},</li>
+     *  <li>infinite ({@code Double.POSITIVE_INFINITY}) if {@code 1 < df <= 2}, and</li>
+     *  <li>undefined ({@code Double.NaN}) otherwise.</li>
      * </ul>
      */
     @Override
     public double getVariance() {
-        if (degreesOfFreedom > 2) {
-            return degreesOfFreedom / (degreesOfFreedom - 2);
-        }
-
-        if (degreesOfFreedom > 1 &&
-            degreesOfFreedom <= 2) {
-            return Double.POSITIVE_INFINITY;
-        }
-
-        return Double.NaN;
+        return variance;
     }
 
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always negative infinity no matter the
-     * parameters.
+     * The lower bound of the support is always negative infinity..
      *
      * @return lower bound of the support (always
      * {@code Double.NEGATIVE_INFINITY})
@@ -152,8 +146,7 @@ public class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity no matter the
-     * parameters.
+     * The upper bound of the support is always positive infinity.
      *
      * @return upper bound of the support (always
      * {@code Double.POSITIVE_INFINITY})
