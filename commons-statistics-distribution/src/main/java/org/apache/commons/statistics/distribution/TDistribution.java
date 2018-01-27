@@ -103,9 +103,7 @@ public class TDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getMean() {
-        final double df = getDegreesOfFreedom();
-
-        if (df > 1) {
+        if (degreesOfFreedom > 1) {
             return 0;
         }
 
@@ -125,13 +123,12 @@ public class TDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getVariance() {
-        final double df = getDegreesOfFreedom();
-
-        if (df > 2) {
-            return df / (df - 2);
+        if (degreesOfFreedom > 2) {
+            return degreesOfFreedom / (degreesOfFreedom - 2);
         }
 
-        if (df > 1 && df <= 2) {
+        if (degreesOfFreedom > 1 &&
+            degreesOfFreedom <= 2) {
             return Double.POSITIVE_INFINITY;
         }
 
