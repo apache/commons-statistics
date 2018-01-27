@@ -83,22 +83,17 @@ public class TDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x) {
-        double ret;
         if (x == 0) {
-            ret = 0.5;
+            return 0.5;
         } else {
             final double t =
                 RegularizedBeta.value(degreesOfFreedom / (degreesOfFreedom + (x * x)),
                                       dofOver2,
                                       0.5);
-            if (x < 0) {
-                ret = 0.5 * t;
-            } else {
-                ret = 1 - 0.5 * t;
-            }
+            return x < 0 ?
+                0.5 * t :
+                1 - 0.5 * t;
         }
-
-        return ret;
     }
 
     /**
