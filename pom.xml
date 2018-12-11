@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-parent</artifactId>
-    <version>43</version>
+    <version>47</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -38,9 +38,9 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:http://git-wip-us.apache.org/repos/asf/commons-statistics.git</connection>
-    <developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/commons-statistics.git</developerConnection>
-    <url>https://git-wip-us.apache.org/repos/asf?p=commons-statistics.git</url>
+    <connection>scm:git:http://gitbox.apache.org/repos/asf/commons-statistics.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/commons-statistics.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf?p=commons-statistics.git</url>
   </scm>
 
   <distributionManagement>
@@ -117,7 +117,7 @@
         Temporary workaround?
     -->
     <commons.release.name>commons-statistics-${project.version}</commons.release.name>
-    <statistics.commons.rng.version>1.0</statistics.commons.rng.version>
+    <statistics.commons.rng.version>1.1</statistics.commons.rng.version>
     <statistics.commons.numbers.version>1.0-SNAPSHOT</statistics.commons.numbers.version> <!-- XXX -->
     <statistics.commons.math3.version>3.6.1</statistics.commons.math3.version>
   </properties>
@@ -137,7 +137,7 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-rng-sampling</artifactId>
-        <version>1.1-SNAPSHOT</version> <!-- XXX -->
+        <version>${statistics.commons.rng.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -188,6 +188,9 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
+          <!-- Fix for OpenJDK 8 now validating class-path attributes in Jar manifests. -->
+          <!-- See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=912333#63 -->
+          <useSystemClassLoader>false</useSystemClassLoader>
           <includes>
             <include>**/*Test.java</include>
           </includes>
