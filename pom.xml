@@ -257,6 +257,15 @@
           </excludes>
         </configuration>
       </plugin>
+      <!-- MathJax -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <additionalOptions>-Xdoclint:all --allow-script-in-comments -header '&lt;script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/${rng.mathjax.version}/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;&lt;/script&gt;'</additionalOptions>
+          <!-- <aggregate>true</aggregate> -->
+        </configuration>
+      </plugin>
     </plugins>
 
     <pluginManagement>
@@ -385,7 +394,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
-          <additionalparam>-Xdoclint:all --allow-script-in-comments -header '&lt;script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;&lt;/script&gt;'</additionalparam>
+          <additionalOptions>-Xdoclint:all --allow-script-in-comments -header '&lt;script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/${rng.mathjax.version}/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;&lt;/script&gt;'</additionalOptions>
           <!-- <aggregate>true</aggregate> -->
         </configuration>
       </plugin>
