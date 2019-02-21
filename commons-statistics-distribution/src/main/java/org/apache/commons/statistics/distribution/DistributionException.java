@@ -43,7 +43,7 @@ class DistributionException extends IllegalArgumentException {
 
     /**
      * Create an exception where the message is constructed by applying
-     * the {@code format()} method from {@code java.text.MessageFormat}.
+     * the {@code format()} method from {@code org.apache.commons.statistics.interval.text.MessageFormat}.
      *
      * @param message  the exception message with replaceable parameters
      * @param formatArguments the arguments for formatting the message
