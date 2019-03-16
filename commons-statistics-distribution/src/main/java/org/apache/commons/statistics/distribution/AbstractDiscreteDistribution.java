@@ -121,15 +121,8 @@ abstract class AbstractDiscreteDistribution
                                                   int lower,
                                                   int upper) {
         while (lower + 1 < upper) {
-            int xm = (lower + upper) / 2;
-            if (xm < lower || xm > upper) {
-                /*
-                 * Overflow.
-                 * There will never be an overflow in both calculation methods
-                 * for xm at the same time
-                 */
-                xm = lower + (upper - lower) / 2;
-            }
+            // Overflow-aware midpoint computation
+            int xm = (lower + upper) >>> 1;
 
             double pm = checkedCumulativeProbability(xm);
             if (pm >= p) {
