@@ -120,25 +120,24 @@ abstract class AbstractDiscreteDistribution
     private int solveInverseCumulativeProbability(final double p,
                                                   int lower,
                                                   int upper) {
-        while (lower + 1 < upper) {
-            int xm = (lower + upper) / 2;
-            if (xm < lower || xm > upper) {
-                /*
-                 * Overflow.
-                 * There will never be an overflow in both calculation methods
-                 * for xm at the same time
-                 */
-                xm = lower + (upper - lower) / 2;
-            }
-
-            double pm = checkedCumulativeProbability(xm);
+        // Using long variables instead of int to avoid overflow when computing
+        // xm inside the loop.
+        long l = lower;
+        long u = upper;
+        while (l + 1 < u) {
+            // Cannot replace division by 2 with a right shift because (l + u)
+            // can be negative. This can be optimized when we know that both
+            // lower and upper arguments of this method are positive, for
+            // example, for PoissonDistribution.
+            long xm = (l + u) / 2;
+            double pm = checkedCumulativeProbability((int) xm);
             if (pm >= p) {
-                upper = xm;
+                u = xm;
             } else {
-                lower = xm;
+                l = xm;
             }
         }
-        return upper;
+        return (int) u;
     }
 
     /**
