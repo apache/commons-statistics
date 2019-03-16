@@ -120,18 +120,19 @@ abstract class AbstractDiscreteDistribution
     private int solveInverseCumulativeProbability(final double p,
                                                   int lower,
                                                   int upper) {
-        while (lower + 1 < upper) {
-            // Overflow-aware midpoint computation
-            int xm = (lower + upper) >>> 1;
-
-            double pm = checkedCumulativeProbability(xm);
+        long l = lower;
+        long u = upper;
+        while (l + 1 < u) {
+            // Replaced division by two with shift
+            long xm = (l + u) >>> 1;
+            double pm = checkedCumulativeProbability((int) xm);
             if (pm >= p) {
-                upper = xm;
+                u = xm;
             } else {
-                lower = xm;
+                l = xm;
             }
         }
-        return upper;
+        return (int) u;
     }
 
     /**
