@@ -85,15 +85,16 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     public double logProbability(int x) {
         double ret;
         if (x < 0 || x == Integer.MAX_VALUE) {
-            ret = Double.NEGATIVE_INFINITY;
-        } else if (x == 0) {
-            ret = -mean;
-        } else {
-            ret = -SaddlePointExpansion.getStirlingError(x) -
-                  SaddlePointExpansion.getDeviancePart(x, mean) -
-                  0.5 * LOG_TWO_PI - 0.5 * Math.log(x);
+            return Double.NEGATIVE_INFINITY;
         }
-        return ret;
+        if (x == 0) {
+            return -mean;
+        } 
+        return -SaddlePointExpansion.getStirlingError(x) -
+               SaddlePointExpansion.getDeviancePart(x, mean) -
+               0.5 * LOG_TWO_PI - 0.5 * Math.log(x);
+        
+
     }
 
     /** {@inheritDoc} */
