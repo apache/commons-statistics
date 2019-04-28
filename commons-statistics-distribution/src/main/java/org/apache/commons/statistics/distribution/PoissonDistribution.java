@@ -93,8 +93,6 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         return -SaddlePointExpansion.getStirlingError(x) -
                SaddlePointExpansion.getDeviancePart(x, mean) -
                0.5 * LOG_TWO_PI - 0.5 * Math.log(x);
-        
-
     }
 
     /** {@inheritDoc} */
