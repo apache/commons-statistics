@@ -22,6 +22,8 @@ package org.apache.commons.statistics.distribution;
 public class CauchyDistribution extends AbstractContinuousDistribution {
     /** The median of this distribution. */
     private final double median;
+    /** The mode of this distribution. */
+    private final double mode;
     /** The scale of this distribution. */
     private final double scale;
 
@@ -39,6 +41,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
         }
         this.scale = scale;
         this.median = median;
+        this.mode = median;
     }
 
     /** {@inheritDoc} */
@@ -54,6 +57,15 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
      */
     public double getMedian() {
         return median;
+    }
+
+    /**
+     * Access the mode.
+     *
+     * @return the mode for this distribution.
+     */
+    public double getMode() {
+        return mode;
     }
 
     /**
