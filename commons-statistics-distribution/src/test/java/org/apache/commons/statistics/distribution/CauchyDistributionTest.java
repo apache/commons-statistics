@@ -82,6 +82,12 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
+    public void testMode() {
+        CauchyDistribution distribution = (CauchyDistribution) getDistribution();
+        Assert.assertEquals(1.2, distribution.getMode(), 0.0);
+    }
+
+    @Test
     public void testScale() {
         CauchyDistribution distribution = (CauchyDistribution) getDistribution();
         Assert.assertEquals(2.1, distribution.getScale(), 0.0);
