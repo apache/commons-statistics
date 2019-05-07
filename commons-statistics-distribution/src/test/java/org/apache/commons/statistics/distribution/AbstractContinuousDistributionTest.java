@@ -19,8 +19,8 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.RombergIntegrator;
 import org.apache.commons.math3.analysis.integration.UnivariateIntegrator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /** Various tests related to MATH-699. */
 public class AbstractContinuousDistributionTest {
@@ -77,9 +77,8 @@ public class AbstractContinuousDistributionTest {
             public double getVariance() {
                 final double meanX = getMean();
                 final double meanX2;
-                meanX2 = ((x0 * x0 + x0 * x1 + x1 * x1) * p12 + (x2 * x2 + x2
-                        * x3 + x3 * x3)
-                        * (1.0 - p12)) / 3.0;
+                meanX2 = ((x0 * x0 + x0 * x1 + x1 * x1) * p12 +
+                          (x2 * x2 + x2 * x3 + x3 * x3) * (1.0 - p12)) / 3.0;
                 return meanX2 - meanX * meanX;
             }
 
@@ -105,7 +104,7 @@ public class AbstractContinuousDistributionTest {
         };
         final double expected = x1;
         final double actual = distribution.inverseCumulativeProbability(p12);
-        Assert.assertEquals("", expected, actual, 1e-8);
+        Assertions.assertEquals(expected, actual, 1e-8);
     }
 
     @Test
@@ -204,6 +203,6 @@ public class AbstractContinuousDistributionTest {
         };
         final double expected = x2;
         final double actual = distribution.inverseCumulativeProbability(p23);
-        Assert.assertEquals("", expected, actual, 1e-8);
+        Assertions.assertEquals(expected, actual, 1e-8);
     }
 }

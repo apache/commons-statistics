@@ -18,9 +18,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link ZipfDistribution}.
@@ -29,21 +29,21 @@ import org.junit.Test;
  */
 public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
 
-    /**
-     * Constructor to override default tolerance.
-     */
-    public ZipfDistributionTest() {
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-12);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPreconditions1() {
-        new ZipfDistribution(0, 1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(0, 1));
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPreconditions2() {
-        new ZipfDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(1, 0));
     }
 
     //-------------- Implementations for abstract methods -----------------------
@@ -93,14 +93,14 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 0, 0.341417152147, 0.512125728221, 0.625931445604, 0.71128573364,
                              0.77956916407, 0.836472022761, 0.885245901639, 0.927923045658, 0.965858284785, 1d, 1d};
-        }
+    }
 
     /** Creates the default inverse cumulative probability test input values */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0d, 0.001d, 0.010d, 0.025d, 0.050d, 0.3413d, 0.3415d, 0.999d,
                              0.990d, 0.975d, 0.950d, 0.900d, 1d};
-        }
+    }
 
     /** Creates the default inverse cumulative probability density test expected values */
     @Override
@@ -114,10 +114,9 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
         ZipfDistribution dist;
 
         dist = new ZipfDistribution(2, 0.5);
-        Assert.assertEquals(dist.getMean(), Math.sqrt(2), tol);
-        Assert.assertEquals(dist.getVariance(), 0.24264068711928521, tol);
+        Assertions.assertEquals(Math.sqrt(2), dist.getMean(), tol);
+        Assertions.assertEquals(0.24264068711928521, dist.getVariance(), tol);
     }
-
 
     /**
      * Test sampling for various number of points and exponents.
@@ -139,25 +138,26 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
             for (double exponent : exponentValues) {
                 double weightSum = 0.;
                 double[] weights = new double[numPoints];
-                for (int i = numPoints; i>=1; i-=1) {
-                    weights[i-1] = Math.pow(i, -exponent);
-                    weightSum += weights[i-1];
+                for (int i = numPoints; i >= 1; i -= 1) {
+                    weights[i - 1] = Math.pow(i, -exponent);
+                    weightSum += weights[i - 1];
                 }
 
                 // Use fixed seed, the test is expected to fail for more than 50% of all
                 // seeds because each test case can fail with probability 0.001, the chance
                 // that all test cases do not fail is 0.999^(32*22) = 0.49442874426
                 DiscreteDistribution.Sampler distribution =
-                    new ZipfDistribution(numPoints, exponent).createSampler(RandomSource.create(RandomSource.WELL_19937_C, 6));
+                    new ZipfDistribution(numPoints, exponent).createSampler(
+                        RandomSource.create(RandomSource.WELL_19937_C, 6));
 
                 double[] expectedCounts = new double[numPoints];
                 long[] observedCounts = new long[numPoints];
                 for (int i = 0; i < numPoints; i++) {
-                    expectedCounts[i] = sampleSize * (weights[i]/weightSum);
+                    expectedCounts[i] = sampleSize * (weights[i] / weightSum);
                 }
                 int[] sample = AbstractDiscreteDistribution.sample(sampleSize, distribution);
                 for (int s : sample) {
-                    observedCounts[s-1]++;
+                    observedCounts[s - 1]++;
                 }
                 TestUtils.assertChiSquareAccept(expectedCounts, observedCounts, 0.001);
             }

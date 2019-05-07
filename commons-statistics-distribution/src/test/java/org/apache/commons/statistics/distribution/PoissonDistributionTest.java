@@ -16,8 +16,9 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * <code>PoissonDistributionTest</code>
@@ -30,10 +31,10 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     private static final double DEFAULT_TEST_POISSON_PARAMETER = 4.0;
 
-    /**
-     * Constructor.
-     */
-    public PoissonDistributionTest() {
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-12);
     }
 
@@ -50,7 +51,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public int[] makeDensityTestPoints() {
-        return new int[] { -1, 0, 1, 2, 3, 4, 5, 10, 20};
+        return new int[] {-1, 0, 1, 2, 3, 4, 5, 10, 20};
     }
 
     /**
@@ -59,9 +60,9 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public double[] makeDensityTestValues() {
-        return new double[] { 0d, 0.0183156388887d,  0.073262555555d,
-                              0.14652511111d, 0.195366814813d, 0.195366814813,
-                              0.156293451851d, 0.00529247667642d, 8.27746364655e-09};
+        return new double[] {0d, 0.0183156388887d,  0.073262555555d,
+                             0.14652511111d, 0.195366814813d, 0.195366814813,
+                             0.156293451851d, 0.00529247667642d, 8.27746364655e-09};
     }
 
     /**
@@ -70,10 +71,10 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public double[] makeLogDensityTestValues() {
-        return new double[] { Double.NEGATIVE_INFINITY, -4.000000000000d,
-                              -2.613705638880d, -1.920558458320d, -1.632876385868d,
-                              -1.632876385868d, -1.856019937183d, -5.241468961877d,
-                              -18.609729238356d};
+        return new double[] {Double.NEGATIVE_INFINITY, -4.000000000000d,
+                             -2.613705638880d, -1.920558458320d, -1.632876385868d,
+                             -1.632876385868d, -1.856019937183d, -5.241468961877d,
+                             -18.609729238356d};
     }
 
     /**
@@ -81,7 +82,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public int[] makeCumulativeTestPoints() {
-        return new int[] { -1, 0, 1, 2, 3, 4, 5, 10, 20 };
+        return new int[] {-1, 0, 1, 2, 3, 4, 5, 10, 20};
     }
 
     /**
@@ -89,9 +90,9 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public double[] makeCumulativeTestValues() {
-        return new double[] { 0d,  0.0183156388887d, 0.0915781944437d,
-                              0.238103305554d, 0.433470120367d, 0.62883693518,
-                              0.78513038703d,  0.99716023388d, 0.999999998077 };
+        return new double[] {0d,  0.0183156388887d, 0.0915781944437d,
+                             0.238103305554d, 0.433470120367d, 0.62883693518,
+                             0.78513038703d,  0.99716023388d, 0.999999998077};
     }
 
     /**
@@ -100,11 +101,11 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         DiscreteDistribution dist = getDistribution();
-        return new double[] { 0d, 0.018315638886d, 0.018315638890d,
-                              0.091578194441d, 0.091578194445d, 0.238103305552d,
-                              0.238103305556d, dist.cumulativeProbability(3),
-                              dist.cumulativeProbability(4), dist.cumulativeProbability(5),
-                              dist.cumulativeProbability(10), dist.cumulativeProbability(20)};
+        return new double[] {0d, 0.018315638886d, 0.018315638890d,
+                             0.091578194441d, 0.091578194445d, 0.238103305552d,
+                             0.238103305556d, dist.cumulativeProbability(3),
+                             dist.cumulativeProbability(4), dist.cumulativeProbability(5),
+                             dist.cumulativeProbability(10), dist.cumulativeProbability(20)};
     }
 
     /**
@@ -112,7 +113,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public int[] makeInverseCumulativeTestValues() {
-        return new int[] { 0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 10, 20};
+        return new int[] {0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 10, 20};
     }
 
     /**
@@ -123,14 +124,14 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     @Test
     public void testNormalApproximateProbability() {
         PoissonDistribution dist = new PoissonDistribution(100);
-        double result = dist.normalApproximateProbability(110)
-            - dist.normalApproximateProbability(89);
-        Assert.assertEquals(0.706281887248, result, 1e-10);
+        double result = dist.normalApproximateProbability(110) -
+            dist.normalApproximateProbability(89);
+        Assertions.assertEquals(0.706281887248, result, 1e-10);
 
         dist = new PoissonDistribution(10000);
-        result = dist.normalApproximateProbability(10200)
-            - dist.normalApproximateProbability(9899);
-        Assert.assertEquals(0.820070051552, result, 1E-10);
+        result = dist.normalApproximateProbability(10200) -
+            dist.normalApproximateProbability(9899);
+        Assertions.assertEquals(0.820070051552, result, 1E-10);
     }
 
     /**
@@ -139,19 +140,19 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     @Test
     public void testDegenerateInverseCumulativeProbability() {
         PoissonDistribution dist = new PoissonDistribution(DEFAULT_TEST_POISSON_PARAMETER);
-        Assert.assertEquals(Integer.MAX_VALUE, dist.inverseCumulativeProbability(1.0d));
-        Assert.assertEquals(0, dist.inverseCumulativeProbability(0d));
+        Assertions.assertEquals(Integer.MAX_VALUE, dist.inverseCumulativeProbability(1.0d));
+        Assertions.assertEquals(0, dist.inverseCumulativeProbability(0d));
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testNegativeMean() {
-        new PoissonDistribution(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new PoissonDistribution(-1));
     }
 
     @Test
     public void testMean() {
         PoissonDistribution dist = new PoissonDistribution(10.0);
-        Assert.assertEquals(10.0, dist.getMean(), 0.0);
+        Assertions.assertEquals(10.0, dist.getMean(), 0.0);
     }
 
     @Test
@@ -167,14 +168,12 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
             while (x >= 0) {
                 try {
                     p = dist.cumulativeProbability((int) x);
-                    Assert.assertFalse("NaN cumulative probability returned for mean = " +
-                            mean + " x = " + x,Double.isNaN(p));
+                    Assertions.assertFalse(Double.isNaN(p), "NaN cumulative probability");
                     if (x > mean - 2 * sigma) {
-                        Assert.assertTrue("Zero cum probaility returned for mean = " +
-                                mean + " x = " + x, p > 0);
+                        Assertions.assertTrue(p > 0, "Zero cumulative probaility");
                     }
-                } catch (Exception ex) {
-                    Assert.fail("mean of " + mean + " and x of " + x + " caused " + ex.getMessage());
+                } catch (AssertionError ex) {
+                    Assertions.fail("mean of " + mean + " and x of " + x + " caused " + ex.getMessage());
                 }
                 x -= dx;
             }
@@ -199,11 +198,11 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     private void checkProbability(PoissonDistribution dist, int x) {
-        double p = dist.cumulativeProbability(x);
-        Assert.assertFalse("NaN cumulative probability returned for mean = " +
-                dist.getMean() + " x = " + x, Double.isNaN(p));
-        Assert.assertTrue("Zero cum probability returned for mean = " +
-                dist.getMean() + " x = " + x, p > 0);
+        final double p = dist.cumulativeProbability(x);
+        Assertions.assertFalse(Double.isNaN(p), () -> "NaN cumulative probability returned for mean = " +
+                dist.getMean() + " x = " + x);
+        Assertions.assertTrue(p > 0, () -> "Zero cum probability returned for mean = " +
+                dist.getMean() + " x = " + x);
     }
 
     @Test
@@ -217,10 +216,10 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
                 try {
                     int ret = dist.inverseCumulativeProbability(p);
                     // Verify that returned value satisties definition
-                    Assert.assertTrue(p <= dist.cumulativeProbability(ret));
-                    Assert.assertTrue(p > dist.cumulativeProbability(ret - 1));
-                } catch (Exception ex) {
-                    Assert.fail("mean of " + mean + " and p of " + p + " caused " + ex.getMessage());
+                    Assertions.assertTrue(p <= dist.cumulativeProbability(ret));
+                    Assertions.assertTrue(p > dist.cumulativeProbability(ret - 1));
+                } catch (AssertionError ex) {
+                    Assertions.fail("mean of " + mean + " and p of " + p + " caused " + ex.getMessage());
                 }
                 p += dp;
             }
@@ -234,11 +233,11 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         PoissonDistribution dist;
 
         dist = new PoissonDistribution(1);
-        Assert.assertEquals(dist.getMean(), 1, tol);
-        Assert.assertEquals(dist.getVariance(), 1, tol);
+        Assertions.assertEquals(1, dist.getMean(), tol);
+        Assertions.assertEquals(1, dist.getVariance(), tol);
 
         dist = new PoissonDistribution(11.23);
-        Assert.assertEquals(dist.getMean(), 11.23, tol);
-        Assert.assertEquals(dist.getVariance(), 11.23, tol);
+        Assertions.assertEquals(11.23, dist.getMean(), tol);
+        Assertions.assertEquals(11.23, dist.getVariance(), tol);
     }
 }

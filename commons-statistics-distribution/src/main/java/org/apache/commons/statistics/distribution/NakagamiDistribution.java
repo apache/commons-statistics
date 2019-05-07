@@ -23,6 +23,9 @@ import org.apache.commons.numbers.gamma.RegularizedGamma;
  * This class implements the <a href="http://en.wikipedia.org/wiki/Nakagami_distribution">Nakagami distribution</a>.
  */
 public class NakagamiDistribution extends AbstractContinuousDistribution {
+    /** The minimum allowed for the shape parameter. */
+    private static final double MIN_SHAPE = 0.5;
+
     /** The shape parameter. */
     private final double mu;
     /** The scale parameter. */
@@ -38,8 +41,8 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
      */
     public NakagamiDistribution(double mu,
                                 double omega) {
-        if (mu < 0.5) {
-            throw new DistributionException(DistributionException.TOO_SMALL, mu, 0.5);
+        if (mu < MIN_SHAPE) {
+            throw new DistributionException(DistributionException.TOO_SMALL, mu, MIN_SHAPE);
         }
         if (omega <= 0) {
             throw new DistributionException(DistributionException.NEGATIVE, omega);
@@ -92,7 +95,7 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double getVariance() {
-        double v = Gamma.value(mu + 0.5) / Gamma.value(mu);
+        final double v = Gamma.value(mu + 0.5) / Gamma.value(mu);
         return omega * (1 - 1 / mu * v * v);
     }
 

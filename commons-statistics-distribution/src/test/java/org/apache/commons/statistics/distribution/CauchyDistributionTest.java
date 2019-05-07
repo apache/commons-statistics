@@ -17,8 +17,9 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for CauchyDistribution.
@@ -30,9 +31,9 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
 
     // --------------------- Override tolerance  --------------
     protected double defaultTolerance = 1e-7;
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(defaultTolerance);
     }
 
@@ -78,22 +79,22 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testMedian() {
         CauchyDistribution distribution = (CauchyDistribution) getDistribution();
-        Assert.assertEquals(1.2, distribution.getMedian(), 0.0);
+        Assertions.assertEquals(1.2, distribution.getMedian(), 0.0);
     }
 
     @Test
     public void testScale() {
         CauchyDistribution distribution = (CauchyDistribution) getDistribution();
-        Assert.assertEquals(2.1, distribution.getScale(), 0.0);
+        Assertions.assertEquals(2.1, distribution.getScale(), 0.0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new CauchyDistribution(0, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new CauchyDistribution(0, 0));
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        new CauchyDistribution(0, -1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new CauchyDistribution(0, -1));
     }
 
     @Test
@@ -101,11 +102,11 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
         CauchyDistribution dist;
 
         dist = new CauchyDistribution(10.2, 0.15);
-        Assert.assertTrue(Double.isNaN(dist.getMean()));
-        Assert.assertTrue(Double.isNaN(dist.getVariance()));
+        Assertions.assertTrue(Double.isNaN(dist.getMean()));
+        Assertions.assertTrue(Double.isNaN(dist.getVariance()));
 
         dist = new CauchyDistribution(23.12, 2.12);
-        Assert.assertTrue(Double.isNaN(dist.getMean()));
-        Assert.assertTrue(Double.isNaN(dist.getVariance()));
+        Assertions.assertTrue(Double.isNaN(dist.getMean()));
+        Assertions.assertTrue(Double.isNaN(dist.getVariance()));
     }
 }
