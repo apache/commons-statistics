@@ -53,7 +53,7 @@ Statistical regressions.
 Documentation
 -------------
 
-More information can be found on the [Apache Commons Statistics Regression homepage](https://commons.apache.org/proper/commons-statistics).
+More information can be found on the [Apache Commons Statistics Regression Homepage](https://commons.apache.org/proper/commons-statistics).
 The [Javadoc](https://commons.apache.org/proper/commons-statistics/javadocs/api-release) can be browsed.
 Questions related to the usage of Apache Commons Statistics Regression should be posted to the [user mailing list][ml].
 
