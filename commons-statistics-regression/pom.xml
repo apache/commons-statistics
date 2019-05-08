@@ -44,36 +44,36 @@
 
   <dependencies>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-rng-client-api</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-rng-client-api</artifactId>-->
+<!--    </dependency>-->
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-rng-sampling</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-rng-sampling</artifactId>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-numbers-core</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-numbers-combinatorics</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-numbers-combinatorics</artifactId>-->
+<!--    </dependency>-->
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-numbers-gamma</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-numbers-gamma</artifactId>-->
+<!--    </dependency>-->
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-rng-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-rng-simple</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>org.apache.commons</groupId>
