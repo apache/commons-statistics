@@ -587,7 +587,7 @@
 
   <modules>
     <module>commons-statistics-distribution</module>
-<!--    <module>commons-statistics-regression</module> -->
+    <module>commons-statistics-regression</module>
   </modules>
 
 </project>
