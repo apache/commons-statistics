@@ -56,7 +56,7 @@ public class LogCauchyDistribution extends AbstractContinuousDistribution {
      * @return the median for this distribution.
      */
     public double getMedian() {
-        return Math.pow( Math.E , location );
+        return Math.pow (Math.E,location);
     }
 
     /**
