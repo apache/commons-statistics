@@ -1,5 +1,7 @@
 package org.apache.commons.statistics.regression;
 
+import org.ejml.data.DMatrixRBlock;
+
 /*
  * Copyright (c) 2009-2017, Peter Abeles. All Rights Reserved.
  *
@@ -19,9 +21,13 @@ package org.apache.commons.statistics.regression;
  */
 
 import org.ejml.data.DMatrixRMaj;
+import org.ejml.data.FMatrixRBlock;
+import org.ejml.data.FMatrixRMaj;
 import org.ejml.data.Matrix;
 import org.ejml.data.MatrixType;
 import org.ejml.dense.row.RandomMatrices_DDRM;
+import org.ejml.ops.ConvertDMatrixStruct;
+import org.ejml.ops.ConvertFMatrixStruct;
 import org.ejml.simple.SimpleBase;
 
 import java.util.Random;
@@ -34,8 +40,18 @@ import java.util.Random;
  * type StatisticsMatrix, ensuring strong typing.
  *
  * @author Peter Abeles
+ * -------------------------------------------------------------------------------------------
+ * Modifications for Apache Commons Statistics Regressiom library by: Ben Nguyen
+ * Under development for specific usage which are to be determined.
+ * -------------------------------------------------------------------------------------------
  */
 public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
+
+    
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -82801259856161557L;
 
     public StatisticsMatrix( int numRows , int numCols ) {
         super(numRows,numCols);
@@ -49,9 +65,27 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      */
     public static StatisticsMatrix wrap( DMatrixRMaj m ) {
         StatisticsMatrix ret = new StatisticsMatrix();
-        ret.mat = m;
+//        ret.mat = m;
+        ret.setMatrix(m); // changed by Ben Nguyen to also lookup ops
 
         return ret;
+    }
+    
+    //ADDED by Ben Nguyen: to satisfy the wrapMatrix method, copied from SimpleMatrix 
+    public StatisticsMatrix( Matrix orig ) {
+        Matrix mat;
+        if( orig instanceof DMatrixRBlock) {
+            DMatrixRMaj a = new DMatrixRMaj(orig.getNumRows(), orig.getNumCols());
+            ConvertDMatrixStruct.convert((DMatrixRBlock) orig, a);
+            mat = a;
+        } else if( orig instanceof FMatrixRBlock) {
+            FMatrixRMaj a = new FMatrixRMaj(orig.getNumRows(),orig.getNumCols());
+            ConvertFMatrixStruct.convert((FMatrixRBlock)orig, a);
+            mat = a;
+        } else {
+            mat = orig.copy();
+        }
+        setMatrix(mat);
     }
 
     /**
@@ -101,10 +135,20 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      * of the correct type.
      */
     @Override
-    protected StatisticsMatrix createMatrix(int numRows, int numCols, MatrixType type) {
-        return new StatisticsMatrix(numRows,numCols);
+    protected StatisticsMatrix createMatrix(int numRows, int numCols, MatrixType type) {// changed by Ben Nguyen to add 
+        return new StatisticsMatrix(numRows,numCols);                //MatrixType type param to satisfy abstract method
     }
 
+
+	@Override
+	protected StatisticsMatrix wrapMatrix(Matrix m) {
+		// TODO Auto-generated method stub
+		return new StatisticsMatrix(m);
+	}
+	
+	
+	
+	
     public static void main( String args[] ) {
         Random rand = new Random(24234);
 
@@ -119,7 +163,8 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         // the mean should be about 1.5
         System.out.println("Mean of B is               "+B.mean());
 
-        StatisticsMatrix C = A.plus(B);
+        StatisticsMatrix C = A.transpose();
+//        StatisticsMatrix C = A.plus(B);
 
         // the mean should be about 2.0
         System.out.println("Mean of C = A + B is       "+C.mean());
@@ -128,16 +173,7 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         System.out.println("Standard deviation of B is "+B.stdev());
         System.out.println("Standard deviation of C is "+C.stdev());
     }
-
-//	@Override
-//	protected StatisticsMatrix createMatrix(int numRows, int numCols, MatrixType type) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
-
-	@Override
-	protected StatisticsMatrix wrapMatrix(Matrix m) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    
+    
+    
 }
