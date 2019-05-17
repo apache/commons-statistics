@@ -18,7 +18,6 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.InverseTransformDiscreteSampler;
-import org.apache.commons.rng.sampling.distribution.DiscreteInverseCumulativeProbabilityFunction;
 import org.apache.commons.rng.sampling.distribution.DiscreteSampler;
 
 /**
@@ -180,31 +179,9 @@ abstract class AbstractDiscreteDistribution
     /** {@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new DiscreteDistribution.Sampler() {
-            /**
-             * Inversion method distribution sampler.
-             */
-            private final DiscreteSampler sampler =
-                new InverseTransformDiscreteSampler(rng, createICPF());
-
-            /** {@inheritDoc} */
-            @Override
-            public int sample() {
-                return sampler.sample();
-            }
-        };
-    }
-
-    /**
-     * @return an instance for use by {@link #createSampler(UniformRandomProvider)}.
-     */
-    private DiscreteInverseCumulativeProbabilityFunction createICPF() {
-        return new DiscreteInverseCumulativeProbabilityFunction() {
-            /** {@inheritDoc} */
-            @Override
-            public int inverseCumulativeProbability(double p) {
-                return AbstractDiscreteDistribution.this.inverseCumulativeProbability(p);
-            }
-        };
+       // Inversion method distribution sampler.
+       final DiscreteSampler sampler =
+           new InverseTransformDiscreteSampler(rng, this::inverseCumulativeProbability);
+       return sampler::sample;
     }
 }

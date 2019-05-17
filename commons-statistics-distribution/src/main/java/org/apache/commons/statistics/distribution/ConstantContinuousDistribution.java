@@ -105,12 +105,6 @@ public class ConstantContinuousDistribution extends AbstractContinuousDistributi
      */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ContinuousDistribution.Sampler() {
-            /** {@inheritDoc} */
-            @Override
-            public double sample() {
-                return value;
-            }
-        };
+        return this::getSupportLowerBound;
     }
 }

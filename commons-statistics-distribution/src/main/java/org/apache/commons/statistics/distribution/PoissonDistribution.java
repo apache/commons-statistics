@@ -183,17 +183,8 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     /**{@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new DiscreteDistribution.Sampler() {
-            /**
-             * Poisson distribution sampler.
-             */
-            private final DiscreteSampler sampler = new PoissonSampler(rng, mean);
-
-            /**{@inheritDoc} */
-            @Override
-            public int sample() {
-                return sampler.sample();
-            }
-        };
+        // Poisson distribution sampler.
+        final DiscreteSampler sampler = new PoissonSampler(rng, mean);
+        return sampler::sample;
     }
 }

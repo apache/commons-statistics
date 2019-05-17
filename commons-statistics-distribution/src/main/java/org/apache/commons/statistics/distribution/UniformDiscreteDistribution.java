@@ -142,18 +142,8 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /**{@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new DiscreteDistribution.Sampler() {
-            /**
-             * Discrete uniform distribution sampler.
-             */
-            private final DiscreteSampler sampler =
-                new DiscreteUniformSampler(rng, lower, upper);
-
-            /**{@inheritDoc} */
-            @Override
-            public int sample() {
-                return sampler.sample();
-            }
-        };
+        // Discrete uniform distribution sampler.
+        final DiscreteSampler sampler = new DiscreteUniformSampler(rng, lower, upper);
+        return sampler::sample;
     }
 }
