@@ -45,7 +45,7 @@ public class LogCauchyDistribution extends AbstractContinuousDistribution {
     @Override
     public double cumulativeProbability(double x) {
         if (x <= 0) {
-            throw new IllegalArgumentException("The argument cannot be less than or equal to 0");
+            return 0;
         }
         return 0.5 + (Math.atan((Math.log(x) - location) / scale) / Math.PI);
     }
@@ -81,10 +81,10 @@ public class LogCauchyDistribution extends AbstractContinuousDistribution {
     @Override
     public double density(double x) {
         if (x <= 0) {
-            throw new IllegalArgumentException("The argument cannot be less than or equal to 0");
+            return 0;
         }
-        final double dev = Math.log(x) - median;
-        return (1 / Math.PI) * (1 / Math.x) * (scale / (dev * dev + scale * scale));
+        final double dev = Math.log(x) - location;
+        return (1 / Math.PI) * (1 / x) * (scale / (dev * dev + scale * scale));
     }
 
     /**
