@@ -18,6 +18,12 @@ sudo: false
 
 jdk:
   - oraclejdk8
+  - oraclejdk11
+  - openjdk8
+  - openjdk11
+
+script:
+  - mvn
 
 after_success:
-  - mvn clean test pmd:pmd spotbugs:spotbugs checkstyle:checkstyle jacoco:report coveralls:report
+  - mvn clean test jacoco:report coveralls:report -Ptravis-jacoco
