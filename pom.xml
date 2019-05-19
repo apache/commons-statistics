@@ -176,7 +176,7 @@
   </dependencies>
 
   <build>
-    <defaultGoal>clean test</defaultGoal>
+    <defaultGoal>clean verify apache-rat:check clirr:check checkstyle:check pmd:pmd spotbugs:check javadoc:javadoc</defaultGoal>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
