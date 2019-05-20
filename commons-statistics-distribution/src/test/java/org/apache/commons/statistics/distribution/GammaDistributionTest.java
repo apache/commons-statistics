@@ -35,6 +35,8 @@ import org.junit.Test;
  */
 public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
+    private static final double HALF_LOG_2_PI = 0.5 * Math.log(2.0 * Math.PI);
+
     //-------------- Implementations for abstract methods -----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
@@ -166,8 +168,6 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(dist.getVariance(), 1.1d * 4.2d * 4.2d, tol);
     }
 
-    private static final double HALF_LOG_2_PI = 0.5 * Math.log(2.0 * Math.PI);
-
     public static double logGamma(double x) {
         /*
          * This is a copy of
@@ -242,9 +242,8 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                 final double ulp = Math.ulp(expected);
                 final double actualOld = density(x, shape, 1.0);
                 final double actualNew = distribution.density(x);
-                final double errOld, errNew;
-                errOld = Math.abs((actualOld - expected) / ulp);
-                errNew = Math.abs((actualNew - expected) / ulp);
+                final double errOld = Math.abs((actualOld - expected) / ulp);
+                final double errNew = Math.abs((actualNew - expected) / ulp);
 
                 if (Double.isNaN(actualOld) || Double.isInfinite(actualOld)) {
                     Assert.assertFalse(msg, Double.isNaN(actualNew));

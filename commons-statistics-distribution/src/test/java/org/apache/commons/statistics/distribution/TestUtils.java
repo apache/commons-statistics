@@ -141,7 +141,7 @@ public class TestUtils {
             Assert.fail(out.toString());
         }
     }
-    
+
     /**
      * Asserts the null hypothesis for a ChiSquare test.  Fails and dumps arguments and test
      * statistics if the null hypothesis can be rejected with confidence 100 * (1 - alpha)%

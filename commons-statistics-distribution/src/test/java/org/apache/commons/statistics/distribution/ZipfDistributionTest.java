@@ -19,7 +19,6 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**

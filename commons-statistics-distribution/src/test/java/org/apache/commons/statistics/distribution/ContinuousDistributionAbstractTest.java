@@ -107,12 +107,12 @@ public abstract class ContinuousDistributionAbstractTest {
      * The default implementation simply computes the logarithm
      * of each value returned by {@link #makeDensityTestValues()}.*/
     public double[] makeLogDensityTestValues() {
-        final double[] densityTestValues = makeDensityTestValues();
-        final double[] logDensityTestValues = new double[densityTestValues.length];
-        for (int i = 0; i < densityTestValues.length; i++) {
-            logDensityTestValues[i] = Math.log(densityTestValues[i]);
+        final double[] density = makeDensityTestValues();
+        final double[] logDensity = new double[density.length];
+        for (int i = 0; i < density.length; i++) {
+            logDensity[i] = Math.log(density[i]);
         }
-        return logDensityTestValues;
+        return logDensity;
     }
 
     //---- Default implementations of inverse test data generation methods ----
@@ -166,8 +166,8 @@ public abstract class ContinuousDistributionAbstractTest {
     protected void verifyCumulativeProbabilities() {
         // verify cumulativeProbability(double)
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            TestUtils.assertEquals("Incorrect cumulative probability value returned for "
-                                   + cumulativeTestPoints[i], cumulativeTestValues[i],
+            TestUtils.assertEquals("Incorrect cumulative probability value returned for " +
+                                   cumulativeTestPoints[i], cumulativeTestValues[i],
                                    distribution.cumulativeProbability(cumulativeTestPoints[i]),
                                    getTolerance());
         }
@@ -196,8 +196,8 @@ public abstract class ContinuousDistributionAbstractTest {
      */
     protected void verifyInverseCumulativeProbabilities() {
         for (int i = 0; i < inverseCumulativeTestPoints.length; i++) {
-            TestUtils.assertEquals("Incorrect inverse cumulative probability value returned for "
-                                   + inverseCumulativeTestPoints[i], inverseCumulativeTestValues[i],
+            TestUtils.assertEquals("Incorrect inverse cumulative probability value returned for " +
+                                   inverseCumulativeTestPoints[i], inverseCumulativeTestValues[i],
                                    distribution.inverseCumulativeProbability(inverseCumulativeTestPoints[i]),
                                    getTolerance());
         }
@@ -208,8 +208,8 @@ public abstract class ContinuousDistributionAbstractTest {
      */
     protected void verifyDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            TestUtils.assertEquals("Incorrect probability density value returned for "
-                                   + cumulativeTestPoints[i], densityTestValues[i],
+            TestUtils.assertEquals("Incorrect probability density value returned for " +
+                                   cumulativeTestPoints[i], densityTestValues[i],
                                    distribution.density(cumulativeTestPoints[i]),
                                    getTolerance());
         }
@@ -220,8 +220,8 @@ public abstract class ContinuousDistributionAbstractTest {
      */
     protected void verifyLogDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            TestUtils.assertEquals("Incorrect probability density value returned for "
-                                   + cumulativeTestPoints[i], logDensityTestValues[i],
+            TestUtils.assertEquals("Incorrect probability density value returned for " +
+                                   cumulativeTestPoints[i], logDensityTestValues[i],
                                    distribution.logDensity(cumulativeTestPoints[i]),
                                    getTolerance());
         }
@@ -284,8 +284,8 @@ public abstract class ContinuousDistributionAbstractTest {
             double diff = distribution.cumulativeProbability(upper) -
                 distribution.cumulativeProbability(lower);
             double direct = distribution.probability(lower, upper);
-            TestUtils.assertEquals("Inconsistent probability for ("
-                                   + lower + "," + upper + ")", diff, direct, tolerance);
+            TestUtils.assertEquals("Inconsistent probability for (" +
+                                   lower + "," + upper + ")", diff, direct, tolerance);
         }
     }
 

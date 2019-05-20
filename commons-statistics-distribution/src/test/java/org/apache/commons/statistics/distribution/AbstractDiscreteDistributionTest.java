@@ -43,7 +43,7 @@ public class AbstractDiscreteDistributionTest {
         Assert.assertEquals(5, diceDistribution.inverseCumulativeProbability((5d-precision)/6d));//Can't use Double.MIN
         Assert.assertEquals(6, diceDistribution.inverseCumulativeProbability((5d+precision)/6d));
         Assert.assertEquals(6, diceDistribution.inverseCumulativeProbability((6d-precision)/6d));//Can't use Double.MIN
-        Assert.assertEquals(6, diceDistribution.inverseCumulativeProbability((6d)/6d));
+        Assert.assertEquals(6, diceDistribution.inverseCumulativeProbability(1d));
     }
 
     @Test

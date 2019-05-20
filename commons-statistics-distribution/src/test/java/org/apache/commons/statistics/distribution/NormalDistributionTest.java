@@ -28,6 +28,8 @@ import org.junit.Test;
  */
 public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
+    private static final double DEFAULT_TOLERANCE = 1e-7;
+
     //-------------- Implementations for abstract methods -----------------------
 
     /** Creates the default real distribution instance to use in tests. */
@@ -59,11 +61,10 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     // --------------------- Override tolerance  --------------
-    private double defaultTolerance = 1e-7;
     @Override
     public void setUp() {
         super.setUp();
-        setTolerance(defaultTolerance);
+        setTolerance(DEFAULT_TOLERANCE);
     }
 
     //---------------------------- Additional test cases -------------------------
@@ -184,13 +185,13 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     public void testMath280() {
         NormalDistribution normal = new NormalDistribution(0,1);
         double result = normal.inverseCumulativeProbability(0.9986501019683698);
-        Assert.assertEquals(3.0, result, defaultTolerance);
+        Assert.assertEquals(3.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.841344746068543);
-        Assert.assertEquals(1.0, result, defaultTolerance);
+        Assert.assertEquals(1.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.9999683287581673);
-        Assert.assertEquals(4.0, result, defaultTolerance);
+        Assert.assertEquals(4.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.9772498680518209);
-        Assert.assertEquals(2.0, result, defaultTolerance);
+        Assert.assertEquals(2.0, result, DEFAULT_TOLERANCE);
     }
 
     @Test

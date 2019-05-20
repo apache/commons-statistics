@@ -123,13 +123,13 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     @Test
     public void testNormalApproximateProbability() {
         PoissonDistribution dist = new PoissonDistribution(100);
-        double result = dist.normalApproximateProbability(110)
-            - dist.normalApproximateProbability(89);
+        double result = dist.normalApproximateProbability(110) -
+            dist.normalApproximateProbability(89);
         Assert.assertEquals(0.706281887248, result, 1e-10);
 
         dist = new PoissonDistribution(10000);
-        result = dist.normalApproximateProbability(10200)
-            - dist.normalApproximateProbability(9899);
+        result = dist.normalApproximateProbability(10200) -
+            dist.normalApproximateProbability(9899);
         Assert.assertEquals(0.820070051552, result, 1E-10);
     }
 
@@ -173,7 +173,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
                         Assert.assertTrue("Zero cum probaility returned for mean = " +
                                 mean + " x = " + x, p > 0);
                     }
-                } catch (Exception ex) {
+                } catch (AssertionError ex) {
                     Assert.fail("mean of " + mean + " and x of " + x + " caused " + ex.getMessage());
                 }
                 x -= dx;
@@ -219,7 +219,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
                     // Verify that returned value satisties definition
                     Assert.assertTrue(p <= dist.cumulativeProbability(ret));
                     Assert.assertTrue(p > dist.cumulativeProbability(ret - 1));
-                } catch (Exception ex) {
+                } catch (AssertionError ex) {
                     Assert.fail("mean of " + mean + " and p of " + p + " caused " + ex.getMessage());
                 }
                 p += dp;

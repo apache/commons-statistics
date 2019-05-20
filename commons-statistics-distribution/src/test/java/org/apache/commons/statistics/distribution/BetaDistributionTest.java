@@ -27,8 +27,8 @@ import org.junit.Test;
 
 public class BetaDistributionTest {
 
-    static final double[] alphaBetas = {0.1, 1, 10, 100, 1000};
-    static final double epsilon = StatUtils.min(alphaBetas);
+    static final double[] ALPHA_BETAS = {0.1, 1, 10, 100, 1000};
+    static final double EPSILON = StatUtils.min(ALPHA_BETAS);
 
     @Test
     public void testCumulative() {
@@ -317,8 +317,8 @@ public class BetaDistributionTest {
         final UniformRandomProvider rng = RandomSource.create(RandomSource.WELL_1024_A,
                                                               123456789L);
         final int numSamples = 1000;
-        for (final double alpha : alphaBetas) {
-            for (final double beta : alphaBetas) {
+        for (final double alpha : ALPHA_BETAS) {
+            for (final double beta : ALPHA_BETAS) {
                 final BetaDistribution betaDistribution = new BetaDistribution(alpha, beta);
                 final double[] observed = AbstractContinuousDistribution.sample(numSamples,
                         betaDistribution.createSampler(rng));
@@ -327,10 +327,10 @@ public class BetaDistributionTest {
                 final String distribution = String.format("Beta(%.2f, %.2f)", alpha, beta);
                 Assert.assertEquals(String.format("E[%s]", distribution),
                                     betaDistribution.getMean(),
-                                    StatUtils.mean(observed), epsilon);
+                                    StatUtils.mean(observed), EPSILON);
                 Assert.assertEquals(String.format("Var[%s]", distribution),
                                     betaDistribution.getVariance(),
-                                    StatUtils.variance(observed), epsilon);
+                                    StatUtils.variance(observed), EPSILON);
             }
         }
     }
@@ -342,8 +342,8 @@ public class BetaDistributionTest {
 
         final int numSamples = 1000;
         final double level = 0.01;
-        for (final double alpha : alphaBetas) {
-            for (final double beta : alphaBetas) {
+        for (final double alpha : ALPHA_BETAS) {
+            for (final double beta : ALPHA_BETAS) {
                 final BetaDistribution betaDistribution = new BetaDistribution(alpha, beta);
 
                 final ContinuousDistribution.Sampler sampler = betaDistribution.createSampler(rng);
