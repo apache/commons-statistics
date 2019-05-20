@@ -153,12 +153,12 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         BinomialDistribution dist;
 
         dist = new BinomialDistribution(10, 0.5);
-        Assert.assertEquals(dist.getMean(), 10d * 0.5d, tol);
-        Assert.assertEquals(dist.getVariance(), 10d * 0.5d * 0.5d, tol);
+        Assert.assertEquals(10d * 0.5d, dist.getMean(), tol);
+        Assert.assertEquals(10d * 0.5d * 0.5d, dist.getVariance(), tol);
 
         dist = new BinomialDistribution(30, 0.3);
-        Assert.assertEquals(dist.getMean(), 30d * 0.3d, tol);
-        Assert.assertEquals(dist.getVariance(), 30d * 0.3d * (1d - 0.3d), tol);
+        Assert.assertEquals(30d * 0.3d, dist.getMean(), tol);
+        Assert.assertEquals(30d * 0.3d * (1d - 0.3d), dist.getVariance(), tol);
     }
 
     @Test

@@ -175,10 +175,10 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
             }
         }
 
-        Assert.assertEquals(distribution.cumulativeProbability(Double.MAX_VALUE), 1, 0);
-        Assert.assertEquals(distribution.cumulativeProbability(-Double.MAX_VALUE), 0, 0);
-        Assert.assertEquals(distribution.cumulativeProbability(Double.POSITIVE_INFINITY), 1, 0);
-        Assert.assertEquals(distribution.cumulativeProbability(Double.NEGATIVE_INFINITY), 0, 0);
+        Assert.assertEquals(1, distribution.cumulativeProbability(Double.MAX_VALUE), 0);
+        Assert.assertEquals(0, distribution.cumulativeProbability(-Double.MAX_VALUE), 0);
+        Assert.assertEquals(1, distribution.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
+        Assert.assertEquals(0, distribution.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
     }
 
     @Test
@@ -200,15 +200,15 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
         NormalDistribution dist;
 
         dist = new NormalDistribution(0, 1);
-        Assert.assertEquals(dist.getMean(), 0, tol);
-        Assert.assertEquals(dist.getVariance(), 1, tol);
+        Assert.assertEquals(0, dist.getMean(), tol);
+        Assert.assertEquals(1, dist.getVariance(), tol);
 
         dist = new NormalDistribution(2.2, 1.4);
-        Assert.assertEquals(dist.getMean(), 2.2, tol);
-        Assert.assertEquals(dist.getVariance(), 1.4 * 1.4, tol);
+        Assert.assertEquals(2.2, dist.getMean(), tol);
+        Assert.assertEquals(1.4 * 1.4, dist.getVariance(), tol);
 
         dist = new NormalDistribution(-2000.9, 10.4);
-        Assert.assertEquals(dist.getMean(), -2000.9, tol);
-        Assert.assertEquals(dist.getVariance(), 10.4 * 10.4, tol);
+        Assert.assertEquals(-2000.9, dist.getMean(), tol);
+        Assert.assertEquals(10.4 * 10.4, dist.getVariance(), tol);
     }
 }

@@ -160,12 +160,12 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         GammaDistribution dist;
 
         dist = new GammaDistribution(1, 2);
-        Assert.assertEquals(dist.getMean(), 2, tol);
-        Assert.assertEquals(dist.getVariance(), 4, tol);
+        Assert.assertEquals(2, dist.getMean(), tol);
+        Assert.assertEquals(4, dist.getVariance(), tol);
 
         dist = new GammaDistribution(1.1, 4.2);
-        Assert.assertEquals(dist.getMean(), 1.1d * 4.2d, tol);
-        Assert.assertEquals(dist.getVariance(), 1.1d * 4.2d * 4.2d, tol);
+        Assert.assertEquals(1.1d * 4.2d, dist.getMean(), tol);
+        Assert.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance(), tol);
     }
 
     public static double logGamma(double x) {

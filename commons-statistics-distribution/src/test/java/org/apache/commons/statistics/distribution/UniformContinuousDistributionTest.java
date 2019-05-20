@@ -98,16 +98,16 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
         UniformContinuousDistribution dist;
 
         dist = new UniformContinuousDistribution(0, 1);
-        Assert.assertEquals(dist.getMean(), 0.5, 0);
-        Assert.assertEquals(dist.getVariance(), 1/12.0, 0);
+        Assert.assertEquals(0.5, dist.getMean(), 0);
+        Assert.assertEquals(1/12.0, dist.getVariance(), 0);
 
         dist = new UniformContinuousDistribution(-1.5, 0.6);
-        Assert.assertEquals(dist.getMean(), -0.45, 0);
-        Assert.assertEquals(dist.getVariance(), 0.3675, 0);
+        Assert.assertEquals(-0.45, dist.getMean(), 0);
+        Assert.assertEquals(0.3675, dist.getVariance(), 0);
 
         dist = new UniformContinuousDistribution(-0.5, 1.25);
-        Assert.assertEquals(dist.getMean(), 0.375, 0);
-        Assert.assertEquals(dist.getVariance(), 0.2552083333333333, 0);
+        Assert.assertEquals(0.375, dist.getMean(), 0);
+        Assert.assertEquals(0.2552083333333333, dist.getVariance(), 0);
     }
 
     /**

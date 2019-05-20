@@ -90,12 +90,12 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
         UniformDiscreteDistribution dist;
 
         dist = new UniformDiscreteDistribution(0, 5);
-        Assert.assertEquals(dist.getMean(), 2.5, 0);
-        Assert.assertEquals(dist.getVariance(), 35 / 12.0, 0);
+        Assert.assertEquals(2.5, dist.getMean(), 0);
+        Assert.assertEquals(35 / 12.0, dist.getVariance(), 0);
 
         dist = new UniformDiscreteDistribution(0, 1);
-        Assert.assertEquals(dist.getMean(), 0.5, 0);
-        Assert.assertEquals(dist.getVariance(), 3 / 12.0, 0);
+        Assert.assertEquals(0.5, dist.getMean(), 0);
+        Assert.assertEquals(3 / 12.0, dist.getVariance(), 0);
     }
 
     // MATH-1141

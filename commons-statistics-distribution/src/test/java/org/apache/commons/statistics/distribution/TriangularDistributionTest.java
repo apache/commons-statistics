@@ -178,15 +178,15 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         TriangularDistribution dist;
 
         dist = new TriangularDistribution(0, 0.5, 1.0);
-        Assert.assertEquals(dist.getMean(), 0.5, 0);
-        Assert.assertEquals(dist.getVariance(), 1 / 24.0, 0);
+        Assert.assertEquals(0.5, dist.getMean(), 0);
+        Assert.assertEquals(1 / 24.0, dist.getVariance(), 0);
 
         dist = new TriangularDistribution(0, 1, 1);
-        Assert.assertEquals(dist.getMean(), 2 / 3.0, 0);
-        Assert.assertEquals(dist.getVariance(), 1 / 18.0, 0);
+        Assert.assertEquals(2 / 3.0, dist.getMean(), 0);
+        Assert.assertEquals(1 / 18.0, dist.getVariance(), 0);
 
         dist = new TriangularDistribution(-3, 2, 12);
-        Assert.assertEquals(dist.getMean(), 3 + (2 / 3.0), 0);
-        Assert.assertEquals(dist.getVariance(), 175 / 18.0, 0);
+        Assert.assertEquals(3 + (2 / 3.0), dist.getMean(), 0);
+        Assert.assertEquals(175 / 18.0, dist.getVariance(), 0);
     }
 }

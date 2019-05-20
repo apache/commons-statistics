@@ -179,10 +179,10 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
             }
         }
 
-        Assert.assertEquals(d.cumulativeProbability(Double.MAX_VALUE), 1, 0);
-        Assert.assertEquals(d.cumulativeProbability(-Double.MAX_VALUE), 0, 0);
-        Assert.assertEquals(d.cumulativeProbability(Double.POSITIVE_INFINITY), 1, 0);
-        Assert.assertEquals(d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0, 0);
+        Assert.assertEquals(1, d.cumulativeProbability(Double.MAX_VALUE), 0);
+        Assert.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE), 0);
+        Assert.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
+        Assert.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
     }
 
     @Test
@@ -191,11 +191,11 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         ParetoDistribution dist;
 
         dist = new ParetoDistribution(1, 1);
-        Assert.assertEquals(dist.getMean(), Double.POSITIVE_INFINITY, tol);
-        Assert.assertEquals(dist.getVariance(), Double.POSITIVE_INFINITY, tol);
+        Assert.assertEquals(Double.POSITIVE_INFINITY, dist.getMean(), tol);
+        Assert.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance(), tol);
 
         dist = new ParetoDistribution(2.2, 2.4);
-        Assert.assertEquals(dist.getMean(), 3.771428571428, tol);
-        Assert.assertEquals(dist.getVariance(), 14.816326530, tol);
+        Assert.assertEquals(3.771428571428, dist.getMean(), tol);
+        Assert.assertEquals(14.816326530, dist.getVariance(), tol);
     }
 }

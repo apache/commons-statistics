@@ -304,12 +304,12 @@ public class BetaDistributionTest {
         BetaDistribution dist;
 
         dist = new BetaDistribution(1, 1);
-        Assert.assertEquals(dist.getMean(), 0.5, tol);
-        Assert.assertEquals(dist.getVariance(), 1.0 / 12.0, tol);
+        Assert.assertEquals(0.5, dist.getMean(), tol);
+        Assert.assertEquals(1.0 / 12.0, dist.getVariance(), tol);
 
         dist = new BetaDistribution(2, 5);
-        Assert.assertEquals(dist.getMean(), 2.0 / 7.0, tol);
-        Assert.assertEquals(dist.getVariance(), 10.0 / (49.0 * 8.0), tol);
+        Assert.assertEquals(2.0 / 7.0, dist.getMean(), tol);
+        Assert.assertEquals(10.0 / (49.0 * 8.0), dist.getVariance(), tol);
     }
 
     @Test
