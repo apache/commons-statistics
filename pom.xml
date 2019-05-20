@@ -228,11 +228,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${statistics.checkstyle.version}</version>
         <configuration>
           <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
           <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
+          <suppressionsLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
           <enableRulesSummary>false</enableRulesSummary>
-          <includeResources>false</includeResources>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <logViolationsToConsole>false</logViolationsToConsole>
+          <failOnViolation>true</failOnViolation>
+          <resourceExcludes>NOTICE.txt,LICENSE.txt,**/maven-archiver/pom.properties</resourceExcludes>
         </configuration>
         <executions>
           <execution>
@@ -295,24 +300,6 @@
         </configuration>
       </plugin>
     </plugins>
-
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${statistics.checkstyle.version}</version>
-          <configuration>
-            <includeTestSourceDirectory>false</includeTestSourceDirectory>
-            <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
-            <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
-            <logViolationsToConsole>false</logViolationsToConsole>
-            <failOnViolation>false</failOnViolation>
-            <resourceExcludes>NOTICE.txt,LICENSE.txt</resourceExcludes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <reporting>
