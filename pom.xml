@@ -176,7 +176,7 @@
   </dependencies>
 
   <build>
-    <defaultGoal>clean verify apache-rat:check clirr:check checkstyle:check spotbugs:check javadoc:javadoc</defaultGoal>
+    <defaultGoal>clean verify apache-rat:check clirr:check checkstyle:check pmd:check spotbugs:check javadoc:javadoc</defaultGoal>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -228,6 +228,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
+          <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
+          <enableRulesSummary>false</enableRulesSummary>
+          <includeResources>false</includeResources>
+        </configuration>
         <executions>
           <execution>
             <id>validate</id>
@@ -237,6 +243,18 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${statistics.pmd.version}</version>
+        <configuration>
+          <targetJdk>${maven.compiler.target}</targetJdk>
+          <skipEmptyReport>false</skipEmptyReport>
+          <analysisCache>true</analysisCache>
+          <rulesets>
+            <ruleset>${statistics.parent.dir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
@@ -344,16 +362,6 @@
         </reportSets>
       </plugin>
       <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>${statistics.spotbugs.version}</version>
-        <configuration>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${statistics.checkstyle.version}</version>
@@ -370,15 +378,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>clirr-maven-plugin</artifactId>
-        <version>${statistics.clirr.version}</version>
-        <configuration>
-          <minSeverity>${minSeverity}</minSeverity>
-          <ignoredDifferencesFile>${statistics.parent.dir}/src/main/resources/clirr/clirr-ignored.xml</ignoredDifferencesFile>
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
@@ -398,6 +397,25 @@
             </reports>
           </reportSet>
         </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${statistics.spotbugs.version}</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+        <version>${statistics.clirr.version}</version>
+        <configuration>
+          <minSeverity>${minSeverity}</minSeverity>
+          <ignoredDifferencesFile>${statistics.parent.dir}/src/main/resources/clirr/clirr-ignored.xml</ignoredDifferencesFile>
+        </configuration>
       </plugin>
       <!--  MathJax -->
       <plugin>
