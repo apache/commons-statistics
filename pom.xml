@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-parent</artifactId>
-    <version>47</version>
+    <version>48</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -60,6 +60,10 @@
   </developers>
 
   <contributors>
+    <contributor>
+      <name>Ben Nguyen</name>
+      <email>bennguyenib at gmail dot com</email>
+    </contributor>
   </contributors>
 
   <properties>
@@ -84,8 +88,9 @@
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <statistics.pmd.version>3.8</statistics.pmd.version>
-    <statistics.findbugs.version>3.0.5</statistics.findbugs.version>
-    <statistics.checkstyle.version>2.17</statistics.checkstyle.version>
+    <statistics.spotbugs.version>3.1.11</statistics.spotbugs.version>
+    <statistics.checkstyle.version>3.0.0</statistics.checkstyle.version>
+    <statistics.checkstyle.dep.version>8.18</statistics.checkstyle.dep.version>
     <statistics.clirr.version>2.8</statistics.clirr.version>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
@@ -172,6 +177,7 @@
   </dependencies>
 
   <build>
+    <defaultGoal>clean verify apache-rat:check clirr:check checkstyle:check pmd:check spotbugs:check javadoc:javadoc</defaultGoal>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -223,6 +229,24 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${statistics.checkstyle.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${statistics.checkstyle.dep.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
+          <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
+          <suppressionsLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+          <enableRulesSummary>false</enableRulesSummary>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <logViolationsToConsole>false</logViolationsToConsole>
+          <failOnViolation>true</failOnViolation>
+          <resourceExcludes>NOTICE.txt,LICENSE.txt,**/maven-archiver/pom.properties</resourceExcludes>
+        </configuration>
         <executions>
           <execution>
             <id>validate</id>
@@ -234,9 +258,26 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>${statistics.findbugs.version}</version>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${statistics.pmd.version}</version>
+        <configuration>
+          <targetJdk>${maven.compiler.target}</targetJdk>
+          <skipEmptyReport>false</skipEmptyReport>
+          <analysisCache>true</analysisCache>
+          <rulesets>
+            <ruleset>${statistics.parent.dir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${statistics.spotbugs.version}</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.rat</groupId>
@@ -267,24 +308,6 @@
         </configuration>
       </plugin>
     </plugins>
-
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${statistics.checkstyle.version}</version>
-          <configuration>
-            <includeTestSourceDirectory>false</includeTestSourceDirectory>
-            <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
-            <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
-            <logViolationsToConsole>false</logViolationsToConsole>
-            <failOnViolation>false</failOnViolation>
-            <resourceExcludes>NOTICE.txt,LICENSE.txt</resourceExcludes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <reporting>
@@ -334,24 +357,17 @@
         </reportSets>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>findbugs-maven-plugin</artifactId>
-        <version>${statistics.findbugs.version}</version>
-        <configuration>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/findbugs/findbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
-      </plugin>
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${statistics.checkstyle.version}</version>
         <configuration>
           <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
           <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
+          <suppressionsLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
           <enableRulesSummary>false</enableRulesSummary>
-          <includeResources>false</includeResources>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <logViolationsToConsole>false</logViolationsToConsole>
+          <resourceExcludes>NOTICE.txt,LICENSE.txt,**/maven-archiver/pom.properties</resourceExcludes>
         </configuration>
         <reportSets>
           <reportSet>
@@ -360,15 +376,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>clirr-maven-plugin</artifactId>
-        <version>${statistics.clirr.version}</version>
-        <configuration>
-          <minSeverity>${minSeverity}</minSeverity>
-          <ignoredDifferencesFile>${statistics.parent.dir}/src/main/resources/clirr/clirr-ignored.xml</ignoredDifferencesFile>
-        </configuration>
       </plugin>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
@@ -388,6 +395,25 @@
             </reports>
           </reportSet>
         </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${statistics.spotbugs.version}</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+        <version>${statistics.clirr.version}</version>
+        <configuration>
+          <minSeverity>${minSeverity}</minSeverity>
+          <ignoredDifferencesFile>${statistics.parent.dir}/src/main/resources/clirr/clirr-ignored.xml</ignoredDifferencesFile>
+        </configuration>
       </plugin>
       <!--  MathJax -->
       <plugin>
@@ -441,7 +467,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>1.8</version>
             <executions>
               <execution>
                 <id>prepare-checkout</id>
@@ -587,7 +612,7 @@
 
   <modules>
     <module>commons-statistics-distribution</module>
-<!--    <module>commons-statistics-regression</module> -->
+    <module>commons-statistics-regression</module>
   </modules>
 
 </project>

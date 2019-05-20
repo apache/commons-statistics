@@ -77,9 +77,8 @@ public class AbstractContinuousDistributionTest {
             public double getVariance() {
                 final double meanX = getMean();
                 final double meanX2;
-                meanX2 = ((x0 * x0 + x0 * x1 + x1 * x1) * p12 + (x2 * x2 + x2
-                        * x3 + x3 * x3)
-                        * (1.0 - p12)) / 3.0;
+                meanX2 = ((x0 * x0 + x0 * x1 + x1 * x1) * p12 +
+                          (x2 * x2 + x2 * x3 + x3 * x3) * (1.0 - p12)) / 3.0;
                 return meanX2 - meanX * meanX;
             }
 

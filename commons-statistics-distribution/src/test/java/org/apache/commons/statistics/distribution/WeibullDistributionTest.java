@@ -103,16 +103,16 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
         WeibullDistribution dist;
 
         dist = new WeibullDistribution(2.5, 3.5);
-        // In R: 3.5*gamma(1+(1/2.5)) (or emperically: mean(rweibull(10000, 2.5, 3.5)))
-        Assert.assertEquals(dist.getMean(), 3.5 * Math.exp(LogGamma.value(1 + (1 / 2.5))), tol);
-        Assert.assertEquals(dist.getVariance(), (3.5 * 3.5) *
+        // In R: 3.5*gamma(1+(1/2.5)) (or empirically: mean(rweibull(10000, 2.5, 3.5)))
+        Assert.assertEquals(3.5 * Math.exp(LogGamma.value(1 + (1 / 2.5))), dist.getMean(), tol);
+        Assert.assertEquals((3.5 * 3.5) *
                             Math.exp(LogGamma.value(1 + (2 / 2.5))) -
-                            (dist.getMean() * dist.getMean()), tol);
+                            (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
 
         dist = new WeibullDistribution(10.4, 2.222);
-        Assert.assertEquals(dist.getMean(), 2.222 * Math.exp(LogGamma.value(1 + (1 / 10.4))), tol);
-        Assert.assertEquals(dist.getVariance(), (2.222 * 2.222) *
+        Assert.assertEquals(2.222 * Math.exp(LogGamma.value(1 + (1 / 10.4))), dist.getMean(), tol);
+        Assert.assertEquals((2.222 * 2.222) *
                             Math.exp(LogGamma.value(1 + (2 / 10.4))) -
-                            (dist.getMean() * dist.getMean()), tol);
+                            (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
     }
 }

@@ -92,12 +92,12 @@ public abstract class DiscreteDistributionAbstractTest {
      * @return double[] the default logarithmic probability density test expected values.
      */
     public double[] makeLogDensityTestValues() {
-        final double[] densityTestValues = makeDensityTestValues();
-        final double[] logDensityTestValues = new double[densityTestValues.length];
-        for (int i = 0; i < densityTestValues.length; i++) {
-            logDensityTestValues[i] = Math.log(densityTestValues[i]);
+        final double[] density = makeDensityTestValues();
+        final double[] logDensity = new double[density.length];
+        for (int i = 0; i < density.length; i++) {
+            logDensity[i] = Math.log(density[i]);
         }
-        return logDensityTestValues;
+        return logDensity;
     }
 
     /** Creates the default cumulative probability density test input values */
@@ -190,8 +190,8 @@ public abstract class DiscreteDistributionAbstractTest {
      */
     protected void verifyInverseCumulativeProbabilities() {
         for (int i = 0; i < inverseCumulativeTestPoints.length; i++) {
-            Assert.assertEquals("Incorrect inverse cumulative probability value returned for "
-                                + inverseCumulativeTestPoints[i], inverseCumulativeTestValues[i],
+            Assert.assertEquals("Incorrect inverse cumulative probability value returned for " +
+                                inverseCumulativeTestPoints[i], inverseCumulativeTestValues[i],
                                 distribution.inverseCumulativeProbability(inverseCumulativeTestPoints[i]));
         }
     }
@@ -275,7 +275,7 @@ public abstract class DiscreteDistributionAbstractTest {
         double[] densityValues = makeDensityTestValues();
         int sampleSize = 1000;
         int length = TestUtils.eliminateZeroMassPoints(densityPoints, densityValues);
-        AbstractDiscreteDistribution distribution = (AbstractDiscreteDistribution) makeDistribution();
+        AbstractDiscreteDistribution dist = (AbstractDiscreteDistribution) makeDistribution();
         double[] expectedCounts = new double[length];
         long[] observedCounts = new long[length];
         for (int i = 0; i < length; i++) {
@@ -283,7 +283,7 @@ public abstract class DiscreteDistributionAbstractTest {
         }
         // Use fixed seed.
         final DiscreteDistribution.Sampler sampler =
-            distribution.createSampler(RandomSource.create(RandomSource.WELL_512_A,
+            dist.createSampler(RandomSource.create(RandomSource.WELL_512_A,
                                                            1000));
         int[] sample = AbstractDiscreteDistribution.sample(sampleSize, sampler);
         for (int i = 0; i < sampleSize; i++) {

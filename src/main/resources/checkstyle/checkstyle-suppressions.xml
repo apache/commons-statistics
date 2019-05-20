@@ -15,14 +15,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-
-<!--
-  This file contains some false positive bugs detected by findbugs. Their
-  false positive nature has been analyzed individually and they have been
-  put here to instruct findbugs it must ignore them.
--->
-<FindBugsFilter>
-
-  <Class name="~.*\.jmh\.generated\..*" />
-
-</FindBugsFilter>
+<!DOCTYPE suppressions PUBLIC
+    "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
+    "https://checkstyle.org/dtds/suppressions_1_2.dtd">
+<suppressions>
+  <suppress checks="Javadoc" files=".*[/\\]test[/\\].*" />
+  <suppress checks="MultipleStringLiterals" files=".*[/\\]test[/\\].*" />
+</suppressions>

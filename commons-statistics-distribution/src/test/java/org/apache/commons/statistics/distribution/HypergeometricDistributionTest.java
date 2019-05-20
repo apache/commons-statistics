@@ -117,8 +117,8 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assert.assertEquals(dist.getSupportLowerBound(), 3);
-        Assert.assertEquals(dist.getSupportUpperBound(), 3);
+        Assert.assertEquals(3, dist.getSupportLowerBound());
+        Assert.assertEquals(3, dist.getSupportUpperBound());
     }
 
     /** Verify that if there are no successes, mass is concentrated on 0 */
@@ -135,8 +135,8 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assert.assertEquals(dist.getSupportLowerBound(), 0);
-        Assert.assertEquals(dist.getSupportUpperBound(), 0);
+        Assert.assertEquals(0, dist.getSupportLowerBound());
+        Assert.assertEquals(0, dist.getSupportUpperBound());
     }
 
     /** Verify that if sampleSize = populationSize, mass is concentrated on numberOfSuccesses */
@@ -153,8 +153,8 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assert.assertEquals(dist.getSupportLowerBound(), 3);
-        Assert.assertEquals(dist.getSupportUpperBound(), 3);
+        Assert.assertEquals(3, dist.getSupportLowerBound());
+        Assert.assertEquals(3, dist.getSupportUpperBound());
     }
 
     @Test(expected=IllegalArgumentException.class)
@@ -267,12 +267,12 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         HypergeometricDistribution dist;
 
         dist = new HypergeometricDistribution(1500, 40, 100);
-        Assert.assertEquals(dist.getMean(), 40d * 100d / 1500d, tol);
-        Assert.assertEquals(dist.getVariance(), ( 100d * 40d * (1500d - 100d) * (1500d - 40d) ) / ( (1500d * 1500d * 1499d) ), tol);
+        Assert.assertEquals(40d * 100d / 1500d, dist.getMean(), tol);
+        Assert.assertEquals(( 100d * 40d * (1500d - 100d) * (1500d - 40d) ) / ( (1500d * 1500d * 1499d) ), dist.getVariance(), tol);
 
         dist = new HypergeometricDistribution(3000, 55, 200);
-        Assert.assertEquals(dist.getMean(), 55d * 200d / 3000d, tol);
-        Assert.assertEquals(dist.getVariance(), ( 200d * 55d * (3000d - 200d) * (3000d - 55d) ) / ( (3000d * 3000d * 2999d) ), tol);
+        Assert.assertEquals(55d * 200d / 3000d, dist.getMean(), tol);
+        Assert.assertEquals(( 200d * 55d * (3000d - 200d) * (3000d - 55d) ) / ( (3000d * 3000d * 2999d) ), dist.getVariance(), tol);
     }
 
     @Test

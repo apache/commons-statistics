@@ -27,53 +27,53 @@
   </parent>
 
   <groupId>org.apache.commons</groupId>
-  <artifactId>commons-statistics-distribution</artifactId>
+  <artifactId>commons-statistics-regression</artifactId>
   <version>0.1-SNAPSHOT</version>
-  <name>Apache Commons Statistics Distribution</name>
+  <name>Apache Commons Statistics Regression</name>
 
-  <description>Statistical distributions.</description>
+  <description>Statistical regressions.</description>
 
   <properties>
     <!-- This value must reflect the current name of the base package. -->
-    <commons.osgi.symbolicName>org.apache.commons.statistics.distribution</commons.osgi.symbolicName>
+    <commons.osgi.symbolicName>org.apache.commons.statistics.regression</commons.osgi.symbolicName>
     <!-- OSGi -->
-    <commons.osgi.export>org.apache.commons.statistics.distribution</commons.osgi.export>
+    <commons.osgi.export>org.apache.commons.statistics.regression</commons.osgi.export>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
   </properties>
 
   <dependencies>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-rng-client-api</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-rng-client-api</artifactId>-->
+<!--    </dependency>-->
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-rng-sampling</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-rng-sampling</artifactId>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-numbers-core</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-numbers-combinatorics</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-numbers-combinatorics</artifactId>-->
+<!--    </dependency>-->
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-numbers-gamma</artifactId>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-numbers-gamma</artifactId>-->
+<!--    </dependency>-->
 
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-rng-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-rng-simple</artifactId>-->
+<!--      <scope>test</scope>-->
+<!--    </dependency>-->
 
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -82,21 +82,5 @@
     </dependency>
 
   </dependencies>
-
-  <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.rat</groupId>
-          <artifactId>apache-rat-plugin</artifactId>
-          <configuration>
-            <excludes>
-              <exclude>src/test/resources/org/apache/commons/statistics/distribution/testData.txt</exclude>
-            </excludes>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 
 </project>

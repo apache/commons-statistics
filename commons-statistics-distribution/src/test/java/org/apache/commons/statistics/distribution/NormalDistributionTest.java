@@ -28,6 +28,8 @@ import org.junit.Test;
  */
 public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
+    private static final double DEFAULT_TOLERANCE = 1e-7;
+
     //-------------- Implementations for abstract methods -----------------------
 
     /** Creates the default real distribution instance to use in tests. */
@@ -59,11 +61,10 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     // --------------------- Override tolerance  --------------
-    private double defaultTolerance = 1e-7;
     @Override
     public void setUp() {
         super.setUp();
-        setTolerance(defaultTolerance);
+        setTolerance(DEFAULT_TOLERANCE);
     }
 
     //---------------------------- Additional test cases -------------------------
@@ -174,23 +175,23 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
             }
         }
 
-        Assert.assertEquals(distribution.cumulativeProbability(Double.MAX_VALUE), 1, 0);
-        Assert.assertEquals(distribution.cumulativeProbability(-Double.MAX_VALUE), 0, 0);
-        Assert.assertEquals(distribution.cumulativeProbability(Double.POSITIVE_INFINITY), 1, 0);
-        Assert.assertEquals(distribution.cumulativeProbability(Double.NEGATIVE_INFINITY), 0, 0);
+        Assert.assertEquals(1, distribution.cumulativeProbability(Double.MAX_VALUE), 0);
+        Assert.assertEquals(0, distribution.cumulativeProbability(-Double.MAX_VALUE), 0);
+        Assert.assertEquals(1, distribution.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
+        Assert.assertEquals(0, distribution.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
     }
 
     @Test
     public void testMath280() {
         NormalDistribution normal = new NormalDistribution(0,1);
         double result = normal.inverseCumulativeProbability(0.9986501019683698);
-        Assert.assertEquals(3.0, result, defaultTolerance);
+        Assert.assertEquals(3.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.841344746068543);
-        Assert.assertEquals(1.0, result, defaultTolerance);
+        Assert.assertEquals(1.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.9999683287581673);
-        Assert.assertEquals(4.0, result, defaultTolerance);
+        Assert.assertEquals(4.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.9772498680518209);
-        Assert.assertEquals(2.0, result, defaultTolerance);
+        Assert.assertEquals(2.0, result, DEFAULT_TOLERANCE);
     }
 
     @Test
@@ -199,15 +200,15 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
         NormalDistribution dist;
 
         dist = new NormalDistribution(0, 1);
-        Assert.assertEquals(dist.getMean(), 0, tol);
-        Assert.assertEquals(dist.getVariance(), 1, tol);
+        Assert.assertEquals(0, dist.getMean(), tol);
+        Assert.assertEquals(1, dist.getVariance(), tol);
 
         dist = new NormalDistribution(2.2, 1.4);
-        Assert.assertEquals(dist.getMean(), 2.2, tol);
-        Assert.assertEquals(dist.getVariance(), 1.4 * 1.4, tol);
+        Assert.assertEquals(2.2, dist.getMean(), tol);
+        Assert.assertEquals(1.4 * 1.4, dist.getVariance(), tol);
 
         dist = new NormalDistribution(-2000.9, 10.4);
-        Assert.assertEquals(dist.getMean(), -2000.9, tol);
-        Assert.assertEquals(dist.getVariance(), 10.4 * 10.4, tol);
+        Assert.assertEquals(-2000.9, dist.getMean(), tol);
+        Assert.assertEquals(10.4 * 10.4, dist.getVariance(), tol);
     }
 }

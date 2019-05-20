@@ -19,7 +19,6 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -93,14 +92,14 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 0, 0.341417152147, 0.512125728221, 0.625931445604, 0.71128573364,
                              0.77956916407, 0.836472022761, 0.885245901639, 0.927923045658, 0.965858284785, 1d, 1d};
-        }
+    }
 
     /** Creates the default inverse cumulative probability test input values */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0d, 0.001d, 0.010d, 0.025d, 0.050d, 0.3413d, 0.3415d, 0.999d,
                              0.990d, 0.975d, 0.950d, 0.900d, 1d};
-        }
+    }
 
     /** Creates the default inverse cumulative probability density test expected values */
     @Override
@@ -114,10 +113,9 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
         ZipfDistribution dist;
 
         dist = new ZipfDistribution(2, 0.5);
-        Assert.assertEquals(dist.getMean(), Math.sqrt(2), tol);
-        Assert.assertEquals(dist.getVariance(), 0.24264068711928521, tol);
+        Assert.assertEquals(Math.sqrt(2), dist.getMean(), tol);
+        Assert.assertEquals(0.24264068711928521, dist.getVariance(), tol);
     }
-
 
     /**
      * Test sampling for various number of points and exponents.

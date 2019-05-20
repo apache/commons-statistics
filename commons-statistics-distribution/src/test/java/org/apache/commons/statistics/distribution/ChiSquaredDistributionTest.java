@@ -126,11 +126,11 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
         ChiSquaredDistribution dist;
 
         dist = new ChiSquaredDistribution(1500);
-        Assert.assertEquals(dist.getMean(), 1500, tol);
-        Assert.assertEquals(dist.getVariance(), 3000, tol);
+        Assert.assertEquals(1500, dist.getMean(), tol);
+        Assert.assertEquals(3000, dist.getVariance(), tol);
 
         dist = new ChiSquaredDistribution(1.12);
-        Assert.assertEquals(dist.getMean(), 1.12, tol);
-        Assert.assertEquals(dist.getVariance(), 2.24, tol);
+        Assert.assertEquals(1.12, dist.getMean(), tol);
+        Assert.assertEquals(2.24, dist.getVariance(), tol);
     }
 }
