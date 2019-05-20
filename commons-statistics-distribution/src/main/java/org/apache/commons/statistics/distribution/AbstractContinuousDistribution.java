@@ -129,7 +129,7 @@ abstract class AbstractContinuousDistribution
         double x = new BrentSolver(solverRelativeAccuracy,
                                    solverAbsoluteAccuracy,
                                    solverFunctionValueAccuracy)
-            .solve((arg) -> cumulativeProbability(arg) - p,
+            .solve(arg -> cumulativeProbability(arg) - p,
                    lowerBound,
                    0.5 * (lowerBound + upperBound),
                    upperBound);
