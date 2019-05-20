@@ -28,8 +28,8 @@ public class LogCauchyDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a distribution.
      *
-     * @param location Median for this distribution.
-     * @param scale Scale parameter for this distribution.
+     * @param Location parameter for this distribution.
+     * @param Scale parameter for this distribution.
      * @throws IllegalArgumentException if {@code scale <= 0}.
      */
     public LogCauchyDistribution(double location,
@@ -56,7 +56,7 @@ public class LogCauchyDistribution extends AbstractContinuousDistribution {
      * @return the median for this distribution.
      */
     public double getMedian() {
-        return Math.pow (Math.E,location);
+        return Math.exp(location);
     }
 
     /**
@@ -90,7 +90,7 @@ public class LogCauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The mean is always infinite no matter the parameters.
+     * The mean is always positive infinity no matter the parameters.
      *
      * @return mean (always Double.POSITIVE_INFINITY)
      */
@@ -102,7 +102,7 @@ public class LogCauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The variance is always infinite no matter the parameters.
+     * The variance is always positive infinity no matter the parameters.
      *
      * @return variance (always Double.POSITIVE_INFINITY)
      */
@@ -111,13 +111,10 @@ public class LogCauchyDistribution extends AbstractContinuousDistribution {
         return Double.POSITIVE_INFINITY;
     }
 
-    /* The distribution is not defined for x less than or qual to zero */
-
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is zero no matter the parameters.
-     * The lower bound is open ended for the Support
+     * The lower bound of the support is always zero no matter the parameters.
      *
      * @return lower bound of the support (always Double.NEGATIVE_INFINITY)
      */
