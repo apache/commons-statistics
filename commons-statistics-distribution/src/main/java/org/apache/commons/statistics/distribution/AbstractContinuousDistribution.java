@@ -253,10 +253,10 @@ abstract class AbstractContinuousDistribution
          * @param max Upper bound.
          * @return the root.
          */
-        double solve(DoubleUnaryOperator func,
-                     double min,
-                     double initial,
-                     double max) {
+        /* default */ double solve(DoubleUnaryOperator func,
+                                   double min,
+                                   double initial,
+                                   double max) {
             if (min > max) {
                 throw new DistributionException(DistributionException.TOO_LARGE, min, max);
             }

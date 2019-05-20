@@ -28,7 +28,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
  *
  * @since 1.0
  */
-final class SaddlePointExpansion {
+/* default */ final class SaddlePointExpansion {
     /** 2 &pi; */
     private static final double TWO_PI = 2 * Math.PI;
     /** 1/2 * log(2 &pi;). */
@@ -88,7 +88,7 @@ final class SaddlePointExpansion {
      * @param z the value.
      * @return the Striling's series error.
      */
-    static double getStirlingError(double z) {
+    /* default */ static double getStirlingError(double z) {
         double ret;
         if (z < 15.0) {
             double z2 = 2.0 * z;
@@ -126,7 +126,7 @@ final class SaddlePointExpansion {
      * @param mu the average.
      * @return a part of the deviance.
      */
-    static double getDeviancePart(double x, double mu) {
+    /* default */ static double getDeviancePart(double x, double mu) {
         double ret;
         if (Math.abs(x - mu) < 0.1 * (x + mu)) {
             double d = x - mu;
@@ -162,7 +162,7 @@ final class SaddlePointExpansion {
      * @param q the probability of failure (1 - p).
      * @return log(p(x)).
      */
-    static double logBinomialProbability(int x, int n, double p, double q) {
+    /* default */ static double logBinomialProbability(int x, int n, double p, double q) {
         double ret;
         if (x == 0) {
             if (p < 0.1) {

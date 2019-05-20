@@ -23,17 +23,17 @@ import java.text.MessageFormat;
  */
 class DistributionException extends IllegalArgumentException {
     /** Error message for "too large" condition. */
-    static final String TOO_LARGE = "{0} > {1}";
+    /* default */ static final String TOO_LARGE = "{0} > {1}";
     /** Error message for "too small" condition. */
-    static final String TOO_SMALL = "{0} < {1}";
+    /* default */ static final String TOO_SMALL = "{0} < {1}";
     /** Error message for "out of range" condition. */
-    static final String OUT_OF_RANGE = "Number {0} is out of range [{1}, {2}]";
+    /* default */ static final String OUT_OF_RANGE = "Number {0} is out of range [{1}, {2}]";
     /** Error message for "out of range" condition. */
-    static final String NEGATIVE = "Number {0} is negative";
+    /* default */ static final String NEGATIVE = "Number {0} is negative";
     /** Error message for "mismatch" condition. */
-    static final String MISMATCH = "Expected {1} but was {0}";
+    /* default */ static final String MISMATCH = "Expected {1} but was {0}";
     /** Error message for "failed bracketing" condition. */
-    static final String BRACKETING = "No bracketing: f({0})={1}, f({2})={3}";
+    /* default */ static final String BRACKETING = "No bracketing: f({0})={1}, f({2})={3}";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20180119L;
