@@ -29,6 +29,7 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
     // --------------------- Override tolerance  --------------
     protected double defaultTolerance = 1e-7;
+
     @Override
     public void setUp() {
         super.setUp();
@@ -40,48 +41,48 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
     /** Creates the default discrete distribution instance to use in tests. */
     @Override
     public DiscreteDistribution makeDistribution() {
-        return new PascalDistribution(10,0.70);
+        return new PascalDistribution(10, 0.70);
     }
 
     /** Creates the default probability density test input values */
     @Override
     public int[] makeDensityTestPoints() {
-      return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+        return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
     }
 
     /** Creates the default probability density test expected values */
     @Override
     public double[] makeDensityTestValues() {
-      return new double[] {0, 0.0282475249, 0.0847425747, 0.139825248255, 0.167790297906, 0.163595540458,
-                           0.137420253985, 0.103065190489, 0.070673273478, 0.0450542118422, 0.0270325271053,
-                           0.0154085404500, 0.0084046584273};
+        return new double[] {0, 0.0282475249, 0.0847425747, 0.139825248255, 0.167790297906, 0.163595540458,
+                             0.137420253985, 0.103065190489, 0.070673273478, 0.0450542118422, 0.0270325271053,
+                             0.0154085404500, 0.0084046584273};
     }
 
     /** Creates the default cumulative probability density test input values */
     @Override
     public int[] makeCumulativeTestPoints() {
-      return makeDensityTestPoints();
+        return makeDensityTestPoints();
     }
 
     /** Creates the default cumulative probability density test expected values */
     @Override
     public double[] makeCumulativeTestValues() {
-      return new double[] {0, 0.0282475249, 0.1129900996, 0.252815347855, 0.420605645761, 0.584201186219,
-                           0.721621440204, 0.824686630693, 0.895359904171, 0.940414116013, 0.967446643119,
-                           0.982855183569, 0.991259841996};
-        }
+        return new double[] {0, 0.0282475249, 0.1129900996, 0.252815347855, 0.420605645761, 0.584201186219,
+                             0.721621440204, 0.824686630693, 0.895359904171, 0.940414116013, 0.967446643119,
+                             0.982855183569, 0.991259841996};
+    }
 
     /** Creates the default inverse cumulative probability test input values */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
-      return new double[] {0.0, 0.001, 0.010, 0.025, 0.050, 0.100, 0.999,
-                           0.990, 0.975, 0.950, 0.900, 1.0};
-        }
+        return new double[] {0.0, 0.001, 0.010, 0.025, 0.050, 0.100, 0.999,
+                             0.990, 0.975, 0.950, 0.900, 1.0};
+    }
 
     /** Creates the default inverse cumulative probability density test expected values */
     @Override
     public int[] makeInverseCumulativeTestValues() {
-      return new int[] {0, 0, 0, 0, 1, 1, 14, 11, 10, 9, 8, Integer.MAX_VALUE};
+        return new int[] {0, 0, 0, 0, 1, 1, 14, 11, 10, 9, 8, Integer.MAX_VALUE};
     }
 
     //----------------- Additional test cases ---------------------------------
@@ -122,11 +123,11 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         PascalDistribution dist;
 
         dist = new PascalDistribution(10, 0.5);
-        Assert.assertEquals(( 10d * 0.5d ) / 0.5d, dist.getMean(), tol);
-        Assert.assertEquals(( 10d * 0.5d ) / (0.5d * 0.5d), dist.getVariance(), tol);
+        Assert.assertEquals((10d * 0.5d) / 0.5d, dist.getMean(), tol);
+        Assert.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
         dist = new PascalDistribution(25, 0.7);
-        Assert.assertEquals(( 25d * 0.3d ) / 0.7d, dist.getMean(), tol);
-        Assert.assertEquals(( 25d * 0.3d ) / (0.7d * 0.7d), dist.getVariance(), tol);
+        Assert.assertEquals((25d * 0.3d) / 0.7d, dist.getMean(), tol);
+        Assert.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), tol);
     }
 }

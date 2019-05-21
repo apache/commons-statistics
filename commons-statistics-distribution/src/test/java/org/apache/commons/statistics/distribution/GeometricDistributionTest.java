@@ -43,9 +43,9 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
     /** Creates the default probability density test input values */
     @Override
     public int[] makeDensityTestPoints() {
-        return new int[] { -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,
-                           9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                           19, 20, 21, 22, 23, 24, 25, 26, 27, 28 };
+        return new int[] {-1,  0,  1,  2,  3,  4,  5,  6,  7,  8,
+                          9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                          19, 20, 21, 22, 23, 24, 25, 26, 27, 28};
     }
 
     /**
@@ -57,7 +57,7 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
         return new double[] {
             0d, 0.4, 0.24, 0.144, 0.0864, 0.05184, 0.031104, 0.0186624,
             0.01119744, 0.006718464, 0.0040310784, 0.00241864704,
-            0.001451188224,0.0008707129344, 0.00052242776064, 0.000313456656384,
+            0.001451188224, 0.0008707129344, 0.00052242776064, 0.000313456656384,
             0.00018807399383, 0.000112844396298, 6.77066377789e-05, 4.06239826674e-05,
             2.43743896004e-05, 1.46246337603e-05, 8.77478025615e-06, 5.26486815369e-06,
             3.15892089221e-06, 1.89535253533e-06, 1.1372115212e-06, 6.82326912718e-07,

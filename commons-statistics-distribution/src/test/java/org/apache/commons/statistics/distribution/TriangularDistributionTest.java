@@ -76,15 +76,14 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         double third = 1 / 3.0;
         double left = 18.75;
         double area = 56.25;
-        return new double[] { 0.0,
-                              0.0,
-                              0.75 / area, 3 / area, 6.75 / area, 12 / area,
-                              third,
-                              (left + 7.125) / area, (left + 13.5) / area,
-                              (left + 36) / area, (left + 37.125) / area,
-                              1.0,
-                              1.0
-                            };
+        return new double[] {0.0,
+                             0.0,
+                             0.75 / area, 3 / area, 6.75 / area, 12 / area,
+                             third,
+                             (left + 7.125) / area, (left + 13.5) / area,
+                             (left + 36) / area, (left + 37.125) / area,
+                             1.0,
+                             1.0};
     }
 
     /**
@@ -97,7 +96,7 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         // probability of zero and one, meaning the inverse returns the
         // limits and not the points outside the limits.
         double[] points = makeCumulativeTestValues();
-        double[] points2 = new double[points.length-2];
+        double[] points2 = new double[points.length - 2];
         System.arraycopy(points, 1, points2, 0, points2.length);
         return points2;
         //return Arrays.copyOfRange(points, 1, points.length - 1);
@@ -113,7 +112,7 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         // probability of zero and one, meaning the inverse returns the
         // limits and not the points outside the limits.
         double[] points = makeCumulativeTestPoints();
-        double[] points2 = new double[points.length-2];
+        double[] points2 = new double[points.length - 2];
         System.arraycopy(points, 1, points2, 0, points2.length);
         return points2;
         //return Arrays.copyOfRange(points, 1, points.length - 1);
@@ -122,14 +121,13 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
     /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
-        return new double[] { 0,
-                              0,
-                              2 / 75.0, 4 / 75.0, 6 / 75.0, 8 / 75.0,
-                              10 / 75.0,
-                              9 / 75.0, 8 / 75.0, 2 / 75.0, 1 / 75.0,
-                              0,
-                              0
-                            };
+        return new double[] {0,
+                             0,
+                             2 / 75.0, 4 / 75.0, 6 / 75.0, 8 / 75.0,
+                             10 / 75.0,
+                             9 / 75.0, 8 / 75.0, 2 / 75.0, 1 / 75.0,
+                             0,
+                             0};
     }
 
     //--- Additional test cases -----------------------------------------------
@@ -149,25 +147,25 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
     }
 
     /** Test pre-condition for equal lower/upper limit. */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions1() {
         new TriangularDistribution(0, 0, 0);
     }
 
     /** Test pre-condition for lower limit larger than upper limit. */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions2() {
         new TriangularDistribution(1, 1, 0);
     }
 
     /** Test pre-condition for mode larger than upper limit. */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions3() {
         new TriangularDistribution(0, 2, 1);
     }
 
     /** Test pre-condition for mode smaller than lower limit. */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions4() {
         new TriangularDistribution(2, 1, 3);
     }

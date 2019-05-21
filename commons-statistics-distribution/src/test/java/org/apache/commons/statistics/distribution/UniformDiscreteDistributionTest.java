@@ -99,7 +99,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
     }
 
     // MATH-1141
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditionUpperBoundInclusive1() {
         new UniformDiscreteDistribution(1, 0);
     }

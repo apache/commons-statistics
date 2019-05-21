@@ -279,7 +279,7 @@ abstract class AbstractContinuousDistribution
          * the book
          * <blockquote>
          *  <b>Algorithms for Minimization Without Derivatives</b>,
-         *  <it>Richard P. Brent</it>,
+         *  <i>Richard P. Brent</i>,
          *  Dover 0-486-41998-3
          * </blockquote>
          *

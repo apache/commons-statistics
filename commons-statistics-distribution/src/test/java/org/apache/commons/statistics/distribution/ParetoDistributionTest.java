@@ -38,20 +38,20 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R
-        return new double[] { -2.226325228634938, -1.156887023657177, -0.643949578356075, -0.2027950777320613, 0.305827808237559,
-                              +6.42632522863494, 5.35688702365718, 4.843949578356074, 4.40279507773206, 3.89417219176244 };
+        return new double[] {-2.226325228634938, -1.156887023657177, -0.643949578356075, -0.2027950777320613, 0.305827808237559,
+                             +6.42632522863494, 5.35688702365718, 4.843949578356074, 4.40279507773206, 3.89417219176244};
     }
 
     /** Creates the default cumulative probability density test expected values */
     @Override
     public double[] makeCumulativeTestValues() {
-        return new double[] { 0, 0, 0, 0, 0, 0.791089998892, 0.730456085931, 0.689667290488, 0.645278794701, 0.578763688757 };
+        return new double[] {0, 0, 0, 0, 0, 0.791089998892, 0.730456085931, 0.689667290488, 0.645278794701, 0.578763688757};
     }
 
     /** Creates the default probability density test expected values */
     @Override
     public double[] makeDensityTestValues() {
-        return new double[] { 0, 0, 0, 0, 0, 0.0455118580441, 0.070444173646, 0.0896924681582, 0.112794186114, 0.151439332084 };
+        return new double[] {0, 0, 0, 0, 0, 0.0455118580441, 0.070444173646, 0.0896924681582, 0.112794186114, 0.151439332084};
     }
 
     /**
@@ -95,10 +95,10 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         ParetoDistribution distribution = (ParetoDistribution)getDistribution();
         double mu = distribution.getScale();
         double sigma = distribution.getShape();
-        setCumulativeTestPoints( new double[] { mu - 2 *sigma,  mu - sigma,
-                                                mu,             mu + sigma,
-                                                mu + 2 * sigma, mu + 3 * sigma,
-                                                mu + 4 * sigma, mu + 5 * sigma });
+        setCumulativeTestPoints(new double[] {mu - 2 * sigma, mu - sigma,
+                                              mu,             mu + sigma,
+                                              mu + 2 * sigma, mu + 3 * sigma,
+                                              mu + 4 * sigma, mu + 5 * sigma});
         verifyCumulativeProbabilities();
     }
 
@@ -141,18 +141,18 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(1.4, distribution.getShape(), 0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition1() {
         new ParetoDistribution(1, 0);
     }
 
     @Test
     public void testDensity() {
-        double [] x = new double[]{-2, -1, 0, 1, 2};
+        double[] x = new double[] {-2, -1, 0, 1, 2};
         // R 2.14: print(dpareto(c(-2,-1,0,1,2), scale=1, shape=1), digits=10)
-        checkDensity(1, 1, x, new double[] { 0.00, 0.00, 0.00, 1.00, 0.25 });
+        checkDensity(1, 1, x, new double[] {0.00, 0.00, 0.00, 1.00, 0.25});
         // R 2.14: print(dpareto(c(-2,-1,0,1,2), scale=1.1, shape=1), digits=10)
-        checkDensity(1.1, 1, x, new double[] { 0.000, 0.000, 0.000, 0.000, 0.275 });
+        checkDensity(1.1, 1, x, new double[] {0.000, 0.000, 0.000, 0.000, 0.275});
     }
 
     private void checkDensity(double scale, double shape, double[] x,
@@ -173,8 +173,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
             double upperTail = d.cumulativeProbability(i);
             if (i <= 1000) { // make sure not top-coded
                 Assert.assertTrue(upperTail < 1.0d);
-            }
-            else { // make sure top coding not reversed
+            } else { // make sure top coding not reversed
                 Assert.assertTrue(upperTail > 0.999);
             }
         }

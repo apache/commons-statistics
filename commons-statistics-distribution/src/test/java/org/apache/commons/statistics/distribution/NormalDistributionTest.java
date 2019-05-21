@@ -43,21 +43,21 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R
         return new double[] {-2.226325228634938d, -1.156887023657177d, -0.643949578356075d, -0.2027950777320613d, 0.305827808237559d,
-                6.42632522863494d, 5.35688702365718d, 4.843949578356074d, 4.40279507773206d, 3.89417219176244d};
+                             6.42632522863494d, 5.35688702365718d, 4.843949578356074d, 4.40279507773206d, 3.89417219176244d};
     }
 
     /** Creates the default cumulative probability density test expected values */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0.001d, 0.01d, 0.025d, 0.05d, 0.1d, 0.999d,
-                0.990d, 0.975d, 0.950d, 0.900d};
+                             0.990d, 0.975d, 0.950d, 0.900d};
     }
 
     /** Creates the default probability density test expected values */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0.00240506434076, 0.0190372444310, 0.0417464784322, 0.0736683145538, 0.125355951380,
-                0.00240506434076, 0.0190372444310, 0.0417464784322, 0.0736683145538, 0.125355951380};
+                             0.00240506434076, 0.0190372444310, 0.0417464784322, 0.0736683145538, 0.125355951380};
     }
 
     // --------------------- Override tolerance  --------------
@@ -73,9 +73,10 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
         NormalDistribution distribution = (NormalDistribution) getDistribution();
         double mu = distribution.getMean();
         double sigma = distribution.getStandardDeviation();
-        setCumulativeTestPoints( new double[] {mu - 2 *sigma, mu - sigma,
-                                               mu, mu + sigma, mu + 2 * sigma,  mu + 3 * sigma, mu + 4 * sigma,
-                                               mu + 5 * sigma});
+        setCumulativeTestPoints(new double[] {mu - 2 * sigma, mu - sigma,
+                                              mu,             mu + sigma,
+                                              mu + 2 * sigma, mu + 3 * sigma,
+                                              mu + 4 * sigma, mu + 5 * sigma});
         // Quantiles computed using R (same as Mathematica)
         setCumulativeTestValues(new double[] {0.02275013194817921, 0.158655253931457, 0.5, 0.841344746068543,
                                               0.977249868051821, 0.99865010196837, 0.999968328758167,  0.999999713348428});
@@ -132,18 +133,18 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(1.4, distribution.getStandardDeviation(), 0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition1() {
         new NormalDistribution(1, 0);
     }
 
     @Test
     public void testDensity() {
-        double [] x = new double[]{-2, -1, 0, 1, 2};
+        double[] x = new double[] {-2, -1, 0, 1, 2};
         // R 2.5: print(dnorm(c(-2,-1,0,1,2)), digits=10)
-        checkDensity(0, 1, x, new double[]{0.05399096651, 0.24197072452, 0.39894228040, 0.24197072452, 0.05399096651});
+        checkDensity(0, 1, x, new double[] {0.05399096651, 0.24197072452, 0.39894228040, 0.24197072452, 0.05399096651});
         // R 2.5: print(dnorm(c(-2,-1,0,1,2), mean=1.1), digits=10)
-        checkDensity(1.1, 1, x, new double[]{0.003266819056,0.043983595980,0.217852177033,0.396952547477,0.266085249899});
+        checkDensity(1.1,  1,  x,  new double[] {0.003266819056, 0.043983595980, 0.217852177033, 0.396952547477, 0.266085249899});
     }
 
     private void checkDensity(double mean, double sd, double[] x, double[] expected) {
@@ -168,8 +169,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
                 // TODO: once MATH-364 is resolved, replace 9 with 30
                 Assert.assertTrue(lowerTail > 0.0d);
                 Assert.assertTrue(upperTail < 1.0d);
-            }
-            else { // make sure top coding not reversed
+            } else { // make sure top coding not reversed
                 Assert.assertTrue(lowerTail < 0.00001);
                 Assert.assertTrue(upperTail > 0.99999);
             }
@@ -183,7 +183,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testMath280() {
-        NormalDistribution normal = new NormalDistribution(0,1);
+        NormalDistribution normal = new NormalDistribution(0, 1);
         double result = normal.inverseCumulativeProbability(0.9986501019683698);
         Assert.assertEquals(3.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.841344746068543);

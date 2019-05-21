@@ -26,7 +26,7 @@ import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
  * uniform integer distribution</a>.
  */
 public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
-    /** 1 / 12 **/
+    /** 1 / 12. **/
     private static final double ONE_TWELFTH = 1 / 12d;
     /** Lower bound (inclusive) of this distribution. */
     private final int lower;
