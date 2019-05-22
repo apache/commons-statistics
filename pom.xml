@@ -95,7 +95,6 @@
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
 
-    <commons.jacoco.version>0.8.0</commons.jacoco.version>
     <commons.jacoco.classRatio>0.96</commons.jacoco.classRatio>
     <commons.jacoco.instructionRatio>0.8</commons.jacoco.instructionRatio>
     <commons.jacoco.methodRatio>0.8</commons.jacoco.methodRatio>
