@@ -219,18 +219,9 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     /**{@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new DiscreteDistribution.Sampler() {
-            /**
-             * Zipf distribution sampler.
-             */
-            private final DiscreteSampler sampler =
-                new RejectionInversionZipfSampler(rng, numberOfElements, exponent);
-
-            /**{@inheritDoc} */
-            @Override
-            public int sample() {
-                return sampler.sample();
-            }
-        };
+        // Zipf distribution sampler.
+        final DiscreteSampler sampler =
+            new RejectionInversionZipfSampler(rng, numberOfElements, exponent);
+        return sampler::sample;
     }
 }

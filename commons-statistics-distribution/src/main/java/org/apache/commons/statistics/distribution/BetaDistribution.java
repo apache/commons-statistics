@@ -185,18 +185,8 @@ public class BetaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ContinuousDistribution.Sampler() {
-            /**
-             * Beta distribution sampler.
-             */
-            private final ContinuousSampler sampler =
-                new ChengBetaSampler(rng, alpha, beta);
-
-            /**{@inheritDoc} */
-            @Override
-            public double sample() {
-                return sampler.sample();
-            }
-        };
+        // Beta distribution sampler.
+        final ContinuousSampler sampler = new ChengBetaSampler(rng, alpha, beta);
+        return sampler::sample;
     }
 }

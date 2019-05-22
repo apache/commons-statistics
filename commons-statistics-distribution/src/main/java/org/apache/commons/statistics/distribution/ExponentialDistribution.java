@@ -166,18 +166,8 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ContinuousDistribution.Sampler() {
-            /**
-             * Exponential distribution sampler.
-             */
-            private final ContinuousSampler sampler =
-                new AhrensDieterExponentialSampler(rng, mean);
-
-            /**{@inheritDoc} */
-            @Override
-            public double sample() {
-                return sampler.sample();
-            }
-        };
+        // Exponential distribution sampler.
+        final ContinuousSampler sampler = new AhrensDieterExponentialSampler(rng, mean);
+        return sampler::sample;
     }
 }

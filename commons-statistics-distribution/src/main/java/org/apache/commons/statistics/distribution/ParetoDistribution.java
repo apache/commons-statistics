@@ -201,18 +201,8 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ContinuousDistribution.Sampler() {
-            /**
-             * Pareto distribution sampler.
-             */
-            private final ContinuousSampler sampler =
-                new InverseTransformParetoSampler(rng, scale, shape);
-
-            /**{@inheritDoc} */
-            @Override
-            public double sample() {
-                return sampler.sample();
-            }
-        };
+        // Pareto distribution sampler.
+        final ContinuousSampler sampler = new InverseTransformParetoSampler(rng, scale, shape);
+        return sampler::sample;
     }
 }

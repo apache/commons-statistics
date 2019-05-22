@@ -20,7 +20,6 @@ import java.util.function.DoubleUnaryOperator;
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.InverseTransformContinuousSampler;
-import org.apache.commons.rng.sampling.distribution.ContinuousInverseCumulativeProbabilityFunction;
 import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 
 /**
@@ -176,32 +175,10 @@ abstract class AbstractContinuousDistribution
     /**{@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ContinuousDistribution.Sampler() {
-            /**
-             * Inversion method distribution sampler.
-             */
-            private final ContinuousSampler sampler =
-                new InverseTransformContinuousSampler(rng, createICPF());
-
-            /** {@inheritDoc} */
-            @Override
-            public double sample() {
-                return sampler.sample();
-            }
-        };
-    }
-
-    /**
-     * @return an instance for use by {@link #createSampler(UniformRandomProvider)}
-     */
-    private ContinuousInverseCumulativeProbabilityFunction createICPF() {
-        return new ContinuousInverseCumulativeProbabilityFunction() {
-            /** {@inheritDoc} */
-            @Override
-            public double inverseCumulativeProbability(double p) {
-                return AbstractContinuousDistribution.this.inverseCumulativeProbability(p);
-            }
-        };
+        // Inversion method distribution sampler.
+        final ContinuousSampler sampler =
+            new InverseTransformContinuousSampler(rng, this::inverseCumulativeProbability);
+        return sampler::sample;
     }
 
     /**
