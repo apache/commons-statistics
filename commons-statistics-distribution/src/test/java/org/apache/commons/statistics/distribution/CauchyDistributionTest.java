@@ -87,11 +87,11 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(2.1, distribution.getScale(), 0.0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition1() {
         new CauchyDistribution(0, 0);
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition2() {
         new CauchyDistribution(0, -1);
     }

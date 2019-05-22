@@ -95,7 +95,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * hypergeometric distribution.
      */
     private int[] getDomain(int n, int m, int k) {
-        return new int[] { getLowerDomain(n, m, k), getUpperDomain(m, k) };
+        return new int[] {getLowerDomain(n, m, k), getUpperDomain(m, k)};
     }
 
     /**

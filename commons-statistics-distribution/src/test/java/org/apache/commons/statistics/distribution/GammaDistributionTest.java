@@ -81,11 +81,11 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(2d, distribution.getScale(), 0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition1() {
         new GammaDistribution(0, 1);
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition2() {
         new GammaDistribution(1, 0);
     }
@@ -108,13 +108,13 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void testProbability(double x, double a, double b, double expected) {
-        GammaDistribution distribution = new GammaDistribution( a, b );
+        GammaDistribution distribution = new GammaDistribution(a, b);
         double actual = distribution.cumulativeProbability(x);
         Assert.assertEquals("probability for " + x, expected, actual, 10e-4);
     }
 
     private void testValue(double expected, double a, double b, double p) {
-        GammaDistribution distribution = new GammaDistribution( a, b );
+        GammaDistribution distribution = new GammaDistribution(a, b);
         double actual = distribution.inverseCumulativeProbability(p);
         Assert.assertEquals("critical value for " + p, expected, actual, 10e-4);
     }

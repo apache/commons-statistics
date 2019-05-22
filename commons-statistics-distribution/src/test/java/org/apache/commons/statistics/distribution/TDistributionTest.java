@@ -80,11 +80,13 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
         setDistribution(new TDistribution(1d));
         // quantiles computed using R version 2.9.2
         setCumulativeTestPoints(new double[] {-318.308838986, -31.8205159538, -12.7062047362,
-                                              -6.31375151468, -3.07768353718, 318.308838986, 31.8205159538, 12.7062047362,
-                                              6.31375151468, 3.07768353718});
+                                              -6.31375151468, -3.07768353718, 318.308838986,
+                                              31.8205159538, 12.7062047362, 6.31375151468,
+                                              3.07768353718});
         setDensityTestValues(new double[] {3.14158231817e-06, 0.000314055924703, 0.00195946145194,
-                                           0.00778959736375, 0.0303958893917, 3.14158231817e-06, 0.000314055924703,
-                                           0.00195946145194, 0.00778959736375, 0.0303958893917});
+                                           0.00778959736375, 0.0303958893917, 3.14158231817e-06,
+                                           0.000314055924703, 0.00195946145194, 0.00778959736375,
+                                           0.0303958893917});
         setInverseCumulativeTestValues(getCumulativeTestPoints());
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
@@ -116,7 +118,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(5d, dist.getDegreesOfFreedom(), Double.MIN_VALUE);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions() {
         new TDistribution(0);
     }
@@ -146,22 +148,22 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
      * Have chosen problevels from 0.10 to 0.001
      */
     @Test
-    public void nistData(){
-        double[] prob = new double[]{ 0.10,0.05,0.025,0.01,0.005,0.001};
-        double[] args2 = new double[]{1.886,2.920,4.303,6.965,9.925,22.327};
-        double[] args10 = new double[]{1.372,1.812,2.228,2.764,3.169,4.143};
-        double[] args30 = new double[]{1.310,1.697,2.042,2.457,2.750,3.385};
-        double[] args100= new double[]{1.290,1.660,1.984,2.364,2.626,3.174};
+    public void nistData() {
+        double[] prob = new double[]{0.10, 0.05, 0.025, 0.01, 0.005, 0.001};
+        double[] args2 = new double[]{1.886, 2.920, 4.303, 6.965, 9.925, 22.327};
+        double[] args10 = new double[]{1.372, 1.812, 2.228, 2.764, 3.169, 4.143};
+        double[] args30 = new double[]{1.310, 1.697, 2.042, 2.457, 2.750, 3.385};
+        double[] args100 = new double[]{1.290, 1.660, 1.984, 2.364, 2.626, 3.174};
         TestUtils.assertEquals(prob, makeNistResults(args2, 2), 1.0e-4);
         TestUtils.assertEquals(prob, makeNistResults(args10, 10), 1.0e-4);
         TestUtils.assertEquals(prob, makeNistResults(args30, 30), 1.0e-4);
         TestUtils.assertEquals(prob, makeNistResults(args100, 100), 1.0e-4);
         return;
     }
-    private double[] makeNistResults(double[] args, int df){
+    private double[] makeNistResults(double[] args, int df) {
         TDistribution td =  new TDistribution(df);
-        double[] res  = new double[ args.length ];
-        for( int i = 0 ; i < res.length ; i++){
+        double[] res  = new double[args.length];
+        for (int i = 0; i < res.length; i++) {
             res[i] = 1.0 - td.cumulativeProbability(args[i]);
         }
         return res;

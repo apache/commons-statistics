@@ -45,9 +45,9 @@ import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSa
  * </ul>
  */
 public class LogNormalDistribution extends AbstractContinuousDistribution {
-    /** &radic;(2 &pi;) */
+    /** &radic;(2 &pi;). */
     private static final double SQRT2PI = Math.sqrt(2 * Math.PI);
-    /** &radic;(2) */
+    /** &radic;(2). */
     private static final double SQRT2 = Math.sqrt(2);
     /** The scale parameter of this distribution. */
     private final double scale;

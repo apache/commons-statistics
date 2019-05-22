@@ -52,9 +52,9 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
     /** Creates the default cumulative probability density test expected values */
     @Override
     public double[] makeCumulativeTestValues() {
-        return new double[] {0.0, 0.0, 0.0001, 0.25/1.75, 0.4999/1.75,
-                             0.5/1.75, 0.5001/1.75, 0.75/1.75, 1.5/1.75,
-                             1.7499/1.75, 1.0, 1.0};
+        return new double[] {0.0, 0.0, 0.0001, 0.25 / 1.75, 0.4999 / 1.75,
+                             0.5 / 1.75, 0.5001 / 1.75, 0.75 / 1.75, 1.5 / 1.75,
+                             1.7499 / 1.75, 1.0, 1.0};
     }
 
     /** Creates the default probability density test expected values */
@@ -81,13 +81,13 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
     }
 
     /** Test pre-condition for equal lower/upper bound. */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions1() {
         new UniformContinuousDistribution(0, 0);
     }
 
     /** Test pre-condition for lower bound larger than upper bound. */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions2() {
         new UniformContinuousDistribution(1, 0);
     }
@@ -99,7 +99,7 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
 
         dist = new UniformContinuousDistribution(0, 1);
         Assert.assertEquals(0.5, dist.getMean(), 0);
-        Assert.assertEquals(1/12.0, dist.getVariance(), 0);
+        Assert.assertEquals(1 / 12.0, dist.getVariance(), 0);
 
         dist = new UniformContinuousDistribution(-1.5, 0.6);
         Assert.assertEquals(-0.45, dist.getMean(), 0);

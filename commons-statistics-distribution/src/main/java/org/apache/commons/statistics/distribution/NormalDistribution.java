@@ -29,7 +29,7 @@ import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSa
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal (Gaussian) distribution</a>.
  */
 public class NormalDistribution extends AbstractContinuousDistribution {
-    /** &radic;(2) */
+    /** &radic;(2). */
     private static final double SQRT2 = Math.sqrt(2.0);
     /** Mean of this distribution. */
     private final double mean;

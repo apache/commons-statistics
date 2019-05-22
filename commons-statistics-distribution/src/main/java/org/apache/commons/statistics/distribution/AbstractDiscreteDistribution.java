@@ -179,9 +179,9 @@ abstract class AbstractDiscreteDistribution
     /** {@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-       // Inversion method distribution sampler.
-       final DiscreteSampler sampler =
-           new InverseTransformDiscreteSampler(rng, this::inverseCumulativeProbability);
-       return sampler::sample;
+        // Inversion method distribution sampler.
+        final DiscreteSampler sampler =
+            new InverseTransformDiscreteSampler(rng, this::inverseCumulativeProbability);
+        return sampler::sample;
     }
 }
