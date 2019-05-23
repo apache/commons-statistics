@@ -18,7 +18,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
 
 /**
@@ -99,7 +98,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
      */
     @Override
     public double getVariance() {
-        double ul = upper - lower;
+        final double ul = upper - lower;
         return ul * ul / 12;
     }
 
@@ -145,7 +144,6 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Uniform distribution sampler.
-        final ContinuousSampler sampler = new ContinuousUniformSampler(rng, lower, upper);
-        return sampler::sample;
+        return new ContinuousUniformSampler(rng, lower, upper)::sample;
     }
 }

@@ -18,7 +18,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.InverseTransformParetoSampler;
 
 /**
@@ -36,6 +35,9 @@ import org.apache.commons.rng.sampling.distribution.InverseTransformParetoSample
  * </ul>
  */
 public class ParetoDistribution extends AbstractContinuousDistribution {
+    /** The minimum value for the shape parameter when computing when computing the variance. */
+    private static final double MIN_SHAPE_FOR_VARIANCE = 2.0;
+
     /** The scale parameter of this distribution. */
     private final double scale;
     /** The shape parameter of this distribution. */
@@ -155,10 +157,10 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getVariance() {
-        if (shape <= 2) {
+        if (shape <= MIN_SHAPE_FOR_VARIANCE) {
             return Double.POSITIVE_INFINITY;
         }
-        double s = shape - 1;
+        final double s = shape - 1;
         return scale * scale * shape / (s * s) / (shape - 2);
     }
 
@@ -202,7 +204,6 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Pareto distribution sampler.
-        final ContinuousSampler sampler = new InverseTransformParetoSampler(rng, scale, shape);
-        return sampler::sample;
+        return new InverseTransformParetoSampler(rng, scale, shape)::sample;
     }
 }

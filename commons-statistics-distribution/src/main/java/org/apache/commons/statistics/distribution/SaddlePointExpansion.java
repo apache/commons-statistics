@@ -28,13 +28,17 @@ import org.apache.commons.numbers.gamma.LogGamma;
  *
  * @since 1.0
  */
-/* default */ final class SaddlePointExpansion {
+final class SaddlePointExpansion {
     /** 2 &pi;. */
     private static final double TWO_PI = 2 * Math.PI;
     /** 1/2 * log(2 &pi;). */
     private static final double HALF_LOG_TWO_PI = 0.5 * Math.log(TWO_PI);
+    /** 1/10. */
+    private static final double ONE_TENTH = 0.1;
+    /** The threshold value for switching the method to compute th Stirling error. */
+    private static final double STIRLING_ERROR_THRESHOLD = 15.0;
 
-    /** exact Stirling expansion error for certain values. */
+    /** Exact Stirling expansion error for certain values. */
     private static final double[] EXACT_STIRLING_ERRORS = {
         0.0, /* 0.0 */
         0.1534264097200273452913848, /* 0.5 */
@@ -89,10 +93,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
      * @param z the value.
      * @return the Striling's series error.
      */
-    /* default */ static double getStirlingError(double z) {
+    static double getStirlingError(double z) {
         double ret;
-        if (z < 15.0) {
-            double z2 = 2.0 * z;
+        if (z < STIRLING_ERROR_THRESHOLD) {
+            final double z2 = 2.0 * z;
             if (Math.floor(z2) == z2) {
                 ret = EXACT_STIRLING_ERRORS[(int) z2];
             } else {
@@ -100,7 +104,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
                       z - HALF_LOG_TWO_PI;
             }
         } else {
-            double z2 = z * z;
+            final double z2 = z * z;
             ret = (0.083333333333333333333 -
                     (0.00277777777777777777778 -
                             (0.00079365079365079365079365 -
@@ -127,10 +131,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
      * @param mu the average.
      * @return a part of the deviance.
      */
-    /* default */ static double getDeviancePart(double x, double mu) {
+    static double getDeviancePart(double x, double mu) {
         double ret;
         if (Math.abs(x - mu) < 0.1 * (x + mu)) {
-            double d = x - mu;
+            final double d = x - mu;
             double v = d / (x + mu);
             double s1 = v * d;
             double s = Double.NaN;
@@ -163,10 +167,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
      * @param q the probability of failure (1 - p).
      * @return log(p(x)).
      */
-    /* default */ static double logBinomialProbability(int x, int n, double p, double q) {
+    static double logBinomialProbability(int x, int n, double p, double q) {
         double ret;
         if (x == 0) {
-            if (p < 0.1) {
+            if (p < ONE_TENTH) {
                 ret = -getDeviancePart(n, n * q) - n * p;
             } else {
                 if (n == 0) {
@@ -175,7 +179,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
                 ret = n * Math.log(q);
             }
         } else if (x == n) {
-            if (q < 0.1) {
+            if (q < ONE_TENTH) {
                 ret = -getDeviancePart(n, n * p) - n * q;
             } else {
                 ret = n * Math.log(p);

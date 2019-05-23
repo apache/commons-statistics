@@ -18,7 +18,6 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.RegularizedGamma;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.DiscreteSampler;
 import org.apache.commons.rng.sampling.distribution.PoissonSampler;
 
 /**
@@ -184,7 +183,6 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Poisson distribution sampler.
-        final DiscreteSampler sampler = new PoissonSampler(rng, mean);
-        return sampler::sample;
+        return new PoissonSampler(rng, mean)::sample;
     }
 }

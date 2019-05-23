@@ -20,7 +20,6 @@ import java.util.function.DoubleUnaryOperator;
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.InverseTransformContinuousSampler;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 
 /**
  * Base class for probability distributions on the reals.
@@ -35,6 +34,16 @@ import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
  */
 abstract class AbstractContinuousDistribution
     implements ContinuousDistribution {
+    // XXX Values copied from defaults in class
+    // "o.a.c.math4.analysis.solvers.BaseAbstractUnivariateSolver"
+
+    /** BrentSolver relative accuracy. */
+    private static final double SOLVER_RELATIVE_ACCURACY = 1e-14;
+    /** BrentSolver absolute accuracy. */
+    private static final double SOLVER_ABSOLUTE_ACCURACY = 1e-9;
+    /** BrentSolver function value accuracy. */
+    private static final double SOLVER_FUNCTION_VALUE_ACCURACY = 1e-15;
+
     /**
      * {@inheritDoc}
      *
@@ -91,11 +100,8 @@ abstract class AbstractContinuousDistribution
 
         final double mu = getMean();
         final double sig = Math.sqrt(getVariance());
-        final boolean chebyshevApplies;
-        chebyshevApplies = !(Double.isInfinite(mu) ||
-                             Double.isNaN(mu) ||
-                             Double.isInfinite(sig) ||
-                             Double.isNaN(sig));
+        final boolean chebyshevApplies = !(Double.isInfinite(mu)  || Double.isNaN(mu) ||
+                                           Double.isInfinite(sig) || Double.isNaN(sig));
 
         if (lowerBound == Double.NEGATIVE_INFINITY) {
             if (chebyshevApplies) {
@@ -119,15 +125,9 @@ abstract class AbstractContinuousDistribution
             }
         }
 
-        // XXX Values copied from defaults in class
-        // "o.a.c.math4.analysis.solvers.BaseAbstractUnivariateSolver"
-        final double solverRelativeAccuracy = 1e-14;
-        final double solverAbsoluteAccuracy = 1e-9;
-        final double solverFunctionValueAccuracy = 1e-15;
-
-        double x = new BrentSolver(solverRelativeAccuracy,
-                                   solverAbsoluteAccuracy,
-                                   solverFunctionValueAccuracy)
+        final double x = new BrentSolver(SOLVER_RELATIVE_ACCURACY,
+                                         SOLVER_ABSOLUTE_ACCURACY,
+                                         SOLVER_FUNCTION_VALUE_ACCURACY)
             .solve(arg -> cumulativeProbability(arg) - p,
                    lowerBound,
                    0.5 * (lowerBound + upperBound),
@@ -135,9 +135,9 @@ abstract class AbstractContinuousDistribution
 
         if (!isSupportConnected()) {
             /* Test for plateau. */
-            final double dx = solverAbsoluteAccuracy;
+            final double dx = SOLVER_ABSOLUTE_ACCURACY;
             if (x - dx >= getSupportLowerBound()) {
-                double px = cumulativeProbability(x);
+                final double px = cumulativeProbability(x);
                 if (cumulativeProbability(x - dx) == px) {
                     upperBound = x;
                     while (upperBound - lowerBound > dx) {
@@ -176,9 +176,7 @@ abstract class AbstractContinuousDistribution
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Inversion method distribution sampler.
-        final ContinuousSampler sampler =
-            new InverseTransformContinuousSampler(rng, this::inverseCumulativeProbability);
-        return sampler::sample;
+        return new InverseTransformContinuousSampler(rng, this::inverseCumulativeProbability)::sample;
     }
 
     /**
@@ -230,7 +228,7 @@ abstract class AbstractContinuousDistribution
          * @param max Upper bound.
          * @return the root.
          */
-        /* default */ double solve(DoubleUnaryOperator func,
+        double solve(DoubleUnaryOperator func,
                                    double min,
                                    double initial,
                                    double max) {
@@ -243,13 +241,13 @@ abstract class AbstractContinuousDistribution
             }
 
             // Return the initial guess if it is good enough.
-            double yInitial = func.applyAsDouble(initial);
+            final double yInitial = func.applyAsDouble(initial);
             if (Math.abs(yInitial) <= functionValueAccuracy) {
                 return initial;
             }
 
             // Return the first endpoint if it is good enough.
-            double yMin = func.applyAsDouble(min);
+            final double yMin = func.applyAsDouble(min);
             if (Math.abs(yMin) <= functionValueAccuracy) {
                 return min;
             }
@@ -260,7 +258,7 @@ abstract class AbstractContinuousDistribution
             }
 
             // Return the second endpoint if it is good enough.
-            double yMax = func.applyAsDouble(max);
+            final double yMax = func.applyAsDouble(max);
             if (Math.abs(yMax) <= functionValueAccuracy) {
                 return max;
             }

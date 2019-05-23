@@ -20,7 +20,6 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.LogNormalSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSampler;
 
@@ -180,7 +179,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getMean() {
-        double s = shape;
+        final double s = shape;
         return Math.exp(scale + (s * s / 2));
     }
 
@@ -239,8 +238,6 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Log normal distribution sampler.
-        final ContinuousSampler sampler =
-            new LogNormalSampler(new ZigguratNormalizedGaussianSampler(rng), scale, shape);
-        return sampler::sample;
+        return new LogNormalSampler(new ZigguratNormalizedGaussianSampler(rng), scale, shape)::sample;
     }
 }

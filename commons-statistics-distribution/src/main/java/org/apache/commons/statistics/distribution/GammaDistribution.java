@@ -19,7 +19,6 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.gamma.LanczosApproximation;
 import org.apache.commons.numbers.gamma.RegularizedGamma;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.AhrensDieterMarsagliaTsangGammaSampler;
 
 /**
@@ -338,8 +337,6 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Gamma distribution sampler.
-        final ContinuousSampler sampler =
-            new AhrensDieterMarsagliaTsangGammaSampler(rng, scale, shape);
-        return sampler::sample;
+        return new AhrensDieterMarsagliaTsangGammaSampler(rng, scale, shape)::sample;
     }
 }

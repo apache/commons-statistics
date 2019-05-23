@@ -18,7 +18,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.DiscreteSampler;
 import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
 
 /**
@@ -97,7 +96,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public double getVariance() {
-        double n = upperMinusLower + 1;
+        final double n = upperMinusLower + 1;
         return ONE_TWELFTH * (n * n - 1);
     }
 
@@ -143,7 +142,6 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Discrete uniform distribution sampler.
-        final DiscreteSampler sampler = new DiscreteUniformSampler(rng, lower, upper);
-        return sampler::sample;
+        return new DiscreteUniformSampler(rng, lower, upper)::sample;
     }
 }
