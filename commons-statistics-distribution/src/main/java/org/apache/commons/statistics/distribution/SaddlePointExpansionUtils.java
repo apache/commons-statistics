@@ -28,7 +28,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
  *
  * @since 1.0
  */
-final class SaddlePointExpansion {
+final class SaddlePointExpansionUtils {
     /** 2 &pi;. */
     private static final double TWO_PI = 2 * Math.PI;
     /** 1/2 * log(2 &pi;). */
@@ -76,7 +76,7 @@ final class SaddlePointExpansion {
     /**
      * Forbid construction.
      */
-    private SaddlePointExpansion() {}
+    private SaddlePointExpansionUtils() {}
 
     /**
      * Compute the error of Stirling's series at the given value.

@@ -77,14 +77,6 @@
     </properties>
   </rule>
 
-  <rule ref="category/java/codestyle.xml/ClassNamingConventions">
-    <properties>
-      <!-- Do not require Utils/Helper suffix. -->
-      <property name="violationSuppressXPath"
-        value="//ClassOrInterfaceDeclaration[@Image='SaddlePointExpansion']"/>
-    </properties>
-  </rule>
-
   <rule ref="category/java/documentation.xml/CommentSize">
     <properties>
       <property name="maxLines"      value="200"/>

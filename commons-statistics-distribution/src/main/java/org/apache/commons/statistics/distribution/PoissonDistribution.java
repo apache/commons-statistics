@@ -88,8 +88,8 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         } else if (x == 0) {
             ret = -mean;
         } else {
-            ret = -SaddlePointExpansion.getStirlingError(x) -
-                  SaddlePointExpansion.getDeviancePart(x, mean) -
+            ret = -SaddlePointExpansionUtils.getStirlingError(x) -
+                  SaddlePointExpansionUtils.getDeviancePart(x, mean) -
                   0.5 * LOG_TWO_PI - 0.5 * Math.log(x);
         }
         return ret;

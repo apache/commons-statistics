@@ -168,13 +168,13 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         } else {
             final double p = (double) sampleSize / (double) populationSize;
             final double q = (double) (populationSize - sampleSize) / (double) populationSize;
-            final double p1 = SaddlePointExpansion.logBinomialProbability(x,
+            final double p1 = SaddlePointExpansionUtils.logBinomialProbability(x,
                     numberOfSuccesses, p, q);
             final double p2 =
-                    SaddlePointExpansion.logBinomialProbability(sampleSize - x,
+                    SaddlePointExpansionUtils.logBinomialProbability(sampleSize - x,
                             populationSize - numberOfSuccesses, p, q);
             final double p3 =
-                    SaddlePointExpansion.logBinomialProbability(sampleSize, populationSize, p, q);
+                    SaddlePointExpansionUtils.logBinomialProbability(sampleSize, populationSize, p, q);
             ret = p1 + p2 - p3;
         }
 
