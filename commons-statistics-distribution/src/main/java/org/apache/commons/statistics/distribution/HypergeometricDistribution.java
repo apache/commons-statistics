@@ -73,7 +73,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     public double cumulativeProbability(int x) {
         double ret;
 
-        int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
+        final int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
         if (x < domain[0]) {
             ret = 0.0;
         } else if (x >= domain[1]) {
@@ -162,19 +162,19 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     public double logProbability(int x) {
         double ret;
 
-        int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
+        final int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
         if (x < domain[0] || x > domain[1]) {
             ret = Double.NEGATIVE_INFINITY;
         } else {
-            double p = (double) sampleSize / (double) populationSize;
-            double q = (double) (populationSize - sampleSize) / (double) populationSize;
-            double p1 = SaddlePointExpansion.logBinomialProbability(x,
+            final double p = (double) sampleSize / (double) populationSize;
+            final double q = (double) (populationSize - sampleSize) / (double) populationSize;
+            final double p1 = SaddlePointExpansionUtils.logBinomialProbability(x,
                     numberOfSuccesses, p, q);
-            double p2 =
-                    SaddlePointExpansion.logBinomialProbability(sampleSize - x,
+            final double p2 =
+                    SaddlePointExpansionUtils.logBinomialProbability(sampleSize - x,
                             populationSize - numberOfSuccesses, p, q);
-            double p3 =
-                    SaddlePointExpansion.logBinomialProbability(sampleSize, populationSize, p, q);
+            final double p3 =
+                    SaddlePointExpansionUtils.logBinomialProbability(sampleSize, populationSize, p, q);
             ret = p1 + p2 - p3;
         }
 
@@ -217,10 +217,11 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * @return {@code P(x0 <= X <= x1)}.
      */
     private double innerCumulativeProbability(int x0, int x1, int dx) {
-        double ret = probability(x0);
-        while (x0 != x1) {
-            x0 += dx;
-            ret += probability(x0);
+        int x = x0;
+        double ret = probability(x);
+        while (x != x1) {
+            x += dx;
+            ret += probability(x);
         }
         return ret;
     }

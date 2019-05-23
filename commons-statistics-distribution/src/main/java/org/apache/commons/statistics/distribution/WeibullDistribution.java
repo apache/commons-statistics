@@ -119,7 +119,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     @Override
     public double cumulativeProbability(double x) {
         double ret;
-        if (x <= 0.0) {
+        if (x <= 0) {
             ret = 0.0;
         } else {
             ret = 1.0 - Math.exp(-Math.pow(x / scale, shape));

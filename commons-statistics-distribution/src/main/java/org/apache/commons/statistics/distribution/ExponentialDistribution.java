@@ -17,7 +17,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.AhrensDieterExponentialSampler;
 
 /**
@@ -167,7 +166,6 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Exponential distribution sampler.
-        final ContinuousSampler sampler = new AhrensDieterExponentialSampler(rng, mean);
-        return sampler::sample;
+        return new AhrensDieterExponentialSampler(rng, mean)::sample;
     }
 }
