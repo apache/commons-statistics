@@ -14,28 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.descriptive;
-
 /**
- * Hello world!
+ *
+ *        Hello World program.
+ *        <h3>Hello World program inside App.java</h3>
+ *        <p>It is created automatically when maven project was created for commons-statistics-descriptive</p>
  *
  */
-public final class App
-{
-/**
-*
-*Constructor the App class
-*/
-    private App(){
-      //private constructor
-    }
-/**
-*
-*Main method of the App class
-*@param args Command line arguments
-*/
-    public static void main( String[] args )
-    {
-        System.out.print("Hello World!");
-    }
-}
+package org.apache.commons.statistics.descriptive;
+
