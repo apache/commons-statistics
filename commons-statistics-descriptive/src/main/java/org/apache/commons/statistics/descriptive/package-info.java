@@ -16,10 +16,7 @@
  */
 /**
  *
- *        Hello World program.
- *        <h3>Hello World program inside App.java</h3>
- *        <p>It is created automatically when maven project was created for commons-statistics-descriptive</p>
- *
+ *        All the commons-statistics-descriptive related classes are present in this package.
  */
 package org.apache.commons.statistics.descriptive;
 
