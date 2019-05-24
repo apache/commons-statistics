@@ -28,7 +28,6 @@
   <version>0.1-SNAPSHOT</version>
   <name>Apache Commons Statistics Descriptive</name>
   <description>Descriptive/Summary Statistics.</description>
-
   <properties>
     <!-- This value must reflect the current name of the base package. -->
     <commons.osgi.symbolicName>org.apache.commons.statistics.descriptive</commons.osgi.symbolicName>
@@ -36,8 +35,7 @@
     <commons.osgi.export>org.apache.commons.statistics.descriptive</commons.osgi.export>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
+    <!-- TODO: This tag should be removed or changed to false when code files are added in "commons-statistics-descriptive" module.-->
     <maven.javadoc.skip>true</maven.javadoc.skip>
   </properties>
-
-
 </project>
