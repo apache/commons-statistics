@@ -16,13 +16,35 @@
  */
 package org.apache.commons.statistics.regression;
 
+import org.ejml.data.DMatrixRMaj;
 import org.ejml.simple.SimpleMatrix;
 
 public class RegressionDataLoader {
     
-    private SimpleMatrix xMatrix = null;
+    private StatisticsMatrix xMatrix;
+    private StatisticsMatrix yMatrix; //vector
+    private boolean hasIntercept;
     
-    public RegressionDataLoader(double[] y, double[][] x, boolean hasIntercept) {
-        this.xMatrix = new SimpleMatrix(x);
+    
+    public RegressionDataLoader() {
+    	this.xMatrix = null;
+    	this.yMatrix = null;
     }
+    
+    public RegressionDataLoader(double[][] y, double[][] x, boolean hasIntercept) {
+        this.xMatrix = new StatisticsMatrix(new DMatrixRMaj(x));
+        this.yMatrix = new StatisticsMatrix(new DMatrixRMaj(y));
+    }
+    // how to convert 1D array to 2D
+    // Vectors in SimpleBase
+    public void newY(double[] y) {
+    	this.yMatrix = new StatisticsMatrix(new DMatrixRMaj(y));
+    }
+    
+    public void newX(double[][] x) {
+    	this.xMatrix = new StatisticsMatrix(new DMatrixRMaj(x));
+    }
+    
+    
+    //test
 }
