@@ -25,6 +25,10 @@ import java.util.function.Consumer;
 public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
 
     /**
+     * This is used to assign min/max a useful value which is not {@code null}.
+     */
+    private static final BigDecimal UNKNOWN = BigDecimal.ZERO;
+    /**
      * The count value for zero.
      */
     private static final long ZERO_COUNT = 0L;
@@ -46,14 +50,21 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
     private BigDecimal max;
 
     /**
+     * This keeps the information if min/max have been assigned a correct value or not.
+     */
+    private boolean minMaxAssigned;
+
+    /**
      * Create an instance of BigDecimalSummaryStatistics. {@code count = 0} and sum = {@link
      * BigDecimal#ZERO}
      */
     public BigDecimalSummaryStatistics() {
         this.count = ZERO_COUNT;
         this.sum = BigDecimal.ZERO;
-        this.max = null;
-        this.min = null;
+
+        this.minMaxAssigned = false;
+        this.max = UNKNOWN;
+        this.min = UNKNOWN;
     }
 
     /**
@@ -102,6 +113,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
 
             this.min = min;
             this.max = max;
+            this.minMaxAssigned = true;
         }
 
     }
@@ -121,12 +133,13 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
         count++;
         sum = sum.add(value);
 
-        if (min == null) {
-            min = value;
-            max = value;
-        } else {
+        if (minMaxAssigned) {
             min = min.min(value);
             max = max.max(value);
+        } else {
+            min = value;
+            max = value;
+            minMaxAssigned = true;
         }
     }
 
@@ -144,12 +157,13 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
         count += other.count;
         sum = sum.add(other.sum);
 
-        if (min == null) {
-            min = other.min;
-            max = other.max;
-        } else {
+        if (minMaxAssigned) {
             min = min.min(other.min);
             max = max.max(other.max);
+        } else {
+            min = other.min;
+            max = other.max;
+            minMaxAssigned = true;
         }
     }
 
@@ -209,7 +223,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
      * @return The arithmetic mean of values, or zero if none
      */
     public final BigDecimal getAverage() {
-        if (this.count > 0) {
+        if (this.count > ZERO_COUNT) {
             return this.sum.divide(BigDecimal.valueOf(this.count));
         } else {
             return BigDecimal.ZERO;
