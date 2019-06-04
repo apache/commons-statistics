@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.bigdecimal.descriptive;
 
+import static org.apache.commons.statistics.bigdecimal.descriptive.BigDecimalSummaryStatisticsAssert.assertThat;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
@@ -204,10 +205,17 @@ class BigDecimalSummaryStatisticsTest {
 
             assertThat(collect.getCount()).isEqualTo(42L);
             assertThat(collect.getAverage().doubleValue()).isEqualTo(21.5d, EPSILON);
-//        BigDecimalSummaryStatisticsAssert.assertThat(collect).getAverage().isEqualTo(5.5d, EPSILON);
             assertThat(collect.getSum().doubleValue()).isEqualTo(903d, EPSILON);
             assertThat(collect.getMin()).isEqualTo(BigDecimal.ONE);
             assertThat(collect.getMax()).isEqualTo(BigDecimal.valueOf(42));
+
+            // Custom assertions.
+            assertThat(collect)
+                .hasAverage(BigDecimal.valueOf(21.5d))
+                .hasMax(new BigDecimal("42"))
+                .hasMin(1d, EPSILON)
+                .hasSum(903d, EPSILON);
+            assertThat(collect).hasSum(903d, EPSILON);
 
         }
 
@@ -223,6 +231,7 @@ class BigDecimalSummaryStatisticsTest {
 
             assertThat(collect.getCount()).isEqualTo(1_234_567L);
             assertThat(collect.getAverage().doubleValue()).isEqualTo(617_284d, EPSILON);
+
 //        BigDecimalSummaryStatisticsAssert.assertThat(collect).getAverage().isEqualTo(5.5d, EPSILON);
             assertThat(collect.getSum().doubleValue()).isEqualTo(762_078_456_028d, EPSILON);
             assertThat(collect.getMin()).isEqualTo(BigDecimal.ONE);

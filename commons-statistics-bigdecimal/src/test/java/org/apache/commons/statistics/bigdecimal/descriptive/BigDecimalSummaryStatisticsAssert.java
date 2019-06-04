@@ -16,12 +16,16 @@
  */
 package org.apache.commons.statistics.bigdecimal.descriptive;
 
+import java.math.BigDecimal;
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Offset;
 
 public class BigDecimalSummaryStatisticsAssert extends
     AbstractAssert<BigDecimalSummaryStatisticsAssert, BigDecimalSummaryStatistics> {
 
-    public BigDecimalSummaryStatisticsAssert(BigDecimalSummaryStatistics bigDecimalSummaryStatistics) {
+    public BigDecimalSummaryStatisticsAssert(
+        BigDecimalSummaryStatistics bigDecimalSummaryStatistics) {
         super(bigDecimalSummaryStatistics, BigDecimalSummaryStatisticsAssert.class);
     }
 
@@ -29,26 +33,39 @@ public class BigDecimalSummaryStatisticsAssert extends
         return new BigDecimalSummaryStatisticsAssert(actual);
     }
 
+    public BigDecimalSummaryStatisticsAssert hasAverage(BigDecimal expected) {
+        isNotNull();
+        Assertions.assertThat(myself.actual.getAverage()).isEqualTo(expected);
+        return myself;
+    }
+
+    public BigDecimalSummaryStatisticsAssert hasSum(double expected, Offset<Double> offset) {
+        isNotNull();
+        Assertions.assertThat(myself.actual.getSum().doubleValue()).isEqualTo(expected, offset);
+        return myself;
+    }
+
+    public BigDecimalSummaryStatisticsAssert hasMin(double expected, Offset<Double> offset) {
+        isNotNull();
+        Assertions.assertThat(myself.actual.getMin().doubleValue()).isEqualTo(expected, offset);
+        return myself;
+    }
+
+    public BigDecimalSummaryStatisticsAssert hasMax(BigDecimal expected) {
+        isNotNull();
+        Assertions.assertThat(myself.actual.getMax()).isEqualTo(expected);
+        return myself;
+    }
+
     public BigDecimalSummaryStatisticsAssert getAverage() {
         isNotNull();
         return myself;
     }
+
     public BigDecimalSummaryStatisticsAssert isEqualTo(BigDecimalSummaryStatistics expected) {
+        System.out.println("this:" + this.getClass().getName());
 
         return null;
     }
 
-//    public BigDecimalSummaryStatisticsAssert isCloseTo(Complex expected, float offset) {
-//        Assertions.assertThat(actual.getImaginary())
-//            .isCloseTo(expected.getImaginary(), Offset.offset(
-//                (double) offset));
-//        Assertions.assertThat(actual.getReal()).isCloseTo(expected.getReal(), Offset.offset(
-//            (double) offset));
-//        return myself;
-//    }
-//
-//    public BigDecimalSummaryStatisticsAssert withDelta(float delta) {
-//        myself.actual.getImaginary();
-//        return myself;
-//    }
 }
