@@ -62,10 +62,4 @@ public class BigDecimalSummaryStatisticsAssert extends
         return myself;
     }
 
-    public BigDecimalSummaryStatisticsAssert isEqualTo(BigDecimalSummaryStatistics expected) {
-        System.out.println("this:" + this.getClass().getName());
-
-        return null;
-    }
-
 }

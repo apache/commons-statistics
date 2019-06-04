@@ -14,14 +14,13 @@
 # limitations under the License.
 
 language: java
-sudo: false
 
 jdk:
   - oraclejdk8
   - openjdk8
 
-script:
-  - mvn
+install: true
 
-after_success:
+script:
   - mvn clean test jacoco:report coveralls:report -Ptravis-jacoco
+

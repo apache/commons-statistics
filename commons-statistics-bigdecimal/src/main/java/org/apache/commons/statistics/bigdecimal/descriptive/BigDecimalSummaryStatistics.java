@@ -25,6 +25,10 @@ import java.util.function.Consumer;
 public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
 
     /**
+     * The count value for zero.
+     */
+    private static final long ZERO_COUNT = 0L;
+    /**
      * internal counter.
      */
     private long count;
@@ -46,7 +50,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
      * BigDecimal#ZERO}
      */
     public BigDecimalSummaryStatistics() {
-        this.count = 0;
+        this.count = ZERO_COUNT;
         this.sum = BigDecimal.ZERO;
         this.max = null;
         this.min = null;
@@ -76,9 +80,9 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
     public BigDecimalSummaryStatistics(long count, BigDecimal min, BigDecimal max,
         BigDecimal sum) {
 
-        if (count < 0L) {
+        if (count < ZERO_COUNT) {
             throw new IllegalArgumentException("count must be greater or equal to zero.");
-        } else if (count > 0L) {
+        } else if (count > ZERO_COUNT) {
             if (min == null) {
                 throw new IllegalArgumentException("min is not allowed to be null.");
             }
@@ -132,7 +136,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
      * @param other another {@code BigDecimalSummaryStatistics}
      * @throws IllegalArgumentException in case of giving {@code null} for {@code value}.
      */
-    public void combine(BigDecimalSummaryStatistics other) throws IllegalArgumentException {
+    public void combine(BigDecimalSummaryStatistics other) {
         if (other == null) {
             throw new IllegalArgumentException("other is not allowed to be null.");
         }
@@ -176,7 +180,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
      * converted to a BigDecimal.
      */
     public final BigDecimal getMin() {
-        if (this.count == 0) {
+        if (this.count == ZERO_COUNT) {
             throw new IllegalStateException(
                 "Minimum can not be calculated cause we have no values yet.");
         }
@@ -192,7 +196,7 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
      * converted to a BigDecimal.
      */
     public final BigDecimal getMax() {
-        if (this.count == 0) {
+        if (this.count == ZERO_COUNT) {
             throw new IllegalStateException(
                 "Maximum can not be calculated cause we have no values yet.");
         }
