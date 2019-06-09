@@ -161,6 +161,11 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-rootfinder</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
         <artifactId>commons-math3</artifactId>
         <version>${statistics.commons.math3.version}</version>
       </dependency>
