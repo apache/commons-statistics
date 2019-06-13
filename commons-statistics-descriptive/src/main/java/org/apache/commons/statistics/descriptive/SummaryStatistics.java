@@ -17,17 +17,16 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.util.DoubleSummaryStatistics;
-import java.util.stream.DoubleStream;
 
-import descriptive.moment.Variance;
-import descriptive.moment.StandardDeviation;
+import org.apache.commons.statistics.descriptive.moment.Variance;
+import org.apache.commons.statistics.descriptive.moment.StandardDeviation;
 
 /**
 * <p>
 * Computes summary statistics for a stream of data values added using the
 * {@link #accept(double) accept} method. The data values are not stored in
 * memory, so this class can be used to compute statistics for very large data
-* streams.For example, you can compute summary statistics on a stream of 
+* streams.For example, you can compute summary statistics on a stream of
 * doubles with:
 * </p>
 * <pre> {@code
@@ -36,54 +35,74 @@ import descriptive.moment.StandardDeviation;
 *                                                SummaryStatistics::combine);
 * }</pre>
 * <p>
-* Where {@code doubleStream} is stream of primitive double-valued elements received from 
+* Where {@code doubleStream} is stream of primitive double-valued elements received from
 * <a href="https://docs.oracle.com/javase/8/docs/api/java/util/stream/DoubleStream.html"> DoubleStream</a>.
 * </p>
 * <p>
-* This class computes count, minimum, maximum, sum,average, variance and 
+* This class computes count, minimum, maximum, sum,average, variance and
 * standard deviation of double values in a single pass.
 * </p>
-* 
-* @author Virendra Singh Rajpurohit
 */
 public class SummaryStatistics extends DoubleSummaryStatistics {
 
-private Variance variance = new Variance();
-private StandardDeviation stdDeviation = new StandardDeviation();
+    /**An object of Variance class.*/
+    private Variance variance = new Variance();
 
-/**
- * Construct an empty instance with zero count, zero sum,
- * {@code Double.POSITIVE_INFINITY} min, {@code Double.NEGATIVE_INFINITY}
- * max, zero average, zero stdDeviation and zero variance.
- */
-public SummaryStatistics() {
-	super();
-}
+    /**An object of StandardDeviation class.*/
+    private StandardDeviation stdDeviation = new StandardDeviation();
 
-public void accept(double value){
-	super.accept(value);
-	variance.setVariance(value);
-	stdDeviation.setStandardDeviation(variance);
-}
+    /**
+    * Construct an empty instance with zero count, zero sum,
+    * {@code Double.POSITIVE_INFINITY} min, {@code Double.NEGATIVE_INFINITY}
+    * max, zero average, zero stdDeviation and zero variance.
+    */
+    public SummaryStatistics() {
+        super();
+    }
 
-public void combine(SummaryStatistics other) {
-	super.combine(other);
-	variance.setVariance(other.variance.getVariance());
-	stdDeviation.setStandardDeviation(other.variance);
-}
+    /**
+     * Records another value into the summary information.
+     *
+     * @param value the input value
+     */
+    @Override
+    public void accept(double value){
+        super.accept(value);
+        variance.setVariance(value);
+        stdDeviation.setStandardDeviation(variance);
+    }
 
-@Override
-public String toString() {
-	return String.format(
-			"%s{count=%d, sum=%f, min=%f, average=%f, max=%f, variance=%f, Standard Deviaiton=%f}",
-			this.getClass().getSimpleName(),
-			getCount(),
-			getSum(),
-			getMin(),
-			getAverage(),
-			getMax(),
-			variance.getVariance(),
-			stdDeviation.getStandardDeviaiton());
-}
+    /**
+     * Combines the state of another {@code SummaryStatistics} into this
+     * one.
+     *
+     * @param other another {@code SummaryStatistics}
+     */
+    public void combine(SummaryStatistics other) {
+        super.combine(other);
+        variance.setVariance(other.variance.getVariance());
+        stdDeviation.setStandardDeviation(other.variance);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * Returns a non-empty string representation of this object suitable for
+     * debugging. The exact presentation format is unspecified and may vary
+     * between implementations and versions.
+     */
+    @Override
+    public String toString() {
+        return String.format(
+            "%s{count=%d, sum=%f, min=%f, average=%f, max=%f, variance=%f, Standard Deviaiton=%f}",
+            this.getClass().getSimpleName(),
+            getCount(),
+            getSum(),
+            getMin(),
+            getAverage(),
+            getMax(),
+            variance.getVariance(),
+            stdDeviation.getStandardDeviaiton());
+    }
 
 }

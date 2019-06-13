@@ -31,55 +31,65 @@ package org.apache.commons.statistics.descriptive.moment;
  * this implementation does not compute the statistic using the definitional
  * formula.
  * <ul>
- * 	<li>The <code>setVariancce</code> method computes the variance using
+ * <li>The <code>setVariancce</code> method computes the variance using
  * updating formulas based on Welford's algorithm</li>
  * </ul>
- * @author Virenrda Singh Rajpurohit
  */
 public class Variance {
-	private double M=0;
-	private double S=0;
-	private double x=0;
-	private double oldM=0;
-	private double variance=0;
-	private double count=0;
-	
-	/**Constructor for Variance class. */
-	public Variance() {}
 
-	/**	
-	 * This method calculates Variance based on Welford's Algorithm.
-	 * The Welford's Algorithm is as follows:<br>
-	 *<pre><code>
-	 *variance(samples):
-	 *	M := 0
-	 *	S := 0
-	 *	for k from 1 to N:
-	 *	   x := samples[k]
-	 *	   oldM := M
-	 *	   M := M + (x-M)/k
-	 *	   S := S + (x-M)*(x-oldM)
-	 *	return S/(N-1)</code></pre>
-	 *@param value stream of values
-	 *@return variance of stream of values
-	 */
-	
-	public double setVariance(double value){
-		count++;
-		x=value;
-		oldM=M;
-		M += (x-M)/value;
-		S += (x-M)*(x-oldM);
-		variance=S/(count-1);
-		return variance;
-	}
-	
-	/**
-	 * Returns the variance of stream of values
-	 * @return variance of stream of values
-	 */
-	public double getVariance(){
-		return variance;
-	}
+    /***/
+    private double M=0;
+
+    /***/
+    private double S=0;
+
+    /***/
+    private double x=0;
+
+    /***/
+    private double oldM=0;
+
+    /***/
+    private double variance=0;
+
+    /***/
+    private double count=0;
+
+    /**Constructor for Variance class. */
+    public Variance() {}
+
+    /**
+     * This method calculates Variance based on Welford's Algorithm.
+     * The Welford's Algorithm is as follows:<br>
+     *<pre><code>
+     *variance(samples):
+     *    M := 0
+     *    S := 0
+     *    for k from 1 to N:
+     *        x := samples[k]
+     *        oldM := M
+     *        M := M + (x-M)/k
+     *        S := S + (x-M)*(x-oldM)
+     *    return S/(N-1)</code></pre>
+     *@param value stream of values
+     *@return variance of stream of values
+     */
+    public double setVariance(double value){
+        count++;
+        x=value;
+        oldM=M;
+        M += (x-M)/count;
+        S += (x-M)*(x-oldM);
+        variance=S/(count-1);
+        return variance;
+    }
+
+    /**
+     * Returns the variance of stream of values
+     * @return variance of stream of values
+     */
+    public double getVariance(){
+        return variance;
+    }
 
 }

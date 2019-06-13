@@ -22,34 +22,32 @@ import org.apache.commons.statistics.descriptive.moment.Variance;
 /**
  * Computes the sample standard deviation.  The standard deviation
  * is the positive square root of the variance.
- * 
- * @author Virenrda Singh Rajpurohit
  *
  */
 public class StandardDeviation {
-	
-	/**Standard Deviation value.*/
-	private double stdD = 0;
-	
-	 /**Constructs a StandardDeviation.*/
-	public StandardDeviation() {}
-	
-	/**
-	 * Compute and store the standard deviation value into "stdD".
-	 *@param variance Object of Variance class
-	 *@return stdD - "standard deviation value."
-	 */
-	public double setStandardDeviation(Variance variance){
-		stdD = Math.sqrt(variance.getVariance());
-		return stdD;
-	}
-	
-	/**
-	 * Returns the standard deviation of the values.
-	 *@return  stdD - "standard deviation value."
-	 */
-	public double getStandardDeviaiton(){
-		return stdD;
-	}
+
+    /**Standard Deviation value.*/
+    private double stdD = 0;
+
+    /**Constructs a StandardDeviation.*/
+    public StandardDeviation() {}
+
+    /**
+     *Compute and store the standard deviation value into "stdD".
+     *@param variance Object of Variance class
+     *@return stdD - "standard deviation value."
+     */
+    public double setStandardDeviation(Variance variance){
+        stdD = Math.sqrt(variance.getVariance());
+        return stdD;
+    }
+
+    /**
+     * Returns the standard deviation of the values.
+     *@return  stdD - "standard deviation value."
+     */
+    public double getStandardDeviaiton(){
+        return stdD;
+    }
 
 }
