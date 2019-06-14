@@ -37,6 +37,7 @@
     <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
     <!-- TODO: This tag should be removed or changed to false when code files are added in "commons-statistics-descriptive" module.-->
     <!-- This tag is added only because there are no public classes to document.-->
-    <maven.javadoc.skip>true</maven.javadoc.skip>
+    <!-- <maven.javadoc.skip>true</maven.javadoc.skip> -->
   </properties>
+  
 </project>
