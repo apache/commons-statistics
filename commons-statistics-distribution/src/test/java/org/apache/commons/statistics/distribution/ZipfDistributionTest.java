@@ -35,12 +35,12 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
         setTolerance(1e-12);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions1() {
         new ZipfDistribution(0, 1);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPreconditions2() {
         new ZipfDistribution(1, 0);
     }
@@ -137,25 +137,26 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
             for (double exponent : exponentValues) {
                 double weightSum = 0.;
                 double[] weights = new double[numPoints];
-                for (int i = numPoints; i>=1; i-=1) {
-                    weights[i-1] = Math.pow(i, -exponent);
-                    weightSum += weights[i-1];
+                for (int i = numPoints; i >= 1; i -= 1) {
+                    weights[i - 1] = Math.pow(i, -exponent);
+                    weightSum += weights[i - 1];
                 }
 
                 // Use fixed seed, the test is expected to fail for more than 50% of all
                 // seeds because each test case can fail with probability 0.001, the chance
                 // that all test cases do not fail is 0.999^(32*22) = 0.49442874426
                 DiscreteDistribution.Sampler distribution =
-                    new ZipfDistribution(numPoints, exponent).createSampler(RandomSource.create(RandomSource.WELL_19937_C, 6));
+                    new ZipfDistribution(numPoints, exponent).createSampler(
+                        RandomSource.create(RandomSource.WELL_19937_C, 6));
 
                 double[] expectedCounts = new double[numPoints];
                 long[] observedCounts = new long[numPoints];
                 for (int i = 0; i < numPoints; i++) {
-                    expectedCounts[i] = sampleSize * (weights[i]/weightSum);
+                    expectedCounts[i] = sampleSize * (weights[i] / weightSum);
                 }
                 int[] sample = AbstractDiscreteDistribution.sample(sampleSize, distribution);
                 for (int s : sample) {
-                    observedCounts[s-1]++;
+                    observedCounts[s - 1]++;
                 }
                 TestUtils.assertChiSquareAccept(expectedCounts, observedCounts, 0.001);
             }

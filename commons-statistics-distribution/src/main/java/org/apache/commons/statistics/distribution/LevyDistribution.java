@@ -66,7 +66,7 @@ public class LevyDistribution extends AbstractContinuousDistribution {
 
         final double delta = x - mu;
         final double f = halfC / delta;
-        return Math.sqrt(f / Math.PI) * Math.exp(-f) /delta;
+        return Math.sqrt(f / Math.PI) * Math.exp(-f) / delta;
     }
 
     /** {@inheritDoc}

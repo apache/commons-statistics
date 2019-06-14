@@ -253,15 +253,15 @@ public abstract class DiscreteDistributionAbstractTest {
                             upper, distribution.inverseCumulativeProbability(1.0));
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition1() {
         distribution.probability(1, 0);
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition2() {
         distribution.inverseCumulativeProbability(-1);
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition3() {
         distribution.inverseCumulativeProbability(2);
     }
@@ -287,11 +287,11 @@ public abstract class DiscreteDistributionAbstractTest {
                                                            1000));
         int[] sample = AbstractDiscreteDistribution.sample(sampleSize, sampler);
         for (int i = 0; i < sampleSize; i++) {
-          for (int j = 0; j < length; j++) {
-              if (sample[i] == densityPoints[j]) {
-                  observedCounts[j]++;
-              }
-          }
+            for (int j = 0; j < length; j++) {
+                if (sample[i] == densityPoints[j]) {
+                    observedCounts[j]++;
+                }
+            }
         }
         TestUtils.assertChiSquareAccept(densityPoints, expectedCounts, observedCounts, .001);
     }

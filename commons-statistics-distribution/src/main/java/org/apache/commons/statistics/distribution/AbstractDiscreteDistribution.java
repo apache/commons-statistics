@@ -18,8 +18,6 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.InverseTransformDiscreteSampler;
-import org.apache.commons.rng.sampling.distribution.DiscreteInverseCumulativeProbabilityFunction;
-import org.apache.commons.rng.sampling.distribution.DiscreteSampler;
 
 /**
  * Base class for integer-valued discrete distributions.  Default
@@ -63,7 +61,7 @@ abstract class AbstractDiscreteDistribution
         }
 
         int lower = getSupportLowerBound();
-        if (p == 0.0) {
+        if (p == 0) {
             return lower;
         }
         if (lower == Integer.MIN_VALUE) {
@@ -76,7 +74,7 @@ abstract class AbstractDiscreteDistribution
         }
 
         int upper = getSupportUpperBound();
-        if (p == 1.0) {
+        if (p == 1) {
             return upper;
         }
 
@@ -113,13 +111,15 @@ abstract class AbstractDiscreteDistribution
      * smallest {@code p}-quantile {@code inf{x in Z | P(X <= x) >= p}}.
      *
      * @param p Cumulative probability.
-     * @param lower Value satisfying {@code cumulativeProbability(lower) < p}.
-     * @param upper Value satisfying {@code p <= cumulativeProbability(upper)}.
+     * @param lowerBound Value satisfying {@code cumulativeProbability(lower) < p}.
+     * @param upperBound Value satisfying {@code p <= cumulativeProbability(upper)}.
      * @return the smallest {@code p}-quantile of this distribution.
      */
     private int solveInverseCumulativeProbability(final double p,
-                                                  int lower,
-                                                  int upper) {
+                                                  int lowerBound,
+                                                  int upperBound) {
+        int lower = lowerBound;
+        int upper = upperBound;
         while (lower + 1 < upper) {
             int xm = (lower + upper) / 2;
             if (xm < lower || xm > upper) {
@@ -131,7 +131,7 @@ abstract class AbstractDiscreteDistribution
                 xm = lower + (upper - lower) / 2;
             }
 
-            double pm = checkedCumulativeProbability(xm);
+            final double pm = checkedCumulativeProbability(xm);
             if (pm >= p) {
                 upper = xm;
             } else {
@@ -180,31 +180,7 @@ abstract class AbstractDiscreteDistribution
     /** {@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new DiscreteDistribution.Sampler() {
-            /**
-             * Inversion method distribution sampler.
-             */
-            private final DiscreteSampler sampler =
-                new InverseTransformDiscreteSampler(rng, createICPF());
-
-            /** {@inheritDoc} */
-            @Override
-            public int sample() {
-                return sampler.sample();
-            }
-        };
-    }
-
-    /**
-     * @return an instance for use by {@link #createSampler(UniformRandomProvider)}.
-     */
-    private DiscreteInverseCumulativeProbabilityFunction createICPF() {
-        return new DiscreteInverseCumulativeProbabilityFunction() {
-            /** {@inheritDoc} */
-            @Override
-            public int inverseCumulativeProbability(double p) {
-                return AbstractDiscreteDistribution.this.inverseCumulativeProbability(p);
-            }
-        };
+        // Inversion method distribution sampler.
+        return new InverseTransformDiscreteSampler(rng, this::inverseCumulativeProbability)::sample;
     }
 }

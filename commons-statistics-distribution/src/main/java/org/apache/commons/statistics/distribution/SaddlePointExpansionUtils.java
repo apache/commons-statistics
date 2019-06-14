@@ -28,50 +28,55 @@ import org.apache.commons.numbers.gamma.LogGamma;
  *
  * @since 1.0
  */
-/* default */ final class SaddlePointExpansion {
-    /** 2 &pi; */
+final class SaddlePointExpansionUtils {
+    /** 2 &pi;. */
     private static final double TWO_PI = 2 * Math.PI;
     /** 1/2 * log(2 &pi;). */
     private static final double HALF_LOG_TWO_PI = 0.5 * Math.log(TWO_PI);
+    /** 1/10. */
+    private static final double ONE_TENTH = 0.1;
+    /** The threshold value for switching the method to compute th Stirling error. */
+    private static final double STIRLING_ERROR_THRESHOLD = 15.0;
 
-    /** exact Stirling expansion error for certain values. */
-    private static final double[] EXACT_STIRLING_ERRORS = { 0.0, /* 0.0 */
-    0.1534264097200273452913848, /* 0.5 */
-    0.0810614667953272582196702, /* 1.0 */
-    0.0548141210519176538961390, /* 1.5 */
-    0.0413406959554092940938221, /* 2.0 */
-    0.03316287351993628748511048, /* 2.5 */
-    0.02767792568499833914878929, /* 3.0 */
-    0.02374616365629749597132920, /* 3.5 */
-    0.02079067210376509311152277, /* 4.0 */
-    0.01848845053267318523077934, /* 4.5 */
-    0.01664469118982119216319487, /* 5.0 */
-    0.01513497322191737887351255, /* 5.5 */
-    0.01387612882307074799874573, /* 6.0 */
-    0.01281046524292022692424986, /* 6.5 */
-    0.01189670994589177009505572, /* 7.0 */
-    0.01110455975820691732662991, /* 7.5 */
-    0.010411265261972096497478567, /* 8.0 */
-    0.009799416126158803298389475, /* 8.5 */
-    0.009255462182712732917728637, /* 9.0 */
-    0.008768700134139385462952823, /* 9.5 */
-    0.008330563433362871256469318, /* 10.0 */
-    0.007934114564314020547248100, /* 10.5 */
-    0.007573675487951840794972024, /* 11.0 */
-    0.007244554301320383179543912, /* 11.5 */
-    0.006942840107209529865664152, /* 12.0 */
-    0.006665247032707682442354394, /* 12.5 */
-    0.006408994188004207068439631, /* 13.0 */
-    0.006171712263039457647532867, /* 13.5 */
-    0.005951370112758847735624416, /* 14.0 */
-    0.005746216513010115682023589, /* 14.5 */
-    0.005554733551962801371038690 /* 15.0 */
+    /** Exact Stirling expansion error for certain values. */
+    private static final double[] EXACT_STIRLING_ERRORS = {
+        0.0, /* 0.0 */
+        0.1534264097200273452913848, /* 0.5 */
+        0.0810614667953272582196702, /* 1.0 */
+        0.0548141210519176538961390, /* 1.5 */
+        0.0413406959554092940938221, /* 2.0 */
+        0.03316287351993628748511048, /* 2.5 */
+        0.02767792568499833914878929, /* 3.0 */
+        0.02374616365629749597132920, /* 3.5 */
+        0.02079067210376509311152277, /* 4.0 */
+        0.01848845053267318523077934, /* 4.5 */
+        0.01664469118982119216319487, /* 5.0 */
+        0.01513497322191737887351255, /* 5.5 */
+        0.01387612882307074799874573, /* 6.0 */
+        0.01281046524292022692424986, /* 6.5 */
+        0.01189670994589177009505572, /* 7.0 */
+        0.01110455975820691732662991, /* 7.5 */
+        0.010411265261972096497478567, /* 8.0 */
+        0.009799416126158803298389475, /* 8.5 */
+        0.009255462182712732917728637, /* 9.0 */
+        0.008768700134139385462952823, /* 9.5 */
+        0.008330563433362871256469318, /* 10.0 */
+        0.007934114564314020547248100, /* 10.5 */
+        0.007573675487951840794972024, /* 11.0 */
+        0.007244554301320383179543912, /* 11.5 */
+        0.006942840107209529865664152, /* 12.0 */
+        0.006665247032707682442354394, /* 12.5 */
+        0.006408994188004207068439631, /* 13.0 */
+        0.006171712263039457647532867, /* 13.5 */
+        0.005951370112758847735624416, /* 14.0 */
+        0.005746216513010115682023589, /* 14.5 */
+        0.005554733551962801371038690 /* 15.0 */
     };
 
     /**
      * Forbid construction.
      */
-    private SaddlePointExpansion() {}
+    private SaddlePointExpansionUtils() {}
 
     /**
      * Compute the error of Stirling's series at the given value.
@@ -88,10 +93,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
      * @param z the value.
      * @return the Striling's series error.
      */
-    /* default */ static double getStirlingError(double z) {
+    static double getStirlingError(double z) {
         double ret;
-        if (z < 15.0) {
-            double z2 = 2.0 * z;
+        if (z < STIRLING_ERROR_THRESHOLD) {
+            final double z2 = 2.0 * z;
             if (Math.floor(z2) == z2) {
                 ret = EXACT_STIRLING_ERRORS[(int) z2];
             } else {
@@ -99,7 +104,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
                       z - HALF_LOG_TWO_PI;
             }
         } else {
-            double z2 = z * z;
+            final double z2 = z * z;
             ret = (0.083333333333333333333 -
                     (0.00277777777777777777778 -
                             (0.00079365079365079365079365 -
@@ -126,10 +131,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
      * @param mu the average.
      * @return a part of the deviance.
      */
-    /* default */ static double getDeviancePart(double x, double mu) {
+    static double getDeviancePart(double x, double mu) {
         double ret;
         if (Math.abs(x - mu) < 0.1 * (x + mu)) {
-            double d = x - mu;
+            final double d = x - mu;
             double v = d / (x + mu);
             double s1 = v * d;
             double s = Double.NaN;
@@ -162,10 +167,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
      * @param q the probability of failure (1 - p).
      * @return log(p(x)).
      */
-    /* default */ static double logBinomialProbability(int x, int n, double p, double q) {
+    static double logBinomialProbability(int x, int n, double p, double q) {
         double ret;
         if (x == 0) {
-            if (p < 0.1) {
+            if (p < ONE_TENTH) {
                 ret = -getDeviancePart(n, n * q) - n * p;
             } else {
                 if (n == 0) {
@@ -174,7 +179,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
                 ret = n * Math.log(q);
             }
         } else if (x == n) {
-            if (q < 0.1) {
+            if (q < ONE_TENTH) {
                 ret = -getDeviancePart(n, n * p) - n * q;
             } else {
                 ret = n * Math.log(p);

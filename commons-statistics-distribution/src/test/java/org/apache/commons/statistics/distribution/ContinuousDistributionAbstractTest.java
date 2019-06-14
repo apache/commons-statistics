@@ -274,13 +274,12 @@ public abstract class ContinuousDistributionAbstractTest {
 
             // check that cdf(x, x) = 0
             TestUtils.assertEquals(0d,
-                                   distribution.probability
-                                   (cumulativeTestPoints[i], cumulativeTestPoints[i]),
+                                   distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[i]),
                                    tolerance);
 
             // check that P(a < X <= b) = P(X <= b) - P(X <= a)
-            double upper = Math.max(cumulativeTestPoints[i], cumulativeTestPoints[i -1]);
-            double lower = Math.min(cumulativeTestPoints[i], cumulativeTestPoints[i -1]);
+            double upper = Math.max(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
+            double lower = Math.min(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
             double diff = distribution.cumulativeProbability(upper) -
                 distribution.cumulativeProbability(lower);
             double direct = distribution.probability(lower, upper);
@@ -292,15 +291,15 @@ public abstract class ContinuousDistributionAbstractTest {
     /**
      * Verifies that illegal arguments are correctly handled
      */
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition1() {
         distribution.probability(1, 0);
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition2() {
         distribution.inverseCumulativeProbability(-1);
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition3() {
         distribution.inverseCumulativeProbability(2);
     }
@@ -390,10 +389,16 @@ public abstract class ContinuousDistributionAbstractTest {
         this.cumulativeTestValues = cumulativeTestValues;
     }
 
+    /**
+     * @return Returns the densityTestValues.
+     */
     protected double[] getDensityTestValues() {
         return densityTestValues;
     }
 
+    /**
+     * @param densityTestValues The densityTestValues to set.
+     */
     protected void setDensityTestValues(double[] densityTestValues) {
         this.densityTestValues = densityTestValues;
     }

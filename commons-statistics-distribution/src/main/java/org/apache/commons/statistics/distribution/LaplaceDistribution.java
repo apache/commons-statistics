@@ -42,7 +42,7 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
      */
     public LaplaceDistribution(double mu,
                                double beta) {
-        if (beta <= 0.0) {
+        if (beta <= 0) {
             throw new DistributionException(DistributionException.NEGATIVE, beta);
         }
 
@@ -95,7 +95,7 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
         } else if (p == 1) {
             return Double.POSITIVE_INFINITY;
         }
-        double x = (p > 0.5) ? -Math.log(2.0 - 2.0 * p) : Math.log(2.0 * p);
+        final double x = (p > 0.5) ? -Math.log(2.0 - 2.0 * p) : Math.log(2.0 * p);
         return mu + beta * x;
     }
 
@@ -128,5 +128,4 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
     public boolean isSupportConnected() {
         return true;
     }
-
 }
