@@ -23,9 +23,9 @@ import org.apache.commons.numbers.core.Precision;
 import org.junit.Assert;
 
 /**
- *
+ * Test utilities.
  */
-public class TestUtils {
+public final class TestUtils {
     /**
      * Collection of static methods used in math unit tests.
      */
@@ -50,7 +50,7 @@ public class TestUtils {
                                     double actual,
                                     double delta) {
         // check for NaN
-        if(Double.isNaN(expected)){
+        if (Double.isNaN(expected)) {
             Assert.assertTrue("" + actual + " is not NaN.",
                 Double.isNaN(actual));
         } else {
@@ -61,8 +61,8 @@ public class TestUtils {
     /**
      * Verifies that two double arrays have equal entries, up to tolerance
      */
-    public static void assertEquals(double expected[],
-                                    double observed[],
+    public static void assertEquals(double[] expected,
+                                    double[] observed,
                                     double tolerance) {
         assertEquals("Array comparison failure", expected, observed, tolerance);
     }
@@ -125,7 +125,7 @@ public class TestUtils {
             Assert.fail(out.toString());
         }
         boolean failure = false;
-        for (int i=0; i < expected.length; i++) {
+        for (int i = 0; i < expected.length; i++) {
             if (!Precision.equalsIncludingNaN(expected[i], observed[i], tolerance)) {
                 failure = true;
                 out.append("\n Elements at index ");
@@ -273,8 +273,8 @@ public class TestUtils {
                     j++;
                 }
             }
-            System.arraycopy(newPoints,0,densityPoints,0,positiveMassCount);
-            System.arraycopy(newValues,0,densityValues,0,positiveMassCount);
+            System.arraycopy(newPoints, 0, densityPoints, 0, positiveMassCount);
+            System.arraycopy(newValues, 0, densityValues, 0, positiveMassCount);
         }
         return positiveMassCount;
     }

@@ -31,7 +31,7 @@
   </Match>
 
   <Match>
-    <Class name="org.apache.commons.statistics.distribution.SaddlePointExpansion" />
+    <Class name="org.apache.commons.statistics.distribution.SaddlePointExpansionUtils" />
     <Or>
       <Method name="getStirlingError" />
       <Method name="getDeviancePart" />

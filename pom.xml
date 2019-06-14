@@ -87,15 +87,15 @@
     <commons.encoding>UTF-8</commons.encoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <statistics.pmd.version>3.8</statistics.pmd.version>
+    <statistics.pmd.version>3.12.0</statistics.pmd.version>
+    <statistics.pmd.dep.version>6.14.0</statistics.pmd.dep.version>
     <statistics.spotbugs.version>3.1.11</statistics.spotbugs.version>
     <statistics.checkstyle.version>3.0.0</statistics.checkstyle.version>
-    <statistics.checkstyle.dep.version>8.18</statistics.checkstyle.dep.version>
+    <statistics.checkstyle.dep.version>8.20</statistics.checkstyle.dep.version>
     <statistics.clirr.version>2.8</statistics.clirr.version>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
 
-    <commons.jacoco.version>0.8.0</commons.jacoco.version>
     <commons.jacoco.classRatio>0.96</commons.jacoco.classRatio>
     <commons.jacoco.instructionRatio>0.8</commons.jacoco.instructionRatio>
     <commons.jacoco.methodRatio>0.8</commons.jacoco.methodRatio>
@@ -157,6 +157,11 @@
       <dependency>
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-numbers-gamma</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-rootfinder</artifactId>
         <version>${statistics.commons.numbers.version}</version>
       </dependency>
       <dependency>
@@ -260,6 +265,18 @@
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
         <version>${statistics.pmd.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${statistics.pmd.dep.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>${statistics.pmd.dep.version}</version>
+          </dependency>
+        </dependencies>
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
           <skipEmptyReport>false</skipEmptyReport>
@@ -383,6 +400,7 @@
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
           <skipEmptyReport>false</skipEmptyReport>
+          <analysisCache>true</analysisCache>
           <rulesets>
             <ruleset>${statistics.parent.dir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
           </rulesets>
