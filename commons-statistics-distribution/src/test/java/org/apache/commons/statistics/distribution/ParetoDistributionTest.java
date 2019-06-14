@@ -17,7 +17,6 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -134,13 +133,13 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testGetScale() {
         ParetoDistribution distribution = (ParetoDistribution)getDistribution();
-        Assert.assertEquals(2.1, distribution.getScale(), 0);
+        Assertions.assertEquals(2.1, distribution.getScale(), 0);
     }
 
     @Test
     public void testGetShape() {
         ParetoDistribution distribution = (ParetoDistribution)getDistribution();
-        Assert.assertEquals(1.4, distribution.getShape(), 0);
+        Assertions.assertEquals(1.4, distribution.getShape(), 0);
     }
 
     @Test
@@ -161,7 +160,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         double[] expected) {
         ParetoDistribution d = new ParetoDistribution(scale, shape);
         for (int i = 0; i < x.length; i++) {
-            Assert.assertEquals(expected[i], d.density(x[i]), 1e-9);
+            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-9);
         }
     }
 
@@ -174,16 +173,16 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         for (int i = 0; i < 1e5; i++) { // make sure no convergence exception
             double upperTail = d.cumulativeProbability(i);
             if (i <= 1000) { // make sure not top-coded
-                Assert.assertTrue(upperTail < 1.0d);
+                Assertions.assertTrue(upperTail < 1.0d);
             } else { // make sure top coding not reversed
-                Assert.assertTrue(upperTail > 0.999);
+                Assertions.assertTrue(upperTail > 0.999);
             }
         }
 
-        Assert.assertEquals(1, d.cumulativeProbability(Double.MAX_VALUE), 0);
-        Assert.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE), 0);
-        Assert.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
-        Assert.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
+        Assertions.assertEquals(1, d.cumulativeProbability(Double.MAX_VALUE), 0);
+        Assertions.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE), 0);
+        Assertions.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
+        Assertions.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
     }
 
     @Test
@@ -192,11 +191,11 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         ParetoDistribution dist;
 
         dist = new ParetoDistribution(1, 1);
-        Assert.assertEquals(Double.POSITIVE_INFINITY, dist.getMean(), tol);
-        Assert.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance(), tol);
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean(), tol);
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance(), tol);
 
         dist = new ParetoDistribution(2.2, 2.4);
-        Assert.assertEquals(3.771428571428, dist.getMean(), tol);
-        Assert.assertEquals(14.816326530, dist.getVariance(), tol);
+        Assertions.assertEquals(3.771428571428, dist.getMean(), tol);
+        Assertions.assertEquals(14.816326530, dist.getVariance(), tol);
     }
 }

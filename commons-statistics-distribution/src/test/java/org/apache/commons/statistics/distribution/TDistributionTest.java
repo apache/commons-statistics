@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -107,9 +106,9 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
         TDistribution dist;
         for (int i = 1; i < 11; i++) {
             dist = new TDistribution(i * 5);
-            Assert.assertEquals(1,
+            Assertions.assertEquals(1,
                                 dist.cumulativeProbability(Double.POSITIVE_INFINITY), Double.MIN_VALUE);
-            Assert.assertEquals(0,
+            Assertions.assertEquals(0,
                                 dist.cumulativeProbability(Double.NEGATIVE_INFINITY), Double.MIN_VALUE);
         }
     }
@@ -117,7 +116,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testDfAccessors() {
         TDistribution dist = (TDistribution) getDistribution();
-        Assert.assertEquals(5d, dist.getDegreesOfFreedom(), Double.MIN_VALUE);
+        Assertions.assertEquals(5d, dist.getDegreesOfFreedom(), Double.MIN_VALUE);
     }
 
     @Test
@@ -131,16 +130,16 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
         TDistribution dist;
 
         dist = new TDistribution(1);
-        Assert.assertTrue(Double.isNaN(dist.getMean()));
-        Assert.assertTrue(Double.isNaN(dist.getVariance()));
+        Assertions.assertTrue(Double.isNaN(dist.getMean()));
+        Assertions.assertTrue(Double.isNaN(dist.getVariance()));
 
         dist = new TDistribution(1.5);
-        Assert.assertEquals(0, dist.getMean(), tol);
-        Assert.assertTrue(Double.isInfinite(dist.getVariance()));
+        Assertions.assertEquals(0, dist.getMean(), tol);
+        Assertions.assertTrue(Double.isInfinite(dist.getVariance()));
 
         dist = new TDistribution(5);
-        Assert.assertEquals(0, dist.getMean(), tol);
-        Assert.assertEquals(5d / (5d - 2d), dist.getVariance(), tol);
+        Assertions.assertEquals(0, dist.getMean(), tol);
+        Assertions.assertEquals(5d / (5d - 2d), dist.getVariance(), tol);
     }
 
     /*

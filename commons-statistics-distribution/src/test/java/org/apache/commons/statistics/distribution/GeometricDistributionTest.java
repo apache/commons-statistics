@@ -16,7 +16,7 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -161,11 +161,11 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
         GeometricDistribution dist;
 
         dist = new GeometricDistribution(0.5);
-        Assert.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
-        Assert.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
+        Assertions.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
+        Assertions.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
         dist = new GeometricDistribution(0.3);
-        Assert.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
-        Assert.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
+        Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
+        Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
     }
 }

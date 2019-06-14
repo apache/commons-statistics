@@ -24,7 +24,6 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.BaseAbstractUnivariateIntegrator;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -188,7 +187,7 @@ public abstract class ContinuousDistributionAbstractTest {
                     } catch (IllegalArgumentException e) {
                         continue;
                     }
-                    Assert.fail("distribution.probability(double, double) should have thrown an exception that second argument is too large");
+                    Assertions.fail("distribution.probability(double, double) should have thrown an exception that second argument is too large");
                 }
             }
         }
@@ -357,7 +356,7 @@ public abstract class ContinuousDistributionAbstractTest {
         }
         Collections.sort(integrationTestPoints);
         for (int i = 1; i < integrationTestPoints.size(); i++) {
-            Assert.assertEquals(distribution.probability(integrationTestPoints.get(0), integrationTestPoints.get(i)),
+            Assertions.assertEquals(distribution.probability(integrationTestPoints.get(0), integrationTestPoints.get(i)),
                                 integrator.integrate(1000000, // Triangle integrals are very slow to converge
                                                      d, integrationTestPoints.get(0),
                                                      integrationTestPoints.get(i)), tol);

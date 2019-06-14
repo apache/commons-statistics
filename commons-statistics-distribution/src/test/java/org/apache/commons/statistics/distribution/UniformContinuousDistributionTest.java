@@ -17,7 +17,6 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -71,14 +70,14 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
     @Test
     public void testGetLowerBound() {
         UniformContinuousDistribution distribution = makeDistribution();
-        Assert.assertEquals(-0.5, distribution.getSupportLowerBound(), 0);
+        Assertions.assertEquals(-0.5, distribution.getSupportLowerBound(), 0);
     }
 
     /** Test upper bound getter. */
     @Test
     public void testGetUpperBound() {
         UniformContinuousDistribution distribution = makeDistribution();
-        Assert.assertEquals(1.25, distribution.getSupportUpperBound(), 0);
+        Assertions.assertEquals(1.25, distribution.getSupportUpperBound(), 0);
     }
 
     /** Test pre-condition for equal lower/upper bound. */
@@ -99,16 +98,16 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
         UniformContinuousDistribution dist;
 
         dist = new UniformContinuousDistribution(0, 1);
-        Assert.assertEquals(0.5, dist.getMean(), 0);
-        Assert.assertEquals(1 / 12.0, dist.getVariance(), 0);
+        Assertions.assertEquals(0.5, dist.getMean(), 0);
+        Assertions.assertEquals(1 / 12.0, dist.getVariance(), 0);
 
         dist = new UniformContinuousDistribution(-1.5, 0.6);
-        Assert.assertEquals(-0.45, dist.getMean(), 0);
-        Assert.assertEquals(0.3675, dist.getVariance(), 0);
+        Assertions.assertEquals(-0.45, dist.getMean(), 0);
+        Assertions.assertEquals(0.3675, dist.getVariance(), 0);
 
         dist = new UniformContinuousDistribution(-0.5, 1.25);
-        Assert.assertEquals(0.375, dist.getMean(), 0);
-        Assert.assertEquals(0.2552083333333333, dist.getVariance(), 0);
+        Assertions.assertEquals(0.375, dist.getMean(), 0);
+        Assertions.assertEquals(0.2552083333333333, dist.getVariance(), 0);
     }
 
     /**
@@ -119,6 +118,6 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
     public void testInverseCumulativeDistribution() {
         UniformContinuousDistribution dist = new UniformContinuousDistribution(0, 1e-9);
 
-        Assert.assertEquals(2.5e-10, dist.inverseCumulativeProbability(0.25), 0);
+        Assertions.assertEquals(2.5e-10, dist.inverseCumulativeProbability(0.25), 0);
     }
 }

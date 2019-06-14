@@ -17,7 +17,6 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -91,12 +90,12 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
         UniformDiscreteDistribution dist;
 
         dist = new UniformDiscreteDistribution(0, 5);
-        Assert.assertEquals(2.5, dist.getMean(), 0);
-        Assert.assertEquals(35 / 12.0, dist.getVariance(), 0);
+        Assertions.assertEquals(2.5, dist.getMean(), 0);
+        Assertions.assertEquals(35 / 12.0, dist.getVariance(), 0);
 
         dist = new UniformDiscreteDistribution(0, 1);
-        Assert.assertEquals(0.5, dist.getMean(), 0);
-        Assert.assertEquals(3 / 12.0, dist.getVariance(), 0);
+        Assertions.assertEquals(0.5, dist.getMean(), 0);
+        Assertions.assertEquals(3 / 12.0, dist.getVariance(), 0);
     }
 
     // MATH-1141
@@ -119,10 +118,10 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
         UniformDiscreteDistribution dist = new UniformDiscreteDistribution(-hi, hi - 1);
 
         final double tol = Math.ulp(1d);
-        Assert.assertEquals(0.5 / hi, dist.probability(123456), tol);
-        Assert.assertEquals(0.5, dist.cumulativeProbability(-1), tol);
+        Assertions.assertEquals(0.5 / hi, dist.probability(123456), tol);
+        Assertions.assertEquals(0.5, dist.cumulativeProbability(-1), tol);
 
-        Assert.assertTrue(Precision.equals((Math.pow(2d * hi, 2) - 1) / 12, dist.getVariance(), 1));
+        Assertions.assertTrue(Precision.equals((Math.pow(2d * hi, 2) - 1) / 12, dist.getVariance(), 1));
     }
 
     // MATH-1396
@@ -132,9 +131,9 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
         UniformDiscreteDistribution dist = new UniformDiscreteDistribution(hi - 1, hi + 1);
 
         final double tol = Math.ulp(1d);
-        Assert.assertEquals(1d / 3d, dist.probability(hi), tol);
-        Assert.assertEquals(2d / 3d, dist.cumulativeProbability(hi), tol);
+        Assertions.assertEquals(1d / 3d, dist.probability(hi), tol);
+        Assertions.assertEquals(2d / 3d, dist.cumulativeProbability(hi), tol);
 
-        Assert.assertTrue(Precision.equals(hi, dist.getMean(), 1));
+        Assertions.assertTrue(Precision.equals(hi, dist.getMean(), 1));
     }
 }

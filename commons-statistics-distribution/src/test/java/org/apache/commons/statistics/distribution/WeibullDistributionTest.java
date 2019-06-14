@@ -18,7 +18,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.LogGamma;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -68,7 +67,7 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
         // Analytically, answer is solution to 1e-17 = 1-exp(-(x/3)^2)
         // x = sqrt(-9*log(1-1e-17))
         // If we're not careful, answer will be 0. Answer below is computed with care in Octave:
-        Assert.assertEquals(9.48683298050514e-9, t, 1e-17);
+        Assertions.assertEquals(9.48683298050514e-9, t, 1e-17);
     }
 
     @Test
@@ -81,7 +80,7 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
     @Test
     public void testAlpha() {
         WeibullDistribution dist = new WeibullDistribution(1, 2);
-        Assert.assertEquals(1, dist.getShape(), 0);
+        Assertions.assertEquals(1, dist.getShape(), 0);
     }
     @Test
     public void testPrecondition1() {
@@ -91,7 +90,7 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
     @Test
     public void testBeta() {
         WeibullDistribution dist = new WeibullDistribution(1, 2);
-        Assert.assertEquals(2, dist.getScale(), 0);
+        Assertions.assertEquals(2, dist.getScale(), 0);
     }
     @Test
     public void testPrecondition2() {
@@ -105,14 +104,14 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
 
         dist = new WeibullDistribution(2.5, 3.5);
         // In R: 3.5*gamma(1+(1/2.5)) (or empirically: mean(rweibull(10000, 2.5, 3.5)))
-        Assert.assertEquals(3.5 * Math.exp(LogGamma.value(1 + (1 / 2.5))), dist.getMean(), tol);
-        Assert.assertEquals((3.5 * 3.5) *
+        Assertions.assertEquals(3.5 * Math.exp(LogGamma.value(1 + (1 / 2.5))), dist.getMean(), tol);
+        Assertions.assertEquals((3.5 * 3.5) *
                             Math.exp(LogGamma.value(1 + (2 / 2.5))) -
                             (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
 
         dist = new WeibullDistribution(10.4, 2.222);
-        Assert.assertEquals(2.222 * Math.exp(LogGamma.value(1 + (1 / 10.4))), dist.getMean(), tol);
-        Assert.assertEquals((2.222 * 2.222) *
+        Assertions.assertEquals(2.222 * Math.exp(LogGamma.value(1 + (1 / 10.4))), dist.getMean(), tol);
+        Assertions.assertEquals((2.222 * 2.222) *
                             Math.exp(LogGamma.value(1 + (2 / 10.4))) -
                             (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
     }

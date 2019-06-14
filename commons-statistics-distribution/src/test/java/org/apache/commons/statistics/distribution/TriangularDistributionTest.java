@@ -17,7 +17,6 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -137,14 +136,14 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
     @Test
     public void testGetLowerBound() {
         TriangularDistribution distribution = makeDistribution();
-        Assert.assertEquals(-3.0, distribution.getSupportLowerBound(), 0);
+        Assertions.assertEquals(-3.0, distribution.getSupportLowerBound(), 0);
     }
 
     /** Test upper bound getter. */
     @Test
     public void testGetUpperBound() {
         TriangularDistribution distribution = makeDistribution();
-        Assert.assertEquals(12.0, distribution.getSupportUpperBound(), 0);
+        Assertions.assertEquals(12.0, distribution.getSupportUpperBound(), 0);
     }
 
     /** Test pre-condition for equal lower/upper limit. */
@@ -177,15 +176,15 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         TriangularDistribution dist;
 
         dist = new TriangularDistribution(0, 0.5, 1.0);
-        Assert.assertEquals(0.5, dist.getMean(), 0);
-        Assert.assertEquals(1 / 24.0, dist.getVariance(), 0);
+        Assertions.assertEquals(0.5, dist.getMean(), 0);
+        Assertions.assertEquals(1 / 24.0, dist.getVariance(), 0);
 
         dist = new TriangularDistribution(0, 1, 1);
-        Assert.assertEquals(2 / 3.0, dist.getMean(), 0);
-        Assert.assertEquals(1 / 18.0, dist.getVariance(), 0);
+        Assertions.assertEquals(2 / 3.0, dist.getMean(), 0);
+        Assertions.assertEquals(1 / 18.0, dist.getVariance(), 0);
 
         dist = new TriangularDistribution(-3, 2, 12);
-        Assert.assertEquals(3 + (2 / 3.0), dist.getMean(), 0);
-        Assert.assertEquals(175 / 18.0, dist.getVariance(), 0);
+        Assertions.assertEquals(3 + (2 / 3.0), dist.getMean(), 0);
+        Assertions.assertEquals(175 / 18.0, dist.getVariance(), 0);
     }
 }

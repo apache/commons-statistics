@@ -20,7 +20,7 @@ package org.apache.commons.statistics.distribution;
 import java.text.DecimalFormat;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.numbers.core.Precision;
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Test utilities.
@@ -38,7 +38,7 @@ public final class TestUtils {
     public static void assertEquals(double expected,
                                     double actual,
                                     double delta) {
-        Assert.assertEquals(null, expected, actual, delta);
+        Assertions.assertEquals(expected, actual, delta);
     }
 
     /**
@@ -51,10 +51,9 @@ public final class TestUtils {
                                     double delta) {
         // check for NaN
         if (Double.isNaN(expected)) {
-            Assert.assertTrue("" + actual + " is not NaN.",
-                Double.isNaN(actual));
+            Assertions.assertTrue(Double.isNaN(actual), () -> actual + " is not NaN.");
         } else {
-            Assert.assertEquals(msg, expected, actual, delta);
+            Assertions.assertEquals(expected, actual, delta, msg);
         }
     }
 
@@ -97,16 +96,16 @@ public final class TestUtils {
                                               double actual,
                                               double relativeError) {
         if (Double.isNaN(expected)) {
-            Assert.assertTrue(msg, Double.isNaN(actual));
+            Assertions.assertTrue(Double.isNaN(actual), msg);
         } else if (Double.isNaN(actual)) {
-            Assert.assertTrue(msg, Double.isNaN(expected));
+            Assertions.assertTrue(Double.isNaN(expected), msg);
         } else if (Double.isInfinite(actual) || Double.isInfinite(expected)) {
-            Assert.assertEquals(expected, actual, relativeError);
+            Assertions.assertEquals(expected, actual, relativeError);
         } else if (expected == 0.0) {
-            Assert.assertEquals(msg, actual, expected, relativeError);
+            Assertions.assertEquals(actual, expected, relativeError, msg);
         } else {
             double absError = Math.abs(expected) * relativeError;
-            Assert.assertEquals(msg, expected, actual, absError);
+            Assertions.assertEquals(expected, actual, absError, msg);
         }
     }
 
@@ -122,7 +121,7 @@ public final class TestUtils {
             out.append(expected.length);
             out.append(" observed length = ");
             out.append(observed.length);
-            Assert.fail(out.toString());
+            Assertions.fail(out.toString());
         }
         boolean failure = false;
         for (int i = 0; i < expected.length; i++) {
@@ -138,7 +137,7 @@ public final class TestUtils {
             }
         }
         if (failure) {
-            Assert.fail(out.toString());
+            Assertions.fail(out.toString());
         }
     }
 
@@ -179,7 +178,7 @@ public final class TestUtils {
             msgBuffer.append("This test can fail randomly due to sampling error with probability ");
             msgBuffer.append(alpha);
             msgBuffer.append(".");
-            Assert.fail(msgBuffer.toString());
+            Assertions.fail(msgBuffer.toString());
         }
     }
 

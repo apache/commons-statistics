@@ -19,7 +19,6 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -119,8 +118,8 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assert.assertEquals(3, dist.getSupportLowerBound());
-        Assert.assertEquals(3, dist.getSupportUpperBound());
+        Assertions.assertEquals(3, dist.getSupportLowerBound());
+        Assertions.assertEquals(3, dist.getSupportUpperBound());
     }
 
     /** Verify that if there are no successes, mass is concentrated on 0 */
@@ -137,8 +136,8 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assert.assertEquals(0, dist.getSupportLowerBound());
-        Assert.assertEquals(0, dist.getSupportUpperBound());
+        Assertions.assertEquals(0, dist.getSupportLowerBound());
+        Assertions.assertEquals(0, dist.getSupportUpperBound());
     }
 
     /** Verify that if sampleSize = populationSize, mass is concentrated on numberOfSuccesses */
@@ -155,8 +154,8 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assert.assertEquals(3, dist.getSupportLowerBound());
-        Assert.assertEquals(3, dist.getSupportUpperBound());
+        Assertions.assertEquals(3, dist.getSupportLowerBound());
+        Assertions.assertEquals(3, dist.getSupportUpperBound());
     }
 
     @Test
@@ -183,9 +182,9 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     @Test
     public void testAccessors() {
         HypergeometricDistribution dist = new HypergeometricDistribution(5, 3, 4);
-        Assert.assertEquals(5, dist.getPopulationSize());
-        Assert.assertEquals(3, dist.getNumberOfSuccesses());
-        Assert.assertEquals(4, dist.getSampleSize());
+        Assertions.assertEquals(5, dist.getPopulationSize());
+        Assertions.assertEquals(3, dist.getNumberOfSuccesses());
+        Assertions.assertEquals(4, dist.getSampleSize());
     }
 
     @Test
@@ -270,12 +269,12 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         HypergeometricDistribution dist;
 
         dist = new HypergeometricDistribution(1500, 40, 100);
-        Assert.assertEquals(40d * 100d / 1500d, dist.getMean(), tol);
-        Assert.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)), dist.getVariance(), tol);
+        Assertions.assertEquals(40d * 100d / 1500d, dist.getMean(), tol);
+        Assertions.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)), dist.getVariance(), tol);
 
         dist = new HypergeometricDistribution(3000, 55, 200);
-        Assert.assertEquals(55d * 200d / 3000d, dist.getMean(), tol);
-        Assert.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)), dist.getVariance(), tol);
+        Assertions.assertEquals(55d * 200d / 3000d, dist.getMean(), tol);
+        Assertions.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)), dist.getVariance(), tol);
     }
 
     @Test
@@ -287,12 +286,12 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         final int k = 0;
         final HypergeometricDistribution dist = new HypergeometricDistribution(N, m, n);
 
-        Assert.assertTrue(Precision.compareTo(1.0, dist.upperCumulativeProbability(k), 1) == 0);
-        Assert.assertTrue(Precision.compareTo(dist.cumulativeProbability(k), 0.0, 1) > 0);
+        Assertions.assertTrue(Precision.compareTo(1.0, dist.upperCumulativeProbability(k), 1) == 0);
+        Assertions.assertTrue(Precision.compareTo(dist.cumulativeProbability(k), 0.0, 1) > 0);
 
         // another way to calculate the upper cumulative probability
         double upper = 1.0 - dist.cumulativeProbability(k) + dist.probability(k);
-        Assert.assertTrue(Precision.compareTo(1.0, upper, 1) == 0);
+        Assertions.assertTrue(Precision.compareTo(1.0, upper, 1) == 0);
     }
 
     @Test
@@ -305,7 +304,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
 
         for (int i = 1; i <= n; i++) {
             final double p = dist.probability(i);
-            Assert.assertEquals("p=" + p, 0, p, 0d);
+            Assertions.assertEquals(0, p, 0d, () -> "p=" + p);
         }
     }
 
@@ -317,7 +316,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         for (int s = 0; s <= n; s++) {
             final HypergeometricDistribution dist = new HypergeometricDistribution(n, m, s);
             final double p = dist.probability(s);
-            Assert.assertEquals("p=" + p, 1, p, 0d);
+            Assertions.assertEquals(1, p, 0d, () -> "p=" + p);
         }
     }
 
@@ -331,8 +330,8 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
 
         for (int i = 0; i < 100; i++) {
             final int sample = dist.sample();
-            Assert.assertTrue("sample=" + sample, 0 <= sample);
-            Assert.assertTrue("sample=" + sample, sample <= n);
+            Assertions.assertTrue(0 <= sample, () -> "sample=" + sample);
+            Assertions.assertTrue(sample <= n, () -> "sample=" + sample);
         }
     }
 }
