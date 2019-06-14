@@ -20,7 +20,9 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for HyperGeometriclDistribution.
@@ -30,10 +32,10 @@ import org.junit.Test;
  */
 public class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
-    /**
-     * Constructor to override default tolerance.
-     */
-    public HypergeometricDistributionTest() {
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-12);
     }
 
@@ -157,25 +159,25 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         Assert.assertEquals(3, dist.getSupportUpperBound());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new HypergeometricDistribution(0, 3, 5);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(0, 3, 5));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        new HypergeometricDistribution(5, -1, 5);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(5, -1, 5));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition3() {
-        new HypergeometricDistribution(5, 3, -1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(5, 3, -1));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition4() {
-        new HypergeometricDistribution(5, 6, 5);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(5, 6, 5));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition5() {
-        new HypergeometricDistribution(5, 3, 6);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(5, 3, 6));
     }
 
     @Test

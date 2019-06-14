@@ -18,7 +18,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link ParetoDistribution}.
@@ -83,9 +85,9 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     // --------------------- Override tolerance  --------------
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-7);
     }
 
@@ -141,9 +143,9 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(1.4, distribution.getShape(), 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new ParetoDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ParetoDistribution(1, 0));
     }
 
     @Test

@@ -18,7 +18,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.apache.commons.numbers.core.Precision;
 
 /**
@@ -27,11 +29,10 @@ import org.apache.commons.numbers.core.Precision;
  */
 public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
 
-    // --- Override tolerance -------------------------------------------------
+    // --------------------- Override tolerance  --------------
 
-    @Override
-    public void setUp() {
-        super.setUp();
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-9);
     }
 
@@ -99,9 +100,9 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
     }
 
     // MATH-1141
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditionUpperBoundInclusive1() {
-        new UniformDiscreteDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new UniformDiscreteDistribution(1, 0));
     }
 
     // MATH-1141

@@ -18,7 +18,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for UniformContinuousDistribution. See class javadoc for
@@ -26,11 +28,10 @@ import org.junit.Test;
  */
 public class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTest {
 
-    // --- Override tolerance -------------------------------------------------
+    // --------------------- Override tolerance  --------------
 
-    @Override
-    public void setUp() {
-        super.setUp();
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-4);
     }
 
@@ -81,15 +82,15 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
     }
 
     /** Test pre-condition for equal lower/upper bound. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions1() {
-        new UniformContinuousDistribution(0, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new UniformContinuousDistribution(0, 0));
     }
 
     /** Test pre-condition for lower bound larger than upper bound. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions2() {
-        new UniformContinuousDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new UniformContinuousDistribution(1, 0));
     }
 
     /** Test mean/variance. */

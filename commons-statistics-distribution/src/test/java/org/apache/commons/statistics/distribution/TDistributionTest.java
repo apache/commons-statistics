@@ -17,7 +17,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 /**
  * Test cases for TDistribution.
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
@@ -57,9 +59,9 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     // --------------------- Override tolerance  --------------
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-9);
     }
 
@@ -118,9 +120,9 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(5d, dist.getDegreesOfFreedom(), Double.MIN_VALUE);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions() {
-        new TDistribution(0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new TDistribution(0));
     }
 
     @Test

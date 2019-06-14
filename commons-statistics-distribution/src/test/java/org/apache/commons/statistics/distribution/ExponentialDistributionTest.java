@@ -18,7 +18,9 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.core.Precision;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for ExponentialDistribution.
@@ -29,9 +31,9 @@ import org.junit.Test;
 public class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
 
     // --------------------- Override tolerance  --------------
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-9);
     }
 
@@ -111,9 +113,9 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
         Assert.assertEquals(5d, distribution.getMean(), Double.MIN_VALUE);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new ExponentialDistribution(0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ExponentialDistribution(0));
     }
 
     @Test

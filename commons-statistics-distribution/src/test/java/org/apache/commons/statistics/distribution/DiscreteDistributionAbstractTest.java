@@ -17,10 +17,11 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Abstract base class for {@link DiscreteDistribution} tests.
@@ -117,7 +118,7 @@ public abstract class DiscreteDistributionAbstractTest {
     /**
      * Setup sets all test instance data to default values
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         distribution = makeDistribution();
         densityTestPoints = makeDensityTestPoints();
@@ -132,7 +133,7 @@ public abstract class DiscreteDistributionAbstractTest {
     /**
      * Cleans up test instance data
      */
-    @After
+    @AfterEach
     public void tearDown() {
         distribution = null;
         densityTestPoints = null;
@@ -253,17 +254,17 @@ public abstract class DiscreteDistributionAbstractTest {
                             upper, distribution.inverseCumulativeProbability(1.0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        distribution.probability(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.probability(1, 0));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        distribution.inverseCumulativeProbability(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition3() {
-        distribution.inverseCumulativeProbability(2);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     /**

@@ -24,10 +24,11 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.BaseAbstractUnivariateIntegrator;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Abstract base class for {@link ContinuousDistribution} tests.
@@ -130,9 +131,12 @@ public abstract class ContinuousDistributionAbstractTest {
     //-------------------- Setup / tear down ----------------------------------
 
     /**
-     * Setup sets all test instance data to default values
+     * Setup sets all test instance data to default values.
+     * <p>
+     * This method is @BeforeEach (created for each test) as certain test methods may wish
+     * to alter the defaults.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         distribution = makeDistribution();
         cumulativeTestPoints = makeCumulativeTestPoints();
@@ -146,7 +150,7 @@ public abstract class ContinuousDistributionAbstractTest {
     /**
      * Cleans up test instance data
      */
-    @After
+    @AfterEach
     public void tearDown() {
         distribution = null;
         cumulativeTestPoints = null;
@@ -291,17 +295,17 @@ public abstract class ContinuousDistributionAbstractTest {
     /**
      * Verifies that illegal arguments are correctly handled
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        distribution.probability(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.probability(1, 0));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        distribution.inverseCumulativeProbability(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition3() {
-        distribution.inverseCumulativeProbability(2);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     /**

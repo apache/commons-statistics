@@ -18,7 +18,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link TriangularDistribution}. See class javadoc for
@@ -26,11 +28,10 @@ import org.junit.Test;
  */
 public class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
 
-    // --- Override tolerance -------------------------------------------------
+    // --------------------- Override tolerance  --------------
 
-    @Override
-    public void setUp() {
-        super.setUp();
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-4);
     }
 
@@ -147,27 +148,27 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
     }
 
     /** Test pre-condition for equal lower/upper limit. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions1() {
-        new TriangularDistribution(0, 0, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(0, 0, 0));
     }
 
     /** Test pre-condition for lower limit larger than upper limit. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions2() {
-        new TriangularDistribution(1, 1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(1, 1, 0));
     }
 
     /** Test pre-condition for mode larger than upper limit. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions3() {
-        new TriangularDistribution(0, 2, 1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(0, 2, 1));
     }
 
     /** Test pre-condition for mode smaller than lower limit. */
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions4() {
-        new TriangularDistribution(2, 1, 3);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(2, 1, 3));
     }
 
     /** Test mean/variance. */

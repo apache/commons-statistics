@@ -18,7 +18,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for CauchyDistribution.
@@ -30,9 +32,9 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
 
     // --------------------- Override tolerance  --------------
     protected double defaultTolerance = 1e-7;
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(defaultTolerance);
     }
 
@@ -87,13 +89,13 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(2.1, distribution.getScale(), 0.0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new CauchyDistribution(0, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new CauchyDistribution(0, 0));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        new CauchyDistribution(0, -1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new CauchyDistribution(0, -1));
     }
 
     @Test

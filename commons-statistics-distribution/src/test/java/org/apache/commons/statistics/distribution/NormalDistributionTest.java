@@ -18,7 +18,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link NormalDistribution}. Extends
@@ -61,9 +63,9 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     // --------------------- Override tolerance  --------------
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(DEFAULT_TOLERANCE);
     }
 
@@ -133,9 +135,9 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(1.4, distribution.getStandardDeviation(), 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new NormalDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new NormalDistribution(1, 0));
     }
 
     @Test

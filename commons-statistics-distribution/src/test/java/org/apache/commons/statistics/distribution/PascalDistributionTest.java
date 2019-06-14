@@ -17,7 +17,8 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for PascalDistribution.
@@ -30,9 +31,8 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
     // --------------------- Override tolerance  --------------
     protected double defaultTolerance = 1e-7;
 
-    @Override
-    public void setUp() {
-        super.setUp();
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(defaultTolerance);
     }
 

@@ -19,7 +19,8 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.LogGamma;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for WeibullDistribution.
@@ -82,9 +83,9 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
         WeibullDistribution dist = new WeibullDistribution(1, 2);
         Assert.assertEquals(1, dist.getShape(), 0);
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new WeibullDistribution(0, 2);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new WeibullDistribution(0, 2));
     }
 
     @Test
@@ -92,9 +93,9 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
         WeibullDistribution dist = new WeibullDistribution(1, 2);
         Assert.assertEquals(2, dist.getScale(), 0);
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        new WeibullDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new WeibullDistribution(1, 0));
     }
 
     @Test

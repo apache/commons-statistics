@@ -25,7 +25,9 @@ import java.io.InputStreamReader;
 import org.apache.commons.numbers.gamma.LanczosApproximation;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for GammaDistribution.
@@ -67,9 +69,9 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     // --------------------- Override tolerance  --------------
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-9);
     }
 
@@ -81,13 +83,13 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(2d, distribution.getScale(), 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new GammaDistribution(0, 1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new GammaDistribution(0, 1));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        new GammaDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new GammaDistribution(1, 0));
     }
 
     @Test

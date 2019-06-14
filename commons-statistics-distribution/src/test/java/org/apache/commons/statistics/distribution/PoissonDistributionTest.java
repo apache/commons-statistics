@@ -17,7 +17,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * <code>PoissonDistributionTest</code>
@@ -30,10 +32,10 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     private static final double DEFAULT_TEST_POISSON_PARAMETER = 4.0;
 
-    /**
-     * Constructor.
-     */
-    public PoissonDistributionTest() {
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-12);
     }
 
@@ -143,9 +145,9 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         Assert.assertEquals(0, dist.inverseCumulativeProbability(0d));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testNegativeMean() {
-        new PoissonDistribution(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new PoissonDistribution(-1));
     }
 
     @Test

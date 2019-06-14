@@ -23,7 +23,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.inference.GTest;
 import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class BetaDistributionTest {
 
