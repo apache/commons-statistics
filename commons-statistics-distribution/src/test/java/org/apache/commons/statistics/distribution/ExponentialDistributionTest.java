@@ -76,9 +76,9 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
 
     @Test
     public void testInverseCumulativeProbabilityExtremes() {
-         setInverseCumulativeTestPoints(new double[] {0, 1});
-         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
-         verifyInverseCumulativeProbabilities();
+        setInverseCumulativeTestPoints(new double[] {0, 1});
+        setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
+        verifyInverseCumulativeProbabilities();
     }
 
     @Test
@@ -97,7 +97,7 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
         Assert.assertTrue(Precision.equals(Math.exp(-2), d1.density(2.0), 1));
 
         ExponentialDistribution d2 = new ExponentialDistribution(3);
-        Assert.assertTrue(Precision.equals(1/3.0, d2.density(0.0), 1));
+        Assert.assertTrue(Precision.equals(1 / 3.0, d2.density(0.0), 1));
         // computed using  print(dexp(1, rate=1/3), digits=10) in R 2.5
         Assert.assertEquals(0.2388437702, d2.density(1.0), 1e-8);
 
@@ -111,7 +111,7 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
         Assert.assertEquals(5d, distribution.getMean(), Double.MIN_VALUE);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition1() {
         new ExponentialDistribution(0);
     }

@@ -92,16 +92,16 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
             return 0;
         }
         if (a <= x && x < c) {
-            double divident = 2 * (x - a);
-            double divisor = (b - a) * (c - a);
+            final double divident = 2 * (x - a);
+            final double divisor = (b - a) * (c - a);
             return divident / divisor;
         }
         if (x == c) {
             return 2 / (b - a);
         }
         if (c < x && x <= b) {
-            double divident = 2 * (b - x);
-            double divisor = (b - a) * (b - c);
+            final double divident = 2 * (b - x);
+            final double divisor = (b - a) * (b - c);
             return divident / divisor;
         }
         return 0;
@@ -126,16 +126,16 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
             return 0;
         }
         if (a <= x && x < c) {
-            double divident = (x - a) * (x - a);
-            double divisor = (b - a) * (c - a);
+            final double divident = (x - a) * (x - a);
+            final double divisor = (b - a) * (c - a);
             return divident / divisor;
         }
         if (x == c) {
             return (c - a) / (b - a);
         }
         if (c < x && x <= b) {
-            double divident = (b - x) * (b - x);
-            double divisor = (b - a) * (b - c);
+            final double divident = (b - x) * (b - x);
+            final double divisor = (b - a) * (b - c);
             return 1 - (divident / divisor);
         }
         return 1;

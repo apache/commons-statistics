@@ -19,6 +19,13 @@
     "-//Checkstyle//DTD SuppressionFilter Configuration 1.2//EN"
     "https://checkstyle.org/dtds/suppressions_1_2.dtd">
 <suppressions>
+  <!-- Allow variable to match known equations. -->
+  <suppress checks="LocalFinalVariableName" files=".*[/\\]ZipfDistribution.java" />
+  <suppress checks="LocalFinalVariableName" files=".*[/\\]HypergeometricDistribution.java" />
+  <!-- Be more lenient on tests. -->
   <suppress checks="Javadoc" files=".*[/\\]test[/\\].*" />
   <suppress checks="MultipleStringLiterals" files=".*[/\\]test[/\\].*" />
+  <suppress checks="DesignForExtension" files=".*[/\\]test[/\\].*" />
+  <suppress checks="LineLength" files=".*[/\\]test[/\\].*" />
+  <suppress checks="LocalFinalVariableName" files=".*[/\\]HypergeometricDistributionTest.java" />
 </suppressions>

@@ -86,11 +86,11 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
         Assert.assertEquals(6d, dist.getDenominatorDegreesOfFreedom(), Double.MIN_VALUE);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition1() {
         new FDistribution(0, 1);
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testPrecondition2() {
         new FDistribution(1, 0);
     }
