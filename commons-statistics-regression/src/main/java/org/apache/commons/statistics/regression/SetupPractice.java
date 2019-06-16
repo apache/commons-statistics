@@ -23,7 +23,28 @@ public class SetupPractice {
 
     public static void main(String[] args) {
         System.out.println("-- SETUP PRACTICE --");
+        
+        double [][] xData = new double [][] {{1,2,3},{4,5,6},{7,8,9}};
+        double [] yData = new double [] {10,11,12};
+        
+        RegressionRawData myData = new RegressionRawData();
+        myData.setXData(RegressionDataBuilder.newX(xData));
+        myData.setYData(RegressionDataBuilder.newY(yData));
+        myData.setHasIntercept(false);
 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
@@ -38,8 +59,7 @@ public class SetupPractice {
         });
 
         System.out.println(list);
-        
-        
+
         Comparator<String> comparator = (String a, String b) -> {
             return a.compareTo(b);
         };
@@ -49,8 +69,7 @@ public class SetupPractice {
         Collections.sort(list, comparatorReversed);
 
         System.out.println(list);
-        
-        
+
 //		DMatrixRMaj A = new DMatrixRMaj(2, 3, true, new double[] { 1, 2, 3, 4, 5, 6 });
 //
 //		try {
@@ -98,9 +117,6 @@ public class SetupPractice {
 //				
 //		}
 
-        
-        
-        
 //        double mat[][] = { { 1, 2, 3 }, { 7, 8, 9 } };
 //
 //        for (int i = 0; i < mat.length; i++) {
@@ -112,11 +128,6 @@ public class SetupPractice {
 //        SimpleMatrix A = new SimpleMatrix(mat);
 //        SimpleMatrix B = A.transpose();
 
-        
-        
-        
-        
-        
         // create two vectors whose elements are drawn from uniform distributions
 //        SimpleMatrix A = SimpleMatrix.wrap(RandomMatrices_DDRM.rectangle(N,1,0,1,rand));
 //        SimpleMatrix B = SimpleMatrix.wrap(RandomMatrices_DDRM.rectangle(N,1,1,2,rand));
@@ -126,11 +137,6 @@ public class SetupPractice {
         // the mean should be about 1.5
 //        System.out.println("Mean of B is               "+B.mean());
 
-        
-        
-        
-        
-        
 //        SimpleMatrix C = A.mult(B);
 //
 //        // the mean should be about 2.0
@@ -141,9 +147,6 @@ public class SetupPractice {
 //        System.out.println();
 //        B.print();
 
-        
-        
-        
 //        System.out.println("Standard deviation of A is "+A.stdev());
 //        System.out.println("Standard deviation of B is "+B.stdev());
 //        System.out.println("Standard deviation of C is "+C.stdev());

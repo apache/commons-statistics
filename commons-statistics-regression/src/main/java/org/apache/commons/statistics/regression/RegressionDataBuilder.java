@@ -22,33 +22,13 @@ import org.ejml.simple.SimpleMatrix;
 
 public class RegressionDataBuilder {
     
-//    private StatisticsMatrix xMatrix;
-//    private StatisticsMatrix yMatrix; //vector
-//    private boolean hasIntercept;
-    
-    
-//    public RegressionDataBuilder() {
-//    	this.xMatrix = null;
-//    	this.yMatrix = null;
-//    }
-//    
-//    public RegressionDataBuilder(double[][] y, double[][] x, boolean hasIntercept) {
-//        this.xMatrix = new StatisticsMatrix(new DMatrixRMaj(x));
-//        this.yMatrix = new StatisticsMatrix(new DMatrixRMaj(y));
-//    }
-	
-	
-    // how to convert 1D array to 2D
-    // Vectors in SimpleBase    
-    public StatisticsMatrix newY(double [] y) {
+    public static StatisticsMatrix newY(double [] y) {
     	return (new StatisticsMatrix(new DMatrixRMaj(y)));
     }
     
 
-    public StatisticsMatrix newX(double [][] x) {
+    public static StatisticsMatrix newX(double [][] x) {
     	return (new StatisticsMatrix(new DMatrixRMaj(x)));
     }
-    
-    
     
 }
