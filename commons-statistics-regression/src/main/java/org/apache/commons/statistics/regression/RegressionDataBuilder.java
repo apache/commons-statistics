@@ -16,13 +16,19 @@
  */
 package org.apache.commons.statistics.regression;
 
+import org.apache.commons.statistics.regression.matrix.StatisticsMatrix;
+import org.ejml.data.DMatrixRMaj;
 import org.ejml.simple.SimpleMatrix;
 
-public class RegressionDataLoader {
+public class RegressionDataBuilder {
     
-    private SimpleMatrix xMatrix = null;
-    
-    public RegressionDataLoader(double[] y, double[][] x, boolean hasIntercept) {
-        this.xMatrix = new SimpleMatrix(x);
+    public static StatisticsMatrix newY(double [] y) {
+    	return (new StatisticsMatrix(new DMatrixRMaj(y)));
     }
+    
+
+    public static StatisticsMatrix newX(double [][] x) {
+    	return (new StatisticsMatrix(new DMatrixRMaj(x)));
+    }
+    
 }

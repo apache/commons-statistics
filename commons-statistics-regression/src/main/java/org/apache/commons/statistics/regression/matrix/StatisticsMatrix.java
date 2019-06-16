@@ -1,4 +1,4 @@
-package org.apache.commons.statistics.regression;
+package org.apache.commons.statistics.regression.matrix;
 
 import org.ejml.data.DMatrixRBlock;
 
