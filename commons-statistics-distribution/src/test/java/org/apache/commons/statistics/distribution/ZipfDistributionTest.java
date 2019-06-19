@@ -18,8 +18,9 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link ZipfDistribution}.
@@ -28,21 +29,21 @@ import org.junit.Test;
  */
 public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
 
-    /**
-     * Constructor to override default tolerance.
-     */
-    public ZipfDistributionTest() {
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-12);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions1() {
-        new ZipfDistribution(0, 1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(0, 1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPreconditions2() {
-        new ZipfDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(1, 0));
     }
 
     //-------------- Implementations for abstract methods -----------------------
@@ -113,8 +114,8 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
         ZipfDistribution dist;
 
         dist = new ZipfDistribution(2, 0.5);
-        Assert.assertEquals(Math.sqrt(2), dist.getMean(), tol);
-        Assert.assertEquals(0.24264068711928521, dist.getVariance(), tol);
+        Assertions.assertEquals(Math.sqrt(2), dist.getMean(), tol);
+        Assertions.assertEquals(0.24264068711928521, dist.getVariance(), tol);
     }
 
     /**

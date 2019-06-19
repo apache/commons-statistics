@@ -24,8 +24,9 @@ import java.io.InputStreamReader;
 
 import org.apache.commons.numbers.gamma.LanczosApproximation;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for GammaDistribution.
@@ -67,9 +68,9 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     // --------------------- Override tolerance  --------------
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-9);
     }
 
@@ -77,17 +78,17 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testParameterAccessors() {
         GammaDistribution distribution = (GammaDistribution) getDistribution();
-        Assert.assertEquals(4d, distribution.getShape(), 0);
-        Assert.assertEquals(2d, distribution.getScale(), 0);
+        Assertions.assertEquals(4d, distribution.getShape(), 0);
+        Assertions.assertEquals(2d, distribution.getScale(), 0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new GammaDistribution(0, 1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new GammaDistribution(0, 1));
     }
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        new GammaDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new GammaDistribution(1, 0));
     }
 
     @Test
@@ -110,13 +111,13 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     private void testProbability(double x, double a, double b, double expected) {
         GammaDistribution distribution = new GammaDistribution(a, b);
         double actual = distribution.cumulativeProbability(x);
-        Assert.assertEquals("probability for " + x, expected, actual, 10e-4);
+        Assertions.assertEquals(expected, actual, 10e-4, () -> "probability for " + x);
     }
 
     private void testValue(double expected, double a, double b, double p) {
         GammaDistribution distribution = new GammaDistribution(a, b);
         double actual = distribution.inverseCumulativeProbability(p);
-        Assert.assertEquals("critical value for " + p, expected, actual, 10e-4);
+        Assertions.assertEquals(expected, actual, 10e-4, () -> "critical value for " + p);
     }
 
     @Test
@@ -143,7 +144,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     private void checkDensity(double alpha, double rate, double[] x, double[] expected) {
         GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
-            Assert.assertEquals(expected[i], d.density(x[i]), 1e-5);
+            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-5);
         }
     }
 
@@ -160,12 +161,12 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         GammaDistribution dist;
 
         dist = new GammaDistribution(1, 2);
-        Assert.assertEquals(2, dist.getMean(), tol);
-        Assert.assertEquals(4, dist.getVariance(), tol);
+        Assertions.assertEquals(2, dist.getMean(), tol);
+        Assertions.assertEquals(4, dist.getVariance(), tol);
 
         dist = new GammaDistribution(1.1, 4.2);
-        Assert.assertEquals(1.1d * 4.2d, dist.getMean(), tol);
-        Assert.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance(), tol);
+        Assertions.assertEquals(1.1d * 4.2d, dist.getMean(), tol);
+        Assertions.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance(), tol);
     }
 
     public static double logGamma(double x) {
@@ -222,8 +223,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
         final InputStream resourceAsStream;
         resourceAsStream = this.getClass().getResourceAsStream(resourceName);
-        Assert.assertNotNull("Could not find resource " + resourceName,
-                             resourceAsStream);
+        Assertions.assertNotNull(resourceAsStream, () -> "Could not find resource " + resourceName);
         final BufferedReader in;
         in = new BufferedReader(new InputStreamReader(resourceAsStream));
 
@@ -233,8 +233,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                     continue;
                 }
                 final String[] tokens = line.split(", ");
-                Assert.assertTrue("expected two floating-point values",
-                                  tokens.length == 2);
+                Assertions.assertTrue(tokens.length == 2, "expected two floating-point values");
                 final double x = Double.parseDouble(tokens[0]);
                 final String msg = "x = " + x + ", shape = " + shape +
                                    ", scale = 1.0";
@@ -246,8 +245,8 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                 final double errNew = Math.abs((actualNew - expected) / ulp);
 
                 if (Double.isNaN(actualOld) || Double.isInfinite(actualOld)) {
-                    Assert.assertFalse(msg, Double.isNaN(actualNew));
-                    Assert.assertFalse(msg, Double.isInfinite(actualNew));
+                    Assertions.assertFalse(Double.isNaN(actualNew), msg);
+                    Assertions.assertFalse(Double.isInfinite(actualNew), msg);
                     statNewOF.addValue(errNew);
                 } else {
                     statOld.addValue(errOld);
@@ -272,22 +271,22 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
                 final double oldMin = statOld.getMin();
                 final double newMin = statNewNoOF.getMin();
-                Assert.assertTrue(msg, newMin <= oldMin);
+                Assertions.assertTrue(newMin <= oldMin, msg);
 
                 final double oldMax = statOld.getMax();
                 final double newMax = statNewNoOF.getMax();
-                Assert.assertTrue(msg, newMax <= oldMax);
+                Assertions.assertTrue(newMax <= oldMax, msg);
 
                 final double oldMean = statOld.getMean();
                 final double newMean = statNewNoOF.getMean();
-                Assert.assertTrue(msg, newMean <= oldMean);
+                Assertions.assertTrue(newMean <= oldMean, msg);
 
                 final double oldSd = statOld.getStandardDeviation();
                 final double newSd = statNewNoOF.getStandardDeviation();
-                Assert.assertTrue(msg, newSd <= oldSd);
+                Assertions.assertTrue(newSd <= oldSd, msg);
 
-                Assert.assertTrue(msg, newMean <= meanNoOF);
-                Assert.assertTrue(msg, newSd <= sdNoOF);
+                Assertions.assertTrue(newMean <= meanNoOF, msg);
+                Assertions.assertTrue(newSd <= sdNoOF, msg);
             }
             if (statNewOF.getN() != 0) {
                 final double newMean = statNewOF.getMean();
@@ -306,11 +305,11 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                 sb.append(newSd);
                 final String msg = sb.toString();
 
-                Assert.assertTrue(msg, newMean <= meanOF);
-                Assert.assertTrue(msg, newSd <= sdOF);
+                Assertions.assertTrue(newMean <= meanOF, msg);
+                Assertions.assertTrue(newSd <= sdOF, msg);
             }
         } catch (IOException e) {
-            Assert.fail(e.getMessage());
+            Assertions.fail(e.getMessage());
         } finally {
             in.close();
         }

@@ -32,8 +32,6 @@ class DistributionException extends IllegalArgumentException {
     static final String NEGATIVE = "Number {0} is negative";
     /** Error message for "mismatch" condition. */
     static final String MISMATCH = "Expected {1} but was {0}";
-    /** Error message for "failed bracketing" condition. */
-    static final String BRACKETING = "No bracketing: f({0})={1}, f({2})={3}";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20180119L;
