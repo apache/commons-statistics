@@ -1,4 +1,4 @@
-package org.apache.commons.statistics.regression.matrix;
+package org.apache.commons.statistics.regression.util.matrix;
 
 import org.ejml.data.DMatrixRBlock;
 
@@ -145,8 +145,6 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 		// TODO Auto-generated method stub
 		return new StatisticsMatrix(m);
 	}
-	
-	
 	
 	
     public static void main( String args[] ) {
