@@ -18,7 +18,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.DiscreteSampler;
 import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
 
 /**
@@ -26,7 +25,7 @@ import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
  * uniform integer distribution</a>.
  */
 public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
-    /** 1 / 12 **/
+    /** 1 / 12. **/
     private static final double ONE_TWELFTH = 1 / 12d;
     /** Lower bound (inclusive) of this distribution. */
     private final int lower;
@@ -97,7 +96,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public double getVariance() {
-        double n = upperMinusLower + 1;
+        final double n = upperMinusLower + 1;
         return ONE_TWELFTH * (n * n - 1);
     }
 
@@ -142,18 +141,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /**{@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new DiscreteDistribution.Sampler() {
-            /**
-             * Discrete uniform distribution sampler.
-             */
-            private final DiscreteSampler sampler =
-                new DiscreteUniformSampler(rng, lower, upper);
-
-            /**{@inheritDoc} */
-            @Override
-            public int sample() {
-                return sampler.sample();
-            }
-        };
+        // Discrete uniform distribution sampler.
+        return new DiscreteUniformSampler(rng, lower, upper)::sample;
     }
 }

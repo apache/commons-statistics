@@ -27,6 +27,11 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  * @see <a href="http://mathworld.wolfram.com/F-Distribution.html">F-distribution (MathWorld)</a>
  */
 public class FDistribution extends AbstractContinuousDistribution {
+    /** The minimum degrees of freedom for the denominator when computing the mean. */
+    private static final double MIN_DENOMINATOR_DF_FOR_MEAN = 2.0;
+    /** The minimum degrees of freedom for the denominator when computing the variance. */
+    private static final double MIN_DENOMINATOR_DF_FOR_VARIANCE = 4.0;
+
     /** The numerator degrees of freedom. */
     private final double numeratorDegreesOfFreedom;
     /** The numerator degrees of freedom. */
@@ -94,8 +99,8 @@ public class FDistribution extends AbstractContinuousDistribution {
         if (x <= 0) {
             ret = 0;
         } else {
-            double n = numeratorDegreesOfFreedom;
-            double m = denominatorDegreesOfFreedom;
+            final double n = numeratorDegreesOfFreedom;
+            final double m = denominatorDegreesOfFreedom;
 
             ret = RegularizedBeta.value((n * x) / (m + n * x),
                 0.5 * n,
@@ -135,7 +140,7 @@ public class FDistribution extends AbstractContinuousDistribution {
     public double getMean() {
         final double denominatorDF = getDenominatorDegreesOfFreedom();
 
-        if (denominatorDF > 2) {
+        if (denominatorDF > MIN_DENOMINATOR_DF_FOR_MEAN) {
             return denominatorDF / (denominatorDF - 2);
         }
 
@@ -159,7 +164,7 @@ public class FDistribution extends AbstractContinuousDistribution {
     public double getVariance() {
         final double denominatorDF = getDenominatorDegreesOfFreedom();
 
-        if (denominatorDF > 4) {
+        if (denominatorDF > MIN_DENOMINATOR_DF_FOR_VARIANCE) {
             final double numeratorDF = getNumeratorDegreesOfFreedom();
             final double denomDFMinusTwo = denominatorDF - 2;
 

@@ -20,7 +20,6 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.LogNormalSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSampler;
 
@@ -45,9 +44,9 @@ import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSa
  * </ul>
  */
 public class LogNormalDistribution extends AbstractContinuousDistribution {
-    /** &radic;(2 &pi;) */
+    /** &radic;(2 &pi;). */
     private static final double SQRT2PI = Math.sqrt(2 * Math.PI);
-    /** &radic;(2) */
+    /** &radic;(2). */
     private static final double SQRT2 = Math.sqrt(2);
     /** The scale parameter of this distribution. */
     private final double scale;
@@ -180,7 +179,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getMean() {
-        double s = shape;
+        final double s = shape;
         return Math.exp(scale + (s * s / 2));
     }
 
@@ -238,18 +237,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ContinuousDistribution.Sampler() {
-            /**
-             * Log normal distribution sampler.
-             */
-            private final ContinuousSampler sampler =
-                new LogNormalSampler(new ZigguratNormalizedGaussianSampler(rng), scale, shape);
-
-            /**{@inheritDoc} */
-            @Override
-            public double sample() {
-                return sampler.sample();
-            }
-        };
+        // Log normal distribution sampler.
+        return new LogNormalSampler(new ZigguratNormalizedGaussianSampler(rng), scale, shape)::sample;
     }
 }

@@ -22,13 +22,13 @@ import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.inference.GTest;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class BetaDistributionTest {
 
-    static final double[] alphaBetas = {0.1, 1, 10, 100, 1000};
-    static final double epsilon = StatUtils.min(alphaBetas);
+    static final double[] ALPHA_BETAS = {0.1, 1, 10, 100, 1000};
+    static final double EPSILON = StatUtils.min(ALPHA_BETAS);
 
     @Test
     public void testCumulative() {
@@ -152,11 +152,11 @@ public class BetaDistributionTest {
     private void checkCumulative(double alpha, double beta, double[] x, double[] cumes) {
         BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
-            Assert.assertEquals(cumes[i], d.cumulativeProbability(x[i]), 1e-8);
+            Assertions.assertEquals(cumes[i], d.cumulativeProbability(x[i]), 1e-8);
         }
 
         for (int i = 1; i < x.length - 1; i++) {
-            Assert.assertEquals(x[i], d.inverseCumulativeProbability(cumes[i]), 1e-5);
+            Assertions.assertEquals(x[i], d.inverseCumulativeProbability(cumes[i]), 1e-5);
         }
     }
 
@@ -294,7 +294,9 @@ public class BetaDistributionTest {
     private void checkDensity(double alpha, double beta, double[] x, double[] expected) {
         BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
-            Assert.assertEquals(String.format("density at x=%.1f for alpha=%.1f, beta=%.1f", x[i], alpha, beta), expected[i], d.density(x[i]), 1e-5);
+            final int index = i;
+            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-5,
+                () -> String.format("density at x=%.1f for alpha=%.1f, beta=%.1f", x[index], alpha, beta));
         }
     }
 
@@ -304,12 +306,12 @@ public class BetaDistributionTest {
         BetaDistribution dist;
 
         dist = new BetaDistribution(1, 1);
-        Assert.assertEquals(dist.getMean(), 0.5, tol);
-        Assert.assertEquals(dist.getVariance(), 1.0 / 12.0, tol);
+        Assertions.assertEquals(0.5, dist.getMean(), tol);
+        Assertions.assertEquals(1.0 / 12.0, dist.getVariance(), tol);
 
         dist = new BetaDistribution(2, 5);
-        Assert.assertEquals(dist.getMean(), 2.0 / 7.0, tol);
-        Assert.assertEquals(dist.getVariance(), 10.0 / (49.0 * 8.0), tol);
+        Assertions.assertEquals(2.0 / 7.0, dist.getMean(), tol);
+        Assertions.assertEquals(10.0 / (49.0 * 8.0), dist.getVariance(), tol);
     }
 
     @Test
@@ -317,20 +319,17 @@ public class BetaDistributionTest {
         final UniformRandomProvider rng = RandomSource.create(RandomSource.WELL_1024_A,
                                                               123456789L);
         final int numSamples = 1000;
-        for (final double alpha : alphaBetas) {
-            for (final double beta : alphaBetas) {
+        for (final double alpha : ALPHA_BETAS) {
+            for (final double beta : ALPHA_BETAS) {
                 final BetaDistribution betaDistribution = new BetaDistribution(alpha, beta);
                 final double[] observed = AbstractContinuousDistribution.sample(numSamples,
                         betaDistribution.createSampler(rng));
                 Arrays.sort(observed);
 
-                final String distribution = String.format("Beta(%.2f, %.2f)", alpha, beta);
-                Assert.assertEquals(String.format("E[%s]", distribution),
-                                    betaDistribution.getMean(),
-                                    StatUtils.mean(observed), epsilon);
-                Assert.assertEquals(String.format("Var[%s]", distribution),
-                                    betaDistribution.getVariance(),
-                                    StatUtils.variance(observed), epsilon);
+                Assertions.assertEquals(betaDistribution.getMean(), StatUtils.mean(observed),
+                                        EPSILON, () -> String.format("E[Beta(%.2f, %.2f)]", alpha, beta));
+                Assertions.assertEquals(betaDistribution.getVariance(), StatUtils.variance(observed),
+                                        EPSILON, () -> String.format("Var[Beta(%.2f, %.2f)]", alpha, beta));
             }
         }
     }
@@ -342,16 +341,16 @@ public class BetaDistributionTest {
 
         final int numSamples = 1000;
         final double level = 0.01;
-        for (final double alpha : alphaBetas) {
-            for (final double beta : alphaBetas) {
+        for (final double alpha : ALPHA_BETAS) {
+            for (final double beta : ALPHA_BETAS) {
                 final BetaDistribution betaDistribution = new BetaDistribution(alpha, beta);
 
                 final ContinuousDistribution.Sampler sampler = betaDistribution.createSampler(rng);
                 final double[] observed = AbstractContinuousDistribution.sample(numSamples, sampler);
 
                 final double gT = gTest(betaDistribution, observed);
-                Assert.assertFalse("G goodness-of-fit (" + gT + ") test rejected null at alpha = " + level,
-                                   gT < level);
+                Assertions.assertFalse(gT < level,
+                    () -> "G goodness-of-fit (" + gT + ") test rejected null at alpha = " + level);
             }
         }
     }
