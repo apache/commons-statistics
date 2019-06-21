@@ -17,10 +17,10 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Abstract base class for {@link DiscreteDistribution} tests.
@@ -92,12 +92,12 @@ public abstract class DiscreteDistributionAbstractTest {
      * @return double[] the default logarithmic probability density test expected values.
      */
     public double[] makeLogDensityTestValues() {
-        final double[] densityTestValues = makeDensityTestValues();
-        final double[] logDensityTestValues = new double[densityTestValues.length];
-        for (int i = 0; i < densityTestValues.length; i++) {
-            logDensityTestValues[i] = Math.log(densityTestValues[i]);
+        final double[] density = makeDensityTestValues();
+        final double[] logDensity = new double[density.length];
+        for (int i = 0; i < density.length; i++) {
+            logDensity[i] = Math.log(density[i]);
         }
-        return logDensityTestValues;
+        return logDensity;
     }
 
     /** Creates the default cumulative probability density test input values */
@@ -117,7 +117,7 @@ public abstract class DiscreteDistributionAbstractTest {
     /**
      * Setup sets all test instance data to default values
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         distribution = makeDistribution();
         densityTestPoints = makeDensityTestPoints();
@@ -132,7 +132,7 @@ public abstract class DiscreteDistributionAbstractTest {
     /**
      * Cleans up test instance data
      */
-    @After
+    @AfterEach
     public void tearDown() {
         distribution = null;
         densityTestPoints = null;
@@ -152,9 +152,10 @@ public abstract class DiscreteDistributionAbstractTest {
      */
     protected void verifyDensities() {
         for (int i = 0; i < densityTestPoints.length; i++) {
-            Assert.assertEquals("Incorrect density value returned for " + densityTestPoints[i],
-                                densityTestValues[i],
-                                distribution.probability(densityTestPoints[i]), getTolerance());
+            final int testPoint = densityTestPoints[i];
+            Assertions.assertEquals(densityTestValues[i],
+                distribution.probability(testPoint), getTolerance(),
+                () -> "Incorrect density value returned for " + testPoint);
         }
     }
 
@@ -165,9 +166,10 @@ public abstract class DiscreteDistributionAbstractTest {
     protected void verifyLogDensities() {
         for (int i = 0; i < densityTestPoints.length; i++) {
             // FIXME: when logProbability methods are added to DiscreteDistribution in 4.0, remove cast below
-            Assert.assertEquals("Incorrect log density value returned for " + densityTestPoints[i],
-                                logDensityTestValues[i],
-                                ((AbstractDiscreteDistribution) distribution).logProbability(densityTestPoints[i]), tolerance);
+            final int testPoint = densityTestPoints[i];
+            Assertions.assertEquals(logDensityTestValues[i],
+                ((AbstractDiscreteDistribution) distribution).logProbability(testPoint), tolerance,
+                () -> "Incorrect log density value returned for " + testPoint);
         }
     }
 
@@ -177,9 +179,10 @@ public abstract class DiscreteDistributionAbstractTest {
      */
     protected void verifyCumulativeProbabilities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            Assert.assertEquals("Incorrect cumulative probability value returned for " + cumulativeTestPoints[i],
-                                cumulativeTestValues[i],
-                                distribution.cumulativeProbability(cumulativeTestPoints[i]), getTolerance());
+            final int testPoint = cumulativeTestPoints[i];
+            Assertions.assertEquals(cumulativeTestValues[i],
+                distribution.cumulativeProbability(testPoint), getTolerance(),
+                () -> "Incorrect cumulative probability value returned for " + testPoint);
         }
     }
 
@@ -190,9 +193,10 @@ public abstract class DiscreteDistributionAbstractTest {
      */
     protected void verifyInverseCumulativeProbabilities() {
         for (int i = 0; i < inverseCumulativeTestPoints.length; i++) {
-            Assert.assertEquals("Incorrect inverse cumulative probability value returned for "
-                                + inverseCumulativeTestPoints[i], inverseCumulativeTestValues[i],
-                                distribution.inverseCumulativeProbability(inverseCumulativeTestPoints[i]));
+            final double testPoint = inverseCumulativeTestPoints[i];
+            Assertions.assertEquals(inverseCumulativeTestValues[i],
+                distribution.inverseCumulativeProbability(testPoint),
+                () -> "Incorrect inverse cumulative probability value returned for " + testPoint);
         }
     }
 
@@ -237,33 +241,33 @@ public abstract class DiscreteDistributionAbstractTest {
     @Test
     public void testConsistencyAtSupportBounds() {
         final int lower = distribution.getSupportLowerBound();
-        Assert.assertEquals("Cumulative probability mmust be 0 below support lower bound.",
-                            0.0, distribution.cumulativeProbability(lower - 1), 0.0);
-        Assert.assertEquals("Cumulative probability of support lower bound must be equal to probability mass at this point.",
-                            distribution.probability(lower), distribution.cumulativeProbability(lower), getTolerance());
-        Assert.assertEquals("Inverse cumulative probability of 0 must be equal to support lower bound.",
-                            lower, distribution.inverseCumulativeProbability(0.0));
+        Assertions.assertEquals(0.0, distribution.cumulativeProbability(lower - 1), 0.0,
+                "Cumulative probability mmust be 0 below support lower bound.");
+        Assertions.assertEquals(distribution.probability(lower), distribution.cumulativeProbability(lower), getTolerance(),
+                "Cumulative probability of support lower bound must be equal to probability mass at this point.");
+        Assertions.assertEquals(lower, distribution.inverseCumulativeProbability(0.0),
+                "Inverse cumulative probability of 0 must be equal to support lower bound.");
 
         final int upper = distribution.getSupportUpperBound();
         if (upper != Integer.MAX_VALUE) {
-            Assert.assertEquals("Cumulative probability of support upper bound must be equal to 1.",
-                                1.0, distribution.cumulativeProbability(upper), 0.0);
+            Assertions.assertEquals(1.0, distribution.cumulativeProbability(upper), 0.0,
+                    "Cumulative probability of support upper bound must be equal to 1.");
         }
-        Assert.assertEquals("Inverse cumulative probability of 1 must be equal to support upper bound.",
-                            upper, distribution.inverseCumulativeProbability(1.0));
+        Assertions.assertEquals(upper, distribution.inverseCumulativeProbability(1.0),
+                "Inverse cumulative probability of 1 must be equal to support upper bound.");
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        distribution.probability(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.probability(1, 0));
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        distribution.inverseCumulativeProbability(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition3() {
-        distribution.inverseCumulativeProbability(2);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     /**
@@ -275,7 +279,7 @@ public abstract class DiscreteDistributionAbstractTest {
         double[] densityValues = makeDensityTestValues();
         int sampleSize = 1000;
         int length = TestUtils.eliminateZeroMassPoints(densityPoints, densityValues);
-        AbstractDiscreteDistribution distribution = (AbstractDiscreteDistribution) makeDistribution();
+        AbstractDiscreteDistribution dist = (AbstractDiscreteDistribution) makeDistribution();
         double[] expectedCounts = new double[length];
         long[] observedCounts = new long[length];
         for (int i = 0; i < length; i++) {
@@ -283,15 +287,15 @@ public abstract class DiscreteDistributionAbstractTest {
         }
         // Use fixed seed.
         final DiscreteDistribution.Sampler sampler =
-            distribution.createSampler(RandomSource.create(RandomSource.WELL_512_A,
+            dist.createSampler(RandomSource.create(RandomSource.WELL_512_A,
                                                            1000));
         int[] sample = AbstractDiscreteDistribution.sample(sampleSize, sampler);
         for (int i = 0; i < sampleSize; i++) {
-          for (int j = 0; j < length; j++) {
-              if (sample[i] == densityPoints[j]) {
-                  observedCounts[j]++;
-              }
-          }
+            for (int j = 0; j < length; j++) {
+                if (sample[i] == densityPoints[j]) {
+                    observedCounts[j]++;
+                }
+            }
         }
         TestUtils.assertChiSquareAccept(densityPoints, expectedCounts, observedCounts, .001);
     }

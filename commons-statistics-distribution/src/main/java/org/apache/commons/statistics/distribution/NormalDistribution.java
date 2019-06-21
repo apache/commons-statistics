@@ -21,7 +21,6 @@ import org.apache.commons.numbers.gamma.Erfc;
 import org.apache.commons.numbers.gamma.InverseErf;
 import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.GaussianSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSampler;
 
@@ -29,7 +28,7 @@ import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSa
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal (Gaussian) distribution</a>.
  */
 public class NormalDistribution extends AbstractContinuousDistribution {
-    /** &radic;(2) */
+    /** &radic;(2). */
     private static final double SQRT2 = Math.sqrt(2.0);
     /** Mean of this distribution. */
     private final double mean;
@@ -179,17 +178,8 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ContinuousDistribution.Sampler() {
-            /** Gaussian distribution sampler. */
-            private final ContinuousSampler sampler =
-                new GaussianSampler(new ZigguratNormalizedGaussianSampler(rng),
-                                    mean, standardDeviation);
-
-            /** {@inheritDoc} */
-            @Override
-            public double sample() {
-                return sampler.sample();
-            }
-        };
+        // Gaussian distribution sampler.
+        return new GaussianSampler(new ZigguratNormalizedGaussianSampler(rng),
+                                   mean, standardDeviation)::sample;
     }
 }

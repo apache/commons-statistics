@@ -19,7 +19,6 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.gamma.RegularizedBeta;
 import org.apache.commons.numbers.gamma.LogGamma;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.ChengBetaSampler;
 
 /**
@@ -90,8 +89,8 @@ public class BetaDistribution extends AbstractContinuousDistribution {
             }
             return Double.NEGATIVE_INFINITY;
         } else {
-            double logX = Math.log(x);
-            double log1mX = Math.log1p(-x);
+            final double logX = Math.log(x);
+            final double log1mX = Math.log1p(-x);
             return (alpha - 1) * logX + (beta - 1) * log1mX - z;
         }
     }
@@ -185,18 +184,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ContinuousDistribution.Sampler() {
-            /**
-             * Beta distribution sampler.
-             */
-            private final ContinuousSampler sampler =
-                new ChengBetaSampler(rng, alpha, beta);
-
-            /**{@inheritDoc} */
-            @Override
-            public double sample() {
-                return sampler.sample();
-            }
-        };
+        // Beta distribution sampler.
+        return new ChengBetaSampler(rng, alpha, beta)::sample;
     }
 }

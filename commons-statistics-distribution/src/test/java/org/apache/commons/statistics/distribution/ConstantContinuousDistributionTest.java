@@ -17,19 +17,19 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for ConstantContinuousDistribution.
  */
 public class ConstantContinuousDistributionTest extends ContinuousDistributionAbstractTest {
 
-    // --- Override tolerance -------------------------------------------------
+    // --------------------- Override tolerance  --------------
 
-    @Override
-    public void setUp() {
-        super.setUp();
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(0);
     }
 
@@ -65,7 +65,7 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
     public void testInverseCumulativeProbabilities() {
         ContinuousDistribution dist = getDistribution();
         for (double x : getCumulativeTestValues()) {
-            Assert.assertEquals(1,dist.inverseCumulativeProbability(x), 0);
+            Assertions.assertEquals(1, dist.inverseCumulativeProbability(x), 0);
         }
     }
 
@@ -76,8 +76,8 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
         ConstantContinuousDistribution dist;
 
         dist = new ConstantContinuousDistribution(-1);
-        Assert.assertEquals(dist.getMean(), -1, 0d);
-        Assert.assertEquals(dist.getVariance(), 0, 0d);
+        Assertions.assertEquals(-1, dist.getMean(), 0d);
+        Assertions.assertEquals(0, dist.getVariance(), 0d);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
         final double value = 12.345;
         final ContinuousDistribution.Sampler sampler = new ConstantContinuousDistribution(value).createSampler(null);
         for (int i = 0; i < 10; i++) {
-            Assert.assertEquals(value, sampler.sample(), 0);
+            Assertions.assertEquals(value, sampler.sample(), 0);
         }
     }
 }
