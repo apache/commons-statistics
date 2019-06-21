@@ -1,12 +1,12 @@
 package org.apache.commons.statistics.regression.stored;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.apache.commons.statistics.regression.util.array.ArrayUtils;
-import org.junit.Test;
 
 public class RegressionDataLoaderTest {
 
@@ -28,12 +28,12 @@ public class RegressionDataLoaderTest {
 //        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray1D(data.getInputData().getYData()));
 //        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(data.getInputData().getXData()));
 
-        assertEquals(data.getInputData().getYData().get(1), 11, 0);
-        assertEquals(data.getInputData().getXData().get(0, 0), -2, 0);
-        assertEquals(data.getInputData().getXData().get(1, 1), 2, 0);
+        Assertions.assertEquals(data.getInputData().getYData().get(1), 11, 0);
+        Assertions.assertEquals(data.getInputData().getXData().get(0, 0), -2, 0);
+        Assertions.assertEquals(data.getInputData().getXData().get(1, 1), 2, 0);
 
-        assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(data.getInputData().getYData()), yData));
-        assertArrayEquals(ArrayUtils.matrixToArray2D(data.getInputData().getXData()), xData);
+        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(data.getInputData().getYData()), yData));
+        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(data.getInputData().getXData()), xData);
 
     }
 
