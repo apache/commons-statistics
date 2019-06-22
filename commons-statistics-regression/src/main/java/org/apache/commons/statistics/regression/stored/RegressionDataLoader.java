@@ -29,30 +29,49 @@ public class RegressionDataLoader {
     }
 
     public void newYData(double[] y) {
-        if (inputData != null) {
-            if (inputData.getXData() != null) {
+        inputData.setYData(newY(y));
 
-                validateSampleData(y, ArrayUtils.matrixToArray2D(inputData.getXData()));
-                inputData.setYData(newY(y));
-            } else
-                throw new NullPointerException(
-                        "X matrix is null, please use newSampleData(y, x) to input initial data.");
-        } else
-            throw new NullPointerException(); // not reachable?
+        if (inputData.getXData() != null)
+            validateSampleData(y, ArrayUtils.matrixToArray2D(inputData.getXData()));
     }
 
     public void newXData(double[][] x) {
-        if (inputData != null) {
-            if (inputData.getYData() != null) {
+        inputData.setXData(newX(x));
 
-                validateSampleData(ArrayUtils.matrixToArray1D(inputData.getYData()), x);
-                inputData.setXData(newX(x));
-            } else
-                throw new NullPointerException(
-                        "Y matrix is null, please use newSampleData(y, x) to input initial data.");
-        } else
-            throw new NullPointerException(); // not reachable?
+        if (inputData.getYData() != null)
+            validateSampleData(ArrayUtils.matrixToArray1D(inputData.getYData()), x);
     }
+    
+    public void clearData() {
+        inputData.setYData(null);
+        inputData.setXData(null);
+    }
+
+//    public void newYData(double[] y) {
+//        if (inputData != null) {
+//            if (inputData.getXData() != null) {
+//
+//                validateSampleData(y, ArrayUtils.matrixToArray2D(inputData.getXData()));
+//                inputData.setYData(newY(y));
+//            } else
+//                throw new NullPointerException(
+//                        "X matrix is null, please use newSampleData(y, x) to input initial data.");
+//        } else
+//            throw new NullPointerException(); // not reachable?
+//    }
+//
+//    public void newXData(double[][] x) {
+//        if (inputData != null) {
+//            if (inputData.getYData() != null) {
+//
+//                validateSampleData(ArrayUtils.matrixToArray1D(inputData.getYData()), x);
+//                inputData.setXData(newX(x));
+//            } else
+//                throw new NullPointerException(
+//                        "Y matrix is null, please use newSampleData(y, x) to input initial data.");
+//        } else
+//            throw new NullPointerException(); // not reachable?
+//    }
 
     protected void validateSampleData(double[] y, double[][] x) throws IllegalArgumentException {
         if ((x == null) || (y == null)) {

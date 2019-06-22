@@ -1,10 +1,11 @@
 package org.apache.commons.statistics.regression.stored.ols;
 
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import org.apache.commons.statistics.regression.stored.RegressionDataLoader;
 import org.apache.commons.statistics.regression.stored.ols.OLSRegressionTest;
-import org.junit.Test;
+
 
 public class OLSRegressionTest {
 

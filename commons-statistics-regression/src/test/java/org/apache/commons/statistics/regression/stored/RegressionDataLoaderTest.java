@@ -4,22 +4,28 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
-
 import org.apache.commons.statistics.regression.util.array.ArrayUtils;
 
 public class RegressionDataLoaderTest {
 
-    private double[] yData = new double[] { 10, 11, 12, 13 };
-    private double[][] xData = new double[][] { { -2, -1, 0 }, { 1, 2, 3 }, { 4, 5, 6 }, { 7, 8, 9 } };
+    private double[] yData0n = new double[] { };
+    private double[] yData1n = new double[] { 1 };
+    private double[] yData2n = new double[] { 10, 20 };
+    private double[] yData3n = new double[] { 1, 2, 3 };
+    private double[] yData4n = new double[] { 0.1, 0.2, 0.3, 0.4 };
 
-    private double[] yData2 = new double[] { 10.2, 11.2, 12.2 };
-    private double[][] xData2 = new double[][] { { 1.2, 2.2, 3.2 }, { 4.2, 5.2, 6.2 }, { 7.2, 8.2, 9.2 } };
+    private double[][] xData0p0n = new double[][] { };
+    private double[][] xData1p1n = new double[][] { { 1.1 } };
+    private double[][] xData2p2n = new double[][] { { 1, 2 }, { 3, 4 } };
+    private double[][] xData2p3n = new double[][] { { -2, -1 }, { 0, 1 }, { 2, 3 } };
+    private double[][] xData4p3n = new double[][] { { 2, 4, 8, 16 }, { 32, 64, 128, 256 }, { 512, 1024, 2048, 5096 } };
+    private double[][] xData3p4n = new double[][] { { 0.0, 0.5, 1.0 }, { 1.5, 2.0, 2.5 }, { 3.0, 3.5, 4.0 }, { 4.5, 5.0, 5.5 } };
+    private double[][] xData2p4n = new double[][] { { 1, 3 }, { 5, 7 }, { 9, 11 }, { 13, 15 } };
 
     @Test
-    public void newSampleDataTest() {
-        RegressionDataLoader data = new RegressionDataLoader();
-        data.newSampleData(yData, xData);
+    public void newSampleData_and_matrixToArray_Test() {
+        RegressionDataLoader loader = new RegressionDataLoader();
+        loader.newSampleData(yData3n, xData2p3n);
 
         // Printing the testing arrays, before and after wrapped inside a
         // StatisticsMatrix object
@@ -28,23 +34,62 @@ public class RegressionDataLoaderTest {
 //        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray1D(data.getInputData().getYData()));
 //        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(data.getInputData().getXData()));
 
-        Assertions.assertEquals(data.getInputData().getYData().get(1), 11, 0);
-        Assertions.assertEquals(data.getInputData().getXData().get(0, 0), -2, 0);
-        Assertions.assertEquals(data.getInputData().getXData().get(1, 1), 2, 0);
+        Assertions.assertEquals(loader.getInputData().getYData().get(1), 2, 0);
+        Assertions.assertEquals(loader.getInputData().getXData().get(0, 0), -2, 0);
+        Assertions.assertEquals(loader.getInputData().getXData().get(1, 1), 1, 0);
 
-        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(data.getInputData().getYData()), yData));
-        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(data.getInputData().getXData()), xData);
-
+        System.out.println(xData3p4n[0].length);
+        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(loader.getInputData().getYData()), yData3n));
+        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(loader.getInputData().getXData()), xData2p3n);        
+    }
+    
+    @Test
+    public void validateSampleDataTest() {
+        RegressionDataLoader loader = new RegressionDataLoader();
+        //Null argument(s).
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(null, null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(yData3n, null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(null, xData3p4n));
+        
+        //Dimension mismatch.
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(yData3n, xData3p4n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(yData2n, xData2p3n));
+        
+        //Arrays have length 0.
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(yData0n, xData0p0n));
+        
+        //Not enough data for number of predictors.
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(yData1n, xData1p1n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(yData2n, xData2p2n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newSampleData(yData3n, xData4p3n));
     }
 
+    
     @Test
-    public void newYDataTest() {
-
-    }
-
-    @Test
-    public void newXDataTest() {
-
+    public void changingDataTest() {
+        RegressionDataLoader loader = new RegressionDataLoader();
+        
+        loader.newYData(yData3n);
+        loader.newXData(xData2p3n);        
+        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(loader.getInputData().getYData()), yData3n));
+        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(loader.getInputData().getXData()), xData2p3n); 
+        
+        //Changing to invalid data ( see validateSampleDataTest )
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newYData(yData2n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newXData(xData2p2n));
+        
+        loader.clearData(); // clearData or else n = 4 in X is mismatched with previous n = 3 in Y
+        
+        //order does not matter
+        loader.newXData(xData3p4n);
+        loader.newYData(yData4n);
+        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(loader.getInputData().getYData()), yData4n));
+        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(loader.getInputData().getXData()), xData3p4n); 
+        
+        //changing X does not affect Y
+        loader.newXData(xData2p4n);
+        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(loader.getInputData().getYData()), yData4n));
+        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(loader.getInputData().getXData()), xData2p4n);    
     }
 
 }
