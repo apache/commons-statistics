@@ -147,29 +147,22 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 	}
 	
 	
-    public static void main( String args[] ) {
-        Random rand = new Random(24234);
+    
+    public double[] toArray1D() {
+        return this.getDDRM().data;
+    }
 
-        int N = 500;
+    public double[][] toArray2D() {
+        int rows = this.getDDRM().numRows;
+        int cols = this.getDDRM().numCols;
+        double[][] retArr = new double[rows][cols];
 
-        // create two vectors whose elements are drawn from uniform distributions
-        StatisticsMatrix A = StatisticsMatrix.wrap(RandomMatrices_DDRM.rectangle(N,1,0,1,rand));
-        StatisticsMatrix B = StatisticsMatrix.wrap(RandomMatrices_DDRM.rectangle(N,1,1,2,rand));
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++)
+                retArr[i][j] = this.getDDRM().get(i, j);
+        }
 
-        // the mean should be about 0.5
-        System.out.println("Mean of A is               "+A.mean());
-        // the mean should be about 1.5
-        System.out.println("Mean of B is               "+B.mean());
-
-        StatisticsMatrix C = A.transpose();
-//        StatisticsMatrix C = A.plus(B);
-
-        // the mean should be about 2.0
-        System.out.println("Mean of C = A + B is       "+C.mean());
-
-        System.out.println("Standard deviation of A is "+A.stdev());
-        System.out.println("Standard deviation of B is "+B.stdev());
-        System.out.println("Standard deviation of C is "+C.stdev());
+        return retArr;
     }
     
     

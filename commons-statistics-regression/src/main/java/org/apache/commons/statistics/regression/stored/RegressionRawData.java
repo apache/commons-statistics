@@ -1,16 +1,14 @@
 package org.apache.commons.statistics.regression.stored;
 
-import org.apache.commons.statistics.regression.util.array.ArrayUtils;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
 public class RegressionRawData implements RegressionData {
 
     private StatisticsMatrix yMatrix; // vector
     private StatisticsMatrix xMatrix;
-    private boolean hasIntercept;
+    private boolean hasIntercept = true;
 
     public RegressionRawData(StatisticsMatrix yData, StatisticsMatrix xData, Boolean hasIntercept) {
-        System.out.println("Test");
         this.yMatrix = yData;
         this.xMatrix = xData;
         this.hasIntercept = hasIntercept;
@@ -19,7 +17,7 @@ public class RegressionRawData implements RegressionData {
     public RegressionRawData() {
         this.xMatrix = null;
         this.yMatrix = null;
-        this.hasIntercept = false;
+        this.hasIntercept = true;
     }
 
     public void setYData(StatisticsMatrix yMatrix) {
@@ -35,13 +33,10 @@ public class RegressionRawData implements RegressionData {
     }
 
     public StatisticsMatrix getYData() {
-        System.out.println("test");
-//        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(yMatrix));
         return this.yMatrix;
     }
     
     public StatisticsMatrix getXData() {
-//        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(xMatrix));
         return this.xMatrix;
     }
 

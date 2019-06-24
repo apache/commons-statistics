@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import org.apache.commons.statistics.regression.util.array.ArrayUtils;
+import java.util.stream.Stream;
 
 public class RegressionDataLoaderTest {
 
@@ -23,10 +23,9 @@ public class RegressionDataLoaderTest {
     private double[][] xData2p4n = new double[][] { { 1, 3 }, { 5, 7 }, { 9, 11 }, { 13, 15 } };
 
     @Test
-    public void newSampleData_and_matrixToArray_Test() {
-        RegressionDataLoader loader = new RegressionDataLoader();
-        loader.newSampleData(yData3n, xData2p3n);
-
+    public void basicDataLoadingTest() {
+        RegressionDataLoader loader = new RegressionDataLoader(yData3n, xData2p3n);
+        
         // Printing the testing arrays, before and after wrapped inside a
         // StatisticsMatrix object
 //        ArrayUtils.printArrayWithStreams(yData);
@@ -38,9 +37,8 @@ public class RegressionDataLoaderTest {
         Assertions.assertEquals(loader.getInputData().getXData().get(0, 0), -2, 0);
         Assertions.assertEquals(loader.getInputData().getXData().get(1, 1), 1, 0);
 
-        System.out.println(xData3p4n[0].length);
-        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(loader.getInputData().getYData()), yData3n));
-        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(loader.getInputData().getXData()), xData2p3n);        
+        Assertions.assertTrue(Arrays.equals(loader.getInputData().getYData().toArray1D(), yData3n));
+        Assertions.assertArrayEquals(loader.getInputData().getXData().toArray2D(), xData2p3n);        
     }
     
     @Test
@@ -71,8 +69,8 @@ public class RegressionDataLoaderTest {
         
         loader.newYData(yData3n);
         loader.newXData(xData2p3n);        
-        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(loader.getInputData().getYData()), yData3n));
-        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(loader.getInputData().getXData()), xData2p3n); 
+        Assertions.assertTrue(Arrays.equals(loader.getInputData().getYData().toArray1D(), yData3n));
+        Assertions.assertArrayEquals(loader.getInputData().getXData().toArray2D(), xData2p3n);        
         
         //Changing to invalid data ( see validateSampleDataTest )
         Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newYData(yData2n));
@@ -83,13 +81,39 @@ public class RegressionDataLoaderTest {
         //order does not matter
         loader.newXData(xData3p4n);
         loader.newYData(yData4n);
-        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(loader.getInputData().getYData()), yData4n));
-        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(loader.getInputData().getXData()), xData3p4n); 
+        Assertions.assertTrue(Arrays.equals(loader.getInputData().getYData().toArray1D(), yData4n));
+        Assertions.assertArrayEquals(loader.getInputData().getXData().toArray2D(), xData3p4n);        
         
         //changing X does not affect Y
         loader.newXData(xData2p4n);
-        Assertions.assertTrue(Arrays.equals(ArrayUtils.matrixToArray1D(loader.getInputData().getYData()), yData4n));
-        Assertions.assertArrayEquals(ArrayUtils.matrixToArray2D(loader.getInputData().getXData()), xData2p4n);    
+        Assertions.assertTrue(Arrays.equals(loader.getInputData().getYData().toArray1D(), yData4n));
+        Assertions.assertArrayEquals(loader.getInputData().getXData().toArray2D(), xData2p4n);        
     }
+    
+//    private static void printArray1D(double[] arr) {
+//        for (int i = 0; i < arr.length; i++)
+//            System.out.print(arr[i] + ", ");
+//        System.out.println();
+//    }
+//
+//    private static void printArray2D(double[][] arr) {
+//        for (int i = 0; i < arr.length; i++) {
+//            for (int j = 0; j < arr[i].length; j++)
+//                System.out.print(arr[i][j] + ", ");
+//            System.out.println();
+//        }
+//    }
+//    
+//    private static void printArrayWithStreams(double[][] arr) {
+//        Stream.of(arr)
+//            .map(Arrays::toString)
+//            .forEach(System.out::println);
+//    }
+//    
+//    private static void printArrayWithStreams(double[] arr) {
+//        Stream.of(arr)
+//            .map(Arrays::toString)
+//            .forEach(System.out::println);
+//    }
 
 }

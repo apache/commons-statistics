@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.statistics.regression.stored.ols.OLSRegression;
-import org.apache.commons.statistics.regression.util.array.ArrayUtils;
+//import org.apache.commons.statistics.regression.util.array.ArrayUtils;
 import org.ejml.data.DMatrix3;
 import org.ejml.data.DMatrix3x3;
 import org.ejml.data.DMatrixRMaj;
@@ -32,8 +32,8 @@ public class SetupPractice {
 
 
         RegressionDataLoader data = new RegressionDataLoader(yData, xData);
-        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(data.getInputData().getYData()));
-        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(data.getInputData().getXData()));
+//        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(data.getInputData().getYData()));
+//        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(data.getInputData().getXData()));
 
         System.out.println("\n-- END SETUP PRACTICE --");
         

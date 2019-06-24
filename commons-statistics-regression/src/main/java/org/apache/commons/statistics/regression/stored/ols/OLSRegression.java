@@ -13,4 +13,6 @@ public class OLSRegression {
     public OLSRegression(RegressionDataLoader loader) {
         this.inputData = loader.getInputData();
     }
+    
+    
 }
