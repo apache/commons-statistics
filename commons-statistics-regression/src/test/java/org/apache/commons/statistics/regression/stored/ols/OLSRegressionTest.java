@@ -1,15 +1,12 @@
 package org.apache.commons.statistics.regression.stored.ols;
 
-import org.junit.Assert;
-//import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import org.apache.commons.math4.TestUtils;
-import org.apache.commons.math4.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.statistics.regression.stored.RegressionDataLoader;
 import org.apache.commons.statistics.regression.stored.ols.OLSRegression;
 import org.apache.commons.statistics.regression.stored.ols.OLSRegressionTest;
@@ -72,13 +69,13 @@ public class OLSRegressionTest {
         final int nvars = 6;
 
         // Estimate the model
-        RegressionDataLoader loader = new RegressionDataLoader();
+//        RegressionDataLoader loader = new RegressionDataLoader();
         OLSRegression model = new OLSRegression(loader);
         loader.newSampleData(design, nobs, nvars);
 
         // Check expected beta values from NIST
         double[] betaHat = model.estimateRegressionParameters();
-        TestUtils.assertEquals(betaHat,
+        Assertions.assertArrayEquals(betaHat,
           new double[]{-3482258.63459582, 15.0618722713733,
                 -0.358191792925910E-01,-2.02022980381683,
                 -1.03322686717359,-0.511041056535807E-01,
@@ -86,7 +83,7 @@ public class OLSRegressionTest {
 
         // Check expected residuals from R
         double[] residuals = model.estimateResiduals();
-        TestUtils.assertEquals(residuals, new double[]{
+        Assertions.assertArrayEquals(residuals, new double[]{
                 267.340029759711,-94.0139423988359,46.28716775752924,
                 -410.114621930906,309.7145907602313,-249.3112153297231,
                 -164.0489563956039,-13.18035686637081,14.30477260005235,
@@ -97,7 +94,7 @@ public class OLSRegressionTest {
 
         // Check standard errors from NIST
         double[] errors = model.estimateRegressionParametersStandardErrors();
-        TestUtils.assertEquals(new double[] {890420.383607373,
+        Assertions.assertArrayEquals(new double[] {890420.383607373,
                        84.9149257747669,
                        0.334910077722432E-01,
                        0.488399681651699,
@@ -106,34 +103,34 @@ public class OLSRegressionTest {
                        455.478499142212}, errors, 1E-6);
 
         // Check regression standard error against R
-        Assert.assertEquals(304.8540735619638, model.estimateRegressionStandardError(), 1E-10);
+        Assertions.assertEquals(304.8540735619638, model.estimateRegressionStandardError(), 1E-10);
 
         // Check R-Square statistics against R
-        Assert.assertEquals(0.995479004577296, model.calculateRSquared(), 1E-12);
-        Assert.assertEquals(0.992465007628826, model.calculateAdjustedRSquared(), 1E-12);
+        Assertions.assertEquals(0.995479004577296, model.calculateRSquared(), 1E-12);
+        Assertions.assertEquals(0.992465007628826, model.calculateAdjustedRSquared(), 1E-12);
 
         checkVarianceConsistency(model);
 
         // Estimate model without intercept
-        model.setNoIntercept(true);
-        model.newSampleData(design, nobs, nvars);
+        loader.setHasIntercept(false);
+        loader.newSampleData(design, nobs, nvars);
 
         // Check expected beta values from R
         betaHat = model.estimateRegressionParameters();
-        TestUtils.assertEquals(betaHat,
+        Assertions.assertArrayEquals(betaHat,
           new double[]{-52.99357013868291, 0.07107319907358,
                 -0.42346585566399,-0.57256866841929,
                 -0.41420358884978, 48.41786562001326}, 1E-11);
 
         // Check standard errors from R
         errors = model.estimateRegressionParametersStandardErrors();
-        TestUtils.assertEquals(new double[] {129.54486693117232, 0.03016640003786,
+        Assertions.assertArrayEquals(new double[] {129.54486693117232, 0.03016640003786,
                 0.41773654056612, 0.27899087467676, 0.32128496193363,
                 17.68948737819961}, errors, 1E-11);
 
         // Check expected residuals from R
         residuals = model.estimateResiduals();
-        TestUtils.assertEquals(residuals, new double[]{
+        Assertions.assertArrayEquals(residuals, new double[]{
                 279.90274927293092, -130.32465380836874, 90.73228661967445, -401.31252201634948,
                 -440.46768772620027, -543.54512853774793, 201.32111639536299, 215.90889365977932,
                 73.09368242049943, 913.21694494481869, 424.82484953610174, -8.56475876776709,
@@ -141,11 +138,11 @@ public class OLSRegressionTest {
                       1E-10);
 
         // Check regression standard error against R
-        Assert.assertEquals(475.1655079819517, model.estimateRegressionStandardError(), 1E-10);
+        Assertions.assertEquals(475.1655079819517, model.estimateRegressionStandardError(), 1E-10);
 
         // Check R-Square statistics against R
-        Assert.assertEquals(0.9999670130706, model.calculateRSquared(), 1E-12);
-        Assert.assertEquals(0.999947220913, model.calculateAdjustedRSquared(), 1E-12);
+        Assertions.assertEquals(0.9999670130706, model.calculateRSquared(), 1E-12);
+        Assertions.assertEquals(0.999947220913, model.calculateAdjustedRSquared(), 1E-12);
 
     }
 

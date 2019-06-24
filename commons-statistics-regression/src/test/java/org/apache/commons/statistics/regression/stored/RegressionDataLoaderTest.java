@@ -33,10 +33,12 @@ public class RegressionDataLoaderTest {
 //        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray1D(data.getInputData().getYData()));
 //        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(data.getInputData().getXData()));
 
+        //Checks that inputted data is stored as expected
         Assertions.assertEquals(loader.getInputData().getYData().get(1), 2, 0);
         Assertions.assertEquals(loader.getInputData().getXData().get(0, 0), -2, 0);
         Assertions.assertEquals(loader.getInputData().getXData().get(1, 1), 1, 0);
 
+        //Testing toArray methods
         Assertions.assertTrue(Arrays.equals(loader.getInputData().getYData().toArray1D(), yData3n));
         Assertions.assertArrayEquals(loader.getInputData().getXData().toArray2D(), xData2p3n);        
     }
