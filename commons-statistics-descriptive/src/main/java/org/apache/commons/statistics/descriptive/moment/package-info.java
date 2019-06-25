@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 /**
- *
- *All the commons-statistics-descriptive related classes are present in this package.
+ * 
+ *This package contains all the moment related classes.
  */
-package org.apache.commons.statistics.descriptive;
-
+package org.apache.commons.statistics.descriptive.moment;
