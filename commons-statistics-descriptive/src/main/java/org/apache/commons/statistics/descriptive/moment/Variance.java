@@ -29,7 +29,7 @@ public class Variance {
     /***/
     private boolean isBiasCorrected = true; 
     /***/
-    private double m = 0;
+    private double mean1 = 0;
 
     /***/
     private double s = 0;
@@ -38,7 +38,7 @@ public class Variance {
     private double x = 0;
 
     /***/
-    private double oldm = 0;
+    private double mean0 = 0;
 
     /***/
     private double variance = 0;
@@ -51,38 +51,47 @@ public class Variance {
     * The Welford's Algorithm is as follows:<br>
     *<pre><code>
     *variance(samples):
-    *    m := 0
+    *    mean1 := 0
     *    s := 0
     *    for k from 1 to N:
     *        x := samples[k]
-    *        oldm := m
-    *        m := m + (x-m)/k
-    *        s := s + (x-m)*(x-oldm)
+    *        mean0 := mean1
+    *        mean1 := mean1 + (x-mean1)/k
+    *        s := s + (x-mean1)*(x-mean0)
     *    return s/(N-1)</code></pre>
     *@param value stream of values
     */
    public void accept( double value) {   
 	   countN++;
        x = value;
-       oldm = m;
-       m += (x - m) / countN;
-       s += (x - m) * (x - oldm);
-       variance = s / (countN - 1);
+       mean0 = mean1;
+       mean1 += (x - mean1) / countN;
+       s += (x - mean1) * (x - mean0);
+       //variance = s / (countN - 1);
    }
    
    public void combine(Variance var2) {
-	   double delta = var2.getm() - m;
+	   double delta = var2.getMean() - mean1;
 	   double m_a = variance * (countN - 1);
 	   double m_b = var2.getVariance() *(var2.getN()- 1);
 	   double M2 = m_a + m_b + Math.pow(delta, 2)* countN *var2.getN() / (countN + var2.getN());
-	   variance = M2 / (countN + var2.getN()- 1);
+	   //Variance will be calculated using getVariance() method which will yield wrong result
+	   //after calculation. Hence assigning s=M2; so that it will be calculated in getVariance() Method accordingly.
+	   //variance = M2 / (getN() + var2.getN()- 1);
+	   s=M2;
+	   mean1= (var2.getN()*var2.getMean() + getMean()*getN()) / (getN() +var2.getN());
        countN = getN() + var2.getN();
-       m = getm() + var2.getm();
 	   
    }
    
+   public double getVariance(boolean isBiasCorrected) {
+	   if(isBiasCorrected)
+           return variance = s / (countN - 1);
+       return variance = s / (countN);
+   }
+   
    public double getVariance() {
-	   return variance;
+	   return variance = s / (countN - 1);
    }
   
    /**
@@ -93,8 +102,8 @@ public class Variance {
        return countN;
    }
 
-   public double getm() {
-       return m;
+   public double getMean() {
+       return mean1;
    }
 
    public boolean isBiasCorrected() {

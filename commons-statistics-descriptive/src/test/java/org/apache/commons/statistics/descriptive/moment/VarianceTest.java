@@ -20,19 +20,19 @@ class VarianceTest {
 	}
 	
 	@Test
-	void testGetm() {
-		assertEquals(5.5,stats.getm());
+	void testGetMean() {
+		assertEquals(5.5,stats.getMean());
 	}
 
 	@Test
 	void testCombine() {
 		double[] arr2= {11,12,13,14,15,16,17,18,19,20};
 		DoubleStream doubleStream2 = DoubleStream.of(arr2);
-		Variance stats2= doubleStream2.collect(Variance::new,Variance::accept,Variance::combine);
+		Variance stats2= doubleStream2.collect(Variance::new, Variance::accept, Variance::combine);
 		stats2.combine(stats);
 		assertEquals(35.0,stats2.getVariance());
 		assertEquals(20,stats2.getN());
-		assertEquals(21.0,stats2.getm());
+		assertEquals(10.5,stats2.getMean());
 	}
 	
 	
