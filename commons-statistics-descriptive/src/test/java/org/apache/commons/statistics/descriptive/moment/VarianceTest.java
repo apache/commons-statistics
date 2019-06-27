@@ -26,10 +26,14 @@ class VarianceTest {
 
 	@Test
 	void testCombine() {
+		double[] arr3= {1,2,3,4,5,6,7,8,9,10};
+		DoubleStream doubleStream3 = DoubleStream.of(arr3);
+		Variance stats3 = doubleStream3.collect(Variance::new, Variance::accept, Variance::combine);
+		
 		double[] arr2= {11,12,13,14,15,16,17,18,19,20};
 		DoubleStream doubleStream2 = DoubleStream.of(arr2);
 		Variance stats2= doubleStream2.collect(Variance::new, Variance::accept, Variance::combine);
-		stats2.combine(stats);
+		stats2.combine(stats3);
 		assertEquals(35.0,stats2.getVariance());
 		assertEquals(20,stats2.getN());
 		assertEquals(10.5,stats2.getMean());
