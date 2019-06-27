@@ -5,8 +5,8 @@ import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 public abstract class AbstractRegression implements Regression{
 
     public RegressionData inputData;
-    public StatisticsMatrix xMatrix = inputData.getXData();
-    public StatisticsMatrix yVector = inputData.getYData();
+    public StatisticsMatrix xMatrix;
+    public StatisticsMatrix yVector;
     
     /**
      * Validates that the x data and covariance matrix have the same
