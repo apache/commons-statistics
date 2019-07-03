@@ -25,62 +25,59 @@ import org.ejml.data.FMatrixRBlock;
 import org.ejml.data.FMatrixRMaj;
 import org.ejml.data.Matrix;
 import org.ejml.data.MatrixType;
-import org.ejml.dense.row.RandomMatrices_DDRM;
 import org.ejml.ops.ConvertDMatrixStruct;
 import org.ejml.ops.ConvertFMatrixStruct;
 import org.ejml.simple.SimpleBase;
 
-import java.util.Random;
-
-
 /**
- * Example of how to extend "SimpleMatrix" and add your own functionality.  In this case
- * two basic statistic operations are added.  Since SimpleBase is extended and StatisticsMatrix
- * is specified as the generics type, all "SimpleMatrix" operations return a matrix of
- * type StatisticsMatrix, ensuring strong typing.
+ * Example of how to extend "SimpleMatrix" and add your own functionality. In
+ * this case two basic statistic operations are added. Since SimpleBase is
+ * extended and StatisticsMatrix is specified as the generics type, all
+ * "SimpleMatrix" operations return a matrix of type StatisticsMatrix, ensuring
+ * strong typing.
  *
  * @author Peter Abeles
- * -------------------------------------------------------------------------------------------
- * Modifications for Apache Commons Statistics Regressiom library by: Ben Nguyen
- * Under development for specific usage which are to be determined.
- * -------------------------------------------------------------------------------------------
+ *         -------------------------------------------------------------------------------------------
+ *         Modifications for Apache Commons Statistics Regressiom library by:
+ *         Ben Nguyen Under development for specific usage which are to be
+ *         determined.
+ *         -------------------------------------------------------------------------------------------
  */
 public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 
-    
     /**
      * 
      */
     private static final long serialVersionUID = -82801259856161557L;
 
-    public StatisticsMatrix( int numRows , int numCols ) {
-        super(numRows,numCols);
+    public StatisticsMatrix(int numRows, int numCols) {
+        super(numRows, numCols);
     }
 
-    protected StatisticsMatrix(){}
+    protected StatisticsMatrix() {
+    }
 
     /**
-     * Wraps a StatisticsMatrix around 'm'.  Does NOT create a copy of 'm' but saves a reference
-     * to it.
+     * Wraps a StatisticsMatrix around 'm'. Does NOT create a copy of 'm' but saves
+     * a reference to it.
      */
-    public static StatisticsMatrix wrap( DMatrixRMaj m ) {
+    public static StatisticsMatrix wrap(DMatrixRMaj m) {
         StatisticsMatrix ret = new StatisticsMatrix();
 //        ret.mat = m;
-        ret.setMatrix(m); // changed by Ben Nguyen to also lookup ops
+        ret.setMatrix(m);
 
         return ret;
     }
-    
-    //ADDED by Ben Nguyen: to satisfy the wrapMatrix method, copied from SimpleMatrix 
-    public StatisticsMatrix( Matrix orig ) {
+
+    public StatisticsMatrix(Matrix orig) {
         Matrix mat;
-        if( orig instanceof DMatrixRBlock) {
+        if (orig instanceof DMatrixRBlock) {
             DMatrixRMaj a = new DMatrixRMaj(orig.getNumRows(), orig.getNumCols());
             ConvertDMatrixStruct.convert((DMatrixRBlock) orig, a);
             mat = a;
-        } else if( orig instanceof FMatrixRBlock) {
-            FMatrixRMaj a = new FMatrixRMaj(orig.getNumRows(),orig.getNumCols());
-            ConvertFMatrixStruct.convert((FMatrixRBlock)orig, a);
+        } else if (orig instanceof FMatrixRBlock) {
+            FMatrixRMaj a = new FMatrixRMaj(orig.getNumRows(), orig.getNumCols());
+            ConvertFMatrixStruct.convert((FMatrixRBlock) orig, a);
             mat = a;
         } else {
             mat = orig.copy();
@@ -97,11 +94,11 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         double total = 0;
 
         final int N = getNumElements();
-        for( int i = 0; i < N; i++ ) {
+        for (int i = 0; i < N; i++) {
             total += get(i);
         }
 
-        return total/N;
+        return total / N;
     }
 
     /**
@@ -115,39 +112,35 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         double total = 0;
 
         final int N = getNumElements();
-        if( N <= 1 )
+        if (N <= 1)
             throw new IllegalArgumentException("There must be more than one element to compute stdev");
 
-
-        for( int i = 0; i < N; i++ ) {
+        for (int i = 0; i < N; i++) {
             double x = get(i);
 
-            total += (x - m)*(x - m);
+            total += (x - m) * (x - m);
         }
 
-        total /= (N-1);
+        total /= (N - 1);
 
         return Math.sqrt(total);
     }
 
     /**
-     * Returns a matrix of StatisticsMatrix type so that SimpleMatrix functions create matrices
-     * of the correct type.
+     * Returns a matrix of StatisticsMatrix type so that SimpleMatrix functions
+     * create matrices of the correct type.
      */
     @Override
-    protected StatisticsMatrix createMatrix(int numRows, int numCols, MatrixType type) {// changed by Ben Nguyen to add 
-        return new StatisticsMatrix(numRows,numCols);                //MatrixType type param to satisfy abstract method
+    protected StatisticsMatrix createMatrix(int numRows, int numCols, MatrixType type) {// changed by Ben Nguyen to add
+        return new StatisticsMatrix(numRows, numCols); // MatrixType type param to satisfy abstract method
     }
 
+    @Override
+    protected StatisticsMatrix wrapMatrix(Matrix m) {
+        // TODO Auto-generated method stub
+        return new StatisticsMatrix(m);
+    }
 
-	@Override
-	protected StatisticsMatrix wrapMatrix(Matrix m) {
-		// TODO Auto-generated method stub
-		return new StatisticsMatrix(m);
-	}
-	
-	
-    
     public double[] toArray1D() {
         return this.getDDRM().data;
     }
@@ -164,7 +157,27 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 
         return retArr;
     }
-    
-    
-    
+
+    public static void printArray1D(double[] arr) {
+        for (int i = 0; i < arr.length; i++)
+            System.out.print(arr[i] + ", ");
+        System.out.println();
+    }
+
+    public static void printArray2D(double[][] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++)
+                System.out.print(arr[i][j] + "\t ");
+            System.out.println();
+        }
+    }
+
+//    private static void printArrayWithStreams(double[][] arr) {
+//        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
+//    }
+//
+//    private static void printArrayWithStreams(double[] arr) {
+//        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
+//    }
+
 }

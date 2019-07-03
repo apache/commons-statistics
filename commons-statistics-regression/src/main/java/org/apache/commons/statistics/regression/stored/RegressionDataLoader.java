@@ -12,7 +12,7 @@ public class RegressionDataLoader {
     }
 
     public RegressionDataLoader(double[] y, double[][] x, boolean hasIntercept) {
-        this.newSampleData(y, x);
+        this.newSampleData(y, x, hasIntercept);
     }
 
     public RegressionDataLoader() {
@@ -22,24 +22,25 @@ public class RegressionDataLoader {
     public void newSampleData(double[] y, double[][] x) {
         validateSampleData(y, x);
         if (inputData == null)
-            inputData = new RegressionRawData(newYmatrix(y), newXmatrix(x), true);
+            inputData = new RegressionRawData();
 
-        else {
-            inputData.setYData(newYmatrix(y));
-            inputData.setXData(newXmatrix(x));
-        }
+//        else {
+        newYData(y);
+        newXData(x);
+//        }
     }
 
     public void newSampleData(double[] y, double[][] x, boolean hasIntercept) {
         validateSampleData(y, x);
         if (inputData == null)
-            inputData = new RegressionRawData(newYmatrix(y), newXmatrix(x), hasIntercept);
+            inputData = new RegressionRawData();
 
-        else {
-            inputData.setYData(newYmatrix(y));
-            inputData.setXData(newXmatrix(x));
-            inputData.setHasIntercept(hasIntercept);
-        }
+//        else {
+        inputData.setHasIntercept(hasIntercept);
+        newYData(y);
+        newXData(x);
+
+//        }
     }
 
     public void newSampleData(double[] data, int nobs, int nvars) {
@@ -130,7 +131,22 @@ public class RegressionDataLoader {
     }
 
     public void newXData(double[][] x) {
-        inputData.setXData(newXmatrix(x));
+
+        if (!inputData.getHasIntercept()) {
+            inputData.setXData(newXmatrix(x));
+
+        } else { // Augment design matrix with initial unitary column
+            final int nVars = x[0].length;
+            final double[][] xAug = new double[x.length][nVars + 1];
+            for (int i = 0; i < x.length; i++) {
+                if (x[i].length != nVars) {
+                    throw new IllegalArgumentException(x[i].length + "!=" + nVars);
+                }
+                xAug[i][0] = 1.0d;
+                System.arraycopy(x[i], 0, xAug[i], 1, nVars);
+            }
+            inputData.setXData(newXmatrix(xAug));
+        }
 
         if (inputData.getYData() != null)
             validateSampleData(inputData.getYData().toArray1D(), x);
@@ -142,22 +158,23 @@ public class RegressionDataLoader {
     }
 
     /**
-     * Validates sample data.  Checks that
-     * <ul><li>Neither x nor y is null or empty;</li>
+     * Validates sample data. Checks that
+     * <ul>
+     * <li>Neither x nor y is null or empty;</li>
      * <li>The length (i.e. number of rows) of x equals the length of y</li>
-     * <li>x has at least one more row than it has columns (i.e. there is
-     * sufficient data to estimate regression coefficients for each of the
-     * columns in x plus an intercept.</li>
+     * <li>x has at least one more row than it has columns (i.e. there is sufficient
+     * data to estimate regression coefficients for each of the columns in x plus an
+     * intercept.</li>
      * </ul>
      *
      * @param x the [n,k] array representing the x data
      * @param y the [n,1] array representing the y data
      * @throws IllegalArgumentException if {@code x} or {@code y} is null
-     * @throws IllegalArgumentException if {@code x} and {@code y} do not
-     * have the same length
+     * @throws IllegalArgumentException if {@code x} and {@code y} do not have the
+     *                                  same length
      * @throws IllegalArgumentException if {@code x} or {@code y} are zero-length
-     * @throws IllegalArgumentException if the number of rows of {@code x}
-     * is not larger than the number of columns + 1
+     * @throws IllegalArgumentException if the number of rows of {@code x} is not
+     *                                  larger than the number of columns + 1
      */
     protected void validateSampleData(double[] y, double[][] x) throws IllegalArgumentException {
         if ((x == null) || (y == null)) {

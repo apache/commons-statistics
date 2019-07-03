@@ -6,14 +6,20 @@ public class RegressionRawData implements RegressionData {
 
     private StatisticsMatrix yMatrix; // vector
     private StatisticsMatrix xMatrix;
-    private boolean hasIntercept = true;
+    private boolean hasIntercept;
 
-    public RegressionRawData(StatisticsMatrix yData, StatisticsMatrix xData, Boolean hasIntercept) {
-        this.yMatrix = yData;
-        this.xMatrix = xData;
-        this.hasIntercept = hasIntercept;
-    }
-    
+//    public RegressionRawData(StatisticsMatrix yData, StatisticsMatrix xData, Boolean hasIntercept) {
+//        this.yMatrix = yData;
+//        this.xMatrix = xData;
+//        this.hasIntercept = hasIntercept;
+//    }
+//
+//    public RegressionRawData(StatisticsMatrix yData, StatisticsMatrix xData) {
+//        this.yMatrix = yData;
+//        this.xMatrix = xData;
+//        this.hasIntercept = true;
+//    }
+
     public RegressionRawData() {
         this.xMatrix = null;
         this.yMatrix = null;
@@ -23,7 +29,7 @@ public class RegressionRawData implements RegressionData {
     public void setYData(StatisticsMatrix yMatrix) {
         this.yMatrix = yMatrix;
     }
-    
+
     public void setXData(StatisticsMatrix xMatrix) {
         this.xMatrix = xMatrix;
     }
@@ -35,7 +41,7 @@ public class RegressionRawData implements RegressionData {
     public StatisticsMatrix getYData() {
         return this.yMatrix;
     }
-    
+
     public StatisticsMatrix getXData() {
         return this.xMatrix;
     }
