@@ -2,28 +2,29 @@ package org.apache.commons.statistics.regression.stored;
 
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
-public abstract class AbstractRegression implements Regression{
+public abstract class AbstractRegression implements Regression {
 
     public RegressionData inputData;
     public StatisticsMatrix xMatrix;
     public StatisticsMatrix yVector;
-    
+
     /**
-     * Validates that the x data and covariance matrix have the same
-     * number of rows and that the covariance matrix is square.
+     * Validates that the x data and covariance matrix have the same number of rows
+     * and that the covariance matrix is square.
      *
-     * @param x the [n,k] array representing the x sample
+     * @param x          the [n,k] array representing the x sample
      * @param covariance the [n,n] array representing the covariance matrix
-     * @throws DimensionMismatchException if the number of rows in x is not equal
-     * to the number of rows in covariance
-     * @throws NonSquareMatrixException if the covariance matrix is not square
+     * @throws DimensionMismatchException if the number of rows in x is not equal to
+     *                                    the number of rows in covariance
+     * @throws NonSquareMatrixException   if the covariance matrix is not square
      */
     protected void validateCovarianceData(double[][] x, double[][] covariance) {
         if (x.length != covariance.length) {
-            throw new IllegalArgumentException("x.length = "+x.length +"  covariance.lenth = "+covariance.length);
+            throw new IllegalArgumentException("x.length = " + x.length + "  covariance.lenth = " + covariance.length);
         }
         if (covariance.length > 0 && covariance.length != covariance[0].length) {
-            throw new IllegalArgumentException("covariance.length = "+covariance.length +"  covariance[0].length = "+covariance[0].length );
+            throw new IllegalArgumentException(
+                    "covariance.length = " + covariance.length + "  covariance[0].length = " + covariance[0].length);
         }
     }
 
@@ -42,7 +43,7 @@ public abstract class AbstractRegression implements Regression{
     @Override
     public double[] estimateResiduals() {
         StatisticsMatrix b = calculateBeta();
-        StatisticsMatrix e = yVector.minus(xMatrix.mult(b)); //operate is for vec x vec in CM
+        StatisticsMatrix e = yVector.minus(xMatrix.mult(b)); // operate is for vec x vec in CM
         return e.toArray1D();
     }
 
@@ -113,7 +114,6 @@ public abstract class AbstractRegression implements Regression{
      */
     protected abstract StatisticsMatrix calculateBetaVariance();
 
-
     /**
      * Calculates the variance of the y values.
      *
@@ -125,25 +125,27 @@ public abstract class AbstractRegression implements Regression{
     }
 
     /**
-     * <p>Calculates the variance of the error term.</p>
-     * Uses the formula <pre>
+     * <p>
+     * Calculates the variance of the error term.
+     * </p>
+     * Uses the formula
+     * 
+     * <pre>
      * var(u) = u &middot; u / (n - k)
      * </pre>
-     * where n and k are the row and column dimensions of the design
-     * matrix X.
+     * 
+     * where n and k are the row and column dimensions of the design matrix X.
      *
      * @return error variance estimate
      * @since 2.2
      */
     protected double calculateErrorVariance() {
         StatisticsMatrix residuals = calculateResiduals();
-        return residuals.dot(residuals) /
-               (xMatrix.getDDRM().getNumRows() - xMatrix.getDDRM().getNumCols());
+        return residuals.dot(residuals) / (xMatrix.getDDRM().getNumRows() - xMatrix.getDDRM().getNumCols());
     }
 
     /**
-     * Calculates the residuals of multiple linear regression in matrix
-     * notation.
+     * Calculates the residuals of multiple linear regression in matrix notation.
      *
      * <pre>
      * u = y - X * b
@@ -153,6 +155,6 @@ public abstract class AbstractRegression implements Regression{
      */
     protected StatisticsMatrix calculateResiduals() {
         StatisticsMatrix b = calculateBeta();
-        return yVector.minus(xMatrix.mult(b)); //operate is for vec x vec in CM
+        return yVector.minus(xMatrix.mult(b)); // operate is for vec x vec in CM
     }
 }

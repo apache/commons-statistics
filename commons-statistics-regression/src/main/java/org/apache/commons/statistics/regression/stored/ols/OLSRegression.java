@@ -57,14 +57,33 @@ public class OLSRegression extends org.apache.commons.statistics.regression.stor
      */
     @Override
     protected StatisticsMatrix calculateBetaVariance() {
+        System.out.println("xMatrix....");
+        StatisticsMatrix.printArray2D(xMatrix.toArray2D());
+
         QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
         qr.decompose(xMatrix.getDDRM());
+
         StatisticsMatrix R = new StatisticsMatrix(qr.getR(null, false));
+
+        System.out.println("R....");
+        StatisticsMatrix.printArray2D(R.toArray2D());
+
         int p = xMatrix.getDDRM().getNumCols();
-        StatisticsMatrix Raug = R.extractMatrix(0, p - 1, 0, p - 1);
+        StatisticsMatrix Raug = R.extractMatrix(0, p, 0, p);
+
+        System.out.println("Raug....");
+        StatisticsMatrix.printArray2D(Raug.toArray2D());
+
         LUDecompositionAlt_DDRM lu = new LUDecompositionAlt_DDRM();
         lu.decompose(Raug.getDDRM());
+
         StatisticsMatrix Rinv = new StatisticsMatrix(lu.getLU()).invert();
+
+        System.out.println("Rinv....");
+        StatisticsMatrix.printArray2D(Rinv.toArray2D());
+
+        System.out.println("Rinv....");
+        StatisticsMatrix.printArray2D(Rinv.mult(Rinv.transpose()).toArray2D());
         return Rinv.mult(Rinv.transpose());
     }
 
