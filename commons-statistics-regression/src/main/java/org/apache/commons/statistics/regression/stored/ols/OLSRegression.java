@@ -1,7 +1,5 @@
 package org.apache.commons.statistics.regression.stored.ols;
 
-import org.apache.commons.math4.linear.LUDecomposition;
-import org.apache.commons.math4.linear.RealMatrix;
 import org.apache.commons.statistics.regression.stored.RegressionData;
 import org.apache.commons.statistics.regression.stored.RegressionDataLoader;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
@@ -13,10 +11,12 @@ public class OLSRegression extends org.apache.commons.statistics.regression.stor
     private OLSEstimators betas;
     private OLSResiduals residuals;
     
-    public RegressionData inputData;
+//    public RegressionData inputData;
     
     public OLSRegression(RegressionDataLoader loader) {
         this.inputData = loader.getInputData();
+        this.yVector = inputData.getYData();
+        this.xMatrix = inputData.getXData();
     }
 
     @Override
@@ -51,8 +51,4 @@ public class OLSRegression extends org.apache.commons.statistics.regression.stor
         StatisticsMatrix Rinv = new StatisticsMatrix(lu.getLU()).invert();
         return Rinv.mult(Rinv.transpose());
     }
-    
-    
-    
-    
 }
