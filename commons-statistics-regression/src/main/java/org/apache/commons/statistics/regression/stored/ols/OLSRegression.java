@@ -1,89 +1,105 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.commons.statistics.regression.stored.ols;
 
-import org.apache.commons.statistics.regression.stored.RegressionData;
 import org.apache.commons.statistics.regression.stored.RegressionDataLoader;
+import org.apache.commons.statistics.regression.stored.parent.AbstractRegression;
+import org.apache.commons.statistics.regression.stored.parent.Regression;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
-import org.ejml.data.DMatrixRMaj;
-import org.ejml.dense.row.decomposition.lu.LUDecompositionAlt_DDRM;
-import org.ejml.dense.row.decomposition.qr.QRDecomposition_DDRB_to_DDRM;
-import org.ejml.interfaces.decomposition.QRDecomposition;
 
-public class OLSRegression extends org.apache.commons.statistics.regression.stored.AbstractRegression {
+public class OLSRegression extends AbstractRegression implements Regression {
 
     private OLSEstimators betas;
     private OLSResiduals residuals;
 
-//    public RegressionData inputData;
-
     public OLSRegression(RegressionDataLoader loader) {
-        this.inputData = loader.getInputData();
-        this.yVector = inputData.getYData();
-        this.xMatrix = inputData.getXData();
+        
+        this.betas = new OLSEstimators(loader.getInputData());
+        this.residuals = new OLSResiduals(loader.getInputData(), betas.calculateBeta());
     }
-
+    
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected StatisticsMatrix calculateBeta() {
-        // TODO Auto-generated method stub
-        return null;
+    public double[] estimateRegressionParameters() {
+        StatisticsMatrix b = betas.calculateBeta();
+        return b.toArray1D();
     }
 
     /**
-     * <p>
-     * Calculates the variance-covariance matrix of the regression parameters.
-     * </p>
-     * <p>
-     * Var(b) = (X<sup>T</sup>X)<sup>-1</sup>
-     * </p>
-     * <p>
-     * Uses QR decomposition to reduce (X<sup>T</sup>X)<sup>-1</sup> to
-     * (R<sup>T</sup>R)<sup>-1</sup>, with only the top p rows of R included, where
-     * p = the length of the beta vector.
-     * </p>
-     *
-     * <p>
-     * Data for the model must have been successfully loaded using one of the
-     * {@code newSampleData} methods before invoking this method; otherwise a
-     * {@code NullPointerException} will be thrown.
-     * </p>
-     *
-     * @return The beta variance-covariance matrix
-     * @throws org.apache.commons.math4.linear.SingularMatrixException if the design
-     *                                                                 matrix is
-     *                                                                 singular
-     * @throws NullPointerException                                    if the data
-     *                                                                 for the model
-     *                                                                 have not been
-     *                                                                 loaded
+     * {@inheritDoc}
      */
     @Override
-    protected StatisticsMatrix calculateBetaVariance() {
-        System.out.println("xMatrix....");
-        StatisticsMatrix.printArray2D(xMatrix.toArray2D());
-
-        QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
-        qr.decompose(xMatrix.getDDRM());
-
-        StatisticsMatrix R = new StatisticsMatrix(qr.getR(null, false));
-
-        System.out.println("R....");
-        StatisticsMatrix.printArray2D(R.toArray2D());
-
-        int p = xMatrix.getDDRM().getNumCols();
-        StatisticsMatrix Raug = R.extractMatrix(0, p, 0, p);
-
-        System.out.println("Raug....");
-        StatisticsMatrix.printArray2D(Raug.toArray2D());
-
-        LUDecompositionAlt_DDRM lu = new LUDecompositionAlt_DDRM();
-        lu.decompose(Raug.getDDRM());
-
-        StatisticsMatrix Rinv = new StatisticsMatrix(lu.getLU()).invert();
-
-        System.out.println("Rinv....");
-        StatisticsMatrix.printArray2D(Rinv.toArray2D());
-
-        System.out.println("Rinv....");
-        StatisticsMatrix.printArray2D(Rinv.mult(Rinv.transpose()).toArray2D());
-        return Rinv.mult(Rinv.transpose());
+    public double[] estimateResiduals() {
+        StatisticsMatrix b = betas.calculateBeta();
+        StatisticsMatrix e = getY().minus(getX().mult(b)); // operate is for vec x vec in CM
+        return e.toArray1D();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[][] estimateRegressionParametersVariance() {
+        return betas.calculateBetaVariance().toArray2D();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[] estimateRegressionParametersStandardErrors() {
+        double[][] betaVariance = estimateRegressionParametersVariance();
+        double sigma = residuals.calculateErrorVariance();
+        int length = betaVariance[0].length;
+        double[] result = new double[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = Math.sqrt(sigma * betaVariance[i][i]);
+        }
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double estimateRegressandVariance() {
+        return calculateYVariance();
+    }
+
+    /**
+     * Estimates the variance of the error.
+     *
+     * @return estimate of the error variance
+     * @since 2.2
+     */
+    public double estimateErrorVariance() {
+        return residuals.calculateErrorVariance();
+    }
+
+    /**
+     * Estimates the standard error of the regression.
+     *
+     * @return regression standard error
+     * @since 2.2
+     */
+    public double estimateRegressionStandardError() {
+        return Math.sqrt(estimateErrorVariance());
+    }
+
 }

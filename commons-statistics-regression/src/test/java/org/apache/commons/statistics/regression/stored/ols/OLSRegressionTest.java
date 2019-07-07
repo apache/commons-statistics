@@ -1,9 +1,26 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.commons.statistics.regression.stored.ols;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.DefaultRealMatrixChangingVisitor;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.statistics.regression.stored.RegressionDataLoader;
+import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -57,6 +74,8 @@ public class OLSRegressionTest {
 //        RegressionDataLoader loader = new RegressionDataLoader();
         OLSRegression model = new OLSRegression(loader);
         loader.newSampleData(design, nobs, nvars);
+        
+        StatisticsMatrix.printArray2D(model.getX().toArray2D());
 
         // Check expected beta values from NIST
         double[] betaHat = model.estimateRegressionParameters();
@@ -141,14 +160,14 @@ public class OLSRegressionTest {
 
         RegressionDataLoader myData = new RegressionDataLoader(y, x);
         OLSRegression regression = new OLSRegression(myData);
-//        double[] betaHat = regression.estimateRegressionParameters();
-//        Assertions.assertArrayEquals(betaHat,
-//                               new double[]{ 11.0, 1.0 / 2.0, 2.0 / 3.0, 3.0 / 4.0, 4.0 / 5.0, 5.0 / 6.0 },
-//                               1e-14);
-//        double[] residuals = regression.estimateResiduals();
-//        Assertions.assertArrayEquals(residuals, new double[]{0d,0d,0d,0d,0d,0d},
-//                               1e-14);
-//        printArray2D(regression.estimateRegressionParametersVariance());
+        double[] betaHat = regression.estimateRegressionParameters();
+        Assertions.assertArrayEquals(betaHat,
+                               new double[]{ 11.0, 1.0 / 2.0, 2.0 / 3.0, 3.0 / 4.0, 4.0 / 5.0, 5.0 / 6.0 },
+                               1e-12);
+        double[] residuals = regression.estimateResiduals();
+        Assertions.assertArrayEquals(residuals, new double[]{0d,0d,0d,0d,0d,0d},
+                               1e-14);
+        printArray2D(regression.estimateRegressionParametersVariance());
 
         RealMatrix errors = new Array2DRowRealMatrix(regression.estimateRegressionParametersVariance(), false);
         final double[] s = { 1.0, -1.0 / 2.0, -1.0 / 3.0, -1.0 / 4.0, -1.0 / 5.0, -1.0 / 6.0 };
