@@ -66,7 +66,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
 
     //---------------------------- Additional test cases -------------------------
     /**
-     * @see <a href="http://issues.apache.org/bugzilla/show_bug.cgi?id=27243">
+     * @see <a href="https://issues.apache.org/bugzilla/show_bug.cgi?id=27243">
      *      Bug report that prompted this unit test.</a>
      */
     @Test
