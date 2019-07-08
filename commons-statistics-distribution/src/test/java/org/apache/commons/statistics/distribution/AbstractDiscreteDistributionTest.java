@@ -16,8 +16,8 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for AbstractDiscreteDistribution default implementations.
@@ -30,30 +30,30 @@ public class AbstractDiscreteDistributionTest {
     @Test
     public void testInverseCumulativeProbabilityMethod() {
         double precision = 0.000000000000001;
-        Assert.assertEquals(1, diceDistribution.inverseCumulativeProbability(0));
-        Assert.assertEquals(1, diceDistribution.inverseCumulativeProbability((1d - Double.MIN_VALUE) / 6d));
-        Assert.assertEquals(2, diceDistribution.inverseCumulativeProbability((1d + precision) / 6d));
-        Assert.assertEquals(2, diceDistribution.inverseCumulativeProbability((2d - Double.MIN_VALUE) / 6d));
-        Assert.assertEquals(3, diceDistribution.inverseCumulativeProbability((2d + precision) / 6d));
-        Assert.assertEquals(3, diceDistribution.inverseCumulativeProbability((3d - Double.MIN_VALUE) / 6d));
-        Assert.assertEquals(4, diceDistribution.inverseCumulativeProbability((3d + precision) / 6d));
-        Assert.assertEquals(4, diceDistribution.inverseCumulativeProbability((4d - Double.MIN_VALUE) / 6d));
-        Assert.assertEquals(5, diceDistribution.inverseCumulativeProbability((4d + precision) / 6d));
-        Assert.assertEquals(5, diceDistribution.inverseCumulativeProbability((5d - precision) / 6d)); //Can't use Double.MIN
-        Assert.assertEquals(6, diceDistribution.inverseCumulativeProbability((5d + precision) / 6d));
-        Assert.assertEquals(6, diceDistribution.inverseCumulativeProbability((6d - precision) / 6d)); //Can't use Double.MIN
-        Assert.assertEquals(6, diceDistribution.inverseCumulativeProbability(1d));
+        Assertions.assertEquals(1, diceDistribution.inverseCumulativeProbability(0));
+        Assertions.assertEquals(1, diceDistribution.inverseCumulativeProbability((1d - Double.MIN_VALUE) / 6d));
+        Assertions.assertEquals(2, diceDistribution.inverseCumulativeProbability((1d + precision) / 6d));
+        Assertions.assertEquals(2, diceDistribution.inverseCumulativeProbability((2d - Double.MIN_VALUE) / 6d));
+        Assertions.assertEquals(3, diceDistribution.inverseCumulativeProbability((2d + precision) / 6d));
+        Assertions.assertEquals(3, diceDistribution.inverseCumulativeProbability((3d - Double.MIN_VALUE) / 6d));
+        Assertions.assertEquals(4, diceDistribution.inverseCumulativeProbability((3d + precision) / 6d));
+        Assertions.assertEquals(4, diceDistribution.inverseCumulativeProbability((4d - Double.MIN_VALUE) / 6d));
+        Assertions.assertEquals(5, diceDistribution.inverseCumulativeProbability((4d + precision) / 6d));
+        Assertions.assertEquals(5, diceDistribution.inverseCumulativeProbability((5d - precision) / 6d)); //Can't use Double.MIN
+        Assertions.assertEquals(6, diceDistribution.inverseCumulativeProbability((5d + precision) / 6d));
+        Assertions.assertEquals(6, diceDistribution.inverseCumulativeProbability((6d - precision) / 6d)); //Can't use Double.MIN
+        Assertions.assertEquals(6, diceDistribution.inverseCumulativeProbability(1d));
     }
 
     @Test
     public void testCumulativeProbabilitiesSingleArguments() {
         for (int i = 1; i < 7; i++) {
-            Assert.assertEquals(p * i,
+            Assertions.assertEquals(p * i,
                     diceDistribution.cumulativeProbability(i), Double.MIN_VALUE);
         }
-        Assert.assertEquals(0.0,
+        Assertions.assertEquals(0.0,
                 diceDistribution.cumulativeProbability(0), Double.MIN_VALUE);
-        Assert.assertEquals(1.0,
+        Assertions.assertEquals(1.0,
                 diceDistribution.cumulativeProbability(7), Double.MIN_VALUE);
     }
 
@@ -63,13 +63,13 @@ public class AbstractDiscreteDistributionTest {
         int upper = 6;
         for (int i = 0; i < 2; i++) {
             // cum(0,6) = p(0 < X <= 6) = 1, cum(1,5) = 4/6, cum(2,4) = 2/6
-            Assert.assertEquals(1 - p * 2 * i,
+            Assertions.assertEquals(1 - p * 2 * i,
                     diceDistribution.probability(lower, upper), 1E-12);
             lower++;
             upper--;
         }
         for (int i = 0; i < 6; i++) {
-            Assert.assertEquals(p, diceDistribution.probability(i, i + 1), 1E-12);
+            Assertions.assertEquals(p, diceDistribution.probability(i, i + 1), 1E-12);
         }
     }
 

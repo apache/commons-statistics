@@ -16,8 +16,9 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for PascalDistribution.
@@ -30,9 +31,8 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
     // --------------------- Override tolerance  --------------
     protected double defaultTolerance = 1e-7;
 
-    @Override
-    public void setUp() {
-        super.setUp();
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(defaultTolerance);
     }
 
@@ -123,11 +123,11 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         PascalDistribution dist;
 
         dist = new PascalDistribution(10, 0.5);
-        Assert.assertEquals((10d * 0.5d) / 0.5d, dist.getMean(), tol);
-        Assert.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
+        Assertions.assertEquals((10d * 0.5d) / 0.5d, dist.getMean(), tol);
+        Assertions.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
         dist = new PascalDistribution(25, 0.7);
-        Assert.assertEquals((25d * 0.3d) / 0.7d, dist.getMean(), tol);
-        Assert.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), tol);
+        Assertions.assertEquals((25d * 0.3d) / 0.7d, dist.getMean(), tol);
+        Assertions.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), tol);
     }
 }
