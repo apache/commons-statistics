@@ -14,8 +14,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- *This package contains all the moment related classes.
- */
+/** This package contains all the moment related classes. */
 package org.apache.commons.statistics.descriptive.moment;

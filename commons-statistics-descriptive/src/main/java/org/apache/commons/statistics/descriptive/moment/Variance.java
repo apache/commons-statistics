@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.statistics.descriptive.moment;
 
 /**
- * 
+ * This class provides the methods to add values and calculate Variance.
  * <pre> {@code
  * Variance stats = doubleStream.collect(Variance::new,
  *                                       Variance::accept,
@@ -25,107 +26,143 @@ package org.apache.commons.statistics.descriptive.moment;
  * }</pre>
  */
 public class Variance {
+    /***/
+    private double s;
 
     /***/
-    private boolean isBiasCorrected = true; 
-    /***/
-    private double mean1 = 0;
+    private boolean isBiasCorrected = true;
 
     /***/
-    private double s = 0;
+    private double mean1;
 
     /***/
-    private double x = 0;
+    private long countN;
 
     /***/
-    private double mean0 = 0;
+    private double m2;
 
-    /***/
-    private double variance = 0;
+    /**Constructor for Variance class.*/
+    public Variance() {
+        m2 = Double.NaN;
+    }
 
-    /***/
-    private long countN = 0;
+    /**
+     * This method calculates Variance based on Welford's Algorithm.
+     * The Welford's Algorithm is as follows:<br>
+     *<pre><code>
+     *variance(samples):
+     *    mean1 := 0
+     *    s := 0
+     *    for k from 1 to N:
+     *        x := samples[k]
+     *        mean0 := mean1
+     *        mean1 := mean1 + (x-mean1)/k
+     *        s := s + (x-mean1)*(x-mean0)
+     *    return s/(N-1)</code></pre>
+     *@param value stream of values
+     */
+    public void accept(double value) {
+        double x;
+        double mean0;
+        countN++;
+        x = value;
+        mean0 = mean1;
+        mean1 += (x - mean1) / countN;
+        s += (x - mean1) * (x - mean0);
+        //variance = s / (countN - 1);
+        m2 = s;
+    }
 
-   /**
-    * This method calculates Variance based on Welford's Algorithm.
-    * The Welford's Algorithm is as follows:<br>
-    *<pre><code>
-    *variance(samples):
-    *    mean1 := 0
-    *    s := 0
-    *    for k from 1 to N:
-    *        x := samples[k]
-    *        mean0 := mean1
-    *        mean1 := mean1 + (x-mean1)/k
-    *        s := s + (x-mean1)*(x-mean0)
-    *    return s/(N-1)</code></pre>
-    *@param value stream of values
-    */
-   public void accept( double value) {   
-	   countN++;
-       x = value;
-       mean0 = mean1;
-       mean1 += (x - mean1) / countN;
-       s += (x - mean1) * (x - mean0);
-       //variance = s / (countN - 1);
-   }
-   
-   public void combine(Variance var2) {
-	   double delta = var2.getMean() - mean1;
-	   double m_a = variance * (countN - 1);
-	   double m_b = var2.getVariance() *(var2.getN()- 1);
-	   double M2 = m_a + m_b + Math.pow(delta, 2)* countN *var2.getN() / (countN + var2.getN());
-	   //Variance will be calculated using getVariance() method which will yield wrong result
-	   //after calculation. Hence assigning s=M2; so that it will be calculated in getVariance() Method accordingly.
-	   //variance = M2 / (getN() + var2.getN()- 1);
-	   s=M2;
-	   mean1= (var2.getN()*var2.getMean() + getMean()*getN()) / (getN() +var2.getN());
-       countN = getN() + var2.getN();
-	   
-   }
-   
-   public double getVariance(boolean isBiasCorrected) {
-	   if(isBiasCorrected)
-           return variance = s / (countN - 1);
-       return variance = s / (countN);
-   }
-   
-   public double getVariance() {
-	   return variance = s / (countN - 1);
-   }
-  
-   /**
-    * This method gives the count of values added.
-    * @return countN-count of values
-    */
-   public long getN() {
-       return countN;
-   }
+    /**
+     * <p>This method combines object of Variance class with another object of same class. </p>
+     * @param var2 Variance class object
+     */
+    public void combine(Variance var2) {
+        final double delta = var2.getMean() - mean1;
+        final long sum = getN() + var2.getN();
+        //double m_a = variance * (countN - 1);
+        //double m_b = var2.getVariance() *(var2.getN()- 1);
+        m2 = getm2() + var2.getm2() + Math.pow(delta, 2) * countN * var2.getN() / sum;
+        //Variance will be calculated using getVariance() method which will yield wrong result
+        //after calculation. Hence assigning s=m2; so that it will be calculated in getVariance()
+        //Method accordingly.
+        //variance = m2 / (getN() + var2.getN()- 1);
+        //s=m2;
+        mean1 = (var2.getN() * var2.getMean() + getMean() * getN()) / sum;
+        countN = sum;
+    }
 
-   public double getMean() {
-       return mean1;
-   }
+    /**
+     * <p>This method calculates Variance value when boolean parameter is provided.</p>
+     * @param isBiasC Boolean value to decide Variaance type i.e. population/sample
+     * @return Variance
+     */
+    public double getVariance(boolean isBiasC) {
+        if (isBiasC) {
+            return m2 / (countN - 1);
+        }
+        return  m2 / countN;
+    }
 
-   public boolean isBiasCorrected() {
-       return isBiasCorrected;
-   }
+    /**
+     * <p>This method calculates Variance value when no parameter is provided.</p>
+     * @return Variance
+     */
+    public double getVariance() {
+        if (biasCorrected()) {
+            return m2 / (countN - 1);
+        }
+        return  m2 / countN;
+    }
 
-   public void setBiasCorrected(boolean biasCorrected) {
-       this.isBiasCorrected = biasCorrected;
-   }
-   
-   /**
-    * {@inheritDoc}
-    *
-    * Returns a non-empty string representation of this object suitable for
-    * debugging. The exact presentation format is unspecified and may vary
-    * between implementations and versions.
-    */
-   @Override
-   public String toString() {
-       return String.format(
-           "%s{variance = %f}",
-           this.getClass().getSimpleName(),
-           getVariance());
-   } 
+    /**
+     *@return m2
+     */
+    public double getm2() {
+        return m2;
+    }
+
+    /**
+     * This method gives the count of values added.
+     * @return countN-count of values
+     */
+    public long getN() {
+        return countN;
+    }
+
+    /**
+     *@return mean value
+     */
+    public double getMean() {
+        return mean1;
+    }
+
+    /**
+     *@return Boolean value, for getting Population/Sample variance.
+     */
+    public boolean biasCorrected() {
+        return isBiasCorrected;
+    }
+
+    /**
+     *@param biasCorrected Boolean value for Population/Sample variance.
+     */
+    public void setBiasCorrected(boolean biasCorrected) {
+        this.isBiasCorrected = biasCorrected;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>Returns a non-empty string representation of this object suitable for
+     * debugging. The exact presentation format is unspecified and may vary
+     * between implementations and versions.</p>
+     */
+    @Override
+    public String toString() {
+        return String.format(
+             "%s{variance = %f}",
+             getClass().getSimpleName(),
+             getVariance());
+    }
 }

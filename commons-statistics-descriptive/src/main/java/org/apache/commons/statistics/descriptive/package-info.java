@@ -14,9 +14,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- *
- *All the commons-statistics-descriptive related classes are present in this package.
- */
+/** All the commons-statistics-descriptive related classes are present in this package. */
 package org.apache.commons.statistics.descriptive;
-

@@ -14,28 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.descriptive.moment;
 
+package org.apache.commons.statistics.descriptive.moment;
 /**
- * 
- *
+ * This class has methods to compute First Moment.
  */
 public class FirstMoment {
-	
-	/**Total no. of values.*/
-    protected long n;
-    /**Current value of mean.*/
-    protected double mean1;
-    /**Sum of values added.*/
-    protected double sum;
-    /**Last mean value.*/
-    protected double mean0;
-    /**Value added from the stream.*/
-    protected double d;
 
-   /**
-    * Create a FirstMoment instance
-    */
+    /** Total no. of values. */
+    protected long n;
+    /** Current value of mean. */
+    protected double mean1;
+    /** Sum of values added. */
+    protected double sum;
+    /** Last mean value. */
+    protected double mean0;
+
+    /** Create a FirstMoment instance. */
     public FirstMoment() {
         n = 0;
         mean1 = Double.NaN;
@@ -49,20 +44,18 @@ public class FirstMoment {
      * Algorithm:
      * add d:
      *     n = n + 1;
-     *     mean1 = mean0 + (d - mean0) / n 
+     *     mean1 = mean0 + (d - mean0) / n
      * @param d Values to calculate mean.
      */
     public void accept(double d) {
         if (n == 0) {
             mean0 = 0.0;
+        } else {
+            mean0 = sum / n;
         }
-        mean0 = sum / n;
         sum += d;
         n++;
-        if(mean0!=mean0)
-	        mean1 = sum / n;
-        else
-	        mean1 = mean0 + (d - mean0) / n ;
+        mean1 = mean0 + (d - mean0) / n;
     }
 
     /**
@@ -74,10 +67,10 @@ public class FirstMoment {
      *   mean = (sumA + sumB) / (nA + nB)
      * @param m1 Object of FirstMoment class
      */
-    public void combine(FirstMoment m1){
-        mean1=(m1.n*m1.mean1 + getMean()*getN()) / (getN() +m1.n);
-    	n = getN() + m1.getN();
-    	sum = getSum() + m1.getSum();
+    public void combine(FirstMoment m1) {
+        mean1 = (m1.n * m1.mean1 + getMean() * getN()) / (getN() + m1.n);
+        n = getN() + m1.getN();
+        sum = getSum() + m1.getSum();
     }
 
     /**
@@ -106,7 +99,6 @@ public class FirstMoment {
 
     /**
      * {@inheritDoc}
-     *
      * Returns a non-empty string representation of this object suitable for
      * debugging. The exact presentation format is unspecified and may vary
      * between implementations and versions.
@@ -114,10 +106,9 @@ public class FirstMoment {
     @Override
     public String toString() {
         return String.format(
-            "%s{mean=%f}",
-            this.getClass().getSimpleName(),
-            getMean());
+             "%s{mean=%f}",
+             getClass().getSimpleName(),
+             getMean());
     }
 
-} 
-
+}
