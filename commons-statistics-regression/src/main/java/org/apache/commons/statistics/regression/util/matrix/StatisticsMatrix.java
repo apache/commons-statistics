@@ -62,7 +62,7 @@ import org.ejml.simple.SimpleBase;
 public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = -82801259856161557L;
 
@@ -70,6 +70,10 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         super(numRows, numCols);
     }
 
+    /**
+     * Constructor for internal library use only. Nothing is configured and is
+     * intended for serialization.
+     */
     protected StatisticsMatrix() {
     }
 
@@ -85,6 +89,10 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         return ret;
     }
 
+    /**
+     *
+     * @param orig
+     */
     public StatisticsMatrix(Matrix orig) {
         Matrix mat;
         if (orig instanceof DMatrixRBlock) {
@@ -151,16 +159,26 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         return new StatisticsMatrix(numRows, numCols); // MatrixType type param to satisfy abstract method
     }
 
+    /**
+     *
+     */
     @Override
     protected StatisticsMatrix wrapMatrix(Matrix m) {
-        // TODO Auto-generated method stub
         return new StatisticsMatrix(m);
     }
 
+    /**
+     *
+     * @return
+     */
     public double[] toArray1D() {
         return this.getDDRM().data;
     }
 
+    /**
+     *
+     * @return
+     */
     public double[][] toArray2D() {
         int rows = this.getDDRM().numRows;
         int cols = this.getDDRM().numCols;
@@ -174,19 +192,19 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         return retArr;
     }
 
-    public static void printArray1D(double[] arr) {
-        for (int i = 0; i < arr.length; i++)
-            System.out.print(arr[i] + ", ");
-        System.out.println();
-    }
-
-    public static void printArray2D(double[][] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            for (int j = 0; j < arr[i].length; j++)
-                System.out.print(arr[i][j] + "\t ");
-            System.out.println();
-        }
-    }
+//    public static void printArray1D(double[] arr) {
+//        for (int i = 0; i < arr.length; i++)
+//            System.out.print(arr[i] + ", ");
+//        System.out.println();
+//    }
+//
+//    public static void printArray2D(double[][] arr) {
+//        for (int i = 0; i < arr.length; i++) {
+//            for (int j = 0; j < arr[i].length; j++)
+//                System.out.print(arr[i][j] + "\t ");
+//            System.out.println();
+//        }
+//    }
 
 //    private static void printArrayWithStreams(double[][] arr) {
 //        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);

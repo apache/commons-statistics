@@ -23,15 +23,23 @@ import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
 public class OLSRegression extends AbstractRegression implements Regression {
 
+    /** Container for OLS estimator functionalities. */
     private OLSEstimators betas;
+
+    /** Container for OLS residual functionalities. */
     private OLSResiduals residuals;
 
+    /**
+     * Constructs the OLSRegression user-interface class.
+     *
+     * @param loader contains the inputData
+     */
     public OLSRegression(RegressionDataLoader loader) {
-        
+
         this.betas = new OLSEstimators(loader.getInputData());
         this.residuals = new OLSResiduals(loader.getInputData(), betas.calculateBeta());
     }
-    
+
     /**
      * {@inheritDoc}
      */

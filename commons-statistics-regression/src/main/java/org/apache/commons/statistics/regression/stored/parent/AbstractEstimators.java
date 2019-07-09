@@ -19,8 +19,7 @@ package org.apache.commons.statistics.regression.stored.parent;
 import org.apache.commons.statistics.regression.stored.RegressionDataHolder;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
-public abstract class AbstractEstimators extends RegressionDataHolder{
-
+public abstract class AbstractEstimators extends RegressionDataHolder {
 
     /**
      * Calculates the beta of multiple linear regression in matrix notation.

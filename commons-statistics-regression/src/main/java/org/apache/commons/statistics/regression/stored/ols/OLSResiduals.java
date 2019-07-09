@@ -18,45 +18,64 @@ package org.apache.commons.statistics.regression.stored.ols;
 
 import org.apache.commons.statistics.regression.stored.RegressionData;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
+import org.ejml.data.DMatrixRMaj;
+import org.ejml.dense.row.decomposition.qr.QRDecomposition_DDRB_to_DDRM;
+import org.ejml.interfaces.decomposition.QRDecomposition;
 
-public class OLSResiduals extends org.apache.commons.statistics.regression.stored.parent.AbstractResiduals{
+public class OLSResiduals extends org.apache.commons.statistics.regression.stored.parent.AbstractResiduals {
 
+    /**
+     * Constructs OLSResiduals to pass in inputData and OLSEstimator's calculated
+     * betasMatrix.
+     *
+     * @param inputData   the regression input data; X matrix and Y vector etc
+     * @param betasMatrix the calculated estimators from OLSEstimator's
+     *                    calculateBeta method
+     */
     protected OLSResiduals(RegressionData inputData, StatisticsMatrix betasMatrix) {
         this.inputData = inputData;
         this.betasMatrix = betasMatrix;
     }
-    
+
     /**
-     * <p>Compute the "hat" matrix.
+     * <p>
+     * Compute the "hat" matrix.
      * </p>
-     * <p>The hat matrix is defined in terms of the design matrix X
-     *  by X(X<sup>T</sup>X)<sup>-1</sup>X<sup>T</sup>
+     * <p>
+     * The hat matrix is defined in terms of the design matrix X by
+     * X(X<sup>T</sup>X)<sup>-1</sup>X<sup>T</sup>
      * </p>
-     * <p>The implementation here uses the QR decomposition to compute the
-     * hat matrix as Q I<sub>p</sub>Q<sup>T</sup> where I<sub>p</sub> is the
-     * p-dimensional identity matrix augmented by 0's.  This computational
-     * formula is from "The Hat Matrix in Regression and ANOVA",
-     * David C. Hoaglin and Roy E. Welsch,
-     * <i>The American Statistician</i>, Vol. 32, No. 1 (Feb., 1978), pp. 17-22.
+     * <p>
+     * The implementation here uses the QR decomposition to compute the hat matrix
+     * as Q I<sub>p</sub>Q<sup>T</sup> where I<sub>p</sub> is the p-dimensional
+     * identity matrix augmented by 0's. This computational formula is from "The Hat
+     * Matrix in Regression and ANOVA", David C. Hoaglin and Roy E. Welsch, <i>The
+     * American Statistician</i>, Vol. 32, No. 1 (Feb., 1978), pp. 17-22.
      * </p>
-     * <p>Data for the model must have been successfully loaded using one of
-     * the {@code newSampleData} methods before invoking this method; otherwise
-     * a {@code NullPointerException} will be thrown.</p>
+     * <p>
+     * Data for the model must have been successfully loaded using one of the
+     * {@code newSampleData} methods before invoking this method; otherwise a
+     * {@code NullPointerException} will be thrown.
+     * </p>
      *
      * @return the hat matrix
      * @throws NullPointerException unless method {@code newSampleData} has been
-     * called beforehand.
+     *                              called beforehand.
      */
     public StatisticsMatrix calculateHat() {
+
+        QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
+        qr.decompose(getX().getDDRM());
+
+        StatisticsMatrix qrQ = new StatisticsMatrix(qr.getQ(null, false));
+        StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false));
         // Create augmented identity matrix
-        StatisticsMatrix Q = qr.getQ();
-        final int p = qr.getR().getColumnDimension();
-        final int n = Q.getColumnDimension();
+        final int p = qrR.numCols();
+        final int n = qrQ.numCols();
         // No try-catch or advertised NotStrictlyPositiveException - NPE above if n < 3
-        Array2DRowRealMatrix augI = new Array2DRowRealMatrix(n, n);
-        double[][] augIData = augI.getDataRef();
+        double[][] augIData = new double[n][n];
         for (int i = 0; i < n; i++) {
-            for (int j =0; j < n; j++) {
+            for (int j = 0; j < n; j++) {
                 if (i == j && i < p) {
                     augIData[i][j] = 1d;
                 } else {
@@ -65,19 +84,27 @@ public class OLSResiduals extends org.apache.commons.statistics.regression.store
             }
         }
 
+        StatisticsMatrix augI = new StatisticsMatrix(new DMatrixRMaj(augIData));
+
         // Compute and return Hat matrix
         // No DME advertised - args valid if we get here
-        return Q.multiply(augI).multiply(Q.transpose());
+        return qrQ.mult(augI).mult(qrQ.transpose());
     }
 
     /**
-     * <p>Returns the sum of squared deviations of Y from its mean.</p>
+     * <p>
+     * Returns the sum of squared deviations of Y from its mean.
+     * </p>
      *
-     * <p>If the model has no intercept term, <code>0</code> is used for the
-     * mean of Y - i.e., what is returned is the sum of the squared Y values.</p>
+     * <p>
+     * If the model has no intercept term, <code>0</code> is used for the mean of Y
+     * - i.e., what is returned is the sum of the squared Y values.
+     * </p>
      *
-     * <p>The value returned by this method is the SSTO value used in
-     * the {@link #calculateRSquared() R-squared} computation.</p>
+     * <p>
+     * The value returned by this method is the SSTO value used in the
+     * {@link #calculateRSquared() R-squared} computation.
+     * </p>
      *
      * @return SSTO - the total sum of squares
      * @throws NullPointerException if the sample has not been set
@@ -85,11 +112,12 @@ public class OLSResiduals extends org.apache.commons.statistics.regression.store
      * @since 2.2
      */
     public double calculateTotalSumOfSquares() {
-        if (isNoIntercept()) {
-            return StatUtils.sumSq(getY().toArray());
-        } else {
-            return new SecondMoment().evaluate(getY().toArray());
-        }
+//        if (!getHasIntercept()) {
+//            return StatUtils.sumSq(getY().toArray());
+//        } else {
+//            return new SecondMoment().evaluate(getY().toArray());
+//        }
+        return -1;
     }
 
     /**
@@ -97,7 +125,6 @@ public class OLSResiduals extends org.apache.commons.statistics.regression.store
      *
      * @return residual sum of squares
      * @since 2.2
-     * @throws org.apache.commons.math4.linear.SingularMatrixException if the design matrix is singular
      * @throws NullPointerException if the data for the model have not been loaded
      */
     public double calculateResidualSumOfSquares() {
@@ -107,17 +134,19 @@ public class OLSResiduals extends org.apache.commons.statistics.regression.store
     }
 
     /**
-     * Returns the R-Squared statistic, defined by the formula <div style="white-space: pre"><code>
+     * Returns the R-Squared statistic, defined by the formula
+     * <div style="white-space: pre"><code>
      * R<sup>2</sup> = 1 - SSR / SSTO
-     * </code></div>
-     * where SSR is the {@link #calculateResidualSumOfSquares() sum of squared residuals}
-     * and SSTO is the {@link #calculateTotalSumOfSquares() total sum of squares}
+     * </code></div> where SSR is the {@link #calculateResidualSumOfSquares() sum of
+     * squared residuals} and SSTO is the {@link #calculateTotalSumOfSquares() total
+     * sum of squares}
      *
-     * <p>If there is no variance in y, i.e., SSTO = 0, NaN is returned.</p>
+     * <p>
+     * If there is no variance in y, i.e., SSTO = 0, NaN is returned.
+     * </p>
      *
      * @return R-square statistic
      * @throws NullPointerException if the sample has not been set
-     * @throws org.apache.commons.math4.linear.SingularMatrixException if the design matrix is singular
      * @since 2.2
      */
     public double calculateRSquared() {
@@ -125,38 +154,45 @@ public class OLSResiduals extends org.apache.commons.statistics.regression.store
     }
 
     /**
-     * <p>Returns the adjusted R-squared statistic, defined by the formula <div style="white-space: pre"><code>
+     * <p>
+     * Returns the adjusted R-squared statistic, defined by the formula
+     * <div style="white-space: pre"><code>
      * R<sup>2</sup><sub>adj</sub> = 1 - [SSR (n - 1)] / [SSTO (n - p)]
-     * </code></div>
-     * where SSR is the {@link #calculateResidualSumOfSquares() sum of squared residuals},
-     * SSTO is the {@link #calculateTotalSumOfSquares() total sum of squares}, n is the number
-     * of observations and p is the number of parameters estimated (including the intercept).
+     * </code></div> where SSR is the {@link #calculateResidualSumOfSquares() sum of
+     * squared residuals}, SSTO is the {@link #calculateTotalSumOfSquares() total
+     * sum of squares}, n is the number of observations and p is the number of
+     * parameters estimated (including the intercept).
      *
-     * <p>If the regression is estimated without an intercept term, what is returned is <pre>
+     * <p>
+     * If the regression is estimated without an intercept term, what is returned is
+     *
+     * <pre>
      * <code> 1 - (1 - {@link #calculateRSquared()}) * (n / (n - p)) </code>
      * </pre>
      *
-     * <p>If there is no variance in y, i.e., SSTO = 0, NaN is returned.</p>
+     * <p>
+     * If there is no variance in y, i.e., SSTO = 0, NaN is returned.
+     * </p>
      *
      * @return adjusted R-Squared statistic
      * @throws NullPointerException if the sample has not been set
-     * @throws org.apache.commons.math4.linear.SingularMatrixException if the design matrix is singular
      * @see #isNoIntercept()
      * @since 2.2
      */
     public double calculateAdjustedRSquared() {
-        final double n = getX().getRowDimension();
-        if (isNoIntercept()) {
-            return 1 - (1 - calculateRSquared()) * (n / (n - getX().getColumnDimension()));
+        final double n = getX().numRows();
+        if (!getHasIntercept()) {
+            return 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols()));
         } else {
-            return 1 - (calculateResidualSumOfSquares() * (n - 1)) /
-                (calculateTotalSumOfSquares() * (n - getX().getColumnDimension()));
+            return 1 - (calculateResidualSumOfSquares() * (n - 1))
+                    / (calculateTotalSumOfSquares() * (n - getX().numCols()));
         }
     }
-    
+
     /*
      * Pass through method
      */
+    @Override
     protected double calculateErrorVariance() {
         return super.calculateErrorVariance();
     }

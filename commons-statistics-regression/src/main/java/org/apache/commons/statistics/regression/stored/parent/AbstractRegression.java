@@ -16,9 +16,7 @@
  */
 package org.apache.commons.statistics.regression.stored.parent;
 
-import org.apache.commons.statistics.regression.stored.RegressionData;
 import org.apache.commons.statistics.regression.stored.RegressionDataHolder;
-import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
 public abstract class AbstractRegression extends RegressionDataHolder implements Regression {
 
@@ -28,9 +26,9 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      *
      * @param x          the [n,k] array representing the x sample
      * @param covariance the [n,n] array representing the covariance matrix
-     * @throws DimensionMismatchException if the number of rows in x is not equal to
-     *                                    the number of rows in covariance
-     * @throws NonSquareMatrixException   if the covariance matrix is not square
+     * @throws IllegalArgumentException if the number of rows in x is not equal to
+     *                                  the number of rows in covariance
+     * @throws IllegalArgumentException if the covariance matrix is not square
      */
     protected void validateCovarianceData(double[][] x, double[][] covariance) {
         if (x.length != covariance.length) {
@@ -42,20 +40,14 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
         }
     }
 
-        
-   
-    
-
-
-
     /**
      * Calculates the variance of the y values.
      *
      * @return Y variance
      */
     protected double calculateYVariance() {
-        return new Variance().evaluate(getY().toArray());
+//        return new Variance().evaluate(getY().toArray());
+        return -1;
     }
-
 
 }

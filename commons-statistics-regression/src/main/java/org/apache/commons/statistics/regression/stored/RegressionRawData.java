@@ -20,8 +20,13 @@ import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
 public class RegressionRawData implements RegressionData {
 
-    private StatisticsMatrix yMatrix; // vector
+    /** Y vector data as StatisticsMatrix wrapper. */
+    private StatisticsMatrix yVector;
+
+    /** X matrix data as StatisticsMatrix wrapper. */
     private StatisticsMatrix xMatrix;
+
+    /** boolean true if sample data has an intercept. */
     private boolean hasIntercept;
 
 //    public RegressionRawData(StatisticsMatrix yData, StatisticsMatrix xData, Boolean hasIntercept) {
@@ -36,32 +41,64 @@ public class RegressionRawData implements RegressionData {
 //        this.hasIntercept = true;
 //    }
 
+    /**
+     * Creates an empty constructor.
+     */
     public RegressionRawData() {
         this.xMatrix = null;
-        this.yMatrix = null;
-        this.hasIntercept = true;
+        this.yVector = null;
+        this.hasIntercept = false;
     }
 
+    /**
+     * Sets Y vector data.
+     *
+     * @param yMatrix
+     */
     public void setYData(StatisticsMatrix yMatrix) {
-        this.yMatrix = yMatrix;
+        this.yVector = yMatrix;
     }
 
+    /**
+     * Sets X matrix data.
+     *
+     * @param xMatrix
+     */
     public void setXData(StatisticsMatrix xMatrix) {
         this.xMatrix = xMatrix;
     }
 
+    /**
+     * Sets hasIntercept boolean, {@code true} if sample data already contains
+     * intercept (column of 1's). {@code false} if column of 1's should be created
+     * when loading X data.
+     *
+     * @param hasIntercept
+     */
     public void setHasIntercept(boolean hasIntercept) {
         this.hasIntercept = hasIntercept;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public StatisticsMatrix getYData() {
-        return this.yMatrix;
+        return this.yVector;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public StatisticsMatrix getXData() {
         return this.xMatrix;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean getHasIntercept() {
         return this.hasIntercept;
     }

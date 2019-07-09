@@ -19,50 +19,127 @@ package org.apache.commons.statistics.regression.stored;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.ejml.data.DMatrixRMaj;
 
-public class RegressionDataLoader {
+public final class RegressionDataLoader {
 
+    /** Contains Y vector and X matrix data and a hasIntercept boolean. */
     private RegressionRawData inputData;
 
+    /**
+     * <p>
+     * Creates new RegressionDataLoader object and loads new Y and X data as double
+     * arrays.
+     * </p>
+     *
+     * <p>
+     * Please note: hasIntercept which should be set to {@code true} if sample data
+     * already contains intercept (column of 1's) will be set to {@code false} by
+     * default inside constructor of {@code RegressionRawData} class.
+     * </p>
+     *
+     * @param y vector data
+     * @param x matrix data
+     */
     public RegressionDataLoader(double[] y, double[][] x) {
         this.newSampleData(y, x);
     }
 
+    /**
+     * <p>
+     * Creates new RegressionDataLoader object and loads new Y and X data as double
+     * arrays and hasIntercept which should be true if sample data already contains
+     * intercept; column of 1's.
+     * </p>
+     *
+     * @param y            vector data
+     * @param x            matrix data
+     * @param hasIntercept true if intercept is included in input data
+     */
     public RegressionDataLoader(double[] y, double[][] x, boolean hasIntercept) {
         this.newSampleData(y, x, hasIntercept);
     }
 
+    /**
+     * Creates empty RegressionDataLoader object with data starting as {@code null}
+     * and hasIntercept as {@code false}.
+     */
     public RegressionDataLoader() {
         inputData = new RegressionRawData();
     }
 
+    /**
+     * <p>
+     * Loads new Y and X data as double arrays.
+     * </p>
+     *
+     * <p>
+     * Please note: hasIntercept which should be set to {@code true} if sample data
+     * already contains intercept (column of 1's) will be set to {@code false} by
+     * default inside constructor of {@code RegressionRawData} class.
+     * </p>
+     *
+     * @param y vector data
+     * @param x matrix data
+     */
     public void newSampleData(double[] y, double[][] x) {
         validateSampleData(y, x);
-        if (inputData == null)
+        if (inputData == null) {
             inputData = new RegressionRawData();
-
-//        else {
+        }
         newYData(y);
         newXData(x);
-//        }
     }
 
+    /**
+     * <p>
+     * Loads new Y and X data as double arrays and hasIntercept which should be true
+     * if sample data already contains intercept; column of 1's.
+     * </p>
+     *
+     * @param y            vector data
+     * @param x            matrix data
+     * @param hasIntercept true if intercept is included in input data
+     */
     public void newSampleData(double[] y, double[][] x, boolean hasIntercept) {
         validateSampleData(y, x);
-        if (inputData == null)
+        if (inputData == null) {
             inputData = new RegressionRawData();
-
-//        else {
+        }
         inputData.setHasIntercept(hasIntercept);
         newYData(y);
         newXData(x);
-
-//        }
     }
 
+    /**
+     * <p>
+     * Loads model x and y sample data from a flat input array, overriding any
+     * previous sample. Please see {@code newSingleArraySampleData} for more
+     * details.
+     * </p>
+     *
+     * @param data  input data array
+     * @param nobs  number of observations (rows)
+     * @param nvars number of independent variables (columns, not counting y)
+     */
     public void newSampleData(double[] data, int nobs, int nvars) {
         newSingleArraySampleData(data, nobs, nvars);
     }
 
+    /**
+     * <p>
+     * Loads model x and y sample data from a flat input array, overriding any
+     * previous sample. Please see {@code newSingleArraySampleData} for more
+     * details.
+     * </p>
+     *
+     * <p>
+     * Includes option to set hasIntercept in this single method.
+     * </p>
+     *
+     * @param data         input data array
+     * @param nobs         number of observations (rows)
+     * @param nvars        number of independent variables (columns, not counting y)
+     * @param hasIntercept true if sample data already has intercept; column of 1's
+     */
     public void newSampleData(double[] data, int nobs, int nvars, boolean hasIntercept) {
         inputData.setHasIntercept(hasIntercept);
         newSingleArraySampleData(data, nobs, nvars);
@@ -79,7 +156,7 @@ public class RegressionDataLoader {
      * (1, 2, 3, 4, 5, 6, 7, 8, 9) with <code>nobs = 3</code> and
      * <code>nvars = 2</code> creates a regression dataset with two independent
      * variables, as below:
-     * 
+     *
      * <pre>
      *   y   x[0]  x[1]
      *   --------------
@@ -113,14 +190,14 @@ public class RegressionDataLoader {
      */
     private void newSingleArraySampleData(double[] data, int nobs, int nvars) {
         if (data == null) {
-            throw new IllegalArgumentException("Null argument(s).");
+            throw new IllegalArgumentException("Null data argument.");
         }
         if (data.length != nobs * (nvars + 1)) {
             throw new IllegalArgumentException("Dimension mismatch: data length [" + data.length
                     + "] is not equal to nobs * (nvars + 1) [" + nobs * (nvars + 1) + "]");
         }
         if (nobs <= nvars) {
-            throw new IllegalArgumentException("Not enough data for number of predictors.");
+            throw new IllegalArgumentException("Not enough data for number of predictors: nobs <= nvars");
         }
         double[] y = new double[nobs];
         final int cols = !inputData.getHasIntercept() ? nvars : nvars + 1;
@@ -139,19 +216,41 @@ public class RegressionDataLoader {
         inputData.setXData(newXmatrix(x));
     }
 
+    /**
+     * <p>
+     * Sets Y data by creating a new StatisticsMatrix object from given array (see
+     * {@code newYmatrix}).
+     * </p>
+     *
+     * @param y 1D array
+     */
     public void newYData(double[] y) {
         inputData.setYData(newYmatrix(y));
 
-        if (inputData.getXData() != null)
+        if (inputData.getXData() != null) {
             validateSampleData(y, inputData.getXData().toArray2D());
+        }
     }
 
+    /**
+     * <p>
+     * Sets X data by creating a new StatisticsMatrix object from given array (see
+     * {@code newXmatrix}).
+     * </p>
+     * <p>
+     * If {@code hasIntercept} is false then method will add the intercept column of
+     * 1's. Method will also validate the data (see {@code validateSampleData})
+     * </p>
+     *
+     * @param x 2D array
+     */
     public void newXData(double[][] x) {
 
         if (!inputData.getHasIntercept()) {
             inputData.setXData(newXmatrix(x));
 
         } else { // Augment design matrix with initial unitary column
+
             final int nVars = x[0].length;
             final double[][] xAug = new double[x.length][nVars + 1];
             for (int i = 0; i < x.length; i++) {
@@ -164,17 +263,19 @@ public class RegressionDataLoader {
             inputData.setXData(newXmatrix(xAug));
         }
 
-        if (inputData.getYData() != null)
+        if (inputData.getYData() != null) {
             validateSampleData(inputData.getYData().toArray1D(), x);
+        }
     }
 
+    /** Sets Y and X StatisticsMatrix objects as null. */
     public void clearData() {
         inputData.setYData(null);
         inputData.setXData(null);
     }
 
     /**
-     * Validates sample data. Checks that
+     * Validates sample data. Checks that:
      * <ul>
      * <li>Neither x nor y is null or empty;</li>
      * <li>The length (i.e. number of rows) of x equals the length of y</li>
@@ -207,18 +308,41 @@ public class RegressionDataLoader {
         }
     }
 
+    /**
+     * Creates a new StatisticsMatrix object from 1D double array.
+     *
+     * @param y data as 1D array
+     * @return new StatisticsMatrix object containing the Y vector.
+     */
     private static StatisticsMatrix newYmatrix(double[] y) {
-        return (new StatisticsMatrix(new DMatrixRMaj(y)));
+        return new StatisticsMatrix(new DMatrixRMaj(y));
     }
 
+    /**
+     * Creates a new StatisticsMatrix object from 2D double array.
+     *
+     * @param x data as 2D array
+     * @return new StatisticsMatrix object containing the X matrix.
+     */
     private static StatisticsMatrix newXmatrix(double[][] x) {
-        return (new StatisticsMatrix(new DMatrixRMaj(x)));
+        return new StatisticsMatrix(new DMatrixRMaj(x));
     }
 
+    /**
+     * Sets whether the input data has an intercept included; false if column of 1's
+     * should be created when loading X data.
+     *
+     * @param hasIntercept true if sample data already contains intercept.
+     */
     public void setHasIntercept(boolean hasIntercept) {
         inputData.setHasIntercept(hasIntercept);
     }
 
+    /**
+     * Returns the inputData object as a restricted interface.
+     *
+     * @return inputData loaded as StatisticsMatrix objects
+     */
     public RegressionData getInputData() {
         return inputData;
     }

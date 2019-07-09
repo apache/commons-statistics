@@ -24,23 +24,27 @@ import org.ejml.dense.row.factory.LinearSolverFactory_DDRM;
 import org.ejml.interfaces.decomposition.QRDecomposition;
 import org.ejml.interfaces.linsol.LinearSolver;
 
-public class OLSEstimators extends org.apache.commons.statistics.regression.stored.parent.AbstractEstimators{
-    
-    
-    protected OLSEstimators(RegressionData data) {
-        this.inputData = data;
+public class OLSEstimators extends org.apache.commons.statistics.regression.stored.parent.AbstractEstimators {
+
+    /**
+     * Constructs the OLSEstimator to pass regression data.
+     *
+     * @param inputData the regression input data; X matrix and Y vector etc
+     */
+    protected OLSEstimators(RegressionData inputData) {
+        this.inputData = inputData;
     }
-  
-    
+
     /**
      * Calculates the regression coefficients using OLS.
      *
-     * <p>Data for the model must have been successfully loaded using one of
-     * the {@code newSampleData} methods before invoking this method; otherwise
-     * a {@code NullPointerException} will be thrown.</p>
+     * <p>
+     * Data for the model must have been successfully loaded using one of the
+     * {@code newSampleData} methods before invoking this method; otherwise a
+     * {@code NullPointerException} will be thrown.
+     * </p>
      *
      * @return beta
-     * @throws org.apache.commons.math4.linear.SingularMatrixException if the design matrix is singular
      * @throws NullPointerException if the data for the model have not been loaded
      */
     @Override
@@ -49,26 +53,20 @@ public class OLSEstimators extends org.apache.commons.statistics.regression.stor
         StatisticsMatrix xMatrix = getX().copy();
         LinearSolver<DMatrixRMaj, DMatrixRMaj> solver = LinearSolverFactory_DDRM.leastSquares(xMatrix.numRows(),
                 xMatrix.numCols());
-        
+
         solver.setA(xMatrix.getDDRM());
         solver.solve(getY().getDDRM(), xMatrix.getDDRM());
-        
-        
-        //extracts the betas out of solved xMatrix, which contained larger array
-        double [] rawBetas = new double[getX().numCols()];
-        for (int i = 0; i < getX().numCols(); i++) 
-            rawBetas[i] = xMatrix.getDDRM().data[i];
-        
-        StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(rawBetas));
 
-//        System.out.println("BETAS:");
-//        StatisticsMatrix.printArray1D(betas.toArray1D());
-//        System.out.println("ret\n");
-        
+        // extracts the betas out of solved xMatrix, which contained larger array
+        double[] rawBetas = new double[getX().numCols()];
+        for (int i = 0; i < getX().numCols(); i++) {
+            rawBetas[i] = xMatrix.getDDRM().data[i];
+        }
+
+        StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(rawBetas));
         return betas;
     }
-    
-    
+
     /**
      * <p>
      * Calculates the variance-covariance matrix of the regression parameters.
@@ -89,8 +87,6 @@ public class OLSEstimators extends org.apache.commons.statistics.regression.stor
      * </p>
      *
      * @return The beta variance-covariance matrix
-     * @throws                      org.apache.commons.math4.linear.SingularMatrixException
-     *                              if the design matrix is singular
      * @throws NullPointerException if the data for the model have not been loaded
      */
     @Override
@@ -99,10 +95,9 @@ public class OLSEstimators extends org.apache.commons.statistics.regression.stor
         QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
         qr.decompose(getX().getDDRM());
 
-        StatisticsMatrix R = new StatisticsMatrix(qr.getR(null, false));
-        StatisticsMatrix Rinv = R.invert();
-        return Rinv.mult(Rinv.transpose());
+        StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false));
+        StatisticsMatrix invR = qrR.invert();
+        return invR.mult(invR.transpose());
     }
-
 
 }

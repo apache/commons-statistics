@@ -20,10 +20,19 @@ import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
 public interface RegressionData {
 
-    StatisticsMatrix getXData();
-
+    /**
+     * @return Y vector data.
+     */
     StatisticsMatrix getYData();
 
+    /**
+     * @return X matrix data.
+     */
+    StatisticsMatrix getXData();
+
+    /**
+     * @return boolean if calculations should include an intercept.
+     */
     boolean getHasIntercept();
 
 }

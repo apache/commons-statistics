@@ -19,11 +19,14 @@ package org.apache.commons.statistics.regression.stored.parent;
 import org.apache.commons.statistics.regression.stored.RegressionDataHolder;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
-public abstract class AbstractResiduals extends RegressionDataHolder{
+public abstract class AbstractResiduals extends RegressionDataHolder {
 
+    /**
+     * The calculated betas (estimators) from calculateBeta method inside
+     * AbstractEstimators class.
+     */
     protected StatisticsMatrix betasMatrix;
-    
-    
+
     /**
      * <p>
      * Calculates the variance of the error term.
@@ -57,5 +60,5 @@ public abstract class AbstractResiduals extends RegressionDataHolder{
         StatisticsMatrix b = betasMatrix;
         return getY().minus(getX().mult(b)); // operate is for vec x vec in CM
     }
-    
+
 }
