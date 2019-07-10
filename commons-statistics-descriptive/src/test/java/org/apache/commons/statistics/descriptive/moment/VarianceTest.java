@@ -152,4 +152,14 @@ class VarianceTest {
         return sum / v.length;
     }
 
+
+    /**Verifies that toString() works properly.*/
+    @Test
+    public void testToString() {
+        Variance var3 = getVarianceInst();
+        StringBuilder expectedString = new StringBuilder();
+        expectedString.append(var3.getClass().getSimpleName() + "{variance = " + var3.getVariance() + "}");
+        assertEquals(expectedString.toString(), var3.toString());
+    }
+
 }

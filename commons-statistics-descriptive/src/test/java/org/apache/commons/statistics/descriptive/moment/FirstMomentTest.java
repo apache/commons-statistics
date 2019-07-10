@@ -151,4 +151,13 @@ class FirstMomentTest {
         assertTrue(Double.isNaN(mean5.getMean()));
     }
 
+    /**Verifies that toString() works properly.*/
+    @Test
+    public void testToString() {
+        FirstMoment mean6 = getFirstMomentInst();
+        StringBuilder expectedString = new StringBuilder();
+        expectedString.append(mean6.getClass().getSimpleName() + "{mean=" + mean6.getMean() + "}");
+        assertEquals(expectedString.toString(), mean6.toString());
+    }
+
 }
