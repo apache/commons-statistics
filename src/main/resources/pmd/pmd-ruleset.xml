@@ -103,5 +103,14 @@
       <property name="ignoreMagicNumbers" value="-1,0,1" />
     </properties>
   </rule>
+  
+  <rule ref="category/java/codestyle.xml/ShortClassName">
+  <properties>
+    <!-- This will allow 'Mean' as a class name. -->
+    <!-- Else, if want to remove this violationSuppressXPath adding
+    annotation(@SuppressWarnings("PMD.ShortClassName")) will also work. -->
+    <property name="violationSuppressXPath" value=".[typeIs('Mean')]"/>
+  </properties>
+</rule>
 
 </ruleset>
