@@ -17,8 +17,9 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link ChiSquaredDistribution}.
@@ -72,9 +73,9 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
     }
 
     // --------------------- Override tolerance  --------------
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-9);
     }
 
@@ -97,7 +98,7 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
     @Test
     public void testDfAccessors() {
         ChiSquaredDistribution distribution = (ChiSquaredDistribution) getDistribution();
-        Assert.assertEquals(5d, distribution.getDegreesOfFreedom(), Double.MIN_VALUE);
+        Assertions.assertEquals(5d, distribution.getDegreesOfFreedom(), Double.MIN_VALUE);
     }
 
     @Test
@@ -116,7 +117,7 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
     private void checkDensity(double df, double[] x, double[] expected) {
         ChiSquaredDistribution d = new ChiSquaredDistribution(df);
         for (int i = 0; i < x.length; i++) {
-            Assert.assertEquals(expected[i], d.density(x[i]), 1e-5);
+            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-5);
         }
     }
 
@@ -126,11 +127,11 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
         ChiSquaredDistribution dist;
 
         dist = new ChiSquaredDistribution(1500);
-        Assert.assertEquals(1500, dist.getMean(), tol);
-        Assert.assertEquals(3000, dist.getVariance(), tol);
+        Assertions.assertEquals(1500, dist.getMean(), tol);
+        Assertions.assertEquals(3000, dist.getVariance(), tol);
 
         dist = new ChiSquaredDistribution(1.12);
-        Assert.assertEquals(1.12, dist.getMean(), tol);
-        Assert.assertEquals(2.24, dist.getVariance(), tol);
+        Assertions.assertEquals(1.12, dist.getMean(), tol);
+        Assertions.assertEquals(2.24, dist.getVariance(), tol);
     }
 }

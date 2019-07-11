@@ -16,8 +16,9 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for GeometricDistribution.
@@ -25,10 +26,10 @@ import org.junit.Test;
  */
 public class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
-    /**
-     * Constructor to override default tolerance.
-     */
-    public GeometricDistributionTest() {
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-12);
     }
 
@@ -160,11 +161,11 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
         GeometricDistribution dist;
 
         dist = new GeometricDistribution(0.5);
-        Assert.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
-        Assert.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
+        Assertions.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
+        Assertions.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
         dist = new GeometricDistribution(0.3);
-        Assert.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
-        Assert.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
+        Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
+        Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
     }
 }
