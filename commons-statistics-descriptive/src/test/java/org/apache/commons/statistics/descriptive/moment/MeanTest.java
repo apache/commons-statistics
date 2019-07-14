@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.Test;
 
 /**
- *Test cases for {@link FirstMoment} class.
+ *Test cases for {@link Mean} class.
  */
-class FirstMomentTest {
+class MeanTest {
 
     protected double mean = 12.404545454545455d;
     protected double combMean = 13.573076923077d;
@@ -63,15 +63,15 @@ class FirstMomentTest {
         return this.combSum;
     }
 
-    /**Returns FirstMoment instance.*/
-    public FirstMoment getFirstMomentInst() {
-        return new FirstMoment();
+    /**Returns Mean instance.*/
+    public Mean getMeanInst() {
+        return new Mean();
     }
 
     /** Verifies that accept(), getMean(),getN(), getSum() works properly. */
     @Test
-    public void testFirstMoment() {
-        FirstMoment meanX = getFirstMomentInst();
+    public void testMean() {
+        Mean meanX = getMeanInst();
         // Add testArray one value at a time and check result
         for (int i = 0; i < testArray.length; i++) {
             meanX.accept(testArray[i]);
@@ -84,17 +84,17 @@ class FirstMomentTest {
     /**Verifies that  getMean() works properly for a single value. */
     @Test
     public void testSmallSamples() {
-        FirstMoment meanY = getFirstMomentInst();
+        Mean meanY = getMeanInst();
         assertTrue(Double.isNaN(meanY.getMean()));
         meanY.accept(1d);
-        assertEquals(1d, meanY.getMean(), 0);
+        assertEquals(1d, meanY.getMean(), getTolerance());
     }
 
     /** Verifies that combine() works properly. */
     @Test
     public void testCombine() {
-        FirstMoment mean1 = getFirstMomentInst();
-        FirstMoment mean2 = getFirstMomentInst();
+        Mean mean1 = getMeanInst();
+        Mean mean2 = getMeanInst();
         final double[] array = {5 * 2 + 4, 5 * 2 +  7, 5 * 2 + 13, 5 * 2 + 16};
         // Add array one value at a time in var1 object and check result
         for (int i = 0; i < testArray.length; i++) {
@@ -119,7 +119,7 @@ class FirstMomentTest {
      */
     @Test
     public void testSpecialValues() {
-        final FirstMoment meanZ = getFirstMomentInst();
+        final Mean meanZ = getMeanInst();
 
         //mean.clear();
         meanZ.accept(Double.POSITIVE_INFINITY);
@@ -127,25 +127,25 @@ class FirstMomentTest {
         assertTrue(Double.isNaN(meanZ.getMean()));
 
         //mean.clear();
-        final FirstMoment mean2 = getFirstMomentInst();
+        final Mean mean2 = getMeanInst();
         mean2.accept(Double.NEGATIVE_INFINITY);
         mean2.accept(Double.POSITIVE_INFINITY);
         assertTrue(Double.isNaN(mean2.getMean()));
 
         //mean.clear();
-        final FirstMoment mean3 = getFirstMomentInst();
+        final Mean mean3 = getMeanInst();
         mean3.accept(Double.NaN);
         mean3.accept(Double.POSITIVE_INFINITY);
         assertTrue(Double.isNaN(mean3.getMean()));
 
         //mean.clear();
-        final FirstMoment mean4 = getFirstMomentInst();
+        final Mean mean4 = getMeanInst();
         mean4.accept(Double.NaN);
         mean4.accept(Double.NEGATIVE_INFINITY);
         assertTrue(Double.isNaN(mean4.getMean()));
 
         //mean.clear();
-        final FirstMoment mean5 = getFirstMomentInst();
+        final Mean mean5 = getMeanInst();
         mean5.accept(Double.NaN);
         mean5.accept(0d);
         assertTrue(Double.isNaN(mean5.getMean()));
@@ -154,7 +154,7 @@ class FirstMomentTest {
     /**Verifies that toString() works properly.*/
     @Test
     public void testToString() {
-        FirstMoment mean6 = getFirstMomentInst();
+        Mean mean6 = getMeanInst();
         StringBuilder expectedString = new StringBuilder();
         expectedString.append(mean6.getClass().getSimpleName() + "{mean=" + mean6.getMean() + "}");
         assertEquals(expectedString.toString(), mean6.toString());

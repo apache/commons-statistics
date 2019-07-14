@@ -19,7 +19,7 @@ package org.apache.commons.statistics.descriptive.moment;
 /**
  * This class has methods to compute First Moment.
  */
-public class FirstMoment {
+public class Mean {
 
     /** Total no. of values. */
     protected long n;
@@ -30,8 +30,8 @@ public class FirstMoment {
     /** Last mean value. */
     protected double mean0;
 
-    /** Create a FirstMoment instance. */
-    public FirstMoment() {
+    /** Create a Mean instance. */
+    public Mean() {
         n = 0;
         mean1 = Double.NaN;
         mean0 = Double.NaN;
@@ -59,15 +59,15 @@ public class FirstMoment {
     }
 
     /**
-     * This  method combines the object of FirstMoment class with other object to calculate
+     * This  method combines the object of Mean class with other object to calculate
      * combined mean value.
      * Algorithm:
      *   mean = (nA * meanA + nB * meanB) / (nA + nB)
      *    OR
      *   mean = (sumA + sumB) / (nA + nB)
-     * @param m1 Object of FirstMoment class
+     * @param m1 Object of Mean class
      */
-    public void combine(FirstMoment m1) {
+    public void combine(Mean m1) {
         mean1 = (m1.n * m1.mean1 + getMean() * getN()) / (getN() + m1.n);
         n = getN() + m1.getN();
         sum = getSum() + m1.getSum();

@@ -25,52 +25,26 @@ package org.apache.commons.statistics.descriptive.moment;
  *                                       Variance::combine);
  * }</pre>
  */
-public class Variance {
-    /***/
-    private double s;
+public class Variance extends SecondMoment {
+
+
+    /** SecondMoment on which this statistic is based. */
+    protected SecondMoment moment;
 
     /***/
     private boolean isBiasCorrected = true;
 
-    /***/
-    private double mean1;
-
-    /***/
-    private long countN;
-
-    /***/
-    private double m2;
-
     /**Constructor for Variance class.*/
     public Variance() {
-        m2 = Double.NaN;
+        moment = new SecondMoment();
     }
 
     /**
-     * This method calculates Variance based on Welford's Algorithm.
-     * The Welford's Algorithm is as follows:<br>
-     *<pre><code>
-     *variance(samples):
-     *    mean1 := 0
-     *    s := 0
-     *    for k from 1 to N:
-     *        x := samples[k]
-     *        mean0 := mean1
-     *        mean1 := mean1 + (x-mean1)/k
-     *        s := s + (x-mean1)*(x-mean0)
-     *    return s/(N-1)</code></pre>
-     *@param value stream of values
+     * {@inheritDoc}
      */
+    @Override
     public void accept(double value) {
-        double x;
-        double mean0;
-        countN++;
-        x = value;
-        mean0 = mean1;
-        mean1 += (x - mean1) / countN;
-        s += (x - mean1) * (x - mean0);
-        //variance = s / (countN - 1);
-        m2 = s;
+        moment.accept(value);
     }
 
     /**
@@ -78,30 +52,23 @@ public class Variance {
      * @param var2 Variance class object
      */
     public void combine(Variance var2) {
-        final double delta = var2.getMean() - mean1;
+        final double delta = var2.getMean() - moment.mean1;
         final long sum = getN() + var2.getN();
-        //double m_a = variance * (countN - 1);
-        //double m_b = var2.getVariance() *(var2.getN()- 1);
-        m2 = getm2() + var2.getm2() + Math.pow(delta, 2) * countN * var2.getN() / sum;
-        //Variance will be calculated using getVariance() method which will yield wrong result
-        //after calculation. Hence assigning s=m2; so that it will be calculated in getVariance()
-        //Method accordingly.
-        //variance = m2 / (getN() + var2.getN()- 1);
-        //s=m2;
-        mean1 = (var2.getN() * var2.getMean() + getMean() * getN()) / sum;
-        countN = sum;
+        moment.m2 = getm2() + var2.getm2() + Math.pow(delta, 2) * moment.countN * var2.getN() / sum;
+        moment.mean1 = (var2.getN() * var2.getMean() + getMean() * getN()) / sum;
+        moment.countN = sum;
     }
 
     /**
      * <p>This method calculates Variance value when boolean parameter is provided.</p>
-     * @param isBiasC Boolean value to decide Variaance type i.e. population/sample
+     * @param isBiasC Boolean value to decide Variance type i.e. population/sample
      * @return Variance
      */
     public double getVariance(boolean isBiasC) {
         if (isBiasC) {
-            return m2 / (countN - 1);
+            return moment.m2 / (moment.countN - 1);
         }
-        return  m2 / countN;
+        return  moment.m2 / moment.countN;
     }
 
     /**
@@ -110,31 +77,33 @@ public class Variance {
      */
     public double getVariance() {
         if (biasCorrected()) {
-            return m2 / (countN - 1);
+            return moment.m2 / (moment.countN - 1);
         }
-        return  m2 / countN;
+        return  moment.m2 / moment.countN;
     }
 
     /**
-     *@return m2
+     * {@inheritDoc}
      */
+    @Override
     public double getm2() {
-        return m2;
+        return moment.m2;
     }
 
     /**
-     * This method gives the count of values added.
-     * @return countN-count of values
+     * {@inheritDoc}
      */
+    @Override
     public long getN() {
-        return countN;
+        return moment.countN;
     }
 
     /**
-     *@return mean value
+     * {@inheritDoc}
      */
+    @Override
     public double getMean() {
-        return mean1;
+        return moment.mean1;
     }
 
     /**
@@ -165,4 +134,5 @@ public class Variance {
              getClass().getSimpleName(),
              getVariance());
     }
+
 }
