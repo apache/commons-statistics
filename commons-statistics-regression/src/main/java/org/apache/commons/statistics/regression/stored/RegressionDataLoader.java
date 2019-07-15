@@ -225,6 +225,10 @@ public final class RegressionDataLoader {
      * @param y 1D array
      */
     public void newYSampleData(double[] y) {
+        if (y == null) {
+            throw new IllegalArgumentException("Null y argument.");
+        }
+
         inputData.setYData(newYmatrix(y));
 
         if (inputData.getXData() != null) {
@@ -245,6 +249,9 @@ public final class RegressionDataLoader {
      * @param x 2D array
      */
     public void newXSampleData(double[][] x) {
+        if (x == null) {
+            throw new IllegalArgumentException("Null x argument.");
+        }
 
         if (!inputData.getHasIntercept()) {
             inputData.setXData(newXmatrix(x));
