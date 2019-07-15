@@ -193,7 +193,8 @@ public final class RegressionDataLoader {
             throw new IllegalArgumentException("Null data argument.");
         }
         if (data.length != nobs * (nvars + 1)) {
-            throw new IllegalArgumentException("Dimension mismatch: data length [" + data.length + "] is not equal to nobs * (nvars + 1) [" + nobs * (nvars + 1) + "]");
+            throw new IllegalArgumentException("Dimension mismatch: data length [" + data.length +
+                "] is not equal to nobs * (nvars + 1) [" + nobs * (nvars + 1) + "]");
         }
         if (nobs <= nvars) {
             throw new IllegalArgumentException("Not enough data for number of predictors: nobs <= nvars");

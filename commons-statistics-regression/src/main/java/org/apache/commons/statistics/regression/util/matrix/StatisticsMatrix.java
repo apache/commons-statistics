@@ -52,12 +52,11 @@ import org.ejml.simple.SimpleBase;
  * "SimpleMatrix" operations return a matrix of type StatisticsMatrix, ensuring
  * strong typing.
  *
- * @author Peter Abeles
- *         -------------------------------------------------------------------------------------------
- *         Modifications for Apache Commons Statistics Regressiom library by:
- *         Ben Nguyen Under development for specific usage which are to be
- *         determined.
- *         -------------------------------------------------------------------------------------------
+ * author Peter Abeles
+ * -------------------------------------------------------------------------------------------
+ * Modifications for Apache Commons Statistics Regressiom library by: Ben Nguyen
+ * Under development for specific usage which are to be determined.
+ * -------------------------------------------------------------------------------------------
  */
 public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 
@@ -65,34 +64,6 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      *
      */
     private static final long serialVersionUID = -82801259856161557L;
-
-    /**
-     * Creates an identity matrix given it's square width.
-     *
-     * @param width
-     * @return the width sized identity matrix
-     */
-    @SuppressWarnings("unchecked")
-    public static StatisticsMatrix identity(int width) {
-        StatisticsMatrix ret = new StatisticsMatrix(width, width);
-        ret.ops.setIdentity(ret.mat);
-        return ret;
-    }
-
-    /**
-     * Wraps a StatisticsMatrix around 'm'. Does NOT create a copy of 'm' but saves
-     * a reference to it.
-     *
-     * @param m
-     * @return new pointer
-     */
-    public static StatisticsMatrix wrap(DMatrixRMaj m) {
-        StatisticsMatrix ret = new StatisticsMatrix();
-//        ret.mat = m;
-        ret.setMatrix(m);
-
-        return ret;
-    }
 
     /**
      * Constructor for internal library use only. Nothing is configured and is
@@ -104,8 +75,8 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     /**
      * Constructs a new empty matrix with a set dimension.
      *
-     * @param numRows
-     * @param numCols
+     * @param numRows number of rows
+     * @param numCols number of columns
      */
     public StatisticsMatrix(int numRows, int numCols) {
         super(numRows, numCols);
@@ -114,7 +85,7 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     /**
      * Constructs a new StatisticsMatrix object wrapper around a Matrix interface.
      *
-     * @param orig
+     * @param orig the origin matrix to be converted
      */
     public StatisticsMatrix(Matrix orig) {
         Matrix mat;
@@ -140,6 +111,34 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     protected StatisticsMatrix createMatrix(int numRows, int numCols, MatrixType type) {
         // changed by Ben Nguyen to add MatrixType type param to satisfy abstract method
         return new StatisticsMatrix(numRows, numCols);
+    }
+
+    /**
+     * Wraps a StatisticsMatrix around 'm'. Does NOT create a copy of 'm' but saves
+     * a reference to it.
+     *
+     * @param m origin matrix to wrap
+     * @return new pointer
+     */
+    public static StatisticsMatrix wrap(DMatrixRMaj m) {
+        StatisticsMatrix ret = new StatisticsMatrix();
+//        ret.mat = m;
+        ret.setMatrix(m);
+
+        return ret;
+    }
+
+    /**
+     * Creates an identity matrix given it's square width.
+     *
+     * @param width size of square matrix; numCols and numRows
+     * @return the width sized identity matrix
+     */
+    @SuppressWarnings("unchecked")
+    public static StatisticsMatrix identity(int width) {
+        StatisticsMatrix ret = new StatisticsMatrix(width, width);
+        ret.ops.setIdentity(ret.mat);
+        return ret;
     }
 
     /**

@@ -53,19 +53,19 @@ public class RegressionRawData implements RegressionData {
     /**
      * Sets Y vector data.
      *
-     * @param yMatrix
+     * @param yMat contains Y data
      */
-    public void setYData(StatisticsMatrix yMatrix) {
-        this.yVector = yMatrix;
+    public void setYData(StatisticsMatrix yMat) {
+        this.yVector = yMat;
     }
 
     /**
      * Sets X matrix data.
      *
-     * @param xMatrix
+     * @param xMat contains X data
      */
-    public void setXData(StatisticsMatrix xMatrix) {
-        this.xMatrix = xMatrix;
+    public void setXData(StatisticsMatrix xMat) {
+        this.xMatrix = xMat;
     }
 
     /**
@@ -73,7 +73,7 @@ public class RegressionRawData implements RegressionData {
      * intercept (column of 1's). {@code false} if column of 1's should be created
      * when loading X data.
      *
-     * @param hasIntercept
+     * @param hasIntercept boolean
      */
     public void setHasIntercept(boolean hasIntercept) {
         this.hasIntercept = hasIntercept;

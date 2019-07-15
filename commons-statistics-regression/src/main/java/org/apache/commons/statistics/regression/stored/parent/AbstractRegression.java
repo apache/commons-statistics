@@ -45,7 +45,8 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
             throw new IllegalArgumentException("x.length = " + x.length + "  covariance.lenth = " + covariance.length);
         }
         if (covariance.length > 0 && covariance.length != covariance[0].length) {
-            throw new IllegalArgumentException("covariance.length = " + covariance.length + "  covariance[0].length = " + covariance[0].length);
+            throw new IllegalArgumentException(
+                "covariance.length = " + covariance.length + "  covariance[0].length = " + covariance[0].length);
         }
     }
 
