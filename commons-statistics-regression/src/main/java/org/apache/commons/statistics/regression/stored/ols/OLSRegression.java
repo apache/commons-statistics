@@ -41,30 +41,75 @@ public class OLSRegression extends AbstractRegression implements Regression {
     }
 
     /**
+     * Please see details inside {@code OLSResiduals} class.
+     *
+     * @return adjusted R squared
+     */
+    public double calculateAdjustedRSquared() {
+        return residuals.calculateAdjustedRSquared();
+    }
+
+    /**
+     * Please see details inside {@code OLSResiduals} class.
+     *
+     * @return hat matrix
+     */
+    public StatisticsMatrix calculateHat() {
+        return residuals.calculateHat();
+    }
+
+    /**
+     * Please see details inside {@code OLSResiduals} class.
+     *
+     * @return Residual Sum of Squares
+     */
+    public double calculateResidualSumOfSquares() {
+        return residuals.calculateResidualSumOfSquares();
+    }
+
+    /**
+     * Please see details inside {@code OLSResiduals} class.
+     *
+     * @return R squared
+     */
+    public double calculateRSquared() {
+        return residuals.calculateRSquared();
+    }
+
+    /**
+     * Please see details inside {@code OLSResiduals} class.
+     *
+     * @return Total Sum of Squares
+     */
+    public double calculateTotalSumOfSquares() {
+        return residuals.calculateTotalSumOfSquares();
+    }
+
+    /**
+     * Estimates the variance of the error.
+     *
+     * @return estimate of the error variance
+     * @since 2.2
+     */
+    public double estimateErrorVariance() {
+        return residuals.calculateErrorVariance();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double estimateRegressandVariance() {
+        return calculateYVariance();
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public double[] estimateRegressionParameters() {
         StatisticsMatrix b = betas.calculateBeta();
         return b.toArray1D();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double[] estimateResiduals() {
-        StatisticsMatrix b = betas.calculateBeta();
-        StatisticsMatrix e = getY().minus(getX().mult(b)); // operate is for vec x vec in CM
-        return e.toArray1D();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double[][] estimateRegressionParametersVariance() {
-        return betas.calculateBetaVariance().toArray2D();
     }
 
     /**
@@ -86,18 +131,8 @@ public class OLSRegression extends AbstractRegression implements Regression {
      * {@inheritDoc}
      */
     @Override
-    public double estimateRegressandVariance() {
-        return calculateYVariance();
-    }
-
-    /**
-     * Estimates the variance of the error.
-     *
-     * @return estimate of the error variance
-     * @since 2.2
-     */
-    public double estimateErrorVariance() {
-        return residuals.calculateErrorVariance();
+    public double[][] estimateRegressionParametersVariance() {
+        return betas.calculateBetaVariance().toArray2D();
     }
 
     /**
@@ -108,6 +143,14 @@ public class OLSRegression extends AbstractRegression implements Regression {
      */
     public double estimateRegressionStandardError() {
         return Math.sqrt(estimateErrorVariance());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[] estimateResiduals() {
+        return residuals.calculateResiduals().toArray1D();
     }
 
 }

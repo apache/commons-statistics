@@ -85,8 +85,8 @@ public final class RegressionDataLoader {
         if (inputData == null) {
             inputData = new RegressionRawData();
         }
-        newYData(y);
-        newXData(x);
+        newYSampleData(y);
+        newXSampleData(x);
     }
 
     /**
@@ -105,8 +105,8 @@ public final class RegressionDataLoader {
             inputData = new RegressionRawData();
         }
         inputData.setHasIntercept(hasIntercept);
-        newYData(y);
-        newXData(x);
+        newYSampleData(y);
+        newXSampleData(x);
     }
 
     /**
@@ -193,8 +193,7 @@ public final class RegressionDataLoader {
             throw new IllegalArgumentException("Null data argument.");
         }
         if (data.length != nobs * (nvars + 1)) {
-            throw new IllegalArgumentException("Dimension mismatch: data length [" + data.length
-                    + "] is not equal to nobs * (nvars + 1) [" + nobs * (nvars + 1) + "]");
+            throw new IllegalArgumentException("Dimension mismatch: data length [" + data.length + "] is not equal to nobs * (nvars + 1) [" + nobs * (nvars + 1) + "]");
         }
         if (nobs <= nvars) {
             throw new IllegalArgumentException("Not enough data for number of predictors: nobs <= nvars");
@@ -224,7 +223,7 @@ public final class RegressionDataLoader {
      *
      * @param y 1D array
      */
-    public void newYData(double[] y) {
+    public void newYSampleData(double[] y) {
         inputData.setYData(newYmatrix(y));
 
         if (inputData.getXData() != null) {
@@ -244,7 +243,7 @@ public final class RegressionDataLoader {
      *
      * @param x 2D array
      */
-    public void newXData(double[][] x) {
+    public void newXSampleData(double[][] x) {
 
         if (!inputData.getHasIntercept()) {
             inputData.setXData(newXmatrix(x));

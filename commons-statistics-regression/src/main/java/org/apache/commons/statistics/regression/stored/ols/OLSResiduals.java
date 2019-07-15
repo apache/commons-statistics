@@ -184,8 +184,7 @@ public class OLSResiduals extends org.apache.commons.statistics.regression.store
         if (!getHasIntercept()) {
             return 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols()));
         } else {
-            return 1 - (calculateResidualSumOfSquares() * (n - 1))
-                    / (calculateTotalSumOfSquares() * (n - getX().numCols()));
+            return 1 - (calculateResidualSumOfSquares() * (n - 1)) / (calculateTotalSumOfSquares() * (n - getX().numCols()));
         }
     }
 

@@ -51,8 +51,7 @@ public class OLSEstimators extends org.apache.commons.statistics.regression.stor
     protected StatisticsMatrix calculateBeta() {
 
         StatisticsMatrix xMatrix = getX().copy();
-        LinearSolver<DMatrixRMaj, DMatrixRMaj> solver = LinearSolverFactory_DDRM.leastSquares(xMatrix.numRows(),
-                xMatrix.numCols());
+        LinearSolver<DMatrixRMaj, DMatrixRMaj> solver = LinearSolverFactory_DDRM.leastSquares(xMatrix.numRows(), xMatrix.numCols());
 
         solver.setA(xMatrix.getDDRM());
         solver.solve(getY().getDDRM(), xMatrix.getDDRM());

@@ -24,19 +24,18 @@ import org.junit.jupiter.api.Test;
 public class RegressionDataLoaderTest {
 
     private double[] yData0n = new double[] {};
-    private double[] yData1n = new double[] { 1 };
-    private double[] yData2n = new double[] { 10, 20 };
-    private double[] yData3n = new double[] { 1, 2, 3 };
-    private double[] yData4n = new double[] { 0.1, 0.2, 0.3, 0.4 };
+    private double[] yData1n = new double[] {1};
+    private double[] yData2n = new double[] {10, 20};
+    private double[] yData3n = new double[] {1, 2, 3};
+    private double[] yData4n = new double[] {0.1, 0.2, 0.3, 0.4};
 
     private double[][] xData0p0n = new double[][] {};
-    private double[][] xData1p1n = new double[][] { { 1.1 } };
-    private double[][] xData2p2n = new double[][] { { 1, 2 }, { 3, 4 } };
-    private double[][] xData2p3n = new double[][] { { -2, -1 }, { 0, 1 }, { 2, 3 } };
-    private double[][] xData4p3n = new double[][] { { 2, 4, 8, 16 }, { 32, 64, 128, 256 }, { 512, 1024, 2048, 5096 } };
-    private double[][] xData3p4n = new double[][] { { 0.0, 0.5, 1.0 }, { 1.5, 2.0, 2.5 }, { 3.0, 3.5, 4.0 },
-            { 4.5, 5.0, 5.5 } };
-    private double[][] xData2p4n = new double[][] { { 1, 3 }, { 5, 7 }, { 9, 11 }, { 13, 15 } };
+    private double[][] xData1p1n = new double[][] {{1.1}};
+    private double[][] xData2p2n = new double[][] {{1, 2}, {3, 4}};
+    private double[][] xData2p3n = new double[][] {{-2, -1}, {0, 1}, {2, 3}};
+    private double[][] xData4p3n = new double[][] {{2, 4, 8, 16}, {32, 64, 128, 256}, {512, 1024, 2048, 5096}};
+    private double[][] xData3p4n = new double[][] {{0.0, 0.5, 1.0}, {1.5, 2.0, 2.5}, {3.0, 3.5, 4.0}, {4.5, 5.0, 5.5}};
+    private double[][] xData2p4n = new double[][] {{1, 3}, {5, 7}, {9, 11}, {13, 15}};
 
     @Test
     public void basicDataLoadingTest() {
@@ -85,50 +84,37 @@ public class RegressionDataLoaderTest {
         RegressionDataLoader loader = new RegressionDataLoader();
 
         loader.setHasIntercept(false); // Not creating column of 1's
-        loader.newYData(yData3n);
-        loader.newXData(xData2p3n);
+        loader.newYSampleData(yData3n);
+        loader.newXSampleData(xData2p3n);
 
         Assertions.assertTrue(Arrays.equals(loader.getInputData().getYData().toArray1D(), yData3n));
         Assertions.assertArrayEquals(loader.getInputData().getXData().toArray2D(), xData2p3n);
 
         // Changing to invalid data ( see validateSampleDataTest )
-        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newYData(yData2n));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newXData(xData2p2n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newYSampleData(yData2n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> loader.newXSampleData(xData2p2n));
 
         loader.clearData(); // clearData or else n = 4 in X is mismatched with previous n = 3 in Y
 
         // order does not matter
-        loader.newXData(xData3p4n);
-        loader.newYData(yData4n);
+        loader.newXSampleData(xData3p4n);
+        loader.newYSampleData(yData4n);
         Assertions.assertTrue(Arrays.equals(loader.getInputData().getYData().toArray1D(), yData4n));
         Assertions.assertArrayEquals(loader.getInputData().getXData().toArray2D(), xData3p4n);
 
         // changing X does not affect Y
-        loader.newXData(xData2p4n);
+        loader.newXSampleData(xData2p4n);
         Assertions.assertTrue(Arrays.equals(loader.getInputData().getYData().toArray1D(), yData4n));
         Assertions.assertArrayEquals(loader.getInputData().getXData().toArray2D(), xData2p4n);
     }
 
-//    private static void printArray1D(double[] arr) {
-//        for (int i = 0; i < arr.length; i++)
-//            System.out.print(arr[i] + ", ");
-//        System.out.println();
-//    }
 //
-//    private static void printArray2D(double[][] arr) {
-//        for (int i = 0; i < arr.length; i++) {
-//            for (int j = 0; j < arr[i].length; j++)
-//                System.out.print(arr[i][j] + ", ");
-//            System.out.println();
-//        }
-//    }
-//    
 //    private static void printArrayWithStreams(double[][] arr) {
 //        Stream.of(arr)
 //            .map(Arrays::toString)
 //            .forEach(System.out::println);
 //    }
-//    
+//
 //    private static void printArrayWithStreams(double[] arr) {
 //        Stream.of(arr)
 //            .map(Arrays::toString)

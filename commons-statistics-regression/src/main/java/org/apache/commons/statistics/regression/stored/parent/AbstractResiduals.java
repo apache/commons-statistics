@@ -56,7 +56,7 @@ public abstract class AbstractResiduals extends RegressionDataHolder {
      *
      * @return The residuals [n,1] matrix
      */
-    protected StatisticsMatrix calculateResiduals() {
+    public StatisticsMatrix calculateResiduals() {
         StatisticsMatrix b = betasMatrix;
         return getY().minus(getX().mult(b)); // operate is for vec x vec in CM
     }

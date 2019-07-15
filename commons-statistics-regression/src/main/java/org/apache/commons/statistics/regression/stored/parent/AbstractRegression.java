@@ -21,6 +21,16 @@ import org.apache.commons.statistics.regression.stored.RegressionDataHolder;
 public abstract class AbstractRegression extends RegressionDataHolder implements Regression {
 
     /**
+     * Calculates the variance of the y values.
+     *
+     * @return Y variance
+     */
+    public double calculateYVariance() {
+//        return new Variance().evaluate(getY().toArray());
+        return -1;
+    }
+
+    /**
      * Validates that the x data and covariance matrix have the same number of rows
      * and that the covariance matrix is square.
      *
@@ -35,19 +45,8 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
             throw new IllegalArgumentException("x.length = " + x.length + "  covariance.lenth = " + covariance.length);
         }
         if (covariance.length > 0 && covariance.length != covariance[0].length) {
-            throw new IllegalArgumentException(
-                    "covariance.length = " + covariance.length + "  covariance[0].length = " + covariance[0].length);
+            throw new IllegalArgumentException("covariance.length = " + covariance.length + "  covariance[0].length = " + covariance[0].length);
         }
-    }
-
-    /**
-     * Calculates the variance of the y values.
-     *
-     * @return Y variance
-     */
-    protected double calculateYVariance() {
-//        return new Variance().evaluate(getY().toArray());
-        return -1;
     }
 
 }

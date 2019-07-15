@@ -66,20 +66,25 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      */
     private static final long serialVersionUID = -82801259856161557L;
 
-    public StatisticsMatrix(int numRows, int numCols) {
-        super(numRows, numCols);
-    }
-
     /**
-     * Constructor for internal library use only. Nothing is configured and is
-     * intended for serialization.
+     * Creates an identity matrix given it's square width.
+     *
+     * @param width
+     * @return the width sized identity matrix
      */
-    protected StatisticsMatrix() {
+    @SuppressWarnings("unchecked")
+    public static StatisticsMatrix identity(int width) {
+        StatisticsMatrix ret = new StatisticsMatrix(width, width);
+        ret.ops.setIdentity(ret.mat);
+        return ret;
     }
 
     /**
      * Wraps a StatisticsMatrix around 'm'. Does NOT create a copy of 'm' but saves
      * a reference to it.
+     *
+     * @param m
+     * @return new pointer
      */
     public static StatisticsMatrix wrap(DMatrixRMaj m) {
         StatisticsMatrix ret = new StatisticsMatrix();
@@ -90,6 +95,24 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     }
 
     /**
+     * Constructor for internal library use only. Nothing is configured and is
+     * intended for serialization.
+     */
+    protected StatisticsMatrix() {
+    }
+
+    /**
+     * Constructs a new empty matrix with a set dimension.
+     *
+     * @param numRows
+     * @param numCols
+     */
+    public StatisticsMatrix(int numRows, int numCols) {
+        super(numRows, numCols);
+    }
+
+    /**
+     * Constructs a new StatisticsMatrix object wrapper around a Matrix interface.
      *
      * @param orig
      */
@@ -110,6 +133,16 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     }
 
     /**
+     * Returns a matrix of StatisticsMatrix type so that SimpleMatrix functions
+     * create matrices of the correct type.
+     */
+    @Override
+    protected StatisticsMatrix createMatrix(int numRows, int numCols, MatrixType type) {
+        // changed by Ben Nguyen to add MatrixType type param to satisfy abstract method
+        return new StatisticsMatrix(numRows, numCols);
+    }
+
+    /**
      * Computes the mean or average of all the elements.
      *
      * @return mean
@@ -117,12 +150,12 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     public double mean() {
         double total = 0;
 
-        final int N = getNumElements();
-        for (int i = 0; i < N; i++) {
+        final int n = getNumElements();
+        for (int i = 0; i < n; i++) {
             total += get(i);
         }
 
-        return total / N;
+        return total / n;
     }
 
     /**
@@ -135,49 +168,35 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 
         double total = 0;
 
-        final int N = getNumElements();
-        if (N <= 1)
+        final int n = getNumElements();
+        if (n <= 1) {
             throw new IllegalArgumentException("There must be more than one element to compute stdev");
+        }
 
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < n; i++) {
             double x = get(i);
 
             total += (x - m) * (x - m);
         }
 
-        total /= (N - 1);
+        total /= n - 1;
 
         return Math.sqrt(total);
     }
 
     /**
-     * Returns a matrix of StatisticsMatrix type so that SimpleMatrix functions
-     * create matrices of the correct type.
-     */
-    @Override
-    protected StatisticsMatrix createMatrix(int numRows, int numCols, MatrixType type) {// changed by Ben Nguyen to add
-        return new StatisticsMatrix(numRows, numCols); // MatrixType type param to satisfy abstract method
-    }
-
-    /**
+     * Retrieves internal array data.
      *
-     */
-    @Override
-    protected StatisticsMatrix wrapMatrix(Matrix m) {
-        return new StatisticsMatrix(m);
-    }
-
-    /**
-     *
-     * @return
+     * @return 1D array
      */
     public double[] toArray1D() {
         return this.getDDRM().data;
     }
 
     /**
+     * Retrieves internal array data.
      *
-     * @return
+     * @return 2D array
      */
     public double[][] toArray2D() {
         int rows = this.getDDRM().numRows;
@@ -185,26 +204,21 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         double[][] retArr = new double[rows][cols];
 
         for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++)
+            for (int j = 0; j < cols; j++) {
                 retArr[i][j] = this.getDDRM().get(i, j);
+            }
         }
 
         return retArr;
     }
 
-//    public static void printArray1D(double[] arr) {
-//        for (int i = 0; i < arr.length; i++)
-//            System.out.print(arr[i] + ", ");
-//        System.out.println();
-//    }
-//
-//    public static void printArray2D(double[][] arr) {
-//        for (int i = 0; i < arr.length; i++) {
-//            for (int j = 0; j < arr[i].length; j++)
-//                System.out.print(arr[i][j] + "\t ");
-//            System.out.println();
-//        }
-//    }
+    /**
+     * Sets a new matrix by creating a new pointer object.
+     */
+    @Override
+    protected StatisticsMatrix wrapMatrix(Matrix m) {
+        return new StatisticsMatrix(m);
+    }
 
 //    private static void printArrayWithStreams(double[][] arr) {
 //        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
