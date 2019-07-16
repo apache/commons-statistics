@@ -27,9 +27,9 @@ class StandardDeviationTest {
     protected double mean = 12.404545454545455d;
     protected double combMean = 13.573076923077d;
     protected double var = 10.00235930735931d;
-    protected double std = 3.1626506774159;
+    protected double std = 3.1626506774159d;
     protected double combVar = 19.812446153846d;
-    protected double combStd = 4.4511174050845;
+    protected double combStd = 4.4511174050845d;
     protected double tolerance = 10E-12;
     protected double[] testArray =
     {12.5, 12.0, 11.8, 14.2, 14.9, 14.5, 21.0,  8.2, 10.3, 11.3,

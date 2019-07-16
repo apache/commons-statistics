@@ -16,6 +16,7 @@
  */
 
 package org.apache.commons.statistics.descriptive.moment;
+
 /**
  * This class has methods to compute First Moment.
  */

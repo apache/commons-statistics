@@ -66,6 +66,18 @@ class SecondMoment {
     }
 
     /**
+     * <p>This method combines object of SecondMoment class with another object of same class. </p>
+     * @param secmoment SecondMoment class object.
+     */
+    public void combine(SecondMoment secmoment) {
+        final double delta = secmoment.getMean() - mean1;
+        final long sum = getN() + secmoment.getN();
+        m2 = getm2() + secmoment.getm2() + Math.pow(delta, 2) * countN * secmoment.getN() / sum;
+        mean1 = (secmoment.getN() * secmoment.getMean() + getMean() * getN()) / sum;
+        countN = sum;
+    }
+
+    /**
      *@return m2
      */
     public double getm2() {

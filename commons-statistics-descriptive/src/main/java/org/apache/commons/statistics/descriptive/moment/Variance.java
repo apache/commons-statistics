@@ -25,7 +25,7 @@ package org.apache.commons.statistics.descriptive.moment;
  *                                       Variance::combine);
  * }</pre>
  */
-public class Variance extends SecondMoment {
+public class Variance {
 
 
     /** SecondMoment on which this statistic is based. */
@@ -40,23 +40,30 @@ public class Variance extends SecondMoment {
     }
 
     /**
-     * {@inheritDoc}
+     * This method calculates SecondMoment based on Welford's Algorithm.
+     * The Welford's Algorithm is as follows:<br>
+     *<pre><code>
+     *variance(samples):
+     *    mean1 := 0
+     *    s := 0
+     *    for k from 1 to N:
+     *        x := samples[k]
+     *        mean0 := mean1
+     *        mean1 := mean1 + (x-mean1)/k
+     *        s := s + (x-mean1)*(x-mean0)
+     *    return s/(N-1)</code></pre>
+     *@param value stream of values
      */
-    @Override
     public void accept(double value) {
         moment.accept(value);
     }
 
     /**
-     * <p>This method combines object of Variance class with another object of same class. </p>
-     * @param var2 Variance class object
+     * <p>This method combines Variance class' internal object of SecondMoment with another object of same class. </p>
+     * @param var2 Variance class object.
      */
     public void combine(Variance var2) {
-        final double delta = var2.getMean() - moment.mean1;
-        final long sum = getN() + var2.getN();
-        moment.m2 = getm2() + var2.getm2() + Math.pow(delta, 2) * moment.countN * var2.getN() / sum;
-        moment.mean1 = (var2.getN() * var2.getMean() + getMean() * getN()) / sum;
-        moment.countN = sum;
+        moment.combine(var2.moment);
     }
 
     /**
@@ -83,25 +90,23 @@ public class Variance extends SecondMoment {
     }
 
     /**
-     * {@inheritDoc}
+     * @return m2
      */
-    @Override
     public double getm2() {
         return moment.m2;
     }
 
     /**
-     * {@inheritDoc}
+     * This method gives the count of values added.
+     * @return countN-count of values
      */
-    @Override
     public long getN() {
         return moment.countN;
     }
 
     /**
-     * {@inheritDoc}
+     * @return mean value
      */
-    @Override
     public double getMean() {
         return moment.mean1;
     }

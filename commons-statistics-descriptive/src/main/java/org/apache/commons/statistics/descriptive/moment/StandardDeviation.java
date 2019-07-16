@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+package org.apache.commons.statistics.descriptive.moment;
+
 /**
  * Computes the sample standard deviation.  The standard deviation
  * is the positive square root of the variance.  This implementation extends
@@ -40,9 +42,7 @@
  *
  *
  */
-package org.apache.commons.statistics.descriptive.moment;
-
-public class StandardDeviation extends SecondMoment {
+public class StandardDeviation {
 
     /** SecondMoment on which this statistic is based. */
     protected SecondMoment moment;
@@ -60,36 +60,45 @@ public class StandardDeviation extends SecondMoment {
 
 
     /**
-     * {@inheritDoc}
+     * This method calculates SecondMoment based on Welford's Algorithm.
+     * The Welford's Algorithm is as follows:<br>
+     *<pre><code>
+     *variance(samples):
+     *    mean1 := 0
+     *    s := 0
+     *    for k from 1 to N:
+     *        x := samples[k]
+     *        mean0 := mean1
+     *        mean1 := mean1 + (x-mean1)/k
+     *        s := s + (x-mean1)*(x-mean0)
+     *    return s/(N-1)</code></pre>
+     *@param value stream of values
      */
-    @Override
     public void accept(double value) {
         moment.accept(value);
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return m2
      */
-    @Override
     public double getm2() {
         return moment.getm2();
     }
 
 
     /**
-     * {@inheritDoc}
+     * This method gives the count of values added.
+     * @return countN-count of values
      */
-    @Override
     public long getN() {
         return moment.getN();
     }
 
 
     /**
-     * {@inheritDoc}
+     * @return mean value
      */
-    @Override
     public double getMean() {
         return moment.getMean();
     }
@@ -118,15 +127,11 @@ public class StandardDeviation extends SecondMoment {
     }
 
     /**
-     * <p>This method combines object of StandardDeviation class with another object of same class. </p>
-     * @param var2 StandardDeviation class object
+     * <p>This method combines StandardDeviation class' internal object of SecondMoment with another object of same class. </p>
+     * @param stdDev StandardDeviation class object.
      */
-    public void combine(StandardDeviation var2) {
-        final double delta = var2.getMean() - moment.mean1;
-        final long sum = getN() + var2.getN();
-        moment.m2 = getm2() + var2.getm2() + Math.pow(delta, 2) * moment.countN * var2.getN() / sum;
-        moment.mean1 = (var2.getN() * var2.getMean() + getMean() * getN()) / sum;
-        moment.countN = sum;
+    public void combine(StandardDeviation stdDev) {
+        moment.combine(stdDev.moment);
     }
 
     /**
