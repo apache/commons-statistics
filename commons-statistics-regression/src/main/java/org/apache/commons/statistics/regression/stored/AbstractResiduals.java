@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.regression.stored.parent;
+package org.apache.commons.statistics.regression.stored;
 
-import org.apache.commons.statistics.regression.stored.RegressionDataHolder;
+import org.apache.commons.statistics.regression.stored.data_input.RegressionDataHolder;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
 public abstract class AbstractResiduals extends RegressionDataHolder {
@@ -42,7 +42,7 @@ public abstract class AbstractResiduals extends RegressionDataHolder {
      * @return error variance estimate
      * @since 2.2
      */
-    protected double calculateErrorVariance() {
+    public double calculateErrorVariance() {
         StatisticsMatrix residuals = calculateResiduals();
         return residuals.dot(residuals) / (getX().getDDRM().getNumRows() - getX().getDDRM().getNumCols());
     }

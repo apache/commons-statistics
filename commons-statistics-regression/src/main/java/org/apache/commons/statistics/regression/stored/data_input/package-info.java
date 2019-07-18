@@ -14,25 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.regression.stored;
 
-import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
-
-public interface RegressionData {
-
-    /**
-     * @return Y vector data.
-     */
-    StatisticsMatrix getYData();
-
-    /**
-     * @return X matrix data.
-     */
-    StatisticsMatrix getXData();
-
-    /**
-     * @return boolean if calculations should include an intercept.
-     */
-    boolean getHasIntercept();
-
-}
+/**
+ * Contains data input functionality such as direct loading of array primitives
+ * (RegressionDataLoader) and from file inputs
+ * (RegressionDataBuilder-INCOMPLETE)
+ *
+ * @since 1.0
+ * @version 1.0
+ */
+package org.apache.commons.statistics.regression.stored.data_input;

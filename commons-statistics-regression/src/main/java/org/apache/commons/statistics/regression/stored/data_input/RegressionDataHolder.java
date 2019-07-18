@@ -14,12 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.commons.statistics.regression.stored.data_input;
 
-/**
- * Contains parent classes of regression type specific subclasses which contain
- * all common functionalities among all regression types.
- *
- * @since 1.0
- * @version 1.0
- */
-package org.apache.commons.statistics.regression.stored.parent;
+import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
+
+public abstract class RegressionDataHolder implements RegressionData {
+
+    /** Contains the loaded input data. */
+    protected RegressionData inputData;
+
+    /** @return Y vector data. */
+    @Override
+    public StatisticsMatrix getY() {
+        return inputData.getY();
+    }
+
+    /** @return X matrix data. */
+    @Override
+    public StatisticsMatrix getX() {
+        return inputData.getX();
+    }
+
+    /** @return boolean if calculations should include an intercept. */
+    @Override
+    public boolean getHasIntercept() {
+        return inputData.getHasIntercept();
+    }
+
+}

@@ -16,6 +16,9 @@
  */
 package org.apache.commons.statistics.regression.util.matrix;
 
+import java.util.Arrays;
+import java.util.stream.Stream;
+
 import org.ejml.data.DMatrixRBlock;
 
 /*
@@ -189,7 +192,7 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      * @return 1D array
      */
     public double[] toArray1D() {
-        return this.getDDRM().data;
+        return this.getDDRM().getData();
     }
 
     /**
@@ -219,12 +222,12 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         return new StatisticsMatrix(m);
     }
 
-//    private static void printArrayWithStreams(double[][] arr) {
-//        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
-//    }
-//
-//    private static void printArrayWithStreams(double[] arr) {
-//        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
-//    }
+    public static void printArrayWithStreams(double[][] arr) {
+        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
+    }
+
+    public static void printArrayWithStreams(double[] arr) {
+        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
+    }
 
 }

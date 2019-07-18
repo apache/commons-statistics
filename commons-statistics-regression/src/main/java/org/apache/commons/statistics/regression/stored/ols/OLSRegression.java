@@ -16,9 +16,9 @@
  */
 package org.apache.commons.statistics.regression.stored.ols;
 
-import org.apache.commons.statistics.regression.stored.RegressionDataLoader;
-import org.apache.commons.statistics.regression.stored.parent.AbstractRegression;
-import org.apache.commons.statistics.regression.stored.parent.Regression;
+import org.apache.commons.statistics.regression.stored.AbstractRegression;
+import org.apache.commons.statistics.regression.stored.Regression;
+import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
 public class OLSRegression extends AbstractRegression implements Regression {
@@ -34,10 +34,10 @@ public class OLSRegression extends AbstractRegression implements Regression {
      *
      * @param loader contains the inputData
      */
-    public OLSRegression(RegressionDataLoader loader) {
-
-        this.betas = new OLSEstimators(loader.getInputData());
-        this.residuals = new OLSResiduals(loader.getInputData(), betas.calculateBeta());
+    public OLSRegression(RegressionData data) {
+        this.inputData = data;
+        this.betas = new OLSEstimators(inputData);
+        this.residuals = new OLSResiduals(inputData, betas.calculateBeta());
     }
 
     /**
@@ -109,6 +109,8 @@ public class OLSRegression extends AbstractRegression implements Regression {
     @Override
     public double[] estimateRegressionParameters() {
         StatisticsMatrix b = betas.calculateBeta();
+        System.out.println("PRINTED");
+        b.print();
         return b.toArray1D();
     }
 

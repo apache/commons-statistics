@@ -14,12 +14,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.commons.statistics.regression.stored;
 
-/**
- * Contains parent classes of regression type specific subclasses which contain
- * all common functionalities among all regression types.
- *
- * @since 1.0
- * @version 1.0
- */
-package org.apache.commons.statistics.regression.stored.parent;
+import org.apache.commons.statistics.regression.stored.data_input.RegressionDataHolder;
+import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
+
+public abstract class AbstractEstimators extends RegressionDataHolder {
+
+    /**
+     * Calculates the beta of multiple linear regression in matrix notation.
+     *
+     * @return beta
+     */
+    protected abstract StatisticsMatrix calculateBeta();
+
+    /**
+     * Calculates the beta variance of multiple linear regression in matrix
+     * notation.
+     *
+     * @return beta variance
+     */
+    protected abstract StatisticsMatrix calculateBetaVariance();
+
+}

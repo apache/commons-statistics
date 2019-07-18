@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.regression.stored.parent;
+package org.apache.commons.statistics.regression.stored;
 
 /**
  * The multiple linear regression can be represented in matrix-notation.

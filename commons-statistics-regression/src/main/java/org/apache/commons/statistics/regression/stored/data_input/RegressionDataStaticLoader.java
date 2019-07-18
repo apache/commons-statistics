@@ -14,34 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.regression.stored;
+package org.apache.commons.statistics.regression.stored.data_input;
 
-import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
+public class RegressionDataStaticLoader {
 
-public abstract class RegressionDataHolder {
-
-    /** Contains the loaded input data. */
-    protected RegressionData inputData;
-
-    /**
-     * @return Y vector data.
-     */
-    public StatisticsMatrix getY() {
-        return inputData.getYData();
+    public static RegressionData load(double[] y, double[][] x) {
+        // TODO Auto-generated method stub
+        return null;
     }
-
-    /**
-     * @return X matrix data.
-     */
-    public StatisticsMatrix getX() {
-        return inputData.getXData();
-    }
-
-    /**
-     * @return boolean if calculations should include an intercept.
-     */
-    public boolean getHasIntercept() {
-        return inputData.getHasIntercept();
-    }
-
 }

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.regression.stored;
+package org.apache.commons.statistics.regression.stored.data_input;
 
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
@@ -47,7 +47,7 @@ public class RegressionRawData implements RegressionData {
     public RegressionRawData() {
         this.xMatrix = null;
         this.yVector = null;
-        this.hasIntercept = false;
+        this.hasIntercept = true;
     }
 
     /**
@@ -83,7 +83,7 @@ public class RegressionRawData implements RegressionData {
      * {@inheritDoc}
      */
     @Override
-    public StatisticsMatrix getYData() {
+    public StatisticsMatrix getY() {
         return this.yVector;
     }
 
@@ -91,7 +91,7 @@ public class RegressionRawData implements RegressionData {
      * {@inheritDoc}
      */
     @Override
-    public StatisticsMatrix getXData() {
+    public StatisticsMatrix getX() {
         return this.xMatrix;
     }
 

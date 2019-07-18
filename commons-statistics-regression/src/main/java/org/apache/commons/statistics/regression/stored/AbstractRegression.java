@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.regression.stored.parent;
+package org.apache.commons.statistics.regression.stored;
 
-import org.apache.commons.statistics.regression.stored.RegressionDataHolder;
+import org.apache.commons.statistics.regression.stored.data_input.RegressionDataHolder;
 
 public abstract class AbstractRegression extends RegressionDataHolder implements Regression {
 

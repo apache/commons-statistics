@@ -16,13 +16,14 @@
  */
 package org.apache.commons.statistics.regression.stored.ols;
 
-import org.apache.commons.statistics.regression.stored.RegressionData;
+import org.apache.commons.statistics.regression.stored.AbstractResiduals;
+import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.ejml.data.DMatrixRMaj;
 import org.ejml.dense.row.decomposition.qr.QRDecomposition_DDRB_to_DDRM;
 import org.ejml.interfaces.decomposition.QRDecomposition;
 
-public class OLSResiduals extends org.apache.commons.statistics.regression.stored.parent.AbstractResiduals {
+public class OLSResiduals extends AbstractResiduals {
 
     /**
      * Constructs OLSResiduals to pass in inputData and OLSEstimator's calculated
@@ -184,16 +185,9 @@ public class OLSResiduals extends org.apache.commons.statistics.regression.store
         if (!getHasIntercept()) {
             return 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols()));
         } else {
-            return 1 -
-                (calculateResidualSumOfSquares() * (n - 1)) / (calculateTotalSumOfSquares() * (n - getX().numCols()));
+            return 1
+                - (calculateResidualSumOfSquares() * (n - 1)) / (calculateTotalSumOfSquares() * (n - getX().numCols()));
         }
     }
 
-    /*
-     * Pass through method
-     */
-    @Override
-    protected double calculateErrorVariance() {
-        return super.calculateErrorVariance();
-    }
 }

@@ -14,26 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.regression.stored.parent;
+package org.apache.commons.statistics.regression.stored.data_input;
 
-import org.apache.commons.statistics.regression.stored.RegressionDataHolder;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
-public abstract class AbstractEstimators extends RegressionDataHolder {
+public interface RegressionData {
 
     /**
-     * Calculates the beta of multiple linear regression in matrix notation.
-     *
-     * @return beta
+     * @return Y vector data.
      */
-    protected abstract StatisticsMatrix calculateBeta();
+    StatisticsMatrix getY();
 
     /**
-     * Calculates the beta variance of multiple linear regression in matrix
-     * notation.
-     *
-     * @return beta variance
+     * @return X matrix data.
      */
-    protected abstract StatisticsMatrix calculateBetaVariance();
+    StatisticsMatrix getX();
+
+    /**
+     * @return boolean if calculations should include an intercept.
+     */
+    boolean getHasIntercept();
 
 }
