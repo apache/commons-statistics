@@ -202,8 +202,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         checkVarianceConsistency(model);
 
         // Estimate model without intercept
-        myData.setHasIntercept(true);
-        myData.newSampleData(design, nobs, nvars);
+        myData.newSampleData(design, nobs, nvars, true);
 
         // Check expected beta values from R
         betaHat = model.estimateRegressionParameters();
@@ -277,7 +276,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
     public void testNoDataNPECalculateBeta() {
         OLSRegression model = new OLSRegression(myData.getInputData());
         myData.clearData();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> model.estimateRegressionParameters());
+        Assertions.assertThrows(NullPointerException.class, () -> model.estimateRegressionParameters());
     }
 
     @Test
@@ -298,7 +297,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
 
     @Test
     public void testNoSSTOCalculateRsquare() {
-        myData.newSampleData(new double[] {1, 2, 3, 1, 7, 8, 1, 10, 12}, 3, 2);
+        myData.newSampleData(new double[] {1, 2, 3, 1, 7, 8, 1, 10, 12}, 3, 2, false);
         OLSRegression model = new OLSRegression(myData.getInputData());
         Assertions.assertTrue(Double.isNaN(model.calculateRSquared()));
     }
@@ -395,9 +394,8 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         checkVarianceConsistency(model);
 
         // Estimate the model with no intercept
+        myData.newSampleData(design, nobs, nvars, true);
         model = new OLSRegression(myData.getInputData());
-        myData.setHasIntercept(false);
-        myData.newSampleData(design, nobs, nvars);
 
         // Check expected beta values from R
         betaHat = model.estimateRegressionParameters();
@@ -583,7 +581,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
 
         double[] se = model.estimateRegressionParametersStandardErrors();
         Assertions.assertArrayEquals(se, new double[] {215232.624678170, 236355.173469681, 77934.3524331583,
-            10147.5507550350, 564.566512170752, 11.2324854679312}, 1E-8);
+            10147.5507550350, 564.566512170752, 11.2324854679312}, 1E-7);
 
         Assertions.assertEquals(.957478440825662, model.calculateRSquared(), 1.0e-10);
         Assertions.assertEquals(55702845333.3333, model.calculateErrorVariance(), 1.0e-4);

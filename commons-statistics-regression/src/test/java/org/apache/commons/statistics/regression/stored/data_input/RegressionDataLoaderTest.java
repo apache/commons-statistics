@@ -94,6 +94,7 @@ public class RegressionDataLoaderTest {
         data.clearData(); // clearData or else n = 4 in X is mismatched with previous n = 3 in Y
 
         // order does not matter
+        data.setHasIntercept(true); // Not creating column of 1's
         data.newXSampleData(xData3p4n);
         data.newYSampleData(yData4n);
         Assertions.assertTrue(Arrays.equals(data.getInputData().getY().toArray1D(), yData4n));

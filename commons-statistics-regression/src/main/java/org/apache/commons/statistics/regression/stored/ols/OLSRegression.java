@@ -18,9 +18,9 @@ package org.apache.commons.statistics.regression.stored.ols;
 
 import org.apache.commons.math4.stat.StatUtils;
 import org.apache.commons.math4.stat.descriptive.moment.SecondMoment;
-import org.apache.commons.math4.stat.regression.RegressionResults;
 import org.apache.commons.statistics.regression.stored.AbstractRegression;
 import org.apache.commons.statistics.regression.stored.Regression;
+import org.apache.commons.statistics.regression.stored.RegressionResults;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.ejml.LinearSolverSafe;
@@ -63,8 +63,6 @@ public class OLSRegression extends AbstractRegression implements Regression {
     @Override
     public double[] estimateRegressionParameters() {
         StatisticsMatrix b = calculateBeta();
-        System.out.println("PRINTED");
-        b.print();
         return b.toArray1D();
     }
 
@@ -138,7 +136,7 @@ public class OLSRegression extends AbstractRegression implements Regression {
     public StatisticsMatrix calculateHat() {
 
         QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
-        qr.decompose(getX().getDDRM());
+        qr.decompose(getX().getDDRM().copy());
 
         StatisticsMatrix qrQ = new StatisticsMatrix(qr.getQ(null, false));
         StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false));
@@ -322,7 +320,8 @@ public class OLSRegression extends AbstractRegression implements Regression {
         return invR.mult(invR.transpose());
     }
 
-    public RegressionResults regress() {
+    public RegressionResults regress(RegressionData data) {
+        OLSResults results = new OLSResults();
         return null;
     }
 

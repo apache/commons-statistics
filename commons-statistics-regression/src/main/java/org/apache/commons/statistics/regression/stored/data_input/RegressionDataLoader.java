@@ -122,7 +122,7 @@ public final class RegressionDataLoader {
      * @param nvars int number of independent variables (columns, not counting y)
      */
     public void newSampleData(double[] data, int nobs, int nvars) {
-        inputData.setHasIntercept(false);
+//        inputData.setHasIntercept(false);
         newSingleArraySampleData(data, nobs, nvars);
     }
 
