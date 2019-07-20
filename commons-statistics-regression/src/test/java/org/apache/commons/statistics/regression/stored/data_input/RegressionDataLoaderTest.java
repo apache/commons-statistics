@@ -39,7 +39,7 @@ public class RegressionDataLoaderTest {
 
     @Test
     public void basicDataLoadingTest() {
-        RegressionDataLoader data = new RegressionDataLoader(yData3n, xData2p3n, false);
+        RegressionDataLoader data = new RegressionDataLoader(yData3n, xData2p3n, true);
 
         // Printing the testing arrays, before and after wrapped inside a
         // StatisticsMatrix object
@@ -61,6 +61,7 @@ public class RegressionDataLoaderTest {
     @Test
     public void validateSampleDataTest() {
         RegressionDataLoader data = new RegressionDataLoader();
+
         // Null argument(s).
         Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(null, null));
         Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(yData3n, null));
@@ -83,7 +84,7 @@ public class RegressionDataLoaderTest {
     public void changingDataTest() {
         RegressionDataLoader data = new RegressionDataLoader();
 
-        data.setHasIntercept(false); // Not creating column of 1's
+        data.setHasIntercept(true); // Not creating column of 1's
         data.newYSampleData(yData3n);
         data.newXSampleData(xData2p3n);
 
@@ -103,13 +104,12 @@ public class RegressionDataLoaderTest {
         Assertions.assertTrue(Arrays.equals(data.getInputData().getY().toArray1D(), yData4n));
         Assertions.assertArrayEquals(data.getInputData().getX().toArray2D(), xData2p4n);
 
-        data.setHasIntercept(true); // creating column of 1's
+        data.setHasIntercept(false); // creating column of 1's
 
         // Changing to invalid data ( see validateSampleDataTest )
         Assertions.assertThrows(IllegalArgumentException.class, () -> data.newYSampleData(yData2n));
         Assertions.assertThrows(IllegalArgumentException.class, () -> data.newXSampleData(xData2p2n));
 
-        RegressionData rdata = RegressionDataStaticLoader.load(yData3n, xData2p3n);
     }
 
 //

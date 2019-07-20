@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.regression.stored.ols;
 
+import org.apache.commons.math4.stat.StatUtils;
+import org.apache.commons.math4.stat.descriptive.moment.SecondMoment;
 import org.apache.commons.statistics.regression.stored.AbstractResiduals;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
@@ -112,13 +114,12 @@ public class OLSResiduals extends AbstractResiduals {
      * @see #isNoIntercept()
      * @since 2.2
      */
-    public double calculateTotalSumOfSquares() {
-//        if (!getHasIntercept()) {
-//            return StatUtils.sumSq(getY().toArray());
-//        } else {
-//            return new SecondMoment().evaluate(getY().toArray());
-//        }
-        return -1;
+    public double calculateTotalSumOfSquares() {// 17.5 false
+        if (getHasIntercept()) {
+            return StatUtils.sumSq(getY().toArray1D());
+        } else {
+            return new SecondMoment().evaluate(getY().toArray1D());
+        }
     }
 
     /**
@@ -128,7 +129,7 @@ public class OLSResiduals extends AbstractResiduals {
      * @since 2.2
      * @throws NullPointerException if the data for the model have not been loaded
      */
-    public double calculateResidualSumOfSquares() {
+    public double calculateResidualSumOfSquares() {// 1.7670484276950664E-28
         final StatisticsMatrix residuals = calculateResiduals();
         // No advertised DME, args are valid
         return residuals.dot(residuals);
@@ -182,7 +183,7 @@ public class OLSResiduals extends AbstractResiduals {
      */
     public double calculateAdjustedRSquared() {
         final double n = getX().numRows();
-        if (!getHasIntercept()) {
+        if (getHasIntercept()) {
             return 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols()));
         } else {
             return 1

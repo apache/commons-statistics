@@ -51,26 +51,14 @@ public class OLSEstimators extends AbstractEstimators {
      */
     @Override
     protected StatisticsMatrix calculateBeta() {
-
-//        StatisticsMatrix xMatrix = getX().copy();
         LinearSolverDense<DMatrixRMaj> solver = LinearSolverFactory_DDRM.leastSquares(getX().numRows(),
             getX().numCols());
         solver = new LinearSolverSafe<DMatrixRMaj>(solver);
 
         StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(getX().numCols()));
 
-        solver.setA(getX().getDDRM());
+        solver.setA(getX().getDDRM().copy());
         solver.solve(getY().getDDRM(), betas.getDDRM());
-
-        // extracts the betas out of solved xMatrix, which contained larger array
-//        double[] rawBetas = new double[getX().numCols()];
-//        for (int i = 0; i < getX().numCols(); i++) {
-//            rawBetas[i] = xMatrix.getDDRM().data[i];
-//        }
-
-//        StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(rawBetas));
-        System.out.println(betas.toArray2D().length + " calculateBeta");
-        StatisticsMatrix.printArrayWithStreams(betas.toArray2D());
 
         return betas;
     }
@@ -99,12 +87,11 @@ public class OLSEstimators extends AbstractEstimators {
      */
     @Override
     protected StatisticsMatrix calculateBetaVariance() {
-
         QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
-        qr.decompose(getX().getDDRM());
+        qr.decompose(getX().getDDRM().copy());
 
-        StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false));
-        System.out.println(qrR.numCols() + " " + qrR.numRows());
+        int p = getX().numCols();
+        StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false)).extractMatrix(0, p, 0, p);
         StatisticsMatrix invR = qrR.invert();
 
         return invR.mult(invR.transpose());

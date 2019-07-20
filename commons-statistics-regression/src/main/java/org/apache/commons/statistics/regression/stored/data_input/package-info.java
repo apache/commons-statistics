@@ -18,7 +18,7 @@
 /**
  * Contains data input functionality such as direct loading of array primitives
  * (RegressionDataLoader) and from file inputs
- * (RegressionDataBuilder-INCOMPLETE)
+ * (RegressionDataBuilder-INCOMPLETE).
  *
  * @since 1.0
  * @version 1.0

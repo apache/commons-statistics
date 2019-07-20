@@ -47,7 +47,7 @@ public class RegressionRawData implements RegressionData {
     public RegressionRawData() {
         this.xMatrix = null;
         this.yVector = null;
-        this.hasIntercept = true;
+        this.hasIntercept = false;
     }
 
     /**
