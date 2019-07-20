@@ -59,7 +59,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         double[] residuals = model.estimateResiduals();
         StatisticsMatrix xMatrix = model.getX();
         Assertions.assertEquals(StatUtils.variance(model.estimateResiduals()) * (residuals.length - 1),
-            model.estimateErrorVariance() * (xMatrix.numRows() - xMatrix.numCols()), 1E-20);
+            model.calculateErrorVariance() * (xMatrix.numRows() - xMatrix.numCols()), 1E-8);
     }
 
     @Override
@@ -193,7 +193,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
             0.488399681651699, 0.214274163161675, 0.226073200069370, 455.478499142212}, errors, 1E-6);
 
         // Check regression standard error against R
-        Assertions.assertEquals(304.8540735619638, model.estimateRegressionStandardError(), 1E-10);
+        Assertions.assertEquals(304.8540735619638, model.estimateRegressionStandardError(), 1E-8);
 
         // Check R-Square statistics against R
         Assertions.assertEquals(0.995479004577296, model.calculateRSquared(), 1E-12);
@@ -202,7 +202,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         checkVarianceConsistency(model);
 
         // Estimate model without intercept
-        myData.setHasIntercept(false);
+        myData.setHasIntercept(true);
         myData.newSampleData(design, nobs, nvars);
 
         // Check expected beta values from R
@@ -239,16 +239,18 @@ public class OLSRegressionTest extends AbstractRegressionTest {
      */
     @Test
     public void testNewSample2() {
+
         double[] y = new double[] {1, 2, 3, 4};
         double[][] x = new double[][] {{19, 22, 33}, {20, 30, 40}, {25, 35, 45}, {27, 37, 47}};
         OLSRegression reg = new OLSRegression(myData.getInputData());
+        myData.clearData();
         myData.newSampleData(y, x);
         StatisticsMatrix combinedX = reg.getX().copy();
         StatisticsMatrix combinedY = reg.getY().copy();
         myData.newXSampleData(x);
         myData.newYSampleData(y);
-        Assertions.assertEquals(combinedX, reg.getX());
-        Assertions.assertEquals(combinedY, reg.getY());
+        Assertions.assertArrayEquals(combinedX.toArray2D(), reg.getX().toArray2D());
+        Assertions.assertArrayEquals(combinedY.toArray1D(), reg.getY().toArray1D());
 
         // No intercept
         myData.setHasIntercept(false);
@@ -257,8 +259,8 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         combinedY = reg.getY().copy();
         myData.newXSampleData(x);
         myData.newYSampleData(y);
-        Assertions.assertEquals(combinedX, reg.getX());
-        Assertions.assertEquals(combinedY, reg.getY());
+        Assertions.assertArrayEquals(combinedX.toArray2D(), reg.getX().toArray2D());
+        Assertions.assertArrayEquals(combinedY.toArray1D(), reg.getY().toArray1D());
     }
 
     @Test
@@ -465,7 +467,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         Assertions.assertArrayEquals(se, new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, 1E-8);
 
         Assertions.assertEquals(1.0, model.calculateRSquared(), 1.0e-10);
-        Assertions.assertEquals(0, model.estimateErrorVariance(), 1.0e-7);
+        Assertions.assertEquals(0, model.calculateErrorVariance(), 1.0e-7);
         Assertions.assertEquals(0.00, model.calculateResidualSumOfSquares(), 1.0e-6);
 
         return;
@@ -504,7 +506,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         double[] se = model.estimateRegressionParametersStandardErrors();
         Assertions.assertArrayEquals(se, new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, 1E-8);
         Assertions.assertEquals(1.0, model.calculateRSquared(), 1.0e-10);
-        Assertions.assertEquals(0, model.estimateErrorVariance(), 1.0e-7);
+        Assertions.assertEquals(0, model.calculateErrorVariance(), 1.0e-7);
         Assertions.assertEquals(0.00, model.calculateResidualSumOfSquares(), 1.0e-6);
         return;
     }
@@ -544,7 +546,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
             101.475507550350, 5.64566512170752, 0.112324854679312}, 1E-8); //
 
         Assertions.assertEquals(.999995559025820, model.calculateRSquared(), 1.0e-10);
-        Assertions.assertEquals(5570284.53333333, model.estimateErrorVariance(), 1.0e-6);
+        Assertions.assertEquals(5570284.53333333, model.calculateErrorVariance(), 1.0e-6);
         Assertions.assertEquals(83554268.0000000, model.calculateResidualSumOfSquares(), 1.0e-5);
         return;
     }
@@ -584,7 +586,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
             10147.5507550350, 564.566512170752, 11.2324854679312}, 1E-8);
 
         Assertions.assertEquals(.957478440825662, model.calculateRSquared(), 1.0e-10);
-        Assertions.assertEquals(55702845333.3333, model.estimateErrorVariance(), 1.0e-4);
+        Assertions.assertEquals(55702845333.3333, model.calculateErrorVariance(), 1.0e-4);
         Assertions.assertEquals(835542680000.000, model.calculateResidualSumOfSquares(), 1.0e-3);
         return;
     }
@@ -594,11 +596,8 @@ public class OLSRegressionTest extends AbstractRegressionTest {
      */
     @Test
     public void testYVariance() {
-
-        // assumes: y = new double[]{11.0, 12.0, 13.0, 14.0, 15.0, 16.0};
-
+        setUp();
         OLSRegression model = new OLSRegression(myData.getInputData());
-        myData.newSampleData(yData, xData);
         Assertions.assertEquals(model.calculateYVariance(), 3.5, 0);
     }
 

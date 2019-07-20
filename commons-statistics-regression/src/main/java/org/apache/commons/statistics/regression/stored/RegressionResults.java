@@ -1,6 +1,6 @@
 package org.apache.commons.statistics.regression.stored;
 
-public class RegressionResults extends AbstractRegression {
+public class RegressionResults implements Regression {
 
     @Override
     public double[] estimateRegressionParameters() {

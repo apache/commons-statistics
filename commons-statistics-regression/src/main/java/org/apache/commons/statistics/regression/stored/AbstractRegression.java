@@ -16,7 +16,9 @@
  */
 package org.apache.commons.statistics.regression.stored;
 
+import org.apache.commons.math4.stat.descriptive.moment.Variance;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionDataHolder;
+import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
 public abstract class AbstractRegression extends RegressionDataHolder implements Regression {
 
@@ -26,8 +28,8 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      * @return Y variance
      */
     public double calculateYVariance() {
-//        return new Variance().evaluate(getY().toArray());
-        return -1;
+        return new Variance().evaluate(getY().toArray1D());
+//        return -1;
     }
 
     /**
@@ -50,4 +52,54 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * <p>
+     * Calculates the variance of the error term.
+     * </p>
+     * Uses the formula
+     *
+     * <pre>
+     * var(u) = u &middot; u / (n - k)
+     * </pre>
+     *
+     * where n and k are the row and column dimensions of the design matrix X.
+     *
+     * @return error variance estimate
+     * @since 2.2
+     */
+    public double calculateErrorVariance() {
+        StatisticsMatrix residuals = calculateResiduals();
+        return residuals.dot(residuals) / (getX().getDDRM().getNumRows() - getX().getDDRM().getNumCols());
+    }
+
+    /**
+     * Calculates the residuals of multiple linear regression in matrix notation.
+     *
+     * <pre>
+     * u = y - X * b
+     * </pre>
+     *
+     * @return The residuals [n,1] matrix
+     */
+    public StatisticsMatrix calculateResiduals() {
+        StatisticsMatrix b = calculateBeta();
+        return getY().minus(getX().mult(b)); // operate is for vec x vec in CM
+    }
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Calculates the beta of multiple linear regression in matrix notation.
+     *
+     * @return beta
+     */
+    protected abstract StatisticsMatrix calculateBeta();
+
+    /**
+     * Calculates the beta variance of multiple linear regression in matrix
+     * notation.
+     *
+     * @return beta variance
+     */
+    protected abstract StatisticsMatrix calculateBetaVariance();
 }
