@@ -41,14 +41,14 @@ public abstract class AbstractRegressionTest {
     @Test
     @Order(1)
     public void canEstimateRegressionParameters() {
-        double[] beta = regression.estimateRegressionParameters();
+        double[] beta = regression.estimateBeta();
         Assertions.assertEquals(getNumberOfRegressors(), beta.length);
     }
 
     @Test
     @Order(2)
     public void canEstimateRegressionParametersVariance() {
-        double[][] variance = regression.estimateRegressionParametersVariance();
+        double[][] variance = regression.estimateBetaVariance();
         Assertions.assertEquals(getNumberOfRegressors(), variance.length);
     }
 

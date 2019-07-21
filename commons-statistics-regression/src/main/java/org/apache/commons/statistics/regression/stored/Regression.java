@@ -42,14 +42,21 @@ public interface Regression {
      *
      * @return The [k,1] array representing b
      */
-    double[] estimateRegressionParameters();
+    double[] estimateBeta();
 
     /**
      * Estimates the variance of the regression parameters, ie Var(b).
      *
      * @return The [k,k] array representing the variance of b
      */
-    double[][] estimateRegressionParametersVariance();
+    double[][] estimateBetaVariance();
+
+    /**
+     * Returns the standard errors of the regression parameters.
+     *
+     * @return standard errors of estimated regression parameters
+     */
+    double[] estimateBetaStandardErrors();
 
     /**
      * Estimates the residuals, ie u = y - X*b.
@@ -59,13 +66,6 @@ public interface Regression {
     double[] estimateResiduals();
 
     /**
-     * Returns the variance of the regressand, ie Var(y).
-     *
-     * @return The double representing the variance of y
-     */
-    double estimateRegressandVariance();
-
-    /**
      * Estimates the standard error of the regression.
      *
      * @return regression standard error
@@ -73,10 +73,17 @@ public interface Regression {
     double estimateRegressionStandardError();
 
     /**
-     * Returns the standard errors of the regression parameters.
+     * Returns the variance of the regressand, ie Var(y).
      *
-     * @return standard errors of estimated regression parameters
+     * @return The double representing the variance of y
      */
-    double[] estimateRegressionParametersStandardErrors();
+    double estimateRegressandVariance();
+
+    /**
+     * Returns all of the regression's calculated statistics ready to be retrieved.
+     *
+     * @return RegressionResults interface as specified implemented object
+     */
+    RegressionResults regress();
 
 }

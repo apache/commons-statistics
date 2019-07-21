@@ -23,9 +23,57 @@ import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 public abstract class AbstractRegression extends RegressionDataHolder implements Regression {
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[] estimateBeta() {
+        return calculateBeta().toArray1D();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[][] estimateBetaVariance() {
+        return calculateBetaVariance().toArray2D();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[] estimateBetaStandardErrors() {
+        return calculateBetaStandardErrors().toArray1D();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double[] estimateResiduals() {
+        return calculateResiduals().toArray1D();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double estimateRegressionStandardError() {
+        return Math.sqrt(calculateRegressionErrorVariance());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public double estimateRegressandVariance() {
+        return new Variance().evaluate(getY().toArray1D());
+    }
+
+    /**
      * Calculates the beta of multiple linear regression in matrix notation.
      *
-     * @return beta
+     * @return betas as vector
      */
     protected abstract StatisticsMatrix calculateBeta();
 
@@ -33,17 +81,22 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      * Calculates the beta variance of multiple linear regression in matrix
      * notation.
      *
-     * @return beta variance
+     * @return betas variance as vector
      */
     protected abstract StatisticsMatrix calculateBetaVariance();
 
     /**
-     * Calculates the variance of the y values.
+     * Calculates the beta standard errors of multiple linear regression in matrix
+     * notation by retrieving the diagonal elements from betaVariance, then
+     * multiplying by sigma and square rooting each element.
      *
-     * @return Y variance
+     * @return betas variance as vector
      */
-    public double calculateYVariance() {
-        return new Variance().evaluate(getY().toArray1D());
+    protected StatisticsMatrix calculateBetaStandardErrors() {
+        StatisticsMatrix betaVariance = calculateBetaVariance();
+        double sigma = calculateRegressionErrorVariance();
+        //
+        return betaVariance.diag().scale(sigma).elementPower(0.5);
     }
 
     /**
@@ -59,9 +112,8 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      * where n and k are the row and column dimensions of the design matrix X.
      *
      * @return error variance estimate
-     * @since 2.2
      */
-    public double calculateErrorVariance() {
+    public double calculateRegressionErrorVariance() {
         StatisticsMatrix residuals = calculateResiduals();
         return residuals.dot(residuals) / (getX().getDDRM().getNumRows() - getX().getDDRM().getNumCols());
     }

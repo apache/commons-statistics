@@ -16,60 +16,48 @@
  */
 package org.apache.commons.statistics.regression.stored;
 
-public class RegressionResults implements Regression {
+public interface RegressionResults {
 
     /**
-     * {@inheritDoc}
+     * Gets the regression parameters b.
+     *
+     * @return The [k,1] array representing b
      */
-    @Override
-    public double[] estimateRegressionParameters() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    double[] getBeta();
 
     /**
-     * {@inheritDoc}
+     * Gets the variance of the regression parameters, ie Var(b).
+     *
+     * @return The [k,k] array representing the variance of b
      */
-    @Override
-    public double[][] estimateRegressionParametersVariance() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    double[][] getBetaVariance();
 
     /**
-     * {@inheritDoc}
+     * Gets the standard errors of the regression parameters.
+     *
+     * @return standard errors of returned regression parameters
      */
-    @Override
-    public double[] estimateResiduals() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    double[] getBetaStandardErrors();
 
     /**
-     * {@inheritDoc}
+     * Gets the residuals, ie u = y - X*b.
+     *
+     * @return The [n,1] array representing the residuals
      */
-    @Override
-    public double estimateRegressandVariance() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+    double[] getResiduals();
 
     /**
-     * {@inheritDoc}
+     * Gets the standard error of the regression.
+     *
+     * @return regression standard error
      */
-    @Override
-    public double[] estimateRegressionParametersStandardErrors() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    double getRegressionStandardError();
 
     /**
-     * {@inheritDoc}
+     * Gets the variance of the regressand, ie Var(y).
+     *
+     * @return The double representing the variance of y
      */
-    @Override
-    public double estimateRegressionStandardError() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+    double getRegressandVariance();
 
 }

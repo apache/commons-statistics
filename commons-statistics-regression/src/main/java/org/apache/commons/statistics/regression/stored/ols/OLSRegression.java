@@ -19,7 +19,7 @@ package org.apache.commons.statistics.regression.stored.ols;
 import org.apache.commons.math4.stat.StatUtils;
 import org.apache.commons.math4.stat.descriptive.moment.SecondMoment;
 import org.apache.commons.statistics.regression.stored.AbstractRegression;
-import org.apache.commons.statistics.regression.stored.Regression;
+import org.apache.commons.statistics.regression.stored.RegressionResults;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.ejml.LinearSolverSafe;
@@ -29,7 +29,7 @@ import org.ejml.dense.row.factory.LinearSolverFactory_DDRM;
 import org.ejml.interfaces.decomposition.QRDecomposition;
 import org.ejml.interfaces.linsol.LinearSolverDense;
 
-public class OLSRegression extends AbstractRegression implements Regression {
+public class OLSRegression extends AbstractRegression {
 
     /**
      * Constructs the OLSRegression user-interface class.
@@ -41,59 +41,63 @@ public class OLSRegression extends AbstractRegression implements Regression {
     }
 
     /**
-     * {@inheritDoc}
+     * Calculates the regression coefficients using OLS.
+     *
+     * <p>
+     * Data for the model must have been successfully loaded using one of the
+     * {@code newSampleData} methods before invoking this method; otherwise a
+     * {@code NullPointerException} will be thrown.
+     * </p>
+     *
+     * @return beta
+     * @throws NullPointerException if the data for the model have not been loaded
      */
     @Override
-    public double estimateRegressandVariance() {
-        return calculateYVariance();
+    protected StatisticsMatrix calculateBeta() {
+        LinearSolverDense<DMatrixRMaj> solver = LinearSolverFactory_DDRM.leastSquares(getX().numRows(),
+            getX().numCols());
+        solver = new LinearSolverSafe<DMatrixRMaj>(solver);
+
+        StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(getX().numCols()));
+
+        solver.setA(getX().getDDRM().copy());
+        solver.solve(getY().getDDRM(), betas.getDDRM());
+
+        return betas;
     }
 
     /**
-     * {@inheritDoc}
+     * <p>
+     * Calculates the variance-covariance matrix of the regression parameters.
+     * </p>
+     * <p>
+     * Var(b) = (X<sup>T</sup>X)<sup>-1</sup>
+     * </p>
+     * <p>
+     * Uses QR decomposition to reduce (X<sup>T</sup>X)<sup>-1</sup> to
+     * (R<sup>T</sup>R)<sup>-1</sup>, with only the top p rows of R included, where
+     * p = the length of the beta vector.
+     * </p>
+     *
+     * <p>
+     * Data for the model must have been successfully loaded using one of the
+     * {@code newSampleData} methods before invoking this method; otherwise a
+     * {@code NullPointerException} will be thrown.
+     * </p>
+     *
+     * @return The beta variance-covariance matrix
+     * @throws NullPointerException if the data for the model have not been loaded
      */
     @Override
-    public double[] estimateRegressionParameters() {
-        StatisticsMatrix b = calculateBeta();
-        return b.toArray1D();
-    }
+    protected StatisticsMatrix calculateBetaVariance() {
+        QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
+        qr.decompose(getX().getDDRM().copy());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double[] estimateRegressionParametersStandardErrors() {
-        double[][] betaVariance = estimateRegressionParametersVariance();
-        double sigma = calculateErrorVariance();
-        int length = betaVariance[0].length;
-        double[] result = new double[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = Math.sqrt(sigma * betaVariance[i][i]);
-        }
-        return result;
-    }
+        int p = getX().numCols();
+        StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false)).extractMatrix(0, p, 0, p);
+        StatisticsMatrix invR = qrR.invert();
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double[][] estimateRegressionParametersVariance() {
-        return calculateBetaVariance().toArray2D();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double estimateRegressionStandardError() {
-        return Math.sqrt(calculateErrorVariance());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double[] estimateResiduals() {
-        return calculateResiduals().toArray1D();
+        return invR.mult(invR.transpose());
     }
 
     /**
@@ -168,7 +172,6 @@ public class OLSRegression extends AbstractRegression implements Regression {
      * @return SSTO - the total sum of squares
      * @throws NullPointerException if the sample has not been set
      * @see #isNoIntercept()
-     * @since 2.2
      */
     public double calculateTotalSumOfSquares() {
         if (getHasIntercept()) {
@@ -182,7 +185,6 @@ public class OLSRegression extends AbstractRegression implements Regression {
      * Returns the sum of squared residuals.
      *
      * @return residual sum of squares
-     * @since 2.2
      * @throws NullPointerException if the data for the model have not been loaded
      */
     public double calculateResidualSumOfSquares() {
@@ -205,7 +207,6 @@ public class OLSRegression extends AbstractRegression implements Regression {
      *
      * @return R-square statistic
      * @throws NullPointerException if the sample has not been set
-     * @since 2.2
      */
     public double calculateRSquared() {
         return 1 - calculateResidualSumOfSquares() / calculateTotalSumOfSquares();
@@ -234,8 +235,6 @@ public class OLSRegression extends AbstractRegression implements Regression {
      *
      * @return adjusted R-Squared statistic
      * @throws NullPointerException if the sample has not been set
-     * @see #isNoIntercept()
-     * @since 2.2
      */
     public double calculateAdjustedRSquared() {
         final double n = getX().numRows();
@@ -243,74 +242,18 @@ public class OLSRegression extends AbstractRegression implements Regression {
             return 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols()));
         } else {
             return 1 -
-                (calculateResidualSumOfSquares() * (n - 1)) /
-                (calculateTotalSumOfSquares() * (n - getX().numCols()));
+                   (calculateResidualSumOfSquares() * (n - 1)) /
+                       (calculateTotalSumOfSquares() * (n - getX().numCols()));
         }
     }
 
     /**
-     * Calculates the regression coefficients using OLS.
-     *
-     * <p>
-     * Data for the model must have been successfully loaded using one of the
-     * {@code newSampleData} methods before invoking this method; otherwise a
-     * {@code NullPointerException} will be thrown.
-     * </p>
-     *
-     * @return beta
-     * @throws NullPointerException if the data for the model have not been loaded
+     * {@inheritDoc}
      */
     @Override
-    protected StatisticsMatrix calculateBeta() {
-        LinearSolverDense<DMatrixRMaj> solver = LinearSolverFactory_DDRM.leastSquares(getX().numRows(),
-            getX().numCols());
-        solver = new LinearSolverSafe<DMatrixRMaj>(solver);
-
-        StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(getX().numCols()));
-
-        solver.setA(getX().getDDRM().copy());
-        solver.solve(getY().getDDRM(), betas.getDDRM());
-
-        return betas;
+    public RegressionResults regress() {
+        OLSResults results = new OLSResults(this);
+        return results;
     }
-
-    /**
-     * <p>
-     * Calculates the variance-covariance matrix of the regression parameters.
-     * </p>
-     * <p>
-     * Var(b) = (X<sup>T</sup>X)<sup>-1</sup>
-     * </p>
-     * <p>
-     * Uses QR decomposition to reduce (X<sup>T</sup>X)<sup>-1</sup> to
-     * (R<sup>T</sup>R)<sup>-1</sup>, with only the top p rows of R included, where
-     * p = the length of the beta vector.
-     * </p>
-     *
-     * <p>
-     * Data for the model must have been successfully loaded using one of the
-     * {@code newSampleData} methods before invoking this method; otherwise a
-     * {@code NullPointerException} will be thrown.
-     * </p>
-     *
-     * @return The beta variance-covariance matrix
-     * @throws NullPointerException if the data for the model have not been loaded
-     */
-    @Override
-    protected StatisticsMatrix calculateBetaVariance() {
-        QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
-        qr.decompose(getX().getDDRM().copy());
-
-        int p = getX().numCols();
-        StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false)).extractMatrix(0, p, 0, p);
-        StatisticsMatrix invR = qrR.invert();
-
-        return invR.mult(invR.transpose());
-    }
-
-//    public RegressionResults regress(RegressionData data) {
-//        OLSResults results = new OLSResults();
-//        return null;
-//    }
 
 }
