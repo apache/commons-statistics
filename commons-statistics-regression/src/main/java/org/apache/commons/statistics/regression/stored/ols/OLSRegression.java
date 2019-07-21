@@ -37,6 +37,7 @@ public class OLSRegression extends AbstractRegression {
      * @param data contains the inputData, given as an interface for retrieval only
      */
     public OLSRegression(RegressionData data) {
+        validateLoadedInputData(data);
         this.inputData = data;
     }
 
@@ -45,12 +46,11 @@ public class OLSRegression extends AbstractRegression {
      *
      * <p>
      * Data for the model must have been successfully loaded using one of the
-     * {@code newSampleData} methods before invoking this method; otherwise a
+     * {@code inputNewSampleData} methods before invoking this method; otherwise a
      * {@code NullPointerException} will be thrown.
      * </p>
      *
      * @return beta
-     * @throws NullPointerException if the data for the model have not been loaded
      */
     @Override
     protected StatisticsMatrix calculateBeta() {
@@ -81,12 +81,11 @@ public class OLSRegression extends AbstractRegression {
      *
      * <p>
      * Data for the model must have been successfully loaded using one of the
-     * {@code newSampleData} methods before invoking this method; otherwise a
+     * {@code inputNewSampleData} methods before invoking this method; otherwise a
      * {@code NullPointerException} will be thrown.
      * </p>
      *
      * @return The beta variance-covariance matrix
-     * @throws NullPointerException if the data for the model have not been loaded
      */
     @Override
     protected StatisticsMatrix calculateBetaVariance() {
@@ -117,13 +116,11 @@ public class OLSRegression extends AbstractRegression {
      * </p>
      * <p>
      * Data for the model must have been successfully loaded using one of the
-     * {@code newSampleData} methods before invoking this method; otherwise a
+     * {@code inputNewSampleData} methods before invoking this method; otherwise a
      * {@code NullPointerException} will be thrown.
      * </p>
      *
      * @return the hat matrix
-     * @throws NullPointerException unless method {@code newSampleData} has been
-     *                              called beforehand.
      */
     public StatisticsMatrix calculateHat() {
 
@@ -135,7 +132,6 @@ public class OLSRegression extends AbstractRegression {
         // Create augmented identity matrix
         final int p = qrR.numCols();
         final int n = qrQ.numCols();
-        // No try-catch or advertised NotStrictlyPositiveException - NPE above if n < 3
         double[][] augIData = new double[n][n];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -148,9 +144,6 @@ public class OLSRegression extends AbstractRegression {
         }
 
         StatisticsMatrix augI = new StatisticsMatrix(new DMatrixRMaj(augIData));
-
-        // Compute and return Hat matrix
-        // No DME advertised - args valid if we get here
         return qrQ.mult(augI).mult(qrQ.transpose());
     }
 
@@ -170,8 +163,6 @@ public class OLSRegression extends AbstractRegression {
      * </p>
      *
      * @return SSTO - the total sum of squares
-     * @throws NullPointerException if the sample has not been set
-     * @see #isNoIntercept()
      */
     public double calculateTotalSumOfSquares() {
         if (getHasIntercept()) {
@@ -185,7 +176,6 @@ public class OLSRegression extends AbstractRegression {
      * Returns the sum of squared residuals.
      *
      * @return residual sum of squares
-     * @throws NullPointerException if the data for the model have not been loaded
      */
     public double calculateResidualSumOfSquares() {
         final StatisticsMatrix residuals = calculateResiduals();
@@ -206,7 +196,6 @@ public class OLSRegression extends AbstractRegression {
      * </p>
      *
      * @return R-square statistic
-     * @throws NullPointerException if the sample has not been set
      */
     public double calculateRSquared() {
         return 1 - calculateResidualSumOfSquares() / calculateTotalSumOfSquares();
@@ -234,7 +223,6 @@ public class OLSRegression extends AbstractRegression {
      * </p>
      *
      * @return adjusted R-Squared statistic
-     * @throws NullPointerException if the sample has not been set
      */
     public double calculateAdjustedRSquared() {
         final double n = getX().numRows();

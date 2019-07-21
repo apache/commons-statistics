@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.regression.stored;
 
 import org.apache.commons.math4.stat.descriptive.moment.Variance;
+import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionDataHolder;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
@@ -149,6 +150,26 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
         if (covariance.length > 0 && covariance.length != covariance[0].length) {
             throw new IllegalArgumentException(
                 "covariance.length = " + covariance.length + "  covariance[0].length = " + covariance[0].length);
+        }
+    }
+
+    /**
+     * Validates that input data is not null when passed into a Regression
+     * functional concrete class.
+     *
+     * @param data as RegressionRawData class which holds X and Y data
+     * @throws IllegalArgumentException if data or it's contained X or Y
+     *                                  StatisticsMatrix objects are null.
+     */
+    protected void validateLoadedInputData(RegressionData data) {
+        if (data == null) {
+            throw new IllegalArgumentException("RegressionData object is null.");
+        }
+        if (data.getY() == null) {
+            throw new IllegalArgumentException("Y data is null.");
+        }
+        if (data.getX() == null) {
+            throw new IllegalArgumentException("X data is null.");
         }
     }
 }
