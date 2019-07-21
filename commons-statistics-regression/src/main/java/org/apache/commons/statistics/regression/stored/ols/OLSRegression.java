@@ -20,7 +20,6 @@ import org.apache.commons.math4.stat.StatUtils;
 import org.apache.commons.math4.stat.descriptive.moment.SecondMoment;
 import org.apache.commons.statistics.regression.stored.AbstractRegression;
 import org.apache.commons.statistics.regression.stored.Regression;
-import org.apache.commons.statistics.regression.stored.RegressionResults;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.ejml.LinearSolverSafe;
@@ -32,21 +31,13 @@ import org.ejml.interfaces.linsol.LinearSolverDense;
 
 public class OLSRegression extends AbstractRegression implements Regression {
 
-//    /** Container for OLS estimator functionalities. */
-//    private OLSEstimators betas;
-//
-//    /** Container for OLS residual functionalities. */
-//    private OLSResiduals residuals;
-
     /**
      * Constructs the OLSRegression user-interface class.
      *
-     * @param loader contains the inputData
+     * @param data contains the inputData, given as an interface for retrieval only
      */
     public OLSRegression(RegressionData data) {
         this.inputData = data;
-//        this.betas = new OLSEstimators(inputData);
-//        this.residuals = new OLSResiduals(inputData, betas.calculateBeta());
     }
 
     /**
@@ -90,11 +81,9 @@ public class OLSRegression extends AbstractRegression implements Regression {
     }
 
     /**
-     * Estimates the standard error of the regression.
-     *
-     * @return regression standard error
-     * @since 2.2
+     * {@inheritDoc}
      */
+    @Override
     public double estimateRegressionStandardError() {
         return Math.sqrt(calculateErrorVariance());
     }
@@ -107,7 +96,6 @@ public class OLSRegression extends AbstractRegression implements Regression {
         return calculateResiduals().toArray1D();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
     /**
      * <p>
      * Compute the "hat" matrix.
@@ -182,7 +170,7 @@ public class OLSRegression extends AbstractRegression implements Regression {
      * @see #isNoIntercept()
      * @since 2.2
      */
-    public double calculateTotalSumOfSquares() {// 17.5 false
+    public double calculateTotalSumOfSquares() {
         if (getHasIntercept()) {
             return StatUtils.sumSq(getY().toArray1D());
         } else {
@@ -197,7 +185,7 @@ public class OLSRegression extends AbstractRegression implements Regression {
      * @since 2.2
      * @throws NullPointerException if the data for the model have not been loaded
      */
-    public double calculateResidualSumOfSquares() {// 1.7670484276950664E-28
+    public double calculateResidualSumOfSquares() {
         final StatisticsMatrix residuals = calculateResiduals();
         // No advertised DME, args are valid
         return residuals.dot(residuals);
@@ -254,11 +242,11 @@ public class OLSRegression extends AbstractRegression implements Regression {
         if (getHasIntercept()) {
             return 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols()));
         } else {
-            return 1
-                - (calculateResidualSumOfSquares() * (n - 1)) / (calculateTotalSumOfSquares() * (n - getX().numCols()));
+            return 1 -
+                (calculateResidualSumOfSquares() * (n - 1)) /
+                (calculateTotalSumOfSquares() * (n - getX().numCols()));
         }
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Calculates the regression coefficients using OLS.
@@ -320,9 +308,9 @@ public class OLSRegression extends AbstractRegression implements Regression {
         return invR.mult(invR.transpose());
     }
 
-    public RegressionResults regress(RegressionData data) {
-        OLSResults results = new OLSResults();
-        return null;
-    }
+//    public RegressionResults regress(RegressionData data) {
+//        OLSResults results = new OLSResults();
+//        return null;
+//    }
 
 }

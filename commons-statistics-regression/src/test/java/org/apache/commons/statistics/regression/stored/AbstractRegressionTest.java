@@ -41,9 +41,7 @@ public abstract class AbstractRegressionTest {
     @Test
     @Order(1)
     public void canEstimateRegressionParameters() {
-        System.out.println("TEST");
         double[] beta = regression.estimateRegressionParameters();
-        System.out.println("TEST");
         Assertions.assertEquals(getNumberOfRegressors(), beta.length);
     }
 
@@ -84,23 +82,23 @@ public abstract class AbstractRegressionTest {
         double[] y = new double[] {1, 2, 3, 4};
         double[][] x = new double[][] {{19, 22, 33}, {20, 30, 40}, {25, 35, 45}, {27, 37, 47}};
 
-        testData.newSampleData(design, 4, 3);
+        testData.inputNewSampleData(design, 4, 3);
         regression = createRegression(testData);
 
         StatisticsMatrix flatX = regression.getX().copy();
         StatisticsMatrix flatY = regression.getY().copy();
-        testData.newXSampleData(x);
-        testData.newYSampleData(y);
+        testData.inputNewXSampleData(x);
+        testData.inputNewYSampleData(y);
         Assertions.assertArrayEquals(flatX.toArray2D(), regression.getX().toArray2D());
         Assertions.assertArrayEquals(flatY.toArray1D(), regression.getY().toArray1D());
 
         // No intercept
         testData.setHasIntercept(false);
-        testData.newSampleData(design, 4, 3);
+        testData.inputNewSampleData(design, 4, 3);
         flatX = regression.getX().copy();
         flatY = regression.getY().copy();
-        testData.newXSampleData(x);
-        testData.newYSampleData(y);
+        testData.inputNewXSampleData(x);
+        testData.inputNewYSampleData(y);
         Assertions.assertArrayEquals(flatX.toArray2D(), regression.getX().toArray2D());
         Assertions.assertArrayEquals(flatY.toArray1D(), regression.getY().toArray1D());
         regression = createRegression(myData);
@@ -111,29 +109,29 @@ public abstract class AbstractRegressionTest {
     @Test
     public void testNewSampleInsufficientData() {
         double[] data = new double[] {1, 2, 3, 4};
-        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.newSampleData(data, 1, 3));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.inputNewSampleData(data, 1, 3));
     }
 
     @Test
     public void testNewSampleInvalidData() {
         double[] data = new double[] {1, 2, 3, 4};
-        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.newSampleData(data, 2, 3));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.inputNewSampleData(data, 2, 3));
     }
 
     @Test
     public void testNewSampleNullData() {
         double[] data = null;
-        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.newSampleData(data, 2, 3));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.inputNewSampleData(data, 2, 3));
     }
 
     @Test
     public void testXSampleDataNull() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.newXSampleData(null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.inputNewXSampleData(null));
     }
 
     @Test
     public void testYSampleDataNull() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.newYSampleData(null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.inputNewYSampleData(null));
     }
 
 }

@@ -16,14 +16,12 @@
  */
 package org.apache.commons.statistics.regression.stored.ols;
 
-import org.apache.commons.math4.linear.Array2DRowRealMatrix;
-import org.apache.commons.math4.linear.DefaultRealMatrixChangingVisitor;
-import org.apache.commons.math4.linear.RealMatrix;
 import org.apache.commons.math4.stat.StatUtils;
 import org.apache.commons.statistics.regression.stored.AbstractRegression;
 import org.apache.commons.statistics.regression.stored.AbstractRegressionTest;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionDataLoader;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
+import org.ejml.data.DMatrixRMaj;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -43,7 +41,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         double[] y = new double[] {1.0, 2.0};
         double[][] x = new double[1][];
         x[0] = new double[] {1.0, 0};
-        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.newSampleData(y, x));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.inputNewSampleData(y, x));
     }
 
     /**
@@ -113,7 +111,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         int nvars = 2;
 
         // Estimate the model
-        myData.newSampleData(design, nobs, nvars);
+        myData.inputNewSampleData(design, nobs, nvars);
         OLSRegression model = new OLSRegression(myData.getInputData());
 
         StatisticsMatrix hat = model.calculateHat();
@@ -171,7 +169,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
 
         // Estimate the model
         OLSRegression model = new OLSRegression(myData.getInputData());
-        myData.newSampleData(design, nobs, nvars);
+        myData.inputNewSampleData(design, nobs, nvars);
 
         // Check expected beta values from NIST
         double[] betaHat = model.estimateRegressionParameters();
@@ -202,7 +200,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         checkVarianceConsistency(model);
 
         // Estimate model without intercept
-        myData.newSampleData(design, nobs, nvars, true);
+        myData.inputNewSampleData(design, nobs, nvars, true);
 
         // Check expected beta values from R
         betaHat = model.estimateRegressionParameters();
@@ -243,33 +241,34 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         double[][] x = new double[][] {{19, 22, 33}, {20, 30, 40}, {25, 35, 45}, {27, 37, 47}};
         OLSRegression reg = new OLSRegression(myData.getInputData());
         myData.clearData();
-        myData.newSampleData(y, x);
+        myData.inputNewSampleData(y, x);
         StatisticsMatrix combinedX = reg.getX().copy();
         StatisticsMatrix combinedY = reg.getY().copy();
-        myData.newXSampleData(x);
-        myData.newYSampleData(y);
+        myData.inputNewXSampleData(x);
+        myData.inputNewYSampleData(y);
         Assertions.assertArrayEquals(combinedX.toArray2D(), reg.getX().toArray2D());
         Assertions.assertArrayEquals(combinedY.toArray1D(), reg.getY().toArray1D());
 
         // No intercept
         myData.setHasIntercept(false);
-        myData.newSampleData(y, x);
+        myData.inputNewSampleData(y, x);
         combinedX = reg.getX().copy();
         combinedY = reg.getY().copy();
-        myData.newXSampleData(x);
-        myData.newYSampleData(y);
+        myData.inputNewXSampleData(x);
+        myData.inputNewYSampleData(y);
         Assertions.assertArrayEquals(combinedX.toArray2D(), reg.getX().toArray2D());
         Assertions.assertArrayEquals(combinedY.toArray1D(), reg.getY().toArray1D());
     }
 
     @Test
     public void testNewSampleDataXNull() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.newSampleData(new double[] {}, null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.inputNewSampleData(new double[] {}, null));
     }
 
     @Test
     public void testNewSampleDataYNull() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> myData.newSampleData(null, new double[][] {}));
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> myData.inputNewSampleData(null, new double[][] {}));
     }
 
     @Test
@@ -281,7 +280,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
 
     @Test
     public void testNoDataNPECalculateHat() {
-        myData.newSampleData(yData, xData);
+        myData.inputNewSampleData(yData, xData);
         OLSRegression model = new OLSRegression(myData.getInputData());
         myData.clearData();
         Assertions.assertThrows(NullPointerException.class, () -> model.calculateHat());
@@ -289,7 +288,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
 
     @Test
     public void testNoDataNPESSTO() {
-        myData.newSampleData(yData, xData);
+        myData.inputNewSampleData(yData, xData);
         OLSRegression model = new OLSRegression(myData.getInputData());
         myData.clearData();
         Assertions.assertThrows(NullPointerException.class, () -> model.calculateTotalSumOfSquares());
@@ -297,37 +296,38 @@ public class OLSRegressionTest extends AbstractRegressionTest {
 
     @Test
     public void testNoSSTOCalculateRsquare() {
-        myData.newSampleData(new double[] {1, 2, 3, 1, 7, 8, 1, 10, 12}, 3, 2, false);
+        myData.inputNewSampleData(new double[] {1, 2, 3, 1, 7, 8, 1, 10, 12}, 3, 2, false);
         OLSRegression model = new OLSRegression(myData.getInputData());
         Assertions.assertTrue(Double.isNaN(model.calculateRSquared()));
     }
 
     @Test
     public void testPerfectFit() {
-        myData.newSampleData(yData, xData);
+        myData.inputNewSampleData(yData, xData);
         double[] betaHat = regression.estimateRegressionParameters();
         Assertions.assertArrayEquals(betaHat,
             new double[] {11.0, 1.0 / 2.0, 2.0 / 3.0, 3.0 / 4.0, 4.0 / 5.0, 5.0 / 6.0}, 1e-12);
+
         double[] residuals = regression.estimateResiduals();
         Assertions.assertArrayEquals(residuals, new double[] {0d, 0d, 0d, 0d, 0d, 0d}, 1e-12);
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        RealMatrix errors = new Array2DRowRealMatrix(regression.estimateRegressionParametersVariance(), false);
+
+        StatisticsMatrix errors = new StatisticsMatrix(
+            new DMatrixRMaj(regression.estimateRegressionParametersVariance()));
+
         final double[] s = {1.0, -1.0 / 2.0, -1.0 / 3.0, -1.0 / 4.0, -1.0 / 5.0, -1.0 / 6.0};
-        RealMatrix referenceVariance = new Array2DRowRealMatrix(s.length, s.length);
-        referenceVariance.walkInOptimizedOrder(new DefaultRealMatrixChangingVisitor() {
-            @Override
-            public double visit(int row, int column, double value) {
-                double x;
-                if (row == 0) {
-                    return s[column];
+        double x = 0;
+        for (int i = 0; i < s.length; i++) {
+            for (int j = 0; j < s.length; j++) {
+                if (i == 0) {
+                    x = s[j];
+                } else {
+                    x = s[i] * s[j];
+                    x = (i == j) ? 2 * x : x;
                 }
-                x = s[row] * s[column];
-                return (row == column) ? 2 * x : x;
+                Assertions.assertEquals(x, errors.get(i, j), 1E-12);
             }
-        });
-        Assertions.assertEquals(0.0, errors.subtract(referenceVariance).getNorm(),
-            5.0e-14 * referenceVariance.getNorm());
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        }
+
         Assertions.assertEquals(1, ((OLSRegression) regression).calculateRSquared(), 1E-12);
     }
 
@@ -353,7 +353,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         final int nvars = 4;
 
         // Estimate the model
-        myData.newSampleData(design, nobs, nvars);
+        myData.inputNewSampleData(design, nobs, nvars);
         OLSRegression model = new OLSRegression(myData.getInputData());
 
         // Check expected beta values from R
@@ -394,7 +394,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         checkVarianceConsistency(model);
 
         // Estimate the model with no intercept
-        myData.newSampleData(design, nobs, nvars, true);
+        myData.inputNewSampleData(design, nobs, nvars, true);
         model = new OLSRegression(myData.getInputData());
 
         // Check expected beta values from R
@@ -455,7 +455,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
             off2 += nvars + 1;
             off += 2;
         }
-        myData.newSampleData(tmp, nobs, nvars);
+        myData.inputNewSampleData(tmp, nobs, nvars);
         OLSRegression model = new OLSRegression(myData.getInputData());
 
         double[] betaHat = model.estimateRegressionParameters();
@@ -497,7 +497,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
             off2 += nvars + 1;
             off += 2;
         }
-        myData.newSampleData(tmp, nobs, nvars);
+        myData.inputNewSampleData(tmp, nobs, nvars);
         double[] betaHat = model.estimateRegressionParameters();
         Assertions.assertArrayEquals(betaHat, new double[] {1.0, 1.0e-1, 1.0e-2, 1.0e-3, 1.0e-4, 1.0e-5}, 1E-8);
 
@@ -535,7 +535,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
             off2 += nvars + 1;
             off += 2;
         }
-        myData.newSampleData(tmp, nobs, nvars);
+        myData.inputNewSampleData(tmp, nobs, nvars);
         double[] betaHat = model.estimateRegressionParameters();
         Assertions.assertArrayEquals(betaHat, new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}, 1E-8);
 
@@ -546,6 +546,8 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         Assertions.assertEquals(.999995559025820, model.calculateRSquared(), 1.0e-10);
         Assertions.assertEquals(5570284.53333333, model.calculateErrorVariance(), 1.0e-6);
         Assertions.assertEquals(83554268.0000000, model.calculateResidualSumOfSquares(), 1.0e-5);
+
+//        RegressionData data = RegressionDataLoader.of(yData, xData);
         return;
     }
 
@@ -575,7 +577,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
             off2 += nvars + 1;
             off += 2;
         }
-        myData.newSampleData(tmp, nobs, nvars);
+        myData.inputNewSampleData(tmp, nobs, nvars);
         double[] betaHat = model.estimateRegressionParameters();
         Assertions.assertArrayEquals(betaHat, new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0}, 1E-6);
 

@@ -40,7 +40,7 @@ public final class RegressionDataLoader {
      * @param x data matrix double 2D array
      */
     public RegressionDataLoader(double[] y, double[][] x) {
-        this.newSampleData(y, x);
+        this.inputNewSampleData(y, x);
     }
 
     /**
@@ -55,7 +55,7 @@ public final class RegressionDataLoader {
      * @param hasIntercept true if intercept is included in input data
      */
     public RegressionDataLoader(double[] y, double[][] x, boolean hasIntercept) {
-        this.newSampleData(y, x, hasIntercept);
+        this.inputNewSampleData(y, x, hasIntercept);
     }
 
     /**
@@ -80,14 +80,14 @@ public final class RegressionDataLoader {
      * @param y data vector double 1D array
      * @param x data matrix double 2D array
      */
-    public void newSampleData(double[] y, double[][] x) {
-        validateSampleData(y, x, false);
+    public void inputNewSampleData(double[] y, double[][] x) {
+        validateSampleData(y, x);
         if (inputData == null) {
             inputData = new RegressionRawData();
         }
         inputData.setHasIntercept(false);
-        newYSampleData(y);
-        newXSampleData(x);
+        inputNewYSampleData(y);
+        inputNewXSampleData(x);
     }
 
     /**
@@ -100,14 +100,14 @@ public final class RegressionDataLoader {
      * @param x            data matrix double 2D array
      * @param hasIntercept boolean true if intercept is included in input data
      */
-    public void newSampleData(double[] y, double[][] x, boolean hasIntercept) {
-        validateSampleData(y, x, hasIntercept);
+    public void inputNewSampleData(double[] y, double[][] x, boolean hasIntercept) {
+        validateSampleData(y, x);
         if (inputData == null) {
             inputData = new RegressionRawData();
         }
         inputData.setHasIntercept(hasIntercept);
-        newYSampleData(y);
-        newXSampleData(x);
+        inputNewYSampleData(y);
+        inputNewXSampleData(x);
     }
 
     /**
@@ -121,9 +121,9 @@ public final class RegressionDataLoader {
      * @param nobs  int number of observations (rows)
      * @param nvars int number of independent variables (columns, not counting y)
      */
-    public void newSampleData(double[] data, int nobs, int nvars) {
+    public void inputNewSampleData(double[] data, int nobs, int nvars) {
 //        inputData.setHasIntercept(false);
-        newSingleArraySampleData(data, nobs, nvars);
+        inputSingleArraySampleData(data, nobs, nvars);
     }
 
     /**
@@ -144,9 +144,9 @@ public final class RegressionDataLoader {
      * @param hasIntercept boolean true if sample data already has intercept; column
      *                     of 1's
      */
-    public void newSampleData(double[] data, int nobs, int nvars, boolean hasIntercept) {
+    public void inputNewSampleData(double[] data, int nobs, int nvars, boolean hasIntercept) {
         inputData.setHasIntercept(hasIntercept);
-        newSingleArraySampleData(data, nobs, nvars);
+        inputSingleArraySampleData(data, nobs, nvars);
     }
 
     /**
@@ -192,13 +192,13 @@ public final class RegressionDataLoader {
      * @throws IllegalArgumentException if <code>nobs</code> is less than
      *                                  <code>nvars + 1</code>
      */
-    private void newSingleArraySampleData(double[] data, int nobs, int nvars) {
+    private void inputSingleArraySampleData(double[] data, int nobs, int nvars) {
         if (data == null) {
             throw new IllegalArgumentException("Null data argument.");
         }
         if (data.length != nobs * (nvars + 1)) {
-            throw new IllegalArgumentException("Dimension mismatch: data length [" + data.length
-                + "] is not equal to nobs * (nvars + 1) [" + nobs * (nvars + 1) + "]");
+            throw new IllegalArgumentException("Dimension mismatch: data length [" + data.length +
+                "] is not equal to nobs * (nvars + 1) [" + nobs * (nvars + 1) + "]");
         }
         if (nobs <= nvars) {
             throw new IllegalArgumentException("Not enough data for number of predictors: nobs <= nvars");
@@ -235,12 +235,12 @@ public final class RegressionDataLoader {
      *
      * @param y 1D double array
      */
-    public void newYSampleData(double[] y) {
+    public void inputNewYSampleData(double[] y) {
         if (y == null) {
             throw new IllegalArgumentException("Null y argument.");
         }
         if (inputData.getX() != null) {
-            validateSampleData(y, inputData.getX().toArray2D(), inputData.getHasIntercept());
+            validateSampleData(y, inputData.getX().toArray2D());
         }
         inputData.setYData(createYmatrix(y));
     }
@@ -263,7 +263,7 @@ public final class RegressionDataLoader {
      *
      * @param x 2D double array
      */
-    public void newXSampleData(double[][] x) {
+    public void inputNewXSampleData(double[][] x) {
         if (x == null) {
             throw new IllegalArgumentException("Null x argument.");
         }
@@ -286,7 +286,7 @@ public final class RegressionDataLoader {
         }
 
         if (inputData.getY() != null) {
-            validateSampleData(inputData.getY().toArray1D(), inputData.getX().toArray2D(), inputData.getHasIntercept());
+            validateSampleData(inputData.getY().toArray1D(), inputData.getX().toArray2D());
         }
     }
 
@@ -310,9 +310,8 @@ public final class RegressionDataLoader {
      * intercept.</li>
      * </ul>
      *
-     * @param x            the [n,k] array representing the x data
-     * @param y            the [n,1] array representing the y data
-     * @param hasIntercept
+     * @param x the [n,k] array representing the x data
+     * @param y the [n,1] array representing the y data
      * @throws IllegalArgumentException if {@code x} or {@code y} is null
      * @throws IllegalArgumentException if {@code x} and {@code y} do not have the
      *                                  same length
@@ -320,7 +319,7 @@ public final class RegressionDataLoader {
      * @throws IllegalArgumentException if the number of rows of {@code x} is not
      *                                  larger than the number of columns + 1
      */
-    protected void validateSampleData(double[] y, double[][] x, boolean hasIntercept) throws IllegalArgumentException {
+    protected void validateSampleData(double[] y, double[][] x) throws IllegalArgumentException {
         if ((x == null) || (y == null)) {
             throw new IllegalArgumentException("Null argument(s).");
         }
@@ -334,9 +333,6 @@ public final class RegressionDataLoader {
         int numPredictors = x[0].length;
         int numObs = x.length;
 
-//        if (!hasIntercept) {
-//            numPredictors++;
-//        }
         if (numPredictors > numObs) {
             throw new IllegalArgumentException(
                 "Not enough data for number of predictors." + numPredictors + " > " + numObs);

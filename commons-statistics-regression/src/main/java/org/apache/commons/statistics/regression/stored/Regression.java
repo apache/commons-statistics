@@ -66,6 +66,13 @@ public interface Regression {
     double estimateRegressandVariance();
 
     /**
+     * Estimates the standard error of the regression.
+     *
+     * @return regression standard error
+     */
+    double estimateRegressionStandardError();
+
+    /**
      * Returns the standard errors of the regression parameters.
      *
      * @return standard errors of estimated regression parameters

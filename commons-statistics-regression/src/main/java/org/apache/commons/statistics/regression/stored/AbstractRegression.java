@@ -23,36 +23,29 @@ import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 public abstract class AbstractRegression extends RegressionDataHolder implements Regression {
 
     /**
+     * Calculates the beta of multiple linear regression in matrix notation.
+     *
+     * @return beta
+     */
+    protected abstract StatisticsMatrix calculateBeta();
+
+    /**
+     * Calculates the beta variance of multiple linear regression in matrix
+     * notation.
+     *
+     * @return beta variance
+     */
+    protected abstract StatisticsMatrix calculateBetaVariance();
+
+    /**
      * Calculates the variance of the y values.
      *
      * @return Y variance
      */
     public double calculateYVariance() {
         return new Variance().evaluate(getY().toArray1D());
-//        return -1;
     }
 
-    /**
-     * Validates that the x data and covariance matrix have the same number of rows
-     * and that the covariance matrix is square.
-     *
-     * @param x          the [n,k] array representing the x sample
-     * @param covariance the [n,n] array representing the covariance matrix
-     * @throws IllegalArgumentException if the number of rows in x is not equal to
-     *                                  the number of rows in covariance
-     * @throws IllegalArgumentException if the covariance matrix is not square
-     */
-    protected void validateCovarianceData(double[][] x, double[][] covariance) {
-        if (x.length != covariance.length) {
-            throw new IllegalArgumentException("x.length = " + x.length + "  covariance.lenth = " + covariance.length);
-        }
-        if (covariance.length > 0 && covariance.length != covariance[0].length) {
-            throw new IllegalArgumentException(
-                "covariance.length = " + covariance.length + "  covariance[0].length = " + covariance[0].length);
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * <p>
      * Calculates the variance of the error term.
@@ -86,20 +79,24 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
         StatisticsMatrix b = calculateBeta();
         return getY().minus(getX().mult(b)); // operate is for vec x vec in CM
     }
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Calculates the beta of multiple linear regression in matrix notation.
+     * Validates that the x data and covariance matrix have the same number of rows
+     * and that the covariance matrix is square.
      *
-     * @return beta
+     * @param x          the [n,k] array representing the x sample
+     * @param covariance the [n,n] array representing the covariance matrix
+     * @throws IllegalArgumentException if the number of rows in x is not equal to
+     *                                  the number of rows in covariance
+     * @throws IllegalArgumentException if the covariance matrix is not square
      */
-    protected abstract StatisticsMatrix calculateBeta();
-
-    /**
-     * Calculates the beta variance of multiple linear regression in matrix
-     * notation.
-     *
-     * @return beta variance
-     */
-    protected abstract StatisticsMatrix calculateBetaVariance();
+    protected void validateCovarianceData(double[][] x, double[][] covariance) {
+        if (x.length != covariance.length) {
+            throw new IllegalArgumentException("x.length = " + x.length + "  covariance.lenth = " + covariance.length);
+        }
+        if (covariance.length > 0 && covariance.length != covariance[0].length) {
+            throw new IllegalArgumentException(
+                "covariance.length = " + covariance.length + "  covariance[0].length = " + covariance[0].length);
+        }
+    }
 }

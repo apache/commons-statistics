@@ -63,21 +63,21 @@ public class RegressionDataLoaderTest {
         RegressionDataLoader data = new RegressionDataLoader();
 
         // Null argument(s).
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(null, null));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(yData3n, null));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(null, xData3p4n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(null, null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(yData3n, null));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(null, xData3p4n));
 
         // Dimension mismatch.
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(yData3n, xData3p4n));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(yData2n, xData2p3n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(yData3n, xData3p4n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(yData2n, xData2p3n));
 
         // Arrays have length 0.
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(yData0n, xData0p0n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(yData0n, xData0p0n));
 
         // Not enough data for number of predictors.
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(yData1n, xData1p1n));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(yData2n, xData2p2n));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newSampleData(yData3n, xData4p3n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(yData1n, xData1p1n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(yData2n, xData2p2n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewSampleData(yData3n, xData4p3n));
     }
 
     @Test
@@ -85,8 +85,8 @@ public class RegressionDataLoaderTest {
         RegressionDataLoader data = new RegressionDataLoader();
 
         data.setHasIntercept(true); // Not creating column of 1's
-        data.newYSampleData(yData3n);
-        data.newXSampleData(xData2p3n);
+        data.inputNewYSampleData(yData3n);
+        data.inputNewXSampleData(xData2p3n);
 
         Assertions.assertTrue(Arrays.equals(data.getInputData().getY().toArray1D(), yData3n));
         Assertions.assertArrayEquals(data.getInputData().getX().toArray2D(), xData2p3n);
@@ -95,21 +95,21 @@ public class RegressionDataLoaderTest {
 
         // order does not matter
         data.setHasIntercept(true); // Not creating column of 1's
-        data.newXSampleData(xData3p4n);
-        data.newYSampleData(yData4n);
+        data.inputNewXSampleData(xData3p4n);
+        data.inputNewYSampleData(yData4n);
         Assertions.assertTrue(Arrays.equals(data.getInputData().getY().toArray1D(), yData4n));
         Assertions.assertArrayEquals(data.getInputData().getX().toArray2D(), xData3p4n);
 
         // changing X does not affect Y
-        data.newXSampleData(xData2p4n);
+        data.inputNewXSampleData(xData2p4n);
         Assertions.assertTrue(Arrays.equals(data.getInputData().getY().toArray1D(), yData4n));
         Assertions.assertArrayEquals(data.getInputData().getX().toArray2D(), xData2p4n);
 
         data.setHasIntercept(false); // creating column of 1's
 
         // Changing to invalid data ( see validateSampleDataTest )
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newYSampleData(yData2n));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> data.newXSampleData(xData2p2n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewYSampleData(yData2n));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewXSampleData(xData2p2n));
 
     }
 
