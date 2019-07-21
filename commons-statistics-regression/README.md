@@ -41,6 +41,7 @@
  +======================================================================+
 --->
 Apache Commons Statistics Regression
+
 ===================
 
 [![Build Status](https://travis-ci.org/apache/commons-statistics-regression.svg?branch=master)](https://travis-ci.org/apache/commons-statistics-regression)
