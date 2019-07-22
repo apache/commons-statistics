@@ -20,7 +20,6 @@ import org.apache.commons.statistics.regression.stored.data_input.RegressionData
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public abstract class AbstractRegressionTest {
@@ -29,8 +28,13 @@ public abstract class AbstractRegressionTest {
 
     protected AbstractRegression regression;
 
+    protected abstract AbstractRegression createRegression(RegressionDataLoader data);
+
+    protected abstract int getNumberOfRegressors();
+
+    protected abstract int getSampleSize();
+
     @Test
-    @Order(0)
     public void canEstimateRegressandVariance() {
         if (getSampleSize() > getNumberOfRegressors()) {
             double variance = regression.estimateRegressandVariance();
@@ -39,31 +43,22 @@ public abstract class AbstractRegressionTest {
     }
 
     @Test
-    @Order(1)
     public void canEstimateRegressionParameters() {
         double[] beta = regression.estimateBeta();
         Assertions.assertEquals(getNumberOfRegressors(), beta.length);
     }
 
     @Test
-    @Order(2)
     public void canEstimateRegressionParametersVariance() {
         double[][] variance = regression.estimateBetaVariance();
         Assertions.assertEquals(getNumberOfRegressors(), variance.length);
     }
 
     @Test
-    @Order(3)
     public void canEstimateResiduals() {
         double[] e = regression.estimateResiduals();
         Assertions.assertEquals(getSampleSize(), e.length);
     }
-
-    protected abstract AbstractRegression createRegression(RegressionDataLoader data);
-
-    protected abstract int getNumberOfRegressors();
-
-    protected abstract int getSampleSize();
 
     @BeforeAll
     public void setUp() {
@@ -75,7 +70,6 @@ public abstract class AbstractRegressionTest {
      * design matrix. Confirms the fix for MATH-411.
      */
     @Test
-    @Order(4)
     public void testNewSample() {
         RegressionDataLoader testData = new RegressionDataLoader();
         double[] design = new double[] {1, 19, 22, 33, 2, 20, 30, 40, 3, 25, 35, 45, 4, 27, 37, 47};

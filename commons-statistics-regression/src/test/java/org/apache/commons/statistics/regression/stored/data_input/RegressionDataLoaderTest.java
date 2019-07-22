@@ -41,13 +41,6 @@ public class RegressionDataLoaderTest {
     public void basicDataLoadingTest() {
         RegressionDataLoader data = new RegressionDataLoader(yData3n, xData2p3n, true);
 
-        // Printing the testing arrays, before and after wrapped inside a
-        // StatisticsMatrix object
-//        ArrayUtils.printArrayWithStreams(yData);
-//        ArrayUtils.printArrayWithStreams(xData);
-//        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray1D(data.getInputData().getYData()));
-//        ArrayUtils.printArrayWithStreams(ArrayUtils.matrixToArray2D(data.getInputData().getXData()));
-
         // Checks that inputed data is stored as expected
         Assertions.assertEquals(data.getInputData().getY().get(1), 2, 0);
         Assertions.assertEquals(data.getInputData().getX().get(0, 0), -2, 0);
@@ -112,18 +105,5 @@ public class RegressionDataLoaderTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewXSampleData(xData2p2n));
 
     }
-
-//
-//    private static void printArrayWithStreams(double[][] arr) {
-//        Stream.of(arr)
-//            .map(Arrays::toString)
-//            .forEach(System.out::println);
-//    }
-//
-//    private static void printArrayWithStreams(double[] arr) {
-//        Stream.of(arr)
-//            .map(Arrays::toString)
-//            .forEach(System.out::println);
-//    }
 
 }

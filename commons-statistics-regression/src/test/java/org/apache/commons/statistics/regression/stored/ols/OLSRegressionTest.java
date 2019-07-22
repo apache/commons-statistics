@@ -34,8 +34,6 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 @TestInstance(Lifecycle.PER_CLASS)
 public class OLSRegressionTest extends AbstractRegressionTest {
 
-    // IN PROGRESS
-
     private double[][] xData;
     private double[] yData;
 
@@ -66,7 +64,6 @@ public class OLSRegressionTest extends AbstractRegressionTest {
     @Override
     protected AbstractRegression createRegression(RegressionDataLoader myData) {
         OLSRegression regression = new OLSRegression(myData.getInputData());
-//        myData.newSampleData(yData, xData); // repeat of line 93?
         return regression;
     }
 
