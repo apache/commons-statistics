@@ -1,20 +1,24 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with this
- * work for additional information regarding copyright ownership. The ASF
- * licenses this file to You under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law
- * or agreed to in writing, software distributed under the License is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the specific language
- * governing permissions and limitations under the License.
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for GeometricDistribution.
@@ -22,10 +26,10 @@ import org.junit.Test;
  */
 public class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
-    /**
-     * Constructor to override default tolerance.
-     */
-    public GeometricDistributionTest() {
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-12);
     }
 
@@ -40,9 +44,9 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
     /** Creates the default probability density test input values */
     @Override
     public int[] makeDensityTestPoints() {
-        return new int[] { -1,  0,  1,  2,  3,  4,  5,  6,  7,  8,
-                           9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                           19, 20, 21, 22, 23, 24, 25, 26, 27, 28 };
+        return new int[] {-1,  0,  1,  2,  3,  4,  5,  6,  7,  8,
+                          9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
+                          19, 20, 21, 22, 23, 24, 25, 26, 27, 28};
     }
 
     /**
@@ -54,7 +58,7 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
         return new double[] {
             0d, 0.4, 0.24, 0.144, 0.0864, 0.05184, 0.031104, 0.0186624,
             0.01119744, 0.006718464, 0.0040310784, 0.00241864704,
-            0.001451188224,0.0008707129344, 0.00052242776064, 0.000313456656384,
+            0.001451188224, 0.0008707129344, 0.00052242776064, 0.000313456656384,
             0.00018807399383, 0.000112844396298, 6.77066377789e-05, 4.06239826674e-05,
             2.43743896004e-05, 1.46246337603e-05, 8.77478025615e-06, 5.26486815369e-06,
             3.15892089221e-06, 1.89535253533e-06, 1.1372115212e-06, 6.82326912718e-07,
@@ -157,11 +161,11 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
         GeometricDistribution dist;
 
         dist = new GeometricDistribution(0.5);
-        Assert.assertEquals(dist.getMean(), (1.0d - 0.5d) / 0.5d, tol);
-        Assert.assertEquals(dist.getVariance(), (1.0d - 0.5d) / (0.5d * 0.5d), tol);
+        Assertions.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
+        Assertions.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
         dist = new GeometricDistribution(0.3);
-        Assert.assertEquals(dist.getMean(), (1.0d - 0.3d) / 0.3d, tol);
-        Assert.assertEquals(dist.getVariance(), (1.0d - 0.3d) / (0.3d * 0.3d), tol);
+        Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
+        Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
     }
 }

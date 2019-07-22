@@ -30,11 +30,11 @@
 
   <inceptionYear>2018</inceptionYear>
   <description>The Apache Commons Statistics project provides tools for statistics.</description>
-  <url>http://commons.apache.org/proper/commons-statistics/</url>
+  <url>https://commons.apache.org/proper/commons-statistics/</url>
 
   <issueManagement>
     <system>jira</system>
-    <url>http://issues.apache.org/jira/browse/STATISTICS</url>
+    <url>https://issues.apache.org/jira/browse/STATISTICS</url>
   </issueManagement>
 
   <scm>

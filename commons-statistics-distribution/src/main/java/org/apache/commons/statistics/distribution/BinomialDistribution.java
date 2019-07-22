@@ -85,7 +85,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
         if (x < 0 || x > numberOfTrials) {
             ret = Double.NEGATIVE_INFINITY;
         } else {
-            ret = SaddlePointExpansion.logBinomialProbability(x,
+            ret = SaddlePointExpansionUtils.logBinomialProbability(x,
                     numberOfTrials, probabilityOfSuccess,
                     1.0 - probabilityOfSuccess);
         }

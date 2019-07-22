@@ -25,7 +25,7 @@
  | commons-build-plugin/trunk/src/main/resources/commons-xdoc-templates |
  +======================================================================+
  |                                                                      |
- | 1) Re-generate using: mvn commons:readme-md                          |
+ | 1) Re-generate using: mvn commons-build:readme-md                    |
  |                                                                      |
  | 2) Set the following properties in the component's pom:              |
  |    - commons.componentid (required, alphabetic, lower case)          |
@@ -40,22 +40,22 @@
  |                                                                      |
  +======================================================================+
 --->
-Apache Commons Statistics Distribution
+commons-statistics-descriptive
 ===================
 
-[![Build Status](https://travis-ci.org/apache/commons-statistics-distribution.svg?branch=master)](https://travis-ci.org/apache/commons-statistics-distribution)
-[![Coverage Status](https://coveralls.io/repos/apache/commons-statistics-distribution/badge.svg?branch=master)](https://coveralls.io/r/apache/commons-statistics-distribution)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-distribution/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-distribution/)
-[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![Build Status](https://travis-ci.org/apache/commons-statistics.svg)](https://travis-ci.org/apache/commons-statistics)
+[![Coverage Status](https://coveralls.io/repos/apache/commons-statistics/badge.svg)](https://coveralls.io/r/apache/commons-statistics)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-descriptive/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-descriptive/)
+[![Javadocs](https://javadoc.io/badge/org.apache.commons/commons-statistics-descriptive/1.0.svg)](https://javadoc.io/doc/org.apache.commons/commons-statistics-descriptive/1.0)
 
-Statistical distributions.
+The Apache Commons Statistics project provides tools for statistics.
 
 Documentation
 -------------
 
-More information can be found on the [Apache Commons Statistics Distribution Homepage](https://commons.apache.org/proper/commons-statistics).
-The [Javadoc](https://commons.apache.org/proper/commons-statistics/javadocs/api-release) can be browsed.
-Questions related to the usage of Apache Commons Statistics Distribution should be posted to the [user mailing list][ml].
+More information can be found on the [commons-statistics-descriptive homepage](https://commons.apache.org/proper/commons-statistics).
+The [Javadoc](https://commons.apache.org/proper/commons-statistics/apidocs) can be browsed.
+Questions related to the usage of commons-statistics-descriptive should be posted to the [user mailing list][ml].
 
 Where can I get the latest release?
 -----------------------------------
@@ -66,7 +66,7 @@ Alternatively you can pull it from the central Maven repositories:
 ```xml
 <dependency>
   <groupId>org.apache.commons</groupId>
-  <artifactId>commons-statistics-distribution</artifactId>
+  <artifactId>commons-statistics-descriptive</artifactId>
   <version>1.0</version>
 </dependency>
 ```
@@ -92,7 +92,7 @@ See the `NOTICE.txt` file for required notices and attributions.
 
 Donations
 ---------
-You like Apache Commons Statistics Distribution? Then [donate back to the ASF](https://www.apache.org/foundation/contributing.html) to support the development.
+You like commons-statistics-descriptive? Then [donate back to the ASF](https://www.apache.org/foundation/contributing.html) to support the development.
 
 Additional Resources
 --------------------

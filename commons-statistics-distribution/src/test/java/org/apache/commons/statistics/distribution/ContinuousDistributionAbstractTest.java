@@ -24,10 +24,10 @@ import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.BaseAbstractUnivariateIntegrator;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Abstract base class for {@link ContinuousDistribution} tests.
@@ -107,12 +107,12 @@ public abstract class ContinuousDistributionAbstractTest {
      * The default implementation simply computes the logarithm
      * of each value returned by {@link #makeDensityTestValues()}.*/
     public double[] makeLogDensityTestValues() {
-        final double[] densityTestValues = makeDensityTestValues();
-        final double[] logDensityTestValues = new double[densityTestValues.length];
-        for (int i = 0; i < densityTestValues.length; i++) {
-            logDensityTestValues[i] = Math.log(densityTestValues[i]);
+        final double[] density = makeDensityTestValues();
+        final double[] logDensity = new double[density.length];
+        for (int i = 0; i < density.length; i++) {
+            logDensity[i] = Math.log(density[i]);
         }
-        return logDensityTestValues;
+        return logDensity;
     }
 
     //---- Default implementations of inverse test data generation methods ----
@@ -130,9 +130,12 @@ public abstract class ContinuousDistributionAbstractTest {
     //-------------------- Setup / tear down ----------------------------------
 
     /**
-     * Setup sets all test instance data to default values
+     * Setup sets all test instance data to default values.
+     * <p>
+     * This method is @BeforeEach (created for each test) as certain test methods may wish
+     * to alter the defaults.
      */
-    @Before
+    @BeforeEach
     public void setUp() {
         distribution = makeDistribution();
         cumulativeTestPoints = makeCumulativeTestPoints();
@@ -146,7 +149,7 @@ public abstract class ContinuousDistributionAbstractTest {
     /**
      * Cleans up test instance data
      */
-    @After
+    @AfterEach
     public void tearDown() {
         distribution = null;
         cumulativeTestPoints = null;
@@ -166,8 +169,8 @@ public abstract class ContinuousDistributionAbstractTest {
     protected void verifyCumulativeProbabilities() {
         // verify cumulativeProbability(double)
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            TestUtils.assertEquals("Incorrect cumulative probability value returned for "
-                                   + cumulativeTestPoints[i], cumulativeTestValues[i],
+            TestUtils.assertEquals("Incorrect cumulative probability value returned for " +
+                                   cumulativeTestPoints[i], cumulativeTestValues[i],
                                    distribution.cumulativeProbability(cumulativeTestPoints[i]),
                                    getTolerance());
         }
@@ -184,7 +187,7 @@ public abstract class ContinuousDistributionAbstractTest {
                     } catch (IllegalArgumentException e) {
                         continue;
                     }
-                    Assert.fail("distribution.probability(double, double) should have thrown an exception that second argument is too large");
+                    Assertions.fail("distribution.probability(double, double) should have thrown an exception that second argument is too large");
                 }
             }
         }
@@ -196,8 +199,8 @@ public abstract class ContinuousDistributionAbstractTest {
      */
     protected void verifyInverseCumulativeProbabilities() {
         for (int i = 0; i < inverseCumulativeTestPoints.length; i++) {
-            TestUtils.assertEquals("Incorrect inverse cumulative probability value returned for "
-                                   + inverseCumulativeTestPoints[i], inverseCumulativeTestValues[i],
+            TestUtils.assertEquals("Incorrect inverse cumulative probability value returned for " +
+                                   inverseCumulativeTestPoints[i], inverseCumulativeTestValues[i],
                                    distribution.inverseCumulativeProbability(inverseCumulativeTestPoints[i]),
                                    getTolerance());
         }
@@ -208,8 +211,8 @@ public abstract class ContinuousDistributionAbstractTest {
      */
     protected void verifyDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            TestUtils.assertEquals("Incorrect probability density value returned for "
-                                   + cumulativeTestPoints[i], densityTestValues[i],
+            TestUtils.assertEquals("Incorrect probability density value returned for " +
+                                   cumulativeTestPoints[i], densityTestValues[i],
                                    distribution.density(cumulativeTestPoints[i]),
                                    getTolerance());
         }
@@ -220,8 +223,8 @@ public abstract class ContinuousDistributionAbstractTest {
      */
     protected void verifyLogDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            TestUtils.assertEquals("Incorrect probability density value returned for "
-                                   + cumulativeTestPoints[i], logDensityTestValues[i],
+            TestUtils.assertEquals("Incorrect probability density value returned for " +
+                                   cumulativeTestPoints[i], logDensityTestValues[i],
                                    distribution.logDensity(cumulativeTestPoints[i]),
                                    getTolerance());
         }
@@ -274,35 +277,34 @@ public abstract class ContinuousDistributionAbstractTest {
 
             // check that cdf(x, x) = 0
             TestUtils.assertEquals(0d,
-                                   distribution.probability
-                                   (cumulativeTestPoints[i], cumulativeTestPoints[i]),
+                                   distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[i]),
                                    tolerance);
 
             // check that P(a < X <= b) = P(X <= b) - P(X <= a)
-            double upper = Math.max(cumulativeTestPoints[i], cumulativeTestPoints[i -1]);
-            double lower = Math.min(cumulativeTestPoints[i], cumulativeTestPoints[i -1]);
+            double upper = Math.max(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
+            double lower = Math.min(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
             double diff = distribution.cumulativeProbability(upper) -
                 distribution.cumulativeProbability(lower);
             double direct = distribution.probability(lower, upper);
-            TestUtils.assertEquals("Inconsistent probability for ("
-                                   + lower + "," + upper + ")", diff, direct, tolerance);
+            TestUtils.assertEquals("Inconsistent probability for (" +
+                                   lower + "," + upper + ")", diff, direct, tolerance);
         }
     }
 
     /**
      * Verifies that illegal arguments are correctly handled
      */
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        distribution.probability(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.probability(1, 0));
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition2() {
-        distribution.inverseCumulativeProbability(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition3() {
-        distribution.inverseCumulativeProbability(2);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     /**
@@ -354,7 +356,7 @@ public abstract class ContinuousDistributionAbstractTest {
         }
         Collections.sort(integrationTestPoints);
         for (int i = 1; i < integrationTestPoints.size(); i++) {
-            Assert.assertEquals(distribution.probability(integrationTestPoints.get(0), integrationTestPoints.get(i)),
+            Assertions.assertEquals(distribution.probability(integrationTestPoints.get(0), integrationTestPoints.get(i)),
                                 integrator.integrate(1000000, // Triangle integrals are very slow to converge
                                                      d, integrationTestPoints.get(0),
                                                      integrationTestPoints.get(i)), tol);
@@ -390,10 +392,16 @@ public abstract class ContinuousDistributionAbstractTest {
         this.cumulativeTestValues = cumulativeTestValues;
     }
 
+    /**
+     * @return Returns the densityTestValues.
+     */
     protected double[] getDensityTestValues() {
         return densityTestValues;
     }
 
+    /**
+     * @param densityTestValues The densityTestValues to set.
+     */
     protected void setDensityTestValues(double[] densityTestValues) {
         this.densityTestValues = densityTestValues;
     }

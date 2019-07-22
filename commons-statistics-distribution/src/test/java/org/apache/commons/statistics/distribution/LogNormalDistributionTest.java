@@ -17,8 +17,9 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for {@link LogNormalDistribution}. Extends
@@ -39,27 +40,27 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R
-        return new double[] { -2.226325228634938, -1.156887023657177,
-                              -0.643949578356075, -0.2027950777320613,
-                              0.305827808237559, 6.42632522863494,
-                              5.35688702365718, 4.843949578356074,
-                              4.40279507773206, 3.89417219176244 };
+        return new double[] {-2.226325228634938, -1.156887023657177,
+                             -0.643949578356075, -0.2027950777320613,
+                             0.305827808237559, 6.42632522863494,
+                             5.35688702365718, 4.843949578356074,
+                             4.40279507773206, 3.89417219176244};
     }
 
     /** Creates the default cumulative probability density test expected values */
     @Override
     public double[] makeCumulativeTestValues() {
-        return new double[] { 0, 0, 0, 0, 0.00948199951485, 0.432056525076,
-                              0.381648158697, 0.354555726206, 0.329513316888,
-                              0.298422824228 };
+        return new double[] {0, 0, 0, 0, 0.00948199951485, 0.432056525076,
+                             0.381648158697, 0.354555726206, 0.329513316888,
+                             0.298422824228};
     }
 
     /** Creates the default probability density test expected values */
     @Override
     public double[] makeDensityTestValues() {
-        return new double[] { 0, 0, 0, 0, 0.0594218160072, 0.0436977691036,
-                              0.0508364857798, 0.054873528325, 0.0587182664085,
-                              0.0636229042785 };
+        return new double[] {0, 0, 0, 0, 0.0594218160072, 0.0436977691036,
+                             0.0508364857798, 0.054873528325, 0.0587182664085,
+                             0.0636229042785};
     }
 
     /**
@@ -95,9 +96,9 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     // --------------------- Override tolerance  --------------
-    @Override
-    public void setUp() {
-        super.setUp();
+
+    @BeforeEach
+    public void customSetUp() {
         setTolerance(1e-7);
     }
 
@@ -107,10 +108,10 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
         LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
         double mu = distribution.getScale();
         double sigma = distribution.getShape();
-        setCumulativeTestPoints( new double[] { mu - 2 *sigma, mu - sigma,
-                                                mu, mu + sigma, mu + 2 * sigma,
-                                                mu + 3 * sigma,mu + 4 * sigma,
-                                                mu + 5 * sigma });
+        setCumulativeTestPoints(new double[] {mu - 2 * sigma, mu - sigma,
+                                              mu,             mu + sigma,
+                                              mu + 2 * sigma, mu + 3 * sigma,
+                                              mu + 4 * sigma, mu + 5 * sigma});
         verifyCumulativeProbabilities();
     }
 
@@ -161,31 +162,31 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     @Test
     public void testGetScale() {
         LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
-        Assert.assertEquals(2.1, distribution.getScale(), 0);
+        Assertions.assertEquals(2.1, distribution.getScale(), 0);
     }
 
     @Test
     public void testGetShape() {
         LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
-        Assert.assertEquals(1.4, distribution.getShape(), 0);
+        Assertions.assertEquals(1.4, distribution.getShape(), 0);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test
     public void testPrecondition1() {
-        new LogNormalDistribution(1, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new LogNormalDistribution(1, 0));
     }
 
     @Test
     public void testDensity() {
-        double [] x = new double[]{-2, -1, 0, 1, 2};
+        double[] x = new double[]{-2, -1, 0, 1, 2};
         // R 2.13: print(dlnorm(c(-2,-1,0,1,2)), digits=10)
-        checkDensity(0, 1, x, new double[] { 0.0000000000, 0.0000000000,
-                                             0.0000000000, 0.3989422804,
-                                             0.1568740193 });
+        checkDensity(0, 1, x, new double[] {0.0000000000, 0.0000000000,
+                                            0.0000000000, 0.3989422804,
+                                            0.1568740193});
         // R 2.13: print(dlnorm(c(-2,-1,0,1,2), mean=1.1), digits=10)
-        checkDensity(1.1, 1, x, new double[] { 0.0000000000, 0.0000000000,
-                                               0.0000000000, 0.2178521770,
-                                               0.1836267118});
+        checkDensity(1.1, 1, x, new double[] {0.0000000000, 0.0000000000,
+                                              0.0000000000, 0.2178521770,
+                                              0.1836267118});
     }
 
     private void checkDensity(double scale,
@@ -194,7 +195,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
                               double[] expected) {
         LogNormalDistribution d = new LogNormalDistribution(scale, shape);
         for (int i = 0; i < x.length; i++) {
-            Assert.assertEquals(expected[i], d.density(x[i]), 1e-9);
+            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-9);
         }
     }
 
@@ -208,17 +209,16 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
         for (int i = 0; i < 1e5; i++) { // make sure no convergence exception
             double upperTail = d.cumulativeProbability(i);
             if (i <= 72) { // make sure not top-coded
-                Assert.assertTrue(upperTail < 1.0d);
-            }
-            else { // make sure top coding not reversed
-                Assert.assertTrue(upperTail > 0.99999);
+                Assertions.assertTrue(upperTail < 1.0d);
+            } else { // make sure top coding not reversed
+                Assertions.assertTrue(upperTail > 0.99999);
             }
         }
 
-        Assert.assertEquals(d.cumulativeProbability(Double.MAX_VALUE), 1, 0);
-        Assert.assertEquals(d.cumulativeProbability(-Double.MAX_VALUE), 0, 0);
-        Assert.assertEquals(d.cumulativeProbability(Double.POSITIVE_INFINITY), 1, 0);
-        Assert.assertEquals(d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0, 0);
+        Assertions.assertEquals(1, d.cumulativeProbability(Double.MAX_VALUE), 0);
+        Assertions.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE), 0);
+        Assertions.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
+        Assertions.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
     }
 
     @Test
@@ -227,24 +227,22 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
         LogNormalDistribution dist;
 
         dist = new LogNormalDistribution(0, 1);
-        Assert.assertEquals(dist.getMean(), 1.6487212707001282, tol);
-        Assert.assertEquals(dist.getVariance(),
-                            4.670774270471604, tol);
+        Assertions.assertEquals(1.6487212707001282, dist.getMean(), tol);
+        Assertions.assertEquals(4.670774270471604, dist.getVariance(), tol);
 
         dist = new LogNormalDistribution(2.2, 1.4);
-        Assert.assertEquals(dist.getMean(), 24.046753552064498, tol);
-        Assert.assertEquals(dist.getVariance(),
-                            3526.913651880464, tol);
+        Assertions.assertEquals(24.046753552064498, dist.getMean(), tol);
+        Assertions.assertEquals(3526.913651880464, dist.getVariance(), tol);
 
         dist = new LogNormalDistribution(-2000.9, 10.4);
-        Assert.assertEquals(dist.getMean(), 0.0, tol);
-        Assert.assertEquals(dist.getVariance(), 0.0, tol);
+        Assertions.assertEquals(0.0, dist.getMean(), tol);
+        Assertions.assertEquals(0.0, dist.getVariance(), tol);
     }
 
     @Test
     public void testTinyVariance() {
         LogNormalDistribution dist = new LogNormalDistribution(0, 1e-9);
         double t = dist.getVariance();
-        Assert.assertEquals(1e-18, t, 1e-20);
+        Assertions.assertEquals(1e-18, t, 1e-20);
     }
 }

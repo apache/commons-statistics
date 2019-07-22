@@ -25,7 +25,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
 public class TDistribution extends AbstractContinuousDistribution {
     /** The degrees of freedom. */
     private final double degreesOfFreedom;
-    /** degreesOfFreedom / 2 */
+    /** degreesOfFreedom / 2. */
     private final double dofOver2;
     /** Cached value. */
     private final double factor;
