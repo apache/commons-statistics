@@ -96,7 +96,6 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
     protected StatisticsMatrix calculateBetaStandardErrors() {
         StatisticsMatrix betaVariance = calculateBetaVariance();
         double sigma = calculateRegressionErrorVariance();
-        //
         return betaVariance.diag().scale(sigma).elementPower(0.5);
     }
 
