@@ -50,8 +50,8 @@ public final class RegressionDataLoader {
      * intercept; column of 1's.
      * </p>
      *
-     * @param y            vector data
-     * @param x            matrix data
+     * @param y            data vector double 1D array
+     * @param x            data matrix double 2D array
      * @param hasIntercept true if intercept is included in input data
      */
     public RegressionDataLoader(double[] y, double[][] x, boolean hasIntercept) {

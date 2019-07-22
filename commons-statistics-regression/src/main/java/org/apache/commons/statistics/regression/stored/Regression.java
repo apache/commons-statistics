@@ -16,25 +16,6 @@
  */
 package org.apache.commons.statistics.regression.stored;
 
-/**
- * The multiple linear regression can be represented in matrix-notation.
- *
- * <pre>
- * y = X * b + u
- * </pre>
- *
- * where y is an <code>n-vector</code> <b>regressand</b>, X is a
- * <code>[n,k]</code> matrix whose <code>k</code> columns are called
- * <b>regressors</b>, b is <code>k-vector</code> of <b>regression parameters</b>
- * and <code>u</code> is an <code>n-vector</code> of <b>error terms</b> or
- * <b>residuals</b>.
- *
- * The notation is quite standard in literature, cf eg
- * <a href="http://www.econ.queensu.ca/ETM">Davidson and MacKinnon, Econometrics
- * Theory and Methods, 2004</a>.
- *
- * @since 2.0
- */
 public interface Regression {
 
     /**

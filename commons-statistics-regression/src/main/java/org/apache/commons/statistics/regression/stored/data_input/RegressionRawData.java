@@ -29,18 +29,6 @@ public class RegressionRawData implements RegressionData {
     /** boolean true if sample data has an intercept. */
     private boolean hasIntercept;
 
-//    public RegressionRawData(StatisticsMatrix yData, StatisticsMatrix xData, Boolean hasIntercept) {
-//        this.yMatrix = yData;
-//        this.xMatrix = xData;
-//        this.hasIntercept = hasIntercept;
-//    }
-//
-//    public RegressionRawData(StatisticsMatrix yData, StatisticsMatrix xData) {
-//        this.yMatrix = yData;
-//        this.xMatrix = xData;
-//        this.hasIntercept = true;
-//    }
-
     /**
      * Creates an empty constructor.
      */

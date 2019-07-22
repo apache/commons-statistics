@@ -22,4 +22,4 @@
  * @since 1.0
  * @version 1.0
  */
-package org.apache.commons.statistics.regression.stored.parent;
+package org.apache.commons.statistics.regression.stored;

@@ -240,8 +240,7 @@ public class OLSRegression extends AbstractRegression {
      */
     @Override
     public RegressionResults regress() {
-        OLSResults results = new OLSResults(this);
-        return results;
+        return new OLSResults(this);
     }
 
 }

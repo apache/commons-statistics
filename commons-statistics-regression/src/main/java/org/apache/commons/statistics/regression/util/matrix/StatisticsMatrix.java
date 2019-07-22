@@ -55,14 +55,12 @@ import org.ejml.simple.SimpleBase;
  * author Peter Abeles
  * -------------------------------------------------------------------------------------------
  * Modifications for Apache Commons Statistics Regressiom library by: Ben Nguyen
- * Under development for specific usage which are to be determined.
+ * Under development for matrix calculations API usage.
  * -------------------------------------------------------------------------------------------
  */
 public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 
-    /**
-     *
-     */
+    /** Auto-generated serialVersionUID. */
     private static final long serialVersionUID = -82801259856161557L;
 
     /**
@@ -122,10 +120,17 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      */
     public static StatisticsMatrix wrap(DMatrixRMaj m) {
         StatisticsMatrix ret = new StatisticsMatrix();
-//        ret.mat = m;
         ret.setMatrix(m);
 
         return ret;
+    }
+
+    /**
+     * Sets a new matrix by creating a new pointer object.
+     */
+    @Override
+    protected StatisticsMatrix wrapMatrix(Matrix m) {
+        return new StatisticsMatrix(m);
     }
 
     /**
@@ -161,6 +166,7 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      * Computes the unbiased standard deviation of all the elements.
      *
      * @return standard deviation
+     * @throws IllegalArgumentException if there is less than 2 elements.
      */
     public double stdev() {
         double m = mean();
@@ -193,7 +199,7 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     }
 
     /**
-     * Retrieves internal array data.
+     * Retrieves internal array data converted from it's 1D format to 2D.
      *
      * @return 2D array
      */
@@ -210,21 +216,5 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 
         return retArr;
     }
-
-    /**
-     * Sets a new matrix by creating a new pointer object.
-     */
-    @Override
-    protected StatisticsMatrix wrapMatrix(Matrix m) {
-        return new StatisticsMatrix(m);
-    }
-
-//    public static void printArrayWithStreams(double[][] arr) {
-//        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
-//    }
-//
-//    public static void printArrayWithStreams(double[] arr) {
-//        Stream.of(arr).map(Arrays::toString).forEach(System.out::println);
-//    }
 
 }
