@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   Licensed to the Apache Software Foundation (ASF) under one or more
+   contributor license agreements.  See the NOTICE file distributed with
+   this work for additional information regarding copyright ownership.
+   The ASF licenses this file to You under the Apache License, Version 2.0
+   (the "License"); you may not use this file except in compliance with
+   the License.  You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <parent>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-parent</artifactId>
+    <version>48</version>
+  </parent>
+
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>commons-statistics-parent</artifactId>
+  <packaging>pom</packaging>
+  <version>0.1-SNAPSHOT</version>
+  <name>Apache Commons Statistics</name>
+
+  <inceptionYear>2018</inceptionYear>
+  <description>The Apache Commons Statistics project provides tools for statistics.</description>
+  <url>https://commons.apache.org/proper/commons-statistics/</url>
+
+  <issueManagement>
+    <system>jira</system>
+    <url>https://issues.apache.org/jira/browse/STATISTICS</url>
+  </issueManagement>
+
+  <scm>
+    <connection>scm:git:http://gitbox.apache.org/repos/asf/commons-statistics.git</connection>
+    <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/commons-statistics.git</developerConnection>
+    <url>https://gitbox.apache.org/repos/asf?p=commons-statistics.git</url>
+  </scm>
+
+  <distributionManagement>
+    <site>
+      <id>apache.website</id>
+      <name>Apache Commons Site</name>
+      <url>scm:svn:https://svn.apache.org/repos/infra/websites/production/commons/content/proper/commons-statistics/</url>
+    </site>
+  </distributionManagement>
+
+  <developers>
+    <developer>
+      <name>Gilles Sadowski</name>
+      <id>erans</id>
+      <email>erans at apache dot org</email>
+    </developer>
+  </developers>
+
+  <contributors>
+    <contributor>
+      <name>Ben Nguyen</name>
+      <email>bennguyenib at gmail dot com</email>
+    </contributor>
+    <contributor>
+      <name>Virendra Singh Rajpurohit</name>
+      <email>virendrasinghrp at gmail dot com</email>
+    </contributor>
+  </contributors>
+
+  <properties>
+    <!-- Do not change: "statistics" is the name of the component even if the
+         name of the base package evolves with major release numbers
+         (see "commons.osgi.symbolicName", below). -->
+    <commons.componentid>statistics</commons.componentid>
+    <!-- This value must reflect the current name of the base package. -->
+    <commons.osgi.symbolicName>org.apache.commons.statistics</commons.osgi.symbolicName>
+    <commons.module.name>org.apache.commons.statistics</commons.module.name>
+    <!-- OSGi -->
+    <commons.osgi.export>org.apache.commons.statistics</commons.osgi.export>
+    <!-- do not use snapshot suffix here -->
+    <commons.release.version>1.0</commons.release.version>
+    <commons.release.desc>(requires Java 8)</commons.release.desc>
+    <!-- <commons.rc.version>RC1</commons.rc.version> -->
+    <commons.binary.suffix>-bin</commons.binary.suffix>
+
+    <commons.jira.id>STATISTICS</commons.jira.id>
+    <commons.jira.pid>12321632</commons.jira.pid>
+    <commons.encoding>UTF-8</commons.encoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <statistics.pmd.version>3.12.0</statistics.pmd.version>
+    <statistics.pmd.dep.version>6.14.0</statistics.pmd.dep.version>
+    <statistics.spotbugs.version>3.1.11</statistics.spotbugs.version>
+    <statistics.checkstyle.version>3.0.0</statistics.checkstyle.version>
+    <statistics.checkstyle.dep.version>8.20</statistics.checkstyle.dep.version>
+    <statistics.clirr.version>2.8</statistics.clirr.version>
+    <statistics.junit.bom.version>5.4.2</statistics.junit.bom.version>
+    <!-- Workaround to avoid duplicating config files. -->
+    <statistics.parent.dir>${basedir}</statistics.parent.dir>
+
+    <commons.jacoco.classRatio>0.96</commons.jacoco.classRatio>
+    <commons.jacoco.instructionRatio>0.8</commons.jacoco.instructionRatio>
+    <commons.jacoco.methodRatio>0.8</commons.jacoco.methodRatio>
+    <commons.jacoco.branchRatio>0.8</commons.jacoco.branchRatio>
+    <commons.jacoco.complexityRatio>0.8</commons.jacoco.complexityRatio>
+    <commons.jacoco.lineRatio>0.85</commons.jacoco.lineRatio>
+    <commons.jacoco.haltOnFailure>false</commons.jacoco.haltOnFailure>
+
+    <commons.site.path>statistics</commons.site.path>
+    <commons.scmPubUrl>https://svn.apache.org/repos/infra/websites/production/commons/content/proper/commons-statistics</commons.scmPubUrl>
+    <commons.scmPubCheckoutDirectory>site-content</commons.scmPubCheckoutDirectory>
+
+    <!-- Temporary fix to replace svn-based build number with git-based build number -->
+    <buildnumber.skip>true</buildnumber.skip>
+    <statistics.jgit.buildnumber.version>1.2.10</statistics.jgit.buildnumber.version>
+    <implementation.build>${git.revision}; ${maven.build.timestamp}</implementation.build>
+
+    <!-- Override default buildNumber timestamp format, needed for coveralls plugin -->
+    <maven.buildNumber.timestampFormat>{0,date,yyyy-MM-dd HH:mm:ssZ}</maven.buildNumber.timestampFormat>
+
+    <!--
+        Override so that "mvn commons:download-page" will generates a web page
+        referring to the files created by the "dist-archive" module.
+        Temporary workaround?
+    -->
+    <commons.release.name>commons-statistics-${project.version}</commons.release.name>
+    <statistics.commons.rng.version>1.2</statistics.commons.rng.version>
+    <statistics.commons.numbers.version>1.0-SNAPSHOT</statistics.commons.numbers.version> <!-- XXX -->
+    <statistics.commons.math3.version>3.6.1</statistics.commons.math3.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-rng-client-api</artifactId>
+        <version>${statistics.commons.rng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-rng-simple</artifactId>
+        <version>${statistics.commons.rng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-rng-sampling</artifactId>
+        <version>${statistics.commons.rng.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-core</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-combinatorics</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-gamma</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-numbers-rootfinder</artifactId>
+        <version>${statistics.commons.numbers.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-math3</artifactId>
+        <version>${statistics.commons.math3.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${statistics.junit.bom.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+     <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <defaultGoal>clean verify apache-rat:check clirr:check checkstyle:check pmd:check spotbugs:check javadoc:javadoc</defaultGoal>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs>
+            <!-- <arg>-verbose</arg> -->
+            <arg>-Xlint:all,-options,-path</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- Fix for OpenJDK 8 now validating class-path attributes in Jar manifests. -->
+          <!-- See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=912333#63 -->
+          <useSystemClassLoader>false</useSystemClassLoader>
+          <includes>
+            <include>**/*Test.java</include>
+          </includes>
+          <excludes>
+            <exclude>**/*AbstractTest.java</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptors>
+            <descriptor>src/assembly/src.xml</descriptor>
+            <descriptor>src/assembly/bin.xml</descriptor>
+          </descriptors>
+          <!-- There are a lot of long file names. Suppress the warnings. -->
+          <tarLongFileMode>gnu</tarLongFileMode>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-scm-publish-plugin</artifactId>
+        <configuration>
+          <ignorePathsToDelete>
+            <ignorePathToDelete>javadocs</ignorePathToDelete>
+          </ignorePathsToDelete>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${statistics.checkstyle.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${statistics.checkstyle.dep.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
+          <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
+          <suppressionsLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+          <enableRulesSummary>false</enableRulesSummary>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <logViolationsToConsole>false</logViolationsToConsole>
+          <failOnViolation>true</failOnViolation>
+          <resourceExcludes>NOTICE.txt,LICENSE.txt,**/maven-archiver/pom.properties</resourceExcludes>
+        </configuration>
+        <executions>
+          <execution>
+            <id>validate</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${statistics.pmd.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-core</artifactId>
+            <version>${statistics.pmd.dep.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>net.sourceforge.pmd</groupId>
+            <artifactId>pmd-java</artifactId>
+            <version>${statistics.pmd.dep.version}</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <targetJdk>${maven.compiler.target}</targetJdk>
+          <skipEmptyReport>false</skipEmptyReport>
+          <analysisCache>true</analysisCache>
+          <rulesets>
+            <ruleset>${statistics.parent.dir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${statistics.spotbugs.version}</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <configuration>
+        <!--
+          Needed for command-line access, e.g mvn apache-rat:rat and mvn apache-rat:check
+          Below should agree with config in <reporting> section, so the site
+          gets consistent output.
+        -->
+          <excludes combine.children="append">
+            <!-- version 0.8 of apache-rat-plugin does not exclude properly
+                 some default development tools files (see RAT-126) -->
+            <exclude>.ekstazi/**</exclude>
+            <exclude>src/site/resources/txt/userguide/stress/dh/**</exclude>
+            <exclude>src/site/resources/txt/userguide/stress/tu/**</exclude>
+            <exclude>dist-archive/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <!-- MathJax -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <additionalOptions>-Xdoclint:all --allow-script-in-comments -header '&lt;script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/${rng.mathjax.version}/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;&lt;/script&gt;'</additionalOptions>
+          <!-- <aggregate>true</aggregate> -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.rat</groupId>
+        <artifactId>apache-rat-plugin</artifactId>
+        <version>${commons.rat.version}</version>
+        <configuration>
+         <!--  Should agree with apache-rat-plugin config under <build> -->
+          <excludes combine.children="append">
+            <!-- version 0.8 of apache-rat-plugin does not exclude properly
+                 some default development tools files (see RAT-126) -->
+            <exclude>.ekstazi/**</exclude>
+            <exclude>src/site/resources/txt/userguide/stress/dh/**</exclude>
+            <exclude>src/site/resources/txt/userguide/stress/tu/**</exclude>
+            <exclude>dist-archive/**</exclude>
+          </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <version>${commons.changes.version}</version>
+        <configuration>
+          <xmlPath>${basedir}/src/changes/changes.xml</xmlPath>
+          <columnNames>Fix Version,Key,Component,Summary,Type,Resolution,Status</columnNames>
+          <!-- Sort cols in natural order when using JQL for JIRA 5.1 -->
+          <sortColumnNames>Fix Version DESC,Type,Key DESC</sortColumnNames>
+          <resolutionIds>Fixed</resolutionIds>
+          <statusIds>Resolved,Closed</statusIds>
+          <!-- Don't include sub-task -->
+          <typeIds>Bug,New Feature,Task,Improvement,Wish,Test</typeIds>
+          <!-- For JIRA >= 5.1 -->
+          <useJql>true</useJql>
+          <onlyCurrentVersion>${commons.changes.onlyCurrentVersion}</onlyCurrentVersion>
+          <maxEntries>${commons.changes.maxEntries}</maxEntries>
+          <runOnlyAtExecutionRoot>${commons.changes.runOnlyAtExecutionRoot}</runOnlyAtExecutionRoot>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+              <report>jira-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${statistics.checkstyle.version}</version>
+        <configuration>
+          <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
+          <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
+          <suppressionsLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+          <enableRulesSummary>false</enableRulesSummary>
+          <includeTestSourceDirectory>true</includeTestSourceDirectory>
+          <logViolationsToConsole>false</logViolationsToConsole>
+          <resourceExcludes>NOTICE.txt,LICENSE.txt,**/maven-archiver/pom.properties</resourceExcludes>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${statistics.pmd.version}</version>
+        <configuration>
+          <targetJdk>${maven.compiler.target}</targetJdk>
+          <skipEmptyReport>false</skipEmptyReport>
+          <analysisCache>true</analysisCache>
+          <rulesets>
+            <ruleset>${statistics.parent.dir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>pmd</report>
+              <report>cpd</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${statistics.spotbugs.version}</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>clirr-maven-plugin</artifactId>
+        <version>${statistics.clirr.version}</version>
+        <configuration>
+          <minSeverity>${minSeverity}</minSeverity>
+          <ignoredDifferencesFile>${statistics.parent.dir}/src/main/resources/clirr/clirr-ignored.xml</ignoredDifferencesFile>
+        </configuration>
+      </plugin>
+      <!--  MathJax -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <additionalOptions>-Xdoclint:all --allow-script-in-comments -header '&lt;script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/${rng.mathjax.version}/MathJax.js?config=TeX-AMS-MML_HTMLorMML"&gt;&lt;/script&gt;'</additionalOptions>
+          <!-- <aggregate>true</aggregate> -->
+        </configuration>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <profiles>
+    <profile>
+      <id>jgit-buildnumber</id>
+      <activation>
+        <file>
+          <exists>.git</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>ru.concerteza.buildnumber</groupId>
+            <artifactId>maven-jgit-buildnumber-plugin</artifactId>
+            <version>${statistics.jgit.buildnumber.version}</version>
+            <executions>
+              <execution>
+                <phase>generate-resources</phase>
+                <goals>
+                  <goal>extract-buildnumber</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <profile>
+      <id>setup-checkout</id>
+      <activation>
+        <file>
+          <missing>site-content</missing>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>prepare-checkout</id>
+                <phase>pre-site</phase>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+                <configuration>
+                  <tasks>
+                    <exec executable="svn">
+                      <arg line="checkout --depth immediates ${commons.scmPubUrl} ${commons.scmPubCheckoutDirectory}"/>
+                    </exec>
+
+                    <exec executable="svn">
+                      <arg line="update --set-depth exclude ${commons.scmPubCheckoutDirectory}/javadocs"/>
+                    </exec>
+
+                    <pathconvert pathsep=" " property="dirs">
+                      <dirset dir="${commons.scmPubCheckoutDirectory}" includes="*"/>
+                    </pathconvert>
+                    <exec executable="svn">
+                      <arg line="update --set-depth infinity ${dirs}"/>
+                    </exec>
+                  </tasks>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Ekstazi (www.ekstazi.org) profile to optimize regression testing -->
+    <profile>
+      <id>ekstazi</id>
+      <activation>
+        <property>
+          <name>ekstazi</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.ekstazi</groupId>
+            <artifactId>ekstazi-maven-plugin</artifactId>
+            <version>4.4.0</version>
+            <configuration>
+              <forcefailing>true</forcefailing>
+            </configuration>
+            <executions>
+              <execution>
+                <id>ekstazi</id>
+                <goals>
+                  <goal>select</goal>
+                  <goal>restore</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <excludesFile>${java.io.tmpdir}/${user.name}EkstaziExcludes</excludesFile>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>travis</id>
+      <activation>
+        <property>
+          <name>env.TRAVIS</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.jacoco</groupId>
+            <artifactId>jacoco-maven-plugin</artifactId>
+            <version>${commons.jacoco.version}</version>
+            <executions>
+              <execution>
+                <id>default-prepare-agent</id>
+                <goals>
+                  <goal>prepare-agent</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>default-prepare-agent-integration</id>
+                <goals>
+                  <goal>prepare-agent-integration</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>default-report</id>
+                <goals>
+                  <goal>report</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>default-report-integration</id>
+                <goals>
+                  <goal>report-integration</goal>
+                </goals>
+              </execution>
+              <execution>
+                <id>default-check</id>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+                <configuration>
+                  <rules>
+                    <!--  implementation is needed only for Maven 2  -->
+                    <rule implementation="org.jacoco.maven.RuleConfiguration">
+                      <element>BUNDLE</element>
+                      <limits>
+                        <!--  implementation is needed only for Maven 2  -->
+                        <limit implementation="org.jacoco.report.check.Limit">
+                          <counter>COMPLEXITY</counter>
+                          <value>COVEREDRATIO</value>
+                          <minimum>0.60</minimum>
+                        </limit>
+                      </limits>
+                    </rule>
+                  </rules>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.eluder.coveralls</groupId>
+            <artifactId>coveralls-maven-plugin</artifactId>
+            <version>3.1.0</version>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+  <modules>
+    <module>commons-statistics-distribution</module>
+    <module>commons-statistics-regression</module>
+    <module>commons-statistics-descriptive</module>
+  </modules>
+
+</project>
