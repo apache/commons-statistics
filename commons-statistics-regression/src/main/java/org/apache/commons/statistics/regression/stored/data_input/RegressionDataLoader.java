@@ -19,6 +19,9 @@ package org.apache.commons.statistics.regression.stored.data_input;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.ejml.data.DMatrixRMaj;
 
+/**
+ * Class for loading primitive arrays as input data.
+ */
 public final class RegressionDataLoader {
 
     /** Contains Y vector and X matrix data and a hasIntercept boolean. */
@@ -203,17 +206,17 @@ public final class RegressionDataLoader {
             throw new IllegalArgumentException("Not enough data for number of predictors: nobs <= nvars");
         }
 
-        final int cols = inputData.getHasIntercept() ? nvars : nvars + 1;
+        final int cols = inputData.isHasIntercept() ? nvars : nvars + 1;
         double[] y = new double[nobs];
         double[][] x = new double[nobs][cols];
         int pointer = 0;
 
         for (int i = 0; i < nobs; i++) {
             y[i] = data[pointer++];
-            if (!inputData.getHasIntercept()) {
+            if (!inputData.isHasIntercept()) {
                 x[i][0] = 1.0d;
             }
-            for (int j = inputData.getHasIntercept() ? 0 : 1; j < cols; j++) {
+            for (int j = inputData.isHasIntercept() ? 0 : 1; j < cols; j++) {
                 x[i][j] = data[pointer++];
             }
         }
@@ -267,7 +270,7 @@ public final class RegressionDataLoader {
             throw new IllegalArgumentException("Null x argument.");
         }
 
-        if (inputData.getHasIntercept()) {
+        if (inputData.isHasIntercept()) {
             inputData.setXData(createXmatrix(x));
 
         } else { // Augment design matrix with initial unitary column
@@ -311,14 +314,14 @@ public final class RegressionDataLoader {
      *
      * @param x the [n,k] array representing the x data
      * @param y the [n,1] array representing the y data
-     * @throws IllegalArgumentException if {@code x} or {@code y} is null
-     * @throws IllegalArgumentException if {@code x} and {@code y} do not have the
-     *                                  same length
-     * @throws IllegalArgumentException if {@code x} or {@code y} are zero-length
-     * @throws IllegalArgumentException if the number of rows of {@code x} is not
-     *                                  larger than the number of columns + 1
+     * @throws IllegalArgumentException if {@code x} or {@code y} is null if
+     *                                  {@code x} and {@code y} do not have the same
+     *                                  length if {@code x} or {@code y} are
+     *                                  zero-length if the number of rows of
+     *                                  {@code x} is not larger than the number of
+     *                                  columns + 1
      */
-    protected void validateSampleData(double[] y, double[][] x) throws IllegalArgumentException {
+    private void validateSampleData(double[] y, double[][] x) {
         if ((x == null) || (y == null)) {
             throw new IllegalArgumentException("Null argument(s).");
         }
@@ -329,13 +332,12 @@ public final class RegressionDataLoader {
             throw new IllegalArgumentException("Arrays have length 0.");
         }
 
-        int numPredictors = x[0].length;
-        int numObs = x.length;
+        final int numPredictors = x[0].length;
+        final int numObs = x.length;
         if (numPredictors > numObs) {
             throw new IllegalArgumentException(
                 "Not enough data for number of predictors." + numPredictors + " > " + numObs);
         }
-
     }
 
     /**

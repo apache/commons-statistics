@@ -20,6 +20,10 @@ import java.io.Serializable;
 
 import org.apache.commons.statistics.regression.stored.RegressionResults;
 
+/**
+ * Class contains OLS regression statistics which are calculated once in
+ * constructor calling OLSRegression methods.
+ */
 public class OLSResults implements RegressionResults, Serializable {
 
     /** Auto-generated serialVersionUID. */
@@ -82,7 +86,7 @@ public class OLSResults implements RegressionResults, Serializable {
      */
     @Override
     public double[] getBeta() {
-        return beta;
+        return beta.clone();
     }
 
     /**
@@ -90,7 +94,7 @@ public class OLSResults implements RegressionResults, Serializable {
      */
     @Override
     public double[][] getBetaVariance() {
-        return betaVariance;
+        return betaVariance.clone();
     }
 
     /**
@@ -98,7 +102,7 @@ public class OLSResults implements RegressionResults, Serializable {
      */
     @Override
     public double[] getBetaStandardErrors() {
-        return betaStandardErrors;
+        return betaStandardErrors.clone();
     }
 
     /**
@@ -106,7 +110,7 @@ public class OLSResults implements RegressionResults, Serializable {
      */
     @Override
     public double[] getResiduals() {
-        return residuals;
+        return residuals.clone();
     }
 
     /**
@@ -141,7 +145,7 @@ public class OLSResults implements RegressionResults, Serializable {
      * @return the hat matrix
      */
     public double[][] getHatMatrix() {
-        return hatMatrix;
+        return hatMatrix.clone();
     }
 
     /**

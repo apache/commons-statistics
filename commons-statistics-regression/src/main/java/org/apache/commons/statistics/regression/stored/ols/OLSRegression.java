@@ -29,6 +29,9 @@ import org.ejml.dense.row.factory.LinearSolverFactory_DDRM;
 import org.ejml.interfaces.decomposition.QRDecomposition;
 import org.ejml.interfaces.linsol.LinearSolverDense;
 
+/**
+ * Class contains all OLS regression functionality.
+ */
 public class OLSRegression extends AbstractRegression {
 
     /**
@@ -54,11 +57,10 @@ public class OLSRegression extends AbstractRegression {
      */
     @Override
     protected StatisticsMatrix calculateBeta() {
-        LinearSolverDense<DMatrixRMaj> solver = LinearSolverFactory_DDRM.leastSquares(getX().numRows(),
-            getX().numCols());
-        solver = new LinearSolverSafe<DMatrixRMaj>(solver);
+        final LinearSolverDense<DMatrixRMaj> solver = new LinearSolverSafe<>(
+            LinearSolverFactory_DDRM.leastSquares(getX().numRows(), getX().numCols()));
 
-        StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(getX().numCols()));
+        final StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(getX().numCols()));
 
         solver.setA(getX().getDDRM().copy());
         solver.solve(getY().getDDRM(), betas.getDDRM());
@@ -89,12 +91,12 @@ public class OLSRegression extends AbstractRegression {
      */
     @Override
     protected StatisticsMatrix calculateBetaVariance() {
-        QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
+        final QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
         qr.decompose(getX().getDDRM().copy());
 
-        int p = getX().numCols();
-        StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false)).extractMatrix(0, p, 0, p);
-        StatisticsMatrix invR = qrR.invert();
+        final int p = getX().numCols();
+        final StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false)).extractMatrix(0, p, 0, p);
+        final StatisticsMatrix invR = qrR.invert();
 
         return invR.mult(invR.transpose());
     }
@@ -124,11 +126,11 @@ public class OLSRegression extends AbstractRegression {
      */
     public StatisticsMatrix calculateHat() {
 
-        QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
+        final QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
         qr.decompose(getX().getDDRM().copy());
 
-        StatisticsMatrix qrQ = new StatisticsMatrix(qr.getQ(null, false));
-        StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false));
+        final StatisticsMatrix qrQ = new StatisticsMatrix(qr.getQ(null, false));
+        final StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false));
         // Create augmented identity matrix
         final int p = qrR.numCols();
         final int n = qrQ.numCols();
@@ -142,7 +144,7 @@ public class OLSRegression extends AbstractRegression {
                 }
             }
         }
-        StatisticsMatrix augI = new StatisticsMatrix(new DMatrixRMaj(augIData));
+        final StatisticsMatrix augI = new StatisticsMatrix(new DMatrixRMaj(augIData));
 
         return qrQ.mult(augI).mult(qrQ.transpose());
     }
@@ -165,7 +167,7 @@ public class OLSRegression extends AbstractRegression {
      * @return SSTO - the total sum of squares
      */
     public double calculateTotalSumOfSquares() {
-        if (getHasIntercept()) {
+        if (isHasIntercept()) {
             return StatUtils.sumSq(getY().toArray1D());
         } else {
             return new SecondMoment().evaluate(getY().toArray1D());
@@ -225,7 +227,7 @@ public class OLSRegression extends AbstractRegression {
      */
     public double calculateAdjustedRSquared() {
         final double n = getX().numRows();
-        if (getHasIntercept()) {
+        if (isHasIntercept()) {
             return 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols()));
         } else {
             return 1 -

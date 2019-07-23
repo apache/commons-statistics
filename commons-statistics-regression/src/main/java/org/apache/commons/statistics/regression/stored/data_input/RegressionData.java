@@ -18,6 +18,9 @@ package org.apache.commons.statistics.regression.stored.data_input;
 
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
+/**
+ * Interface to pass access only regression input data after loading.
+ */
 public interface RegressionData {
 
     /**
@@ -33,6 +36,6 @@ public interface RegressionData {
     /**
      * @return boolean if input data already includes the intercept.
      */
-    boolean getHasIntercept();
+    boolean isHasIntercept();
 
 }

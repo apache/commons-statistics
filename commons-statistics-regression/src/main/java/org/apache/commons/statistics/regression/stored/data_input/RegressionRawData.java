@@ -18,6 +18,10 @@ package org.apache.commons.statistics.regression.stored.data_input;
 
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
+/**
+ * Class contains raw data as StatisticsMatrix objects to be encapsulated by
+ * RegressionData interface.
+ */
 public class RegressionRawData implements RegressionData {
 
     /** Y vector data as StatisticsMatrix wrapper. */
@@ -33,8 +37,6 @@ public class RegressionRawData implements RegressionData {
      * Creates an empty constructor.
      */
     public RegressionRawData() {
-        this.xMatrix = null;
-        this.yVector = null;
         this.hasIntercept = false;
     }
 
@@ -87,7 +89,7 @@ public class RegressionRawData implements RegressionData {
      * {@inheritDoc}
      */
     @Override
-    public boolean getHasIntercept() {
+    public boolean isHasIntercept() {
         return this.hasIntercept;
     }
 }

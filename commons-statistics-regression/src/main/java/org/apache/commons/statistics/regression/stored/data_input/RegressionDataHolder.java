@@ -18,6 +18,10 @@ package org.apache.commons.statistics.regression.stored.data_input;
 
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
+/**
+ * Class which contains the regression input data and getters to be inherited by
+ * every stored regression type.
+ */
 public abstract class RegressionDataHolder implements RegressionData {
 
     /** Contains the loaded input data. */
@@ -37,8 +41,8 @@ public abstract class RegressionDataHolder implements RegressionData {
 
     /** @return boolean if calculations should include an intercept. */
     @Override
-    public boolean getHasIntercept() {
-        return inputData.getHasIntercept();
+    public boolean isHasIntercept() {
+        return inputData.isHasIntercept();
     }
 
 }

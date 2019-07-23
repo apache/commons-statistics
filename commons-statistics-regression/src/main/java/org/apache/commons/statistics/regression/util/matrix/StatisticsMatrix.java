@@ -67,7 +67,7 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      * Constructor for internal library use only. Nothing is configured and is
      * intended for serialization.
      */
-    protected StatisticsMatrix() {
+    private StatisticsMatrix() {
     }
 
     /**
@@ -88,11 +88,11 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     public StatisticsMatrix(Matrix orig) {
         Matrix mat;
         if (orig instanceof DMatrixRBlock) {
-            DMatrixRMaj a = new DMatrixRMaj(orig.getNumRows(), orig.getNumCols());
+            final DMatrixRMaj a = new DMatrixRMaj(orig.getNumRows(), orig.getNumCols());
             ConvertDMatrixStruct.convert((DMatrixRBlock) orig, a);
             mat = a;
         } else if (orig instanceof FMatrixRBlock) {
-            FMatrixRMaj a = new FMatrixRMaj(orig.getNumRows(), orig.getNumCols());
+            final FMatrixRMaj a = new FMatrixRMaj(orig.getNumRows(), orig.getNumCols());
             ConvertFMatrixStruct.convert((FMatrixRBlock) orig, a);
             mat = a;
         } else {
@@ -119,7 +119,7 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      * @return new pointer
      */
     public static StatisticsMatrix wrap(DMatrixRMaj m) {
-        StatisticsMatrix ret = new StatisticsMatrix();
+        final StatisticsMatrix ret = new StatisticsMatrix();
         ret.setMatrix(m);
         return ret;
     }
@@ -140,7 +140,7 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      */
     @SuppressWarnings("unchecked")
     public static StatisticsMatrix identity(int width) {
-        StatisticsMatrix ret = new StatisticsMatrix(width, width);
+        final StatisticsMatrix ret = new StatisticsMatrix(width, width);
         ret.ops.setIdentity(ret.mat);
         return ret;
     }
@@ -167,19 +167,19 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      * @throws IllegalArgumentException if there is less than 2 elements.
      */
     public double stdev() {
-        double m = mean();
-        double total = 0;
-
         final int n = getNumElements();
         if (n <= 1) {
             throw new IllegalArgumentException("There must be more than one element to compute stdev");
         }
 
+        final double m = mean();
+        double total = 0;
         for (int i = 0; i < n; i++) {
-            double x = get(i);
+            final double x = get(i);
             total += (x - m) * (x - m);
         }
         total /= n - 1;
+
         return Math.sqrt(total);
     }
 
@@ -198,8 +198,8 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      * @return 2D array
      */
     public double[][] toArray2D() {
-        int rows = this.getDDRM().numRows;
-        int cols = this.getDDRM().numCols;
+        final int rows = this.getDDRM().numRows;
+        final int cols = this.getDDRM().numCols;
         double[][] retArr = new double[rows][cols];
 
         for (int i = 0; i < rows; i++) {

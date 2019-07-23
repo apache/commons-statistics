@@ -16,6 +16,9 @@
  */
 package org.apache.commons.statistics.regression.stored;
 
+/**
+ * Interface to retrieve calculated regression statistics.
+ */
 public interface RegressionResults {
 
     /**

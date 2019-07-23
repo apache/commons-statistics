@@ -21,6 +21,9 @@ import org.apache.commons.statistics.regression.stored.data_input.RegressionData
 import org.apache.commons.statistics.regression.stored.data_input.RegressionDataHolder;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 
+/**
+ * Holds all common functionality of all Regression types.
+ */
 public abstract class AbstractRegression extends RegressionDataHolder implements Regression {
 
     /**
@@ -94,8 +97,8 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      * @return betas variance as vector
      */
     protected StatisticsMatrix calculateBetaStandardErrors() {
-        StatisticsMatrix betaVariance = calculateBetaVariance();
-        double sigma = calculateRegressionErrorVariance();
+        final StatisticsMatrix betaVariance = calculateBetaVariance();
+        final double sigma = calculateRegressionErrorVariance();
         return betaVariance.diag().scale(sigma).elementPower(0.5);
     }
 
@@ -114,7 +117,7 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      * @return error variance estimate
      */
     public double calculateRegressionErrorVariance() {
-        StatisticsMatrix residuals = calculateResiduals();
+        final StatisticsMatrix residuals = calculateResiduals();
         return residuals.dot(residuals) / (getX().getDDRM().getNumRows() - getX().getDDRM().getNumCols());
     }
 
@@ -128,7 +131,7 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      * @return The residuals [n,1] matrix
      */
     public StatisticsMatrix calculateResiduals() {
-        StatisticsMatrix b = calculateBeta();
+        final StatisticsMatrix b = calculateBeta();
         return getY().minus(getX().mult(b)); // operate is for vec x vec in CM
     }
 

@@ -16,6 +16,9 @@
  */
 package org.apache.commons.statistics.regression.stored;
 
+/**
+ * Interface for estimating common regression statistics.
+ */
 public interface Regression {
 
     /**
