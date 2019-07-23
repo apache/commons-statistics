@@ -103,7 +103,6 @@ public class RegressionDataLoaderTest {
         // Changing to invalid data ( see validateSampleDataTest )
         Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewYSampleData(yData2n));
         Assertions.assertThrows(IllegalArgumentException.class, () -> data.inputNewXSampleData(xData2p2n));
-
     }
 
 }

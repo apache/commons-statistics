@@ -254,7 +254,6 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         // Check R-Square statistics against R
         Assertions.assertEquals(0.9999670130706, model.calculateRSquared(), 1E-12);
         Assertions.assertEquals(0.999947220913, model.calculateAdjustedRSquared(), 1E-12);
-
     }
 
     /**

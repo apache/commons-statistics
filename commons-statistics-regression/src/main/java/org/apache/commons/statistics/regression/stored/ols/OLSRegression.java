@@ -142,8 +142,8 @@ public class OLSRegression extends AbstractRegression {
                 }
             }
         }
-
         StatisticsMatrix augI = new StatisticsMatrix(new DMatrixRMaj(augIData));
+
         return qrQ.mult(augI).mult(qrQ.transpose());
     }
 
@@ -179,7 +179,6 @@ public class OLSRegression extends AbstractRegression {
      */
     public double calculateResidualSumOfSquares() {
         final StatisticsMatrix residuals = calculateResiduals();
-        // No advertised DME, args are valid
         return residuals.dot(residuals);
     }
 

@@ -122,7 +122,6 @@ public final class RegressionDataLoader {
      * @param nvars int number of independent variables (columns, not counting y)
      */
     public void inputNewSampleData(double[] data, int nobs, int nvars) {
-//        inputData.setHasIntercept(false);
         inputSingleArraySampleData(data, nobs, nvars);
     }
 
@@ -332,7 +331,6 @@ public final class RegressionDataLoader {
 
         int numPredictors = x[0].length;
         int numObs = x.length;
-
         if (numPredictors > numObs) {
             throw new IllegalArgumentException(
                 "Not enough data for number of predictors." + numPredictors + " > " + numObs);

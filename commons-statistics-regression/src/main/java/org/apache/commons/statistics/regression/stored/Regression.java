@@ -54,7 +54,7 @@ public interface Regression {
     double estimateRegressionStandardError();
 
     /**
-     * Returns the variance of the regressand, ie Var(y).
+     * Estimates the variance of the regressand, ie Var(y).
      *
      * @return The double representing the variance of y
      */

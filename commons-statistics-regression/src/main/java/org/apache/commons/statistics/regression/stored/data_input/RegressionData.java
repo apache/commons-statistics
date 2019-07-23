@@ -31,7 +31,7 @@ public interface RegressionData {
     StatisticsMatrix getX();
 
     /**
-     * @return boolean if calculations should include an intercept.
+     * @return boolean if input data already includes the intercept.
      */
     boolean getHasIntercept();
 

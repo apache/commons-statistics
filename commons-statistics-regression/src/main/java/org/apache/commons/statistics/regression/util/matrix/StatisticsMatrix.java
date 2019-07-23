@@ -121,7 +121,6 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
     public static StatisticsMatrix wrap(DMatrixRMaj m) {
         StatisticsMatrix ret = new StatisticsMatrix();
         ret.setMatrix(m);
-
         return ret;
     }
 
@@ -158,7 +157,6 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
         for (int i = 0; i < n; i++) {
             total += get(i);
         }
-
         return total / n;
     }
 
@@ -170,7 +168,6 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
      */
     public double stdev() {
         double m = mean();
-
         double total = 0;
 
         final int n = getNumElements();
@@ -180,12 +177,9 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
 
         for (int i = 0; i < n; i++) {
             double x = get(i);
-
             total += (x - m) * (x - m);
         }
-
         total /= n - 1;
-
         return Math.sqrt(total);
     }
 
@@ -213,7 +207,6 @@ public class StatisticsMatrix extends SimpleBase<StatisticsMatrix> {
                 retArr[i][j] = this.getDDRM().get(i, j);
             }
         }
-
         return retArr;
     }
 

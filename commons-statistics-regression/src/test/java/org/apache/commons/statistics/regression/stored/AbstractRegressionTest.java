@@ -98,8 +98,10 @@ public abstract class AbstractRegressionTest {
         regression = createRegression(myData);
     }
 
-    // NOTE: Following tests were directly ported to ensure full coverage but is
-    // repeated from RegressionDataLoaderTest case and will be removed later.
+    /*
+     * The following tests were directly ported to ensure full coverage but is
+     * repeated from RegressionDataLoaderTest case and will be removed later.
+     */
     @Test
     public void testNewSampleInsufficientData() {
         double[] data = new double[] {1, 2, 3, 4};
