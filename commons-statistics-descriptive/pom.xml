@@ -35,26 +35,5 @@
     <commons.osgi.export>org.apache.commons.statistics.descriptive</commons.osgi.export>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
-    <!-- TODO: This tag should be removed or changed to false when code files are added in "commons-statistics-descriptive" module.-->
-    <!-- This tag is added only because there are no public classes to document.-->
-    <!-- <maven.javadoc.skip>true</maven.javadoc.skip> -->
   </properties>
-  
-  <dependencies>
-<!--    &lt;!&ndash; https://mvnrepository.com/artifact/org.junit/junit5-engine &ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>org.junit</groupId>-->
-<!--      <artifactId>junit5-engine</artifactId>-->
-<!--      <version>5.0.0-ALPHA</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-<!--    &lt;!&ndash; https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api &ndash;&gt;-->
-<!--    <dependency>-->
-<!--      <groupId>org.junit.jupiter</groupId>-->
-<!--      <artifactId>junit-jupiter-api</artifactId>-->
-<!--      <version>5.3.2</version>-->
-<!--      <scope>test</scope>-->
-<!--    </dependency>-->
-  </dependencies>
-
 </project>

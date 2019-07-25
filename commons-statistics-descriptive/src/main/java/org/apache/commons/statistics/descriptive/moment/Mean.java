@@ -18,73 +18,119 @@
 package org.apache.commons.statistics.descriptive.moment;
 
 /**
- * This class has methods to compute First Moment.
+ * Computes the arithmetic mean of a set of values. Uses the definitional
+ * formula:
+ * <p>
+ * mean = sum(x_i) / n
+ * </p>
+ * <p>where <code>n</code> is the number of observations.
+ * </p>
+ * <p>This class is designed to work with (though does not require)
+ * {@linkplain java.util.stream streams}. For example, you can compute
+ * Mean on a stream of doubles with:
+ * <pre> {@code
+ * Mean stats = doubleStream.collect(Mean::new,
+ *                                     Mean::accept,
+ *                                     Mean::combine);
+ * }</pre>
+ *
+ * <p>Here {@link #accept(double)} is used to add data incrementally from a
+ * stream of (unstored) values, the value of the statistic that
+ * {@link #getMean()} returns is computed using the Welford's Algorithm.
+ * The Welford's Algorithm is as follows:<br>
+ *<pre><code>
+ *variance(samples):
+ *    mean1 := 0
+ *    s := 0
+ *    for k from 1 to N:
+ *        x := samples[k]
+ *        mean0 := mean1
+ *        mean1 := mean1 + (x-mean1)/k
+ *        s := s + (x-mean1)*(x-mean0)
+ *    return s/(N-1)</code></pre><br>
+ *  <p>Here to calculate Mean value only partial algorithm is used.</p>
+ *  <p>Returns <code>Double.NaN</code> if the dataset is empty. Note that
+ *  Double.NaN may also be returned if the input includes NaN and / or infinite
+ *  values.
+ * </p>
  */
 public class Mean {
 
     /** Total no. of values. */
-    protected long n;
+    private long n;
     /** Current value of mean. */
-    protected double mean1;
+    private double meanValue;
     /** Sum of values added. */
-    protected double sum;
-    /** Last mean value. */
-    protected double mean0;
+    private double sum;
 
     /** Create a Mean instance. */
     public Mean() {
         n = 0;
-        mean1 = Double.NaN;
-        mean0 = Double.NaN;
-        sum = 0;
+        meanValue = 0.0;
+        sum = 0.0;
     }
 
     /**
-     * Accept stream of values and apply Updating algorithm to calculate
-     * mean value.
-     * Algorithm:
-     * add d:
-     *     n = n + 1;
-     *     mean1 = mean0 + (d - mean0) / n
-     * @param d Values to calculate mean.
+     * This method accept stream of double values and calculates Mean
+     * based on Welford's Algorithm.
+     * The Welford's Algorithm is as follows:<br>
+     *<pre><code>
+     *variance(samples):
+     *    mean1 := 0
+     *    s := 0
+     *    for k from 1 to N:
+     *        x := samples[k]
+     *        mean0 := mean1
+     *        mean1 := mean1 + (x-mean1)/k
+     *        s := s + (x-mean1)*(x-mean0)
+     *    return s/(N-1)</code></pre>
+     * Here to calculate Mean value only partial algorithm is used.
+     *@param value stream of double values
      */
-    public void accept(double d) {
-        if (n == 0) {
-            mean0 = 0.0;
-        } else {
-            mean0 = sum / n;
-        }
-        sum += d;
+    public void accept(double value) {
         n++;
-        mean1 = mean0 + (d - mean0) / n;
+        meanValue += (value - meanValue) / n;
+        sum += value;
     }
 
     /**
-     * This  method combines the object of Mean class with other object to calculate
+     * This  method combines the object of Mean class with the current Mean object to calculate
      * combined mean value.
      * Algorithm:
+     * <pre><code>
      *   mean = (nA * meanA + nB * meanB) / (nA + nB)
+     *   </code></pre>
+     *   (This will cause problem when combining two objects where one has some value
+     *    and other isn't initiated. Thus mean of that object will be returned as NaN
+     *    from getMean() method. And addition of NaN with finite number will result in
+     *    NaN.)
      *    OR
+     *    Hence we'll use the following for our calculation.
+     *    <pre><code>
      *   mean = (sumA + sumB) / (nA + nB)
+     *   </code></pre>
      * @param m1 Object of Mean class
      */
     public void combine(Mean m1) {
-        mean1 = (m1.n * m1.mean1 + getMean() * getN()) / (getN() + m1.n);
         n = getN() + m1.getN();
         sum = getSum() + m1.getSum();
+        meanValue = sum / n;
     }
 
     /**
      * This method gives  the current mean value.
+     * If the object isn't initiated i.e. if n=0 it returns NaN because
+     * according to definition <code>{mean = sum / n}</code>
+     * Hence 0/0 is Not defined.
      * @return Mean value
      */
     public double getMean() {
-        return mean1;
+        return n == 0 ? Double.NaN : meanValue;
     }
 
     /**
      * This method gives the count of values added.
-     * @return n-count of values
+     * @return count of values
      */
     public long getN() {
         return n;
@@ -107,9 +153,11 @@ public class Mean {
     @Override
     public String toString() {
         return String.format(
-             "%s{mean=%f}",
+             "%s{mean = %f , count = %d , sum = %f}",
              getClass().getSimpleName(),
-             getMean());
+             getMean(),
+             getN(),
+             getSum());
     }
 
 }
