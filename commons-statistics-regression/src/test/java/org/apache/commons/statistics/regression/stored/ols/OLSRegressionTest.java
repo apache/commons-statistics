@@ -19,9 +19,6 @@ package org.apache.commons.statistics.regression.stored.ols;
 import org.apache.commons.math4.stat.StatUtils;
 import org.apache.commons.statistics.regression.stored.AbstractRegression;
 import org.apache.commons.statistics.regression.stored.AbstractRegressionTest;
-import org.apache.commons.statistics.regression.stored.Regression;
-import org.apache.commons.statistics.regression.stored.RegressionResults;
-import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionDataLoader;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.ejml.data.DMatrixRMaj;
@@ -227,6 +224,7 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         checkVarianceConsistency(model);
 
         // Estimate model without intercept
+        model.clearData();
         myData.inputNewSampleData(design, nobs, nvars, true);
 
         // Check expected beta values from R
@@ -355,148 +353,6 @@ public class OLSRegressionTest extends AbstractRegressionTest {
         }
 
         Assertions.assertEquals(1, ((OLSRegression) regression).calculateRSquared(), 1E-12);
-    }
-
-    /**
-     * Test R Swiss fertility dataset against R. Data Source: R datasets package
-     */
-    @Test
-    public void testSwissFertilityInterfaceFormat() {
-        double[] design = new double[] {
-            80.2, 17.0, 15, 12, 9.96,
-            83.1, 45.1, 6, 9, 84.84,
-            92.5, 39.7, 5, 5, 93.40,
-            85.8, 36.5, 12, 7, 33.77,
-            76.9, 43.5, 17, 15, 5.16,
-            76.1, 35.3, 9, 7, 90.57,
-            83.8, 70.2, 16, 7, 92.85,
-            92.4, 67.8, 14, 8, 97.16,
-            82.4, 53.3, 12, 7, 97.67,
-            82.9, 45.2, 16, 13, 91.38,
-            87.1, 64.5, 14, 6, 98.61,
-            64.1, 62.0, 21, 12, 8.52,
-            66.9, 67.5, 14, 7, 2.27,
-            68.9, 60.7, 19, 12, 4.43,
-            61.7, 69.3, 22, 5, 2.82,
-            68.3, 72.6, 18, 2, 24.20,
-            71.7, 34.0, 17, 8, 3.30,
-            55.7, 19.4, 26, 28, 12.11,
-            54.3, 15.2, 31, 20, 2.15,
-            65.1, 73.0, 19, 9, 2.84,
-            65.5, 59.8, 22, 10, 5.23,
-            65.0, 55.1, 14, 3, 4.52,
-            56.6, 50.9, 22, 12, 15.14,
-            57.4, 54.1, 20, 6, 4.20,
-            72.5, 71.2, 12, 1, 2.40,
-            74.2, 58.1, 14, 8, 5.23,
-            72.0, 63.5, 6, 3, 2.56,
-            60.5, 60.8, 16, 10, 7.72,
-            58.3, 26.8, 25, 19, 18.46,
-            65.4, 49.5, 15, 8, 6.10,
-            75.5, 85.9, 3, 2, 99.71,
-            69.3, 84.9, 7, 6, 99.68,
-            77.3, 89.7, 5, 2, 100.00,
-            70.5, 78.2, 12, 6, 98.96,
-            79.4, 64.9, 7, 3, 98.22,
-            65.0, 75.9, 9, 9, 99.06,
-            92.2, 84.6, 3, 3, 99.46,
-            79.3, 63.1, 13, 13, 96.83,
-            70.4, 38.4, 26, 12, 5.62,
-            65.7, 7.7, 29, 11, 13.79,
-            72.7, 16.7, 22, 13, 11.22,
-            64.4, 17.6, 35, 32, 16.92,
-            77.6, 37.6, 15, 7, 4.97,
-            67.6, 18.7, 25, 7, 8.65,
-            35.0, 1.2, 37, 53, 42.34,
-            44.7, 46.6, 16, 29, 50.43,
-            42.8, 27.7, 22, 29, 58.33
-        };
-
-        final int nobs = 47;
-        final int nvars = 4;
-
-        // Input data
-        RegressionDataLoader inputData = new RegressionDataLoader();
-        inputData.inputNewSampleData(design, nobs, nvars);
-        RegressionData swissData = inputData.getInputData();
-
-        // Estimate the model
-        Regression ols = new OLSRegression(swissData);
-        RegressionResults results = ols.regress();
-
-        // Check expected beta values from R
-        double[] betaHat = results.getBeta();
-        Assertions.assertArrayEquals(betaHat,
-            new double[] {91.05542390271397, -0.22064551045715, -0.26058239824328, -0.96161238456030, 0.12441843147162},
-            1E-12);
-
-        // Check expected residuals from R
-        double[] residuals = results.getResiduals();
-        Assertions.assertArrayEquals(residuals,
-            new double[] {7.1044267859730512, 1.6580347433531366, 4.6944952770029644, 8.4548022690166160,
-                13.6547432343186212, -9.3586864458500774, 7.5822446330520386, 15.5568995563859289, 0.8113090736598980,
-                7.1186762732484308, 7.4251378771228724, 2.6761316873234109, 0.8351584810309354, 7.1769991119615177,
-                -3.8746753206299553, -3.1337779476387251, -0.1412575244091504, 1.1186809170469780, -6.3588097346816594,
-                3.4039270429434074, 2.3374058329820175, -7.9272368576900503, -7.8361010968497959, -11.2597369269357070,
-                0.9445333697827101, 6.6544245101380328, -0.9146136301118665, -4.3152449403848570, -4.3536932047009183,
-                -3.8907885169304661, -6.3027643926302188, -7.8308982189289091, -3.1792280015332750, -6.7167298771158226,
-                -4.8469946718041754, -10.6335664353633685, 11.1031134362036958, 6.0084032641811733, 5.4326230830188482,
-                -7.2375578629692230, 2.1671550814448222, 15.0147574652763112, 4.8625103516321015, -7.1597256413907706,
-                -0.4515205619767598, -10.2916870903837587, -15.7812984571900063},
-            1E-12);
-
-        // Check standard errors from R
-        double[] errors = results.getBetaStandardErrors();
-        Assertions.assertArrayEquals(
-            new double[] {6.94881329475087, 0.07360008972340, 0.27410957467466, 0.19454551679325, 0.03726654773803},
-            errors, 1E-10);
-
-        // Check regression standard error against R
-        Assertions.assertEquals(7.73642194433223, results.getRegressionStandardError(), 1E-12);
-
-        // Check R-Square statistics against R
-        Assertions.assertEquals(0.649789742860228, ((OLSResults) results).getRSquared(), 1E-12);
-        Assertions.assertEquals(0.6164363850373927, ((OLSResults) results).getAdjustedRSquared(), 1E-12);
-
-        checkVarianceConsistency((AbstractRegression) ols);
-
-        // Estimate the model with no intercept
-        inputData.inputNewSampleData(design, nobs, nvars, true);
-        swissData = inputData.getInputData();
-        ols = new OLSRegression(swissData);
-        results = ols.regress();
-
-        // Check expected beta values from R
-        betaHat = results.getBeta();
-        Assertions.assertArrayEquals(betaHat,
-            new double[] {0.52191832900513, 2.36588087917963, -0.94770353802795, 0.30851985863609}, 1E-12);
-
-        // Check expected residuals from R
-        residuals = results.getResiduals();
-        Assertions.assertArrayEquals(residuals,
-            new double[] {44.138759883538249, 27.720705122356215, 35.873200836126799, 34.574619581211977,
-                26.600168342080213, 15.074636243026923, -12.704904871199814, 1.497443824078134, 2.691972687079431,
-                5.582798774291231, -4.422986561283165, -9.198581600334345, 4.481765170730647, 2.273520207553216,
-                -22.649827853221336, -17.747900013943308, 20.298314638496436, 6.861405135329779, -8.684712790954924,
-                -10.298639278062371, -9.896618896845819, 4.568568616351242, -15.313570491727944, -13.762961360873966,
-                7.156100301980509, 16.722282219843990, 26.716200609071898, -1.991466398777079, -2.523342564719335,
-                9.776486693095093, -5.297535127628603, -16.639070567471094, -10.302057295211819, -23.549487860816846,
-                1.506624392156384, -17.939174438345930, 13.105792202765040, -1.943329906928462, -1.516005841666695,
-                -0.759066561832886, 20.793137744128977, -2.485236153005426, 27.588238710486976, 2.658333257106881,
-                -15.998337823623046, -5.550742066720694, -14.219077806826615},
-            1E-12);
-
-        // Check standard errors from R
-        errors = results.getBetaStandardErrors();
-        Assertions.assertArrayEquals(
-            new double[] {0.10470063765677, 0.41684100584290, 0.43370143099691, 0.07694953606522}, errors, 1E-10);
-
-        // Check regression standard error against R
-        Assertions.assertEquals(17.24710630547, results.getRegressionStandardError(), 1E-10);
-
-        // Check R-Square statistics against R
-        Assertions.assertEquals(0.946350722085, ((OLSResults) results).getRSquared(), 1E-12);
-        Assertions.assertEquals(0.9413600915813, ((OLSResults) results).getAdjustedRSquared(), 1E-12);
     }
 
     /**

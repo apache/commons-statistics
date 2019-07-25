@@ -26,6 +26,24 @@ import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
  */
 public abstract class AbstractRegression extends RegressionDataHolder implements Regression {
 
+    /** Stored beta to avoid recalculation. */
+    protected StatisticsMatrix beta;
+
+    /** Stored beta variance to avoid recalculation. */
+    protected StatisticsMatrix betaVariance;
+
+    /** Stored beta standard error to avoid recalculation. */
+    protected StatisticsMatrix betaStandardError;
+
+    /** Stored residuals to avoid recalculation. */
+    protected StatisticsMatrix residuals;
+
+    /** Stored error variance to avoid recalculation. */
+    protected double errorVariance;
+
+    /** Stored standard error to avoid recalculation. */
+    protected double standardError;
+
     /**
      * {@inheritDoc}
      */
@@ -63,7 +81,7 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      */
     @Override
     public double estimateRegressionStandardError() {
-        return Math.sqrt(calculateRegressionErrorVariance());
+        return calculateRegressionStandardError();
     }
 
     /**
@@ -90,6 +108,11 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
     protected abstract StatisticsMatrix calculateBetaVariance();
 
     /**
+     * Clears all data to default null and NaN values.
+     */
+    protected abstract void clearData();
+
+    /**
      * Calculates the beta standard errors of multiple linear regression in matrix
      * notation by retrieving the diagonal elements from betaVariance, then
      * multiplying by sigma and square rooting each element.
@@ -97,9 +120,43 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      * @return betas variance as vector
      */
     protected StatisticsMatrix calculateBetaStandardErrors() {
-        final StatisticsMatrix betaVariance = calculateBetaVariance();
-        final double sigma = calculateRegressionErrorVariance();
-        return betaVariance.diag().scale(sigma).elementPower(0.5);
+        if (betaStandardError == null) {
+            final StatisticsMatrix betaVar = calculateBetaVariance();
+            final double sigma = calculateRegressionErrorVariance();
+            final StatisticsMatrix result = betaVar.diag().scale(sigma).elementPower(0.5);
+            betaStandardError = result;
+        }
+        return betaStandardError;
+    }
+
+    /**
+     * Calculates the residuals of multiple linear regression in matrix notation.
+     *
+     * <pre>
+     * u = y - X * b
+     * </pre>
+     *
+     * @return The residuals [n,1] matrix
+     */
+    public StatisticsMatrix calculateResiduals() {
+        if (residuals == null) {
+            final StatisticsMatrix b = calculateBeta();
+            final StatisticsMatrix result = getY().minus(getX().mult(b));
+            residuals = result;
+        }
+        return residuals;
+    }
+
+    /**
+     * Calculates the standard error by square rotting error variance.
+     *
+     * @return regression's standard error
+     */
+    public double calculateRegressionStandardError() {
+        if (Double.isNaN(standardError)) {
+            standardError = Math.sqrt(calculateRegressionErrorVariance());
+        }
+        return standardError;
     }
 
     /**
@@ -117,22 +174,13 @@ public abstract class AbstractRegression extends RegressionDataHolder implements
      * @return error variance estimate
      */
     public double calculateRegressionErrorVariance() {
-        final StatisticsMatrix residuals = calculateResiduals();
-        return residuals.dot(residuals) / (getX().getDDRM().getNumRows() - getX().getDDRM().getNumCols());
-    }
-
-    /**
-     * Calculates the residuals of multiple linear regression in matrix notation.
-     *
-     * <pre>
-     * u = y - X * b
-     * </pre>
-     *
-     * @return The residuals [n,1] matrix
-     */
-    public StatisticsMatrix calculateResiduals() {
-        final StatisticsMatrix b = calculateBeta();
-        return getY().minus(getX().mult(b)); // operate is for vec x vec in CM
+        if (Double.isNaN(errorVariance)) {
+            final StatisticsMatrix res = calculateResiduals();
+            final double result = res.dot(res) /
+                                  (getX().getDDRM().getNumRows() - getX().getDDRM().getNumCols());
+            errorVariance = result;
+        }
+        return errorVariance;
     }
 
     /**

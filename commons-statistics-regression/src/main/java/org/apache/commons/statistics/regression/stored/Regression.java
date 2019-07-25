@@ -63,11 +63,4 @@ public interface Regression {
      */
     double estimateRegressandVariance();
 
-    /**
-     * Returns all of the regression's calculated statistics ready to be retrieved.
-     *
-     * @return RegressionResults interface as specified implemented object
-     */
-    RegressionResults regress();
-
 }

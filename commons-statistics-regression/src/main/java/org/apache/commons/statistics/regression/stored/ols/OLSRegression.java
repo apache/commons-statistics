@@ -19,7 +19,6 @@ package org.apache.commons.statistics.regression.stored.ols;
 import org.apache.commons.math4.stat.StatUtils;
 import org.apache.commons.math4.stat.descriptive.moment.SecondMoment;
 import org.apache.commons.statistics.regression.stored.AbstractRegression;
-import org.apache.commons.statistics.regression.stored.RegressionResults;
 import org.apache.commons.statistics.regression.stored.data_input.RegressionData;
 import org.apache.commons.statistics.regression.util.matrix.StatisticsMatrix;
 import org.ejml.LinearSolverSafe;
@@ -34,6 +33,21 @@ import org.ejml.interfaces.linsol.LinearSolverDense;
  */
 public class OLSRegression extends AbstractRegression {
 
+    /** Stored hat matrix to avoid recalculation. */
+    private StatisticsMatrix hatMatrix;
+
+    /** Stored total sum of squared to avoid recalculation. */
+    private double totalSumOfSquares;
+
+    /** Stored residual sum of squared to avoid recalculation. */
+    private double residualSumOfSquares;
+
+    /** Stored R-Squared to avoid recalculation. */
+    private double rSquared;
+
+    /** Stored adjusted R-Squared to avoid recalculation. */
+    private double adjustedRSquared;
+
     /**
      * Constructs the OLSRegression user-interface class.
      *
@@ -41,7 +55,15 @@ public class OLSRegression extends AbstractRegression {
      */
     public OLSRegression(RegressionData data) {
         validateLoadedInputData(data);
+
         this.inputData = data;
+        this.errorVariance = Double.NaN;
+        this.standardError = Double.NaN;
+
+        this.totalSumOfSquares = Double.NaN;
+        this.residualSumOfSquares = Double.NaN;
+        this.rSquared = Double.NaN;
+        this.adjustedRSquared = Double.NaN;
     }
 
     /**
@@ -57,15 +79,17 @@ public class OLSRegression extends AbstractRegression {
      */
     @Override
     protected StatisticsMatrix calculateBeta() {
-        final LinearSolverDense<DMatrixRMaj> solver = new LinearSolverSafe<>(
-            LinearSolverFactory_DDRM.leastSquares(getX().numRows(), getX().numCols()));
+        if (beta == null) {
+            final LinearSolverDense<DMatrixRMaj> solver = new LinearSolverSafe<>(
+                LinearSolverFactory_DDRM.leastSquares(getX().numRows(), getX().numCols()));
 
-        final StatisticsMatrix betas = new StatisticsMatrix(new DMatrixRMaj(getX().numCols()));
+            final StatisticsMatrix result = new StatisticsMatrix(new DMatrixRMaj(getX().numCols()));
 
-        solver.setA(getX().getDDRM().copy());
-        solver.solve(getY().getDDRM(), betas.getDDRM());
-
-        return betas;
+            solver.setA(getX().getDDRM().copy());
+            solver.solve(getY().getDDRM(), result.getDDRM());
+            beta = result;
+        }
+        return beta;
     }
 
     /**
@@ -91,14 +115,17 @@ public class OLSRegression extends AbstractRegression {
      */
     @Override
     protected StatisticsMatrix calculateBetaVariance() {
-        final QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
-        qr.decompose(getX().getDDRM().copy());
+        if (betaVariance == null) {
+            final QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
+            qr.decompose(getX().getDDRM().copy());
 
-        final int p = getX().numCols();
-        final StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false)).extractMatrix(0, p, 0, p);
-        final StatisticsMatrix invR = qrR.invert();
-
-        return invR.mult(invR.transpose());
+            final int p = getX().numCols();
+            final StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false)).extractMatrix(0, p, 0, p);
+            final StatisticsMatrix invR = qrR.invert();
+            final StatisticsMatrix result = invR.mult(invR.transpose());
+            betaVariance = result;
+        }
+        return betaVariance;
     }
 
     /**
@@ -125,28 +152,30 @@ public class OLSRegression extends AbstractRegression {
      * @return the hat matrix
      */
     public StatisticsMatrix calculateHat() {
+        if (hatMatrix == null) {
+            final QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
+            qr.decompose(getX().getDDRM().copy());
 
-        final QRDecomposition<DMatrixRMaj> qr = new QRDecomposition_DDRB_to_DDRM();
-        qr.decompose(getX().getDDRM().copy());
-
-        final StatisticsMatrix qrQ = new StatisticsMatrix(qr.getQ(null, false));
-        final StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false));
-        // Create augmented identity matrix
-        final int p = qrR.numCols();
-        final int n = qrQ.numCols();
-        double[][] augIData = new double[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i == j && i < p) {
-                    augIData[i][j] = 1d;
-                } else {
-                    augIData[i][j] = 0d;
+            final StatisticsMatrix qrQ = new StatisticsMatrix(qr.getQ(null, false));
+            final StatisticsMatrix qrR = new StatisticsMatrix(qr.getR(null, false));
+            // Create augmented identity matrix
+            final int p = qrR.numCols();
+            final int n = qrQ.numCols();
+            double[][] augIData = new double[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    if (i == j && i < p) {
+                        augIData[i][j] = 1d;
+                    } else {
+                        augIData[i][j] = 0d;
+                    }
                 }
             }
+            final StatisticsMatrix augI = new StatisticsMatrix(new DMatrixRMaj(augIData));
+            final StatisticsMatrix result = qrQ.mult(augI).mult(qrQ.transpose());
+            hatMatrix = result;
         }
-        final StatisticsMatrix augI = new StatisticsMatrix(new DMatrixRMaj(augIData));
-
-        return qrQ.mult(augI).mult(qrQ.transpose());
+        return hatMatrix;
     }
 
     /**
@@ -167,11 +196,11 @@ public class OLSRegression extends AbstractRegression {
      * @return SSTO - the total sum of squares
      */
     public double calculateTotalSumOfSquares() {
-        if (isHasIntercept()) {
-            return StatUtils.sumSq(getY().toArray1D());
-        } else {
-            return new SecondMoment().evaluate(getY().toArray1D());
+        if (Double.isNaN(totalSumOfSquares)) {
+            totalSumOfSquares = (isHasIntercept()) ? StatUtils.sumSq(getY().toArray1D()) :
+                                                   new SecondMoment().evaluate(getY().toArray1D());
         }
+        return totalSumOfSquares;
     }
 
     /**
@@ -180,8 +209,12 @@ public class OLSRegression extends AbstractRegression {
      * @return residual sum of squares
      */
     public double calculateResidualSumOfSquares() {
-        final StatisticsMatrix residuals = calculateResiduals();
-        return residuals.dot(residuals);
+        if (Double.isNaN(residualSumOfSquares)) {
+            final StatisticsMatrix residuals = calculateResiduals();
+            final double result = residuals.dot(residuals);
+            residualSumOfSquares = result;
+        }
+        return residualSumOfSquares;
     }
 
     /**
@@ -199,7 +232,10 @@ public class OLSRegression extends AbstractRegression {
      * @return R-square statistic
      */
     public double calculateRSquared() {
-        return 1 - calculateResidualSumOfSquares() / calculateTotalSumOfSquares();
+        if (Double.isNaN(rSquared)) {
+            rSquared = 1 - calculateResidualSumOfSquares() / calculateTotalSumOfSquares();
+        }
+        return rSquared;
     }
 
     /**
@@ -226,22 +262,34 @@ public class OLSRegression extends AbstractRegression {
      * @return adjusted R-Squared statistic
      */
     public double calculateAdjustedRSquared() {
-        final double n = getX().numRows();
-        if (isHasIntercept()) {
-            return 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols()));
-        } else {
-            return 1 -
-                   (calculateResidualSumOfSquares() * (n - 1)) /
-                       (calculateTotalSumOfSquares() * (n - getX().numCols()));
+        if (Double.isNaN(adjustedRSquared)) {
+            final double n = getX().numRows();
+            adjustedRSquared = (isHasIntercept()) ? 1 - (1 - calculateRSquared()) * (n / (n - getX().numCols())) :
+                                                  1 - (calculateResidualSumOfSquares() * (n - 1)) /
+                                                      (calculateTotalSumOfSquares() * (n - getX().numCols()));
         }
+        return adjustedRSquared;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public RegressionResults regress() {
-        return new OLSResults(this);
+    protected void clearData() {
+        // Code smell (setting objects to null),
+        // what should be the alternative?
+        this.beta = null;
+        this.betaVariance = null;
+        this.betaStandardError = null;
+        this.residuals = null;
+
+        this.errorVariance = Double.NaN;
+        this.standardError = Double.NaN;
+
+        this.totalSumOfSquares = Double.NaN;
+        this.residualSumOfSquares = Double.NaN;
+        this.rSquared = Double.NaN;
+        this.adjustedRSquared = Double.NaN;
     }
 
 }
