@@ -264,7 +264,6 @@ class MeanTest {
         assertEquals(Double.POSITIVE_INFINITY, meanS7.getMean(), tolerance);
         assertEquals(2, meanS7.getN());
         assertEquals(0.0, meanS7.getSum(), tolerance);
-
     }
 
     /**Verifies that toString() works properly.*/
