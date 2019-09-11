@@ -40,6 +40,16 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
         Assertions.assertTrue(d.isSupportConnected());
     }
 
+    @Test
+    public void testMeanAndVariance() {
+        LogisticDistribution d = makeDistribution();
+        // Constructor 'location' parameter = mean
+        Assertions.assertEquals(2.0, d.getMean());
+        // Variance = (s^2 * pi^2) / 3
+        // Constructor 'scale' parameter = s
+        Assertions.assertEquals(5 * 5 * Math.PI * Math.PI / 3, d.getVariance());
+    }
+
     @Override
     public LogisticDistribution makeDistribution() {
         return new LogisticDistribution(2, 5);

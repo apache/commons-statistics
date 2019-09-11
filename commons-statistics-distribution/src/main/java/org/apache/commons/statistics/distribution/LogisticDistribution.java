@@ -105,7 +105,7 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double getVariance() {
-        return oneOverScale * oneOverScale * PI_SQUARED_OVER_THREE;
+        return scale * scale * PI_SQUARED_OVER_THREE;
     }
 
     /** {@inheritDoc} */
