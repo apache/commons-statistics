@@ -61,7 +61,7 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     @Override
     public double density(final double x) {
         if (x < mu) {
-            return Double.NaN;
+            return 0;
         }
 
         final double delta = x - mu;
@@ -76,7 +76,7 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     @Override
     public double logDensity(double x) {
         if (x < mu) {
-            return Double.NaN;
+            return Double.NEGATIVE_INFINITY;
         }
 
         final double delta = x - mu;
@@ -95,7 +95,7 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     @Override
     public double cumulativeProbability(final double x) {
         if (x < mu) {
-            return Double.NaN;
+            return 0;
         }
         return Erfc.value(Math.sqrt(halfC / (x - mu)));
     }
