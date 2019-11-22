@@ -307,17 +307,19 @@
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
-        <!--
-          Needed for command-line access, e.g mvn apache-rat:rat and mvn apache-rat:check
-          Below should agree with config in <reporting> section, so the site
-          gets consistent output.
-        -->
+          <!--  Should agree with apache-rat-plugin config under <build> -->
           <excludes combine.children="append">
             <!-- version 0.8 of apache-rat-plugin does not exclude properly
                  some default development tools files (see RAT-126) -->
             <exclude>.ekstazi/**</exclude>
-            <exclude>src/site/resources/txt/userguide/stress/dh/**</exclude>
-            <exclude>src/site/resources/txt/userguide/stress/tu/**</exclude>
+            <exclude>**/site-content/**</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.checkstyle</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
+            <exclude>src/site/resources/txt/userguide/stress/**</exclude>
             <exclude>dist-archive/**</exclude>
           </excludes>
         </configuration>
@@ -339,19 +341,25 @@
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
-        <version>${commons.rat.version}</version>
         <configuration>
-         <!--  Should agree with apache-rat-plugin config under <build> -->
+          <!--  Should agree with apache-rat-plugin config under <build> -->
           <excludes combine.children="append">
             <!-- version 0.8 of apache-rat-plugin does not exclude properly
                  some default development tools files (see RAT-126) -->
             <exclude>.ekstazi/**</exclude>
-            <exclude>src/site/resources/txt/userguide/stress/dh/**</exclude>
-            <exclude>src/site/resources/txt/userguide/stress/tu/**</exclude>
+            <exclude>**/site-content/**</exclude>
+            <exclude>**/.classpath</exclude>
+            <exclude>**/.project</exclude>
+            <exclude>**/.settings/**</exclude>
+            <exclude>**/.checkstyle</exclude>
+            <exclude>**/target/**</exclude>
+            <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
+            <exclude>src/site/resources/txt/userguide/stress/**</exclude>
             <exclude>dist-archive/**</exclude>
           </excludes>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
