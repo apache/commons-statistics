@@ -102,7 +102,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
             ret = 1.0;
         } else {
             ret = 1.0 - RegularizedBeta.value(probabilityOfSuccess,
-                                              x + 1.0, numberOfTrials - x);
+                                              x + 1.0, (double) numberOfTrials - x);
         }
         return ret;
     }

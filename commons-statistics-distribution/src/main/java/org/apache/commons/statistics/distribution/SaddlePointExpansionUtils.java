@@ -185,10 +185,11 @@ final class SaddlePointExpansionUtils {
                 ret = n * Math.log(p);
             }
         } else {
+            final double nMx = (double) n - x;
             ret = getStirlingError(n) - getStirlingError(x) -
-                  getStirlingError(n - x) - getDeviancePart(x, n * p) -
-                  getDeviancePart(n - x, n * q);
-            final double f = (TWO_PI * x * (n - x)) / n;
+                  getStirlingError(nMx) - getDeviancePart(x, n * p) -
+                  getDeviancePart(nMx, n * q);
+            final double f = (TWO_PI * x * nMx) / n;
             ret = -0.5 * Math.log(f) + ret;
         }
         return ret;
