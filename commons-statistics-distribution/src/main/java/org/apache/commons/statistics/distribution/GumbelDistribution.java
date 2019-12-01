@@ -20,6 +20,10 @@ package org.apache.commons.statistics.distribution;
  * This class implements the <a href="http://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution</a>.
  */
 public class GumbelDistribution extends AbstractContinuousDistribution {
+    /** Support lower bound. */
+    private static final double SUPPORT_LO = Double.NEGATIVE_INFINITY;
+    /** Support upper bound. */
+    private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
     /** &pi;<sup>2</sup>/6. */
     private static final double PI_SQUARED_OVER_SIX = Math.PI * Math.PI / 6;
     /**
@@ -70,6 +74,10 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
+        if (x <= SUPPORT_LO) {
+            return 0;
+        }
+
         final double z = (x - mu) / beta;
         final double t = Math.exp(-z);
         return Math.exp(-z - t) / beta;
@@ -110,13 +118,13 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double getSupportLowerBound() {
-        return Double.NEGATIVE_INFINITY;
+        return SUPPORT_LO;
     }
 
     /** {@inheritDoc} */
     @Override
     public double getSupportUpperBound() {
-        return Double.POSITIVE_INFINITY;
+        return SUPPORT_HI;
     }
 
     /** {@inheritDoc} */

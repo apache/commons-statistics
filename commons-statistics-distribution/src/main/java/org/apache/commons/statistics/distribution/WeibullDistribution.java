@@ -31,6 +31,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
  * @since 1.1
  */
 public class WeibullDistribution extends AbstractContinuousDistribution {
+    /** Support lower bound. */
+    private static final double SUPPORT_LO = 0;
+    /** Support upper bound. */
+    private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
     /** The shape parameter. */
     private final double shape;
     /** The scale parameter. */
@@ -78,7 +82,8 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
-        if (x < 0) {
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
             return 0;
         }
 
@@ -98,7 +103,8 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double logDensity(double x) {
-        if (x < 0) {
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
             return Double.NEGATIVE_INFINITY;
         }
 
@@ -118,13 +124,11 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x) {
-        double ret;
-        if (x <= 0) {
-            ret = 0.0;
-        } else {
-            ret = 1.0 - Math.exp(-Math.pow(x / scale, shape));
+        if (x <= SUPPORT_LO) {
+            return 0;
         }
-        return ret;
+
+        return 1 - Math.exp(-Math.pow(x / scale, shape));
     }
 
     /**
@@ -188,7 +192,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportLowerBound() {
-        return 0;
+        return SUPPORT_LO;
     }
 
     /**
@@ -202,7 +206,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportUpperBound() {
-        return Double.POSITIVE_INFINITY;
+        return SUPPORT_HI;
     }
 
     /**

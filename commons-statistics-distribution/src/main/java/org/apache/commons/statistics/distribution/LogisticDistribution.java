@@ -20,6 +20,10 @@ package org.apache.commons.statistics.distribution;
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Logistic_distribution">Logistic distribution</a>.
  */
 public class LogisticDistribution extends AbstractContinuousDistribution {
+    /** Support lower bound. */
+    private static final double SUPPORT_LO = Double.NEGATIVE_INFINITY;
+    /** Support upper bound. */
+    private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
     /** &pi;<sup>2</sup>/3. */
     private static final double PI_SQUARED_OVER_THREE = Math.PI * Math.PI / 3;
     /** Location parameter. */
@@ -69,6 +73,11 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
+            return 0;
+        }
+
         final double z = oneOverScale * (x - mu);
         final double v = Math.exp(-z);
         return oneOverScale * v / ((1 + v) * (1 + v));
@@ -111,13 +120,13 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double getSupportLowerBound() {
-        return Double.NEGATIVE_INFINITY;
+        return SUPPORT_LO;
     }
 
     /** {@inheritDoc} */
     @Override
     public double getSupportUpperBound() {
-        return Double.POSITIVE_INFINITY;
+        return SUPPORT_HI;
     }
 
     /** {@inheritDoc} */

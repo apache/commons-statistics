@@ -27,6 +27,10 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  * @see <a href="http://mathworld.wolfram.com/F-Distribution.html">F-distribution (MathWorld)</a>
  */
 public class FDistribution extends AbstractContinuousDistribution {
+    /** Support lower bound. */
+    private static final double SUPPORT_LO = 0;
+    /** Support upper bound. */
+    private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
     /** The minimum degrees of freedom for the denominator when computing the mean. */
     private static final double MIN_DENOMINATOR_DF_FOR_MEAN = 2.0;
     /** The minimum degrees of freedom for the denominator when computing the variance. */
@@ -70,6 +74,11 @@ public class FDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} **/
     @Override
     public double logDensity(double x) {
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
+            return Double.NEGATIVE_INFINITY;
+        }
+
         final double nhalf = numeratorDegreesOfFreedom / 2;
         final double mhalf = denominatorDegreesOfFreedom / 2;
         final double logx = Math.log(x);
@@ -95,18 +104,18 @@ public class FDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double cumulativeProbability(double x)  {
-        double ret;
-        if (x <= 0) {
-            ret = 0;
-        } else {
-            final double n = numeratorDegreesOfFreedom;
-            final double m = denominatorDegreesOfFreedom;
-
-            ret = RegularizedBeta.value((n * x) / (m + n * x),
-                0.5 * n,
-                0.5 * m);
+        if (x <= SUPPORT_LO) {
+            return 0;
+        } else if (x >= SUPPORT_HI) {
+            return 1;
         }
-        return ret;
+
+        final double n = numeratorDegreesOfFreedom;
+        final double m = denominatorDegreesOfFreedom;
+
+        return RegularizedBeta.value((n * x) / (m + n * x),
+                                     0.5 * n,
+                                     0.5 * m);
     }
 
     /**
@@ -184,7 +193,7 @@ public class FDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportLowerBound() {
-        return 0;
+        return SUPPORT_LO;
     }
 
     /**
@@ -197,7 +206,7 @@ public class FDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportUpperBound() {
-        return Double.POSITIVE_INFINITY;
+        return SUPPORT_HI;
     }
 
     /**

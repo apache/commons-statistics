@@ -23,6 +23,10 @@ import org.apache.commons.numbers.gamma.RegularizedGamma;
  * This class implements the <a href="http://en.wikipedia.org/wiki/Nakagami_distribution">Nakagami distribution</a>.
  */
 public class NakagamiDistribution extends AbstractContinuousDistribution {
+    /** Support lower bound. */
+    private static final double SUPPORT_LO = 0;
+    /** Support upper bound. */
+    private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
     /** The minimum allowed for the shape parameter. */
     private static final double MIN_SHAPE = 0.5;
 
@@ -73,9 +77,11 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
-        if (x <= 0) {
-            return 0.0;
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
+            return 0;
         }
+
         return 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu)) *
                      Math.pow(x, 2 * mu - 1) * Math.exp(-mu * x * x / omega);
     }
@@ -83,6 +89,12 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x) {
+        if (x <= SUPPORT_LO) {
+            return 0;
+        } else if (x >= SUPPORT_HI) {
+            return 1;
+        }
+
         return RegularizedGamma.P.value(mu, mu * x * x / omega);
     }
 
@@ -102,13 +114,13 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double getSupportLowerBound() {
-        return 0;
+        return SUPPORT_LO;
     }
 
     /** {@inheritDoc} */
     @Override
     public double getSupportUpperBound() {
-        return Double.POSITIVE_INFINITY;
+        return SUPPORT_HI;
     }
 
     /** {@inheritDoc} */

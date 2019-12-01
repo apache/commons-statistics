@@ -23,6 +23,10 @@ import org.apache.commons.rng.sampling.distribution.AhrensDieterExponentialSampl
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.
  */
 public class ExponentialDistribution extends AbstractContinuousDistribution {
+    /** Support lower bound. */
+    private static final double SUPPORT_LO = 0;
+    /** Support upper bound. */
+    private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
     /** The mean of this distribution. */
     private final double mean;
     /** The logarithm of the mean, stored to reduce computing time. */
@@ -52,9 +56,11 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} **/
     @Override
     public double logDensity(double x) {
-        if (x < 0) {
+        if (x < SUPPORT_LO ||
+            x >= SUPPORT_HI) {
             return Double.NEGATIVE_INFINITY;
         }
+
         return -x / mean - logMean;
     }
 
@@ -70,13 +76,11 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double cumulativeProbability(double x)  {
-        double ret;
-        if (x <= 0) {
-            ret = 0;
-        } else {
-            ret = 1 - Math.exp(-x / mean);
+        if (x <= SUPPORT_LO) {
+            return 0;
         }
-        return ret;
+
+        return 1 - Math.exp(-x / mean);
     }
 
     /**
@@ -126,7 +130,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportLowerBound() {
-        return 0;
+        return SUPPORT_LO;
     }
 
     /**
@@ -139,7 +143,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportUpperBound() {
-        return Double.POSITIVE_INFINITY;
+        return SUPPORT_HI;
     }
 
     /**

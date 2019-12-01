@@ -25,6 +25,10 @@ import org.apache.commons.rng.sampling.distribution.AhrensDieterMarsagliaTsangGa
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Gamma_distribution">Gamma distribution</a>.
  */
 public class GammaDistribution extends AbstractContinuousDistribution {
+    /** Support lower bound. */
+    private static final double SUPPORT_LO = 0;
+    /** Support upper bound. */
+    private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
     /** Lanczos constant. */
     private static final double LANCZOS_G = LanczosApproximation.g();
     /** The shape parameter. */
@@ -178,9 +182,11 @@ public class GammaDistribution extends AbstractContinuousDistribution {
         *               * exp(a log1pm(---------------) - ----------- + g).
         *                                a + g + 0.5      a + g + 0.5
         */
-        if (x < 0) {
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
             return 0;
         }
+
         final double y = x / scale;
         if ((y <= minY) || (Math.log(y) >= maxLogY)) {
             /*
@@ -203,9 +209,11 @@ public class GammaDistribution extends AbstractContinuousDistribution {
         /*
          * see the comment in {@link #density(double)} for computation details
          */
-        if (x < 0) {
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
             return Double.NEGATIVE_INFINITY;
         }
+
         final double y = x / scale;
         if ((y <= minY) || (Math.log(y) >= maxLogY)) {
             /*
@@ -238,15 +246,13 @@ public class GammaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double cumulativeProbability(double x) {
-        double ret;
-
-        if (x <= 0) {
-            ret = 0;
-        } else {
-            ret = RegularizedGamma.P.value(shape, x / scale);
+        if (x <= SUPPORT_LO) {
+            return 0;
+        } else if (x >= SUPPORT_HI) {
+            return 1;
         }
 
-        return ret;
+        return RegularizedGamma.P.value(shape, x / scale);
     }
 
     /**
@@ -282,7 +288,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportLowerBound() {
-        return 0;
+        return SUPPORT_LO;
     }
 
     /**
@@ -295,7 +301,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportUpperBound() {
-        return Double.POSITIVE_INFINITY;
+        return SUPPORT_HI;
     }
 
     /**
