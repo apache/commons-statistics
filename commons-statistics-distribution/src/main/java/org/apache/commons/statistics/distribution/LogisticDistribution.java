@@ -108,7 +108,7 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double getMean() {
-        return mu;
+        return getLocation();
     }
 
     /** {@inheritDoc} */

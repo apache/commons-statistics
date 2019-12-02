@@ -144,7 +144,7 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double getSupportLowerBound() {
-        return mu;
+        return getLocation();
     }
 
     /** {@inheritDoc} */

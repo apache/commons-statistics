@@ -173,7 +173,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getSupportLowerBound() {
-        return scale;
+        return getScale();
     }
 
     /**
