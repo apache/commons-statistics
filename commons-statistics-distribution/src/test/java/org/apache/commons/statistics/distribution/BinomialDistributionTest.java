@@ -108,8 +108,8 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assertions.assertEquals(dist.getSupportLowerBound(), 0);
-        Assertions.assertEquals(dist.getSupportUpperBound(), 0);
+        Assertions.assertEquals(0, dist.getSupportLowerBound());
+        Assertions.assertEquals(0, dist.getSupportUpperBound());
     }
 
     /** Test degenerate case p = 1 */
@@ -126,8 +126,8 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assertions.assertEquals(dist.getSupportLowerBound(), 5);
-        Assertions.assertEquals(dist.getSupportUpperBound(), 5);
+        Assertions.assertEquals(5, dist.getSupportLowerBound());
+        Assertions.assertEquals(5, dist.getSupportUpperBound());
     }
 
     /** Test degenerate case n = 0 */
@@ -144,8 +144,8 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         verifyDensities();
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
-        Assertions.assertEquals(dist.getSupportLowerBound(), 0);
-        Assertions.assertEquals(dist.getSupportUpperBound(), 0);
+        Assertions.assertEquals(0, dist.getSupportLowerBound());
+        Assertions.assertEquals(0, dist.getSupportUpperBound());
     }
 
     @Test

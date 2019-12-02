@@ -35,7 +35,7 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     @Test
     public void testSupport() {
         NakagamiDistribution d = makeDistribution();
-        Assertions.assertEquals(d.getSupportLowerBound(), 0, Precision.EPSILON);
+        Assertions.assertEquals(0, d.getSupportLowerBound(), Precision.EPSILON);
         Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
         Assertions.assertTrue(d.isSupportConnected());
     }
