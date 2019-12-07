@@ -20,8 +20,6 @@ package org.apache.commons.statistics.distribution;
  * This class implements the Laplace distribution.
  *
  * @see <a href="http://en.wikipedia.org/wiki/Laplace_distribution">Laplace distribution (Wikipedia)</a>
- *
- * @since 3.4
  */
 public class LaplaceDistribution extends AbstractContinuousDistribution {
 

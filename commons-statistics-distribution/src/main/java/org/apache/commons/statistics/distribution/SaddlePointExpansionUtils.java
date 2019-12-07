@@ -25,8 +25,6 @@ import org.apache.commons.numbers.gamma.LogGamma;
  * <a href="http://www.herine.net/stat/software/dbinom.html">dbinom</a> routines.
  *
  * This class is not intended to be called directly.
- *
- * @since 1.0
  */
 final class SaddlePointExpansionUtils {
     /** 2 &pi;. */

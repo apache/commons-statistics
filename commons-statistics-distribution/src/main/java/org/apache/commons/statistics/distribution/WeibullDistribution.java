@@ -27,8 +27,6 @@ import org.apache.commons.numbers.gamma.LogGamma;
  *
  * @see <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution (Wikipedia)</a>
  * @see <a href="http://mathworld.wolfram.com/WeibullDistribution.html">Weibull distribution (MathWorld)</a>
- *
- * @since 1.1
  */
 public class WeibullDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */

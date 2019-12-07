@@ -186,7 +186,6 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      *
      * @param x Value at which the CDF is evaluated.
      * @return the upper tail CDF for this distribution.
-     * @since 1.1
      */
     public double upperCumulativeProbability(int x) {
         double ret;

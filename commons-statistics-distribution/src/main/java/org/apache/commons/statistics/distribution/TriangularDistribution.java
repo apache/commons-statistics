@@ -22,8 +22,6 @@ package org.apache.commons.statistics.distribution;
  *
  * @see <a href="http://en.wikipedia.org/wiki/Triangular_distribution">
  * Triangular distribution (Wikipedia)</a>
- *
- * @since 3.0
  */
 public class TriangularDistribution extends AbstractContinuousDistribution {
     /** Serializable version identifier. */
