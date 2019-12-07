@@ -178,7 +178,7 @@ public class FDistribution extends AbstractContinuousDistribution {
             final double denomDFMinusTwo = denominatorDF - 2;
 
             return (2 * (denominatorDF * denominatorDF) * (numeratorDF + denominatorDF - 2)) /
-                   ((numeratorDF * (denomDFMinusTwo * denomDFMinusTwo) * (denominatorDF - 4)));
+                   (numeratorDF * (denomDFMinusTwo * denomDFMinusTwo) * (denominatorDF - 4));
         }
 
         return Double.NaN;
