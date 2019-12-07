@@ -24,8 +24,6 @@ package org.apache.commons.statistics.distribution;
  * Triangular distribution (Wikipedia)</a>
  */
 public class TriangularDistribution extends AbstractContinuousDistribution {
-    /** Serializable version identifier. */
-    private static final long serialVersionUID = 20160311L;
     /** Lower limit of this distribution (inclusive). */
     private final double a;
     /** Upper limit of this distribution (inclusive). */

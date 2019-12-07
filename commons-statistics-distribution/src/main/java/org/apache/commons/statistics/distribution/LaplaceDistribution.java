@@ -22,10 +22,6 @@ package org.apache.commons.statistics.distribution;
  * @see <a href="http://en.wikipedia.org/wiki/Laplace_distribution">Laplace distribution (Wikipedia)</a>
  */
 public class LaplaceDistribution extends AbstractContinuousDistribution {
-
-    /** Serializable version identifier. */
-    private static final long serialVersionUID = 20160311L;
-
     /** The location parameter. */
     private final double mu;
     /** The scale parameter. */
