@@ -343,6 +343,6 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Gamma distribution sampler.
-        return new AhrensDieterMarsagliaTsangGammaSampler(rng, scale, shape)::sample;
+        return new AhrensDieterMarsagliaTsangGammaSampler(rng, shape, scale)::sample;
     }
 }
