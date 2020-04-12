@@ -160,21 +160,38 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
      * Verifies fixes for JIRA MATH-167, MATH-414
      */
     @Test
-    public void testExtremeValues() {
-        NormalDistribution distribution = new NormalDistribution(0, 1);
+    public void testLowerTail() {
+        final NormalDistribution distribution = new NormalDistribution(0, 1);
         for (int i = 0; i < 100; i++) { // make sure no convergence exception
-            double lowerTail = distribution.cumulativeProbability(-i);
-            double upperTail = distribution.cumulativeProbability(i);
-            if (i < 9) { // make sure not top-coded
-                // For i = 10, due to bad tail precision in erf (MATH-364), 1 is returned
-                // TODO: once MATH-364 is resolved, replace 9 with 30
-                Assertions.assertTrue(lowerTail > 0.0d);
-                Assertions.assertTrue(upperTail < 1.0d);
+            final double lowerTail = distribution.cumulativeProbability(-i);
+            if (i < 39) { // make sure not top-coded
+                Assertions.assertTrue(lowerTail > 0);
             } else { // make sure top coding not reversed
-                Assertions.assertTrue(lowerTail < 0.00001);
-                Assertions.assertTrue(upperTail > 0.99999);
+                Assertions.assertEquals(0, lowerTail, 0d);
             }
         }
+    }
+
+    /**
+     * Check to make sure top-coding of extreme values works correctly.
+     * Verifies fixes for JIRA MATH-167, MATH-414
+     */
+    @Test
+    public void testUpperTail() {
+        final NormalDistribution distribution = new NormalDistribution(0, 1);
+        for (int i = 0; i < 100; i++) { // make sure no convergence exception
+            final double upperTail = distribution.cumulativeProbability(i);
+            if (i < 9) { // make sure not top-coded
+                Assertions.assertTrue(upperTail < 1);
+            } else { // make sure top coding not reversed
+                Assertions.assertEquals(1, upperTail, 0d);
+            }
+        }
+    }
+
+    @Test
+    public void testExtremeValues() {
+        final NormalDistribution distribution = new NormalDistribution(0, 1);
 
         Assertions.assertEquals(1, distribution.cumulativeProbability(Double.MAX_VALUE), 0);
         Assertions.assertEquals(0, distribution.cumulativeProbability(-Double.MAX_VALUE), 0);
