@@ -166,6 +166,7 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-math3</artifactId>
         <version>${statistics.commons.math3.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
