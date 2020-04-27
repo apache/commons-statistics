@@ -16,34 +16,35 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  * Package private exception class with constants for frequently used messages.
  */
 class DistributionException extends IllegalArgumentException {
     /** Error message for "too large" condition. */
-    static final String TOO_LARGE = "{0} > {1}";
+    static final String TOO_LARGE = "%g > %g";
     /** Error message for "too small" condition. */
-    static final String TOO_SMALL = "{0} < {1}";
+    static final String TOO_SMALL = "%g < %g";
     /** Error message for "out of range" condition. */
-    static final String OUT_OF_RANGE = "Number {0} is out of range [{1}, {2}]";
+    static final String OUT_OF_RANGE = "Number %g is out of range [%g, %g]";
+    /** Error message for "invalid probability" condition. */
+    static final String INVALID_PROBABILITY = "Not a probability: %.16e is out of range [0, 1]";
     /** Error message for "out of range" condition. */
-    static final String NEGATIVE = "Number {0} is negative";
+    static final String NEGATIVE = "Number %g is negative";
     /** Error message for "mismatch" condition. */
-    static final String MISMATCH = "Expected {1} but was {0}";
+    static final String MISMATCH = "Expected %g but was %g";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20180119L;
 
     /**
-     * Create an exception where the message is constructed by applying
-     * the {@code format()} method from {@code java.text.MessageFormat}.
+     * Creates an exception.
      *
-     * @param message  the exception message with replaceable parameters
-     * @param formatArguments the arguments for formatting the message
+     * @param message Exception message with replaceable parameters.
+     * @param formatArguments Arguments for formatting the message.
      */
     DistributionException(String message, Object... formatArguments) {
-        super(MessageFormat.format(message, formatArguments));
+        super(String.format((Locale) null, message, formatArguments));
     }
 }

@@ -95,7 +95,7 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     public double inverseCumulativeProbability(double p) {
         if (p < 0 ||
             p > 1) {
-            throw new DistributionException(DistributionException.OUT_OF_RANGE, p, 0, 1);
+            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         } else if (p == 0) {
             return 0;
         } else if (p == 1) {

@@ -57,7 +57,7 @@ abstract class AbstractDiscreteDistribution
     public int inverseCumulativeProbability(final double p) {
         if (p < 0 ||
             p > 1) {
-            throw new DistributionException(DistributionException.OUT_OF_RANGE, p, 0, 1);
+            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
 
         int lower = getSupportLowerBound();

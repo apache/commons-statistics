@@ -35,7 +35,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
      */
     public GeometricDistribution(double p) {
         if (p <= 0 || p > 1) {
-            throw new DistributionException(DistributionException.OUT_OF_RANGE, p, 0, 1);
+            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
 
         probabilityOfSuccess = p;
@@ -147,7 +147,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     public int inverseCumulativeProbability(double p) {
         if (p < 0 ||
             p > 1) {
-            throw new DistributionException(DistributionException.OUT_OF_RANGE, p, 0, 1);
+            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
         if (p == 1) {
             return Integer.MAX_VALUE;
