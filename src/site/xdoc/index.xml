@@ -20,7 +20,7 @@
 <document>
 
   <properties>
-    <title>Commons RNG</title>
+    <title>Commons Statistics</title>
   </properties>
 
   <body>
@@ -33,7 +33,7 @@
       <subsection name="Releases">
         <p>
           Download the
-          <a href="https://commons.apache.org/rng/download_statistics.cgi">
+          <a href="https://commons.apache.org/statistics/download_statistics.cgi">
             latest release</a> of Apache Commons Statistics.
         </p>
       </subsection>

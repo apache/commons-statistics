@@ -47,9 +47,9 @@
               under the heading "Repository Checkout" on the
               <a href="https://gitbox.apache.org/">Git at the ASF page</a>.
               The git url for the current development sources of Commons Statistics
-              is <source>http://gitbox.apache.org/repos/asf/commons-rng.git</source>
+              is <source>http://gitbox.apache.org/repos/asf/commons-statistics.git</source>
               for anonymous read-only access and
-              <source>https://apacheid@gitbox.apache.org/repos/asf/commons-rng.git</source>
+              <source>https://apacheid@gitbox.apache.org/repos/asf/commons-statistics.git</source>
               (where apacheid should be replaced by each committer Apache ID) for committers
               read-write access.
             </li>
@@ -69,7 +69,7 @@
             </li>
             <li>
               Have a look at the new features that users and developers have requested
-              on the <a href="http://wiki.apache.org/commons/RngWishList">
+              on the <a href="http://wiki.apache.org/commons/StatisticsWishList">
               Statistics Wish List Wiki Page.</a>
             </li>
             <li>
@@ -90,7 +90,7 @@
               for submitting bugs and search the database to
               determine if an issue exists or has already been dealt with.        
               <p>
-                See the <a href="https://commons.apache.org/rng/issue-tracking.html">
+                See the <a href="https://commons.apache.org/statistics/issue-tracking.html">
                 Commons Statistics Issue Tracking Page</a>
                 for more information on how to
                 search for or submit bugs or enhancement requests.
@@ -129,7 +129,7 @@
             </ul></li>
             <li>Assuming a generally favorable response to the idea on commons-dev,
             the next step is to add an entry to the 
-            <a href="http://wiki.apache.org/commons/RngWishList">Statistics Wish
+            <a href="http://wiki.apache.org/commons/StatisticsWishList">Statistics Wish
             List</a> corresponding to the idea.  Include a reference to the
             discussion thread. </li>
             <li>Create a JIRA ticket using the the feature title as the short
@@ -190,7 +190,7 @@
             terms used in component documentation <i>must</i> be provided.
           </li>
           <li>
-            Commons rng javadoc generation supports embedded LaTeX formulas via the
+            Commons Statistics javadoc generation supports embedded LaTeX formulas via the
             <a href="http://www.mathjax.org">MathJax</a> javascript display engine.
             To embed mathematical expressions formatted in LaTeX in javadoc, simply surround
             the expression to be formatted with either <code>\(</code> and <code>\)</code>
