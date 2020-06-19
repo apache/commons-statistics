@@ -26,7 +26,6 @@ under the License.
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>org.apache.commons</groupId>
   <artifactId>commons-statistics</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
