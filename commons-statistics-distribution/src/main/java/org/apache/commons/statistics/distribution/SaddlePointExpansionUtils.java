@@ -83,8 +83,8 @@ final class SaddlePointExpansionUtils {
      * <ol>
      * <li>Eric W. Weisstein. "Stirling's Series." From MathWorld--A Wolfram Web
      * Resource. <a target="_blank"
-     * href="http://mathworld.wolfram.com/StirlingsSeries.html">
-     * http://mathworld.wolfram.com/StirlingsSeries.html</a></li>
+     * href="https://mathworld.wolfram.com/StirlingsSeries.html">
+     * https://mathworld.wolfram.com/StirlingsSeries.html</a></li>
      * </ol>
      * </p>
      *
