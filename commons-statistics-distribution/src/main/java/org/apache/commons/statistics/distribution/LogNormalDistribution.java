@@ -162,9 +162,10 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
             throw new DistributionException(DistributionException.TOO_LARGE,
                                             x0, x1);
         }
-        if (x0 <= 0 || x1 <= 0) {
+        if (x0 <= 0) {
             return super.probability(x0, x1);
         }
+        // Assumes x1 >= x0 && x0 > 0
         final double denom = shape * SQRT2;
         final double v0 = (Math.log(x0) - scale) / denom;
         final double v1 = (Math.log(x1) - scale) / denom;
