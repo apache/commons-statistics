@@ -73,6 +73,80 @@ public class AbstractDiscreteDistributionTest {
         }
     }
 
+    @Test
+    public void testInverseCumulativeProbabilityExtremes() {
+        // Require a lower bound of MIN_VALUE and the cumulative probability
+        // at that bound to be lower/higher than the argument cumulative probability.
+        final DiscreteDistribution dist = new AbstractDiscreteDistribution() {
+            @Override
+            public double probability(int x) {
+                return 0;
+            }
+            @Override
+            public double cumulativeProbability(int x) {
+                return x == Integer.MIN_VALUE ? 0.1 : 1.0;
+            }
+            @Override
+            public double getMean() {
+                return 0;
+            }
+            @Override
+            public double getVariance() {
+                return 0;
+            }
+            @Override
+            public int getSupportLowerBound() {
+                return Integer.MIN_VALUE;
+            }
+            @Override
+            public int getSupportUpperBound() {
+                return 42;
+            }
+            @Override
+            public boolean isSupportConnected() {
+                return false;
+            }
+        };
+        Assertions.assertEquals(Integer.MIN_VALUE, dist.inverseCumulativeProbability(0.05));
+        Assertions.assertEquals(dist.getSupportUpperBound(), dist.inverseCumulativeProbability(1.0));
+    }
+
+    @Test
+    public void testInverseCumulativeProbabilityWithNaN() {
+        final DiscreteDistribution dist = new AbstractDiscreteDistribution() {
+            @Override
+            public double probability(int x) {
+                return 0;
+            }
+            @Override
+            public double cumulativeProbability(int x) {
+                // NaN is not allowed
+                return Double.NaN;
+            }
+            @Override
+            public double getMean() {
+                return 0;
+            }
+            @Override
+            public double getVariance() {
+                return 0;
+            }
+            @Override
+            public int getSupportLowerBound() {
+                return Integer.MIN_VALUE;
+            }
+            @Override
+            public int getSupportUpperBound() {
+                return Integer.MAX_VALUE;
+            }
+            @Override
+            public boolean isSupportConnected() {
+                return false;
+            }
+        };
+        Assertions.assertThrows(IllegalStateException.class, () -> dist.inverseCumulativeProbability(0.5));
+    }
+
     /**
      * Simple distribution modeling a 6-sided die
      */
