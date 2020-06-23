@@ -301,6 +301,30 @@ public class BetaDistributionTest {
     }
 
     @Test
+    public void testDensityExtremes() {
+        final BetaDistribution d = new BetaDistribution(2, 3);
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(-0.1));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(1.1));
+        Assertions.assertEquals(0.0, d.density(-0.1));
+        Assertions.assertEquals(0.0, d.density(1.1));
+
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(0.0));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(1.0));
+    }
+
+    @Test
+    public void testLogDensityPrecondition1() {
+        final BetaDistribution d = new BetaDistribution(0.5, 3);
+        Assertions.assertThrows(DistributionException.class, () -> d.logDensity(0.0));
+    }
+
+    @Test
+    public void testLogDensityPrecondition2() {
+        final BetaDistribution d = new BetaDistribution(2, 0.5);
+        Assertions.assertThrows(DistributionException.class, () -> d.logDensity(1.0));
+    }
+
+    @Test
     public void testMoments() {
         final double tol = 1e-9;
         BetaDistribution dist;

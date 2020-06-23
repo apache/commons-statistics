@@ -79,13 +79,13 @@ public class BetaDistribution extends AbstractContinuousDistribution {
         } else if (x == 0) {
             if (alpha < 1) {
                 throw new DistributionException(DistributionException.TOO_SMALL,
-                                                alpha, 1);
+                                                alpha, 1.0);
             }
             return Double.NEGATIVE_INFINITY;
         } else if (x == 1) {
             if (beta < 1) {
                 throw new DistributionException(DistributionException.TOO_SMALL,
-                                                beta, 1);
+                                                beta, 1.0);
             }
             return Double.NEGATIVE_INFINITY;
         } else {
