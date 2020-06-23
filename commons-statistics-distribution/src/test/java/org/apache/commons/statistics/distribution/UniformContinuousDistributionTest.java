@@ -92,9 +92,8 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
         Assertions.assertThrows(IllegalArgumentException.class, () -> new UniformContinuousDistribution(1, 0));
     }
 
-    /** Test mean/variance. */
     @Test
-    public void testMeanVariance() {
+    public void testMoments() {
         UniformContinuousDistribution dist;
 
         dist = new UniformContinuousDistribution(0, 1);

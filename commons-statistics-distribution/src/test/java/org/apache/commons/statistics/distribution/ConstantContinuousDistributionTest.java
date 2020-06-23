@@ -72,7 +72,7 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
     //--- Additional test cases -----------------------------------------------
 
     @Test
-    public void testMeanVariance() {
+    public void testMoments() {
         ConstantContinuousDistribution dist;
 
         dist = new ConstantContinuousDistribution(-1);

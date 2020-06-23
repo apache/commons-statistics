@@ -79,9 +79,8 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
             -2.650679030597d, -3.644945255983d};
     }
 
-    /** Test mean/variance. */
     @Test
-    public void testMeanVariance() {
+    public void testMoments() {
         LevyDistribution dist;
 
         dist = new LevyDistribution(0, 0.5);

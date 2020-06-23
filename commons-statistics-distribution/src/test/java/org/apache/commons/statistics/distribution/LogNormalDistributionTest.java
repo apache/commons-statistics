@@ -222,7 +222,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testMeanVariance() {
+    public void testMoments() {
         final double tol = 1e-9;
         LogNormalDistribution dist;
 

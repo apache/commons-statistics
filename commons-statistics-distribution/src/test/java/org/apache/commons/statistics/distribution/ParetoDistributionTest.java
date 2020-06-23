@@ -186,7 +186,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testMeanVariance() {
+    public void testMoments() {
         final double tol = 1e-9;
         ParetoDistribution dist;
 

@@ -170,9 +170,8 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(2, 1, 3));
     }
 
-    /** Test mean/variance. */
     @Test
-    public void testMeanVariance() {
+    public void testMoments() {
         TriangularDistribution dist;
 
         dist = new TriangularDistribution(0, 0.5, 1.0);
