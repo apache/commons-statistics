@@ -37,7 +37,7 @@ abstract class AbstractDiscreteDistribution
                               int x1) {
         if (x1 < x0) {
             throw new DistributionException(DistributionException.TOO_SMALL,
-                                            (double) x1, (double) x0);
+                                            x1, x0);
         }
         return cumulativeProbability(x1) - cumulativeProbability(x0);
     }

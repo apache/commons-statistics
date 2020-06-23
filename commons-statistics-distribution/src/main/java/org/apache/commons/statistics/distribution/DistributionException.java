@@ -23,17 +23,17 @@ import java.util.Locale;
  */
 class DistributionException extends IllegalArgumentException {
     /** Error message for "too large" condition. */
-    static final String TOO_LARGE = "%g > %g";
+    static final String TOO_LARGE = "%s > %s";
     /** Error message for "too small" condition. */
-    static final String TOO_SMALL = "%g < %g";
+    static final String TOO_SMALL = "%s < %s";
     /** Error message for "out of range" condition. */
-    static final String OUT_OF_RANGE = "Number %g is out of range [%g, %g]";
+    static final String OUT_OF_RANGE = "Number %s is out of range [%s, %s]";
     /** Error message for "invalid probability" condition. */
-    static final String INVALID_PROBABILITY = "Not a probability: %.16e is out of range [0, 1]";
+    static final String INVALID_PROBABILITY = "Not a probability: %s is out of range [0, 1]";
     /** Error message for "out of range" condition. */
-    static final String NEGATIVE = "Number %g is negative";
+    static final String NEGATIVE = "Number %s is negative";
     /** Error message for "mismatch" condition. */
-    static final String MISMATCH = "Expected %g but was %g";
+    static final String MISMATCH = "Expected %s but was %s";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20180119L;

@@ -43,24 +43,24 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
                                       int sampleSize) {
         if (populationSize <= 0) {
             throw new DistributionException(DistributionException.NEGATIVE,
-                                            (double) populationSize);
+                                            populationSize);
         }
         if (numberOfSuccesses < 0) {
             throw new DistributionException(DistributionException.NEGATIVE,
-                                            (double) numberOfSuccesses);
+                                            numberOfSuccesses);
         }
         if (sampleSize < 0) {
             throw new DistributionException(DistributionException.NEGATIVE,
-                                            (double) sampleSize);
+                                            sampleSize);
         }
 
         if (numberOfSuccesses > populationSize) {
             throw new DistributionException(DistributionException.TOO_LARGE,
-                                            (double) numberOfSuccesses, (double) populationSize);
+                                            numberOfSuccesses, populationSize);
         }
         if (sampleSize > populationSize) {
             throw new DistributionException(DistributionException.TOO_LARGE,
-                                            (double) sampleSize, (double) populationSize);
+                                            sampleSize, populationSize);
         }
 
         this.numberOfSuccesses = numberOfSuccesses;

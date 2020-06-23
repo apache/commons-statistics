@@ -39,7 +39,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
                                 double p) {
         if (trials < 0) {
             throw new DistributionException(DistributionException.NEGATIVE,
-                                           trials);
+                                            trials);
         }
         if (p < 0 ||
             p > 1) {
