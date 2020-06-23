@@ -211,6 +211,8 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
             {99.0, 6.63604297068222e-63, 1.0, 6.670480942963e-63},
             {100.0, 3.43501099007557e-65, 1.0, 3.4437972280786e-65},
             {101.0, 8.78623800302957e-68, 1.0, 8.78623800302957e-68},
+            // Out of domain
+            {sampleSize + 1, 0, 1.0, 0},
         };
 
         testHypergeometricDistributionProbabilities(populationSize, sampleSize, numberOfSucceses, data);
