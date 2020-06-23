@@ -149,6 +149,21 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
+    public void testConstructorPrecondition1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new BinomialDistribution(-1, 0.1));
+    }
+
+    @Test
+    public void testConstructorPrecondition2() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new BinomialDistribution(10, -0.1));
+    }
+
+    @Test
+    public void testConstructorPrecondition3() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new BinomialDistribution(10, 1.1));
+    }
+
+    @Test
     public void testMoments() {
         final double tol = 1e-9;
         BinomialDistribution dist;
@@ -160,6 +175,22 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         dist = new BinomialDistribution(30, 0.3);
         Assertions.assertEquals(30d * 0.3d, dist.getMean(), tol);
         Assertions.assertEquals(30d * 0.3d * (1d - 0.3d), dist.getVariance(), tol);
+    }
+
+    @Test
+    public void testGetNumberOfTrials() {
+        for (final int n : new int[] {11, 42, 999}) {
+            final BinomialDistribution dist = new BinomialDistribution(n, 0.5);
+            Assertions.assertEquals(n, dist.getNumberOfTrials());
+        }
+    }
+
+    @Test
+    public void testGetProbabilityOfSuccess() {
+        for (final double p : new double[] {0.1, 0.456, 0.999}) {
+            final BinomialDistribution dist = new BinomialDistribution(10, p);
+            Assertions.assertEquals(p, dist.getProbabilityOfSuccess());
+        }
     }
 
     @Test
