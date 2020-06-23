@@ -25,31 +25,6 @@ import org.junit.jupiter.api.Test;
  */
 public class LogisticsDistributionTest extends ContinuousDistributionAbstractTest {
 
-    @Test
-    public void testParameters() {
-        LogisticDistribution d = makeDistribution();
-        Assertions.assertEquals(2, d.getLocation(), Precision.EPSILON);
-        Assertions.assertEquals(5, d.getScale(), Precision.EPSILON);
-    }
-
-    @Test
-    public void testSupport() {
-        LogisticDistribution d = makeDistribution();
-        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
-        Assertions.assertTrue(d.isSupportConnected());
-    }
-
-    @Test
-    public void testMeanAndVariance() {
-        LogisticDistribution d = makeDistribution();
-        // Constructor 'location' parameter = mean
-        Assertions.assertEquals(2.0, d.getMean());
-        // Variance = (s^2 * pi^2) / 3
-        // Constructor 'scale' parameter = s
-        Assertions.assertEquals(5 * 5 * Math.PI * Math.PI / 3, d.getVariance());
-    }
-
     @Override
     public LogisticDistribution makeDistribution() {
         return new LogisticDistribution(2, 5);
@@ -76,5 +51,44 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
             0.1978161, 0.2314752, 0.2689414, 0.3100255, 0.3543437, 0.4013123,
             0.4501660, 0.5000000, 0.5498340, 0.5986877, 0.6456563
         };
+    }
+
+    //---------------------------- Additional test cases -------------------------
+
+    @Test
+    public void testInverseCumulativeProbabilityExtremes() {
+        setInverseCumulativeTestPoints(new double[] {0, 1});
+        setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
+        verifyInverseCumulativeProbabilities();
+    }
+
+    @Test
+    public void testConstructorPrecondition1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new LogisticDistribution(1, 0));
+    }
+
+    @Test
+    public void testParameters() {
+        LogisticDistribution d = makeDistribution();
+        Assertions.assertEquals(2, d.getLocation(), Precision.EPSILON);
+        Assertions.assertEquals(5, d.getScale(), Precision.EPSILON);
+    }
+
+    @Test
+    public void testSupport() {
+        LogisticDistribution d = makeDistribution();
+        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
+        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertTrue(d.isSupportConnected());
+    }
+
+    @Test
+    public void testMeanAndVariance() {
+        LogisticDistribution d = makeDistribution();
+        // Constructor 'location' parameter = mean
+        Assertions.assertEquals(2.0, d.getMean());
+        // Variance = (s^2 * pi^2) / 3
+        // Constructor 'scale' parameter = s
+        Assertions.assertEquals(5 * 5 * Math.PI * Math.PI / 3, d.getVariance());
     }
 }
