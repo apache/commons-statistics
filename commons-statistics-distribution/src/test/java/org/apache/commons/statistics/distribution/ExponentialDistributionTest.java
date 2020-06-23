@@ -130,10 +130,4 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
         Assertions.assertEquals(10.5d, dist.getMean(), tol);
         Assertions.assertEquals(10.5d * 10.5d, dist.getVariance(), tol);
     }
-
-    @Test
-    public void testIsSupportConnected() {
-        final ExponentialDistribution dist = new ExponentialDistribution(11d);
-        Assertions.assertTrue(dist.isSupportConnected());
-    }
 }

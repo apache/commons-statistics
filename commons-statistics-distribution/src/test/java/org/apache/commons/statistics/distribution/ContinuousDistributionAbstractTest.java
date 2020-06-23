@@ -379,6 +379,19 @@ public abstract class ContinuousDistributionAbstractTest {
         }
     }
 
+    /**
+     * Test if the distribution is support connected. This test exists to ensure the support
+     * connected property is tested. This may be evaluated in the default implementation
+     * of {@link AbstractContinuousDistribution#inverseCumulativeProbability(double)}
+     * depending on the data points used to test the distribution (see
+     * {@link #makeInverseCumulativeTestPoints()}). If this default method has been overridden
+     * then the support connected property is not used elsewhere in the standard tests.
+     */
+    @Test
+    public void testIsSupportConnected() {
+        Assertions.assertEquals(isSupportConnected(), distribution.isSupportConnected());
+    }
+
     //------------------ Getters / Setters for test instance data -----------
     /**
      * @return Returns the cumulativeTestPoints.
@@ -476,5 +489,16 @@ public abstract class ContinuousDistributionAbstractTest {
      */
     protected void setTolerance(double tolerance) {
         this.tolerance = tolerance;
+    }
+
+    /**
+     * The expected value for {@link ContinuousDistribution#isSupportConnected()}.
+     * The default is {@code true}. Test class should override this when the distribution
+     * is not support connected.
+     *
+     * @return Returns true if the distribution is support connected
+     */
+    protected boolean isSupportConnected() {
+        return true;
     }
 }

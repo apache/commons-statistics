@@ -300,6 +300,15 @@ public abstract class DiscreteDistributionAbstractTest {
         TestUtils.assertChiSquareAccept(densityPoints, expectedCounts, observedCounts, .001);
     }
 
+    /**
+     * Test if the distribution is support connected. This test exists to ensure the support
+     * connected property is tested.
+     */
+    @Test
+    public void testIsSupportConnected() {
+        Assertions.assertEquals(isSupportConnected(), distribution.isSupportConnected());
+    }
+
     //------------------ Getters / Setters for test instance data -----------
     /**
      * @return Returns the cumulativeTestPoints.
@@ -411,5 +420,16 @@ public abstract class DiscreteDistributionAbstractTest {
      */
     protected void setTolerance(double tolerance) {
         this.tolerance = tolerance;
+    }
+
+    /**
+     * The expected value for {@link DiscreteDistribution#isSupportConnected()}.
+     * The default is {@code true}. Test class should override this when the distribution
+     * is not support connected.
+     *
+     * @return Returns true if the distribution is support connected
+     */
+    protected boolean isSupportConnected() {
+        return true;
     }
 }
