@@ -67,4 +67,31 @@ public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest 
             0.500000000, 0.816060279, 0.932332358, 0.975106466, 0.990842181, 0.996631027
         };
     }
+
+    // ----------------- Additional test cases ---------------------------------
+
+    @Test
+    public void testInverseCumulativeProbabilityExtremes() {
+        setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
+        setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
+        verifyInverseCumulativeProbabilities();
+    }
+
+    @Test
+    public void testConstructorPrecondition1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new LaplaceDistribution(0, -0.1));
+    }
+
+    @Test
+    public void testMoments() {
+        LaplaceDistribution dist;
+
+        dist = new LaplaceDistribution(0.5, 1.0);
+        Assertions.assertEquals(0.5, dist.getMean());
+        Assertions.assertEquals(2.0 * 1.0 * 1.0, dist.getVariance());
+
+        dist = new LaplaceDistribution(-0.3, 2.5);
+        Assertions.assertEquals(-0.3, dist.getMean());
+        Assertions.assertEquals(2.0 * 2.5 * 2.5, dist.getVariance());
+    }
 }
