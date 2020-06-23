@@ -48,9 +48,10 @@ abstract class AbstractDiscreteDistribution
      * The default implementation returns
      * <ul>
      * <li>{@link #getSupportLowerBound()} for {@code p = 0},</li>
-     * <li>{@link #getSupportUpperBound()} for {@code p = 1}, and</li>
-     * <li>{@link #solveInverseCumulativeProbability(double, int, int)} for
-     *     {@code 0 < p < 1}.</li>
+     * <li>{@link #getSupportUpperBound()} for {@code p = 1}, or</li>
+     * <li>the result of a binary search between the lower and upper bound using
+     *     {@link #cumulativeProbability(int)}. The bounds may be bracketed for
+     *     efficiency.</li>
      * </ul>
      */
     @Override
