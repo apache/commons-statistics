@@ -35,8 +35,8 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
      * Creates a distribution.
      *
      * @param a Lower limit of this distribution (inclusive).
-     * @param b Upper limit of this distribution (inclusive).
      * @param c Mode of this distribution.
+     * @param b Upper limit of this distribution (inclusive).
      * @throws IllegalArgumentException if {@code a >= b}, if {@code c > b}
      * or if {@code c < a}.
      */
