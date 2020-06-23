@@ -109,4 +109,10 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertTrue(Double.isNaN(dist.getMean()));
         Assertions.assertTrue(Double.isNaN(dist.getVariance()));
     }
+
+    @Test
+    public void testIsSupportConnected() {
+        final CauchyDistribution dist = new CauchyDistribution(10.2, 0.15);
+        Assertions.assertTrue(dist.isSupportConnected());
+    }
 }
