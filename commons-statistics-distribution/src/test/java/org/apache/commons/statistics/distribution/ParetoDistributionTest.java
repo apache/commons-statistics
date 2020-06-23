@@ -148,6 +148,11 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
+    public void testConstructorPrecondition2() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ParetoDistribution(0, 1));
+    }
+
+    @Test
     public void testDensity() {
         double[] x = new double[] {-2, -1, 0, 1, 2};
         // R 2.14: print(dpareto(c(-2,-1,0,1,2), scale=1, shape=1), digits=10)
