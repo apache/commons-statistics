@@ -78,4 +78,22 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
             -0.883485488811d, 0.076793740349d, -1.127785768948d,
             -2.650679030597d, -3.644945255983d};
     }
+
+    /** Test mean/variance. */
+    @Test
+    public void testMeanVariance() {
+        LevyDistribution dist;
+
+        dist = new LevyDistribution(0, 0.5);
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
+
+        dist = new LevyDistribution(0, 1);
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
+
+        dist = new LevyDistribution(-3, 2);
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
+    }
 }
