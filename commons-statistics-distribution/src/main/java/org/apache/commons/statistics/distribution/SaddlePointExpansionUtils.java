@@ -16,8 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.apache.commons.numbers.gamma.LogGamma;
-
 /**
  * Utility class used by various distributions to accurately compute their
  * respective probability mass functions. The implementation for this class is
@@ -29,12 +27,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
 final class SaddlePointExpansionUtils {
     /** 2 &pi;. */
     private static final double TWO_PI = 2 * Math.PI;
-    /** 1/2 * log(2 &pi;). */
-    private static final double HALF_LOG_TWO_PI = 0.5 * Math.log(TWO_PI);
     /** 1/10. */
     private static final double ONE_TENTH = 0.1;
     /** The threshold value for switching the method to compute th Stirling error. */
-    private static final double STIRLING_ERROR_THRESHOLD = 15.0;
+    private static final int STIRLING_ERROR_THRESHOLD = 15;
 
     /** Exact Stirling expansion error for certain values. */
     private static final double[] EXACT_STIRLING_ERRORS = {
@@ -88,19 +84,15 @@ final class SaddlePointExpansionUtils {
      * </ol>
      * </p>
      *
+     * <p>Note: This function has been modified for integer {@code z}.</p>
+     *
      * @param z the value.
      * @return the Striling's series error.
      */
-    static double getStirlingError(double z) {
+    static double getStirlingError(int z) {
         double ret;
-        if (z < STIRLING_ERROR_THRESHOLD) {
-            final double z2 = 2.0 * z;
-            if (Math.floor(z2) == z2) {
-                ret = EXACT_STIRLING_ERRORS[(int) z2];
-            } else {
-                ret = LogGamma.value(z + 1.0) - (z + 0.5) * Math.log(z) +
-                      z - HALF_LOG_TWO_PI;
-            }
+        if (z <= STIRLING_ERROR_THRESHOLD) {
+            ret = EXACT_STIRLING_ERRORS[2 * z];
         } else {
             final double z2 = z * z;
             ret = (0.083333333333333333333 -
@@ -125,11 +117,13 @@ final class SaddlePointExpansionUtils {
      * </ol>
      * </p>
      *
+     * <p>Note: This function has been modified for integer {@code x}.</p>
+     *
      * @param x the x value.
      * @param mu the average.
      * @return a part of the deviance.
      */
-    static double getDeviancePart(double x, double mu) {
+    static double getDeviancePart(int x, double mu) {
         double ret;
         if (Math.abs(x - mu) < 0.1 * (x + mu)) {
             final double d = x - mu;
@@ -183,7 +177,7 @@ final class SaddlePointExpansionUtils {
                 ret = n * Math.log(p);
             }
         } else {
-            final double nMx = (double) n - x;
+            final int nMx = n - x;
             ret = getStirlingError(n) - getStirlingError(x) -
                   getStirlingError(nMx) - getDeviancePart(x, n * p) -
                   getDeviancePart(nMx, n * q);

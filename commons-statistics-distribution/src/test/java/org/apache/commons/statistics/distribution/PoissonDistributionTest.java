@@ -51,7 +51,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public int[] makeDensityTestPoints() {
-        return new int[] {-1, 0, 1, 2, 3, 4, 5, 10, 20};
+        return new int[] {-1, 0, 1, 2, 3, 4, 5, 10, 15, 16, 20};
     }
 
     /**
@@ -61,8 +61,9 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0d, 0.0183156388887d,  0.073262555555d,
-                             0.14652511111d, 0.195366814813d, 0.195366814813,
-                             0.156293451851d, 0.00529247667642d, 8.27746364655e-09};
+                             0.14652511111d, 0.195366814813d, 0.195366814813d,
+                             0.156293451851d, 0.00529247667642d, 1.503911676283e-05d,
+                             3.759779190708e-06d, 8.27746364655e-09};
     }
 
     /**
@@ -74,7 +75,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         return new double[] {Double.NEGATIVE_INFINITY, -4.000000000000d,
                              -2.613705638880d, -1.920558458320d, -1.632876385868d,
                              -1.632876385868d, -1.856019937183d, -5.241468961877d,
-                             -18.609729238356d};
+                             -11.1048559670425d, -12.4911503281624d, -18.609729238356d};
     }
 
     /**
@@ -90,9 +91,9 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public double[] makeCumulativeTestValues() {
-        return new double[] {0d,  0.0183156388887d, 0.0915781944437d,
-                             0.238103305554d, 0.433470120367d, 0.62883693518,
-                             0.78513038703d,  0.99716023388d, 0.999999998077};
+        return new double[] {0d, 0.0183156388887d, 0.0915781944437d,
+                             0.238103305554d, 0.433470120367d, 0.62883693518d,
+                             0.78513038703d, 0.99716023388d, 0.999999998077};
     }
 
     /**
