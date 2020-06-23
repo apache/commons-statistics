@@ -89,4 +89,10 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
             Assertions.assertEquals(value, sampler.sample(), 0);
         }
     }
+
+    @Test
+    public void testIsSupportConnected() {
+        final ConstantContinuousDistribution dist = new ConstantContinuousDistribution(-1);
+        Assertions.assertTrue(dist.isSupportConnected());
+    }
 }
