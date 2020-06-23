@@ -160,6 +160,15 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
+    public void testCumulativeProbabilityExtremes() {
+        // Use a small shape parameter so that we can exceed 40 * shape
+        setDistribution(new LogNormalDistribution(1, 0.0001));
+        setCumulativeTestPoints(new double[] {0.5, 10});
+        setCumulativeTestValues(new double[] {0, 1.0});
+        verifyCumulativeProbabilities();
+    }
+
+    @Test
     public void testGetScale() {
         LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
         Assertions.assertEquals(2.1, distribution.getScale(), 0);
