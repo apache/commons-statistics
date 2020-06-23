@@ -143,7 +143,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testPrecondition1() {
+    public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new ParetoDistribution(1, 0));
     }
 

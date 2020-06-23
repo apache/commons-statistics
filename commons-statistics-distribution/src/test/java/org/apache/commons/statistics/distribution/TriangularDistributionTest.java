@@ -148,25 +148,25 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
 
     /** Test pre-condition for equal lower/upper limit. */
     @Test
-    public void testPreconditions1() {
+    public void testConstructorPreconditions1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(0, 0, 0));
     }
 
     /** Test pre-condition for lower limit larger than upper limit. */
     @Test
-    public void testPreconditions2() {
+    public void testConstructorPreconditions2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(1, 1, 0));
     }
 
     /** Test pre-condition for mode larger than upper limit. */
     @Test
-    public void testPreconditions3() {
+    public void testConstructorPreconditions3() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(0, 2, 1));
     }
 
     /** Test pre-condition for mode smaller than lower limit. */
     @Test
-    public void testPreconditions4() {
+    public void testConstructorPreconditions4() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new TriangularDistribution(2, 1, 3));
     }
 

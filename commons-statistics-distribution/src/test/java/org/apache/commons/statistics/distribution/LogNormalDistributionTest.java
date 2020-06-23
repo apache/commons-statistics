@@ -172,7 +172,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testPrecondition1() {
+    public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new LogNormalDistribution(1, 0));
     }
 

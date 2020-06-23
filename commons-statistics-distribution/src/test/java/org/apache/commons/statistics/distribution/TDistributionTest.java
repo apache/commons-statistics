@@ -120,7 +120,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testPreconditions() {
+    public void testConstructorPreconditions() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new TDistribution(0));
     }
 

@@ -88,11 +88,11 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testPrecondition1() {
+    public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new FDistribution(0, 1));
     }
     @Test
-    public void testPrecondition2() {
+    public void testConstructorPrecondition2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new FDistribution(1, 0));
     }
 

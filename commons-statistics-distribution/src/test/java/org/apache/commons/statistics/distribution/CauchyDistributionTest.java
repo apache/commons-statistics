@@ -89,11 +89,11 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testPrecondition1() {
+    public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new CauchyDistribution(0, 0));
     }
     @Test
-    public void testPrecondition2() {
+    public void testConstructorPrecondition2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new CauchyDistribution(0, -1));
     }
 
