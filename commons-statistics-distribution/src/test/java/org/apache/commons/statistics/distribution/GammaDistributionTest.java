@@ -139,12 +139,47 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         checkDensity(0.1, 4, x, new double[]{0.000000000e+00, 3.032938388e+04, 3.049322494e-02, 2.211502311e-03, 2.170613371e-05, 5.846590589e-11});
         // R2.5: print(dgamma(x, shape=.1, rate=1), digits=10)
         checkDensity(0.1, 1, x, new double[]{0.000000000e+00, 2.640334143e+04, 1.189704437e-01, 3.866916944e-02, 7.623306235e-03, 1.663849010e-04});
+        // To force overflow condition
+        // R2.5: print(dgamma(x, shape=1000, rate=100), digits=10)
+        checkDensity(1000, 100, x, new double[]{0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 3.304830256e-84});
     }
 
     private void checkDensity(double alpha, double rate, double[] x, double[] expected) {
         GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-5);
+            Assertions.assertEquals(expected[i], d.density(x[i]), Math.abs(expected[i]) * 1e-5);
+        }
+    }
+
+    @Test
+    public void testLogDensity() {
+        double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
+        final double inf = Double.POSITIVE_INFINITY;
+        // R2.5: print(dgamma(x, shape=1, rate=1, log=TRUE), digits=10)
+        checkLogDensity(1, 1, x, new double[]{-inf, -1e-06, -5e-01, -1e+00, -2e+00, -5e+00});
+        // R2.5: print(dgamma(x, shape=2, rate=1, log=TRUE), digits=10)
+        checkLogDensity(2, 1, x, new double[]{-inf, -13.815511558, -1.193147181, -1.000000000, -1.306852819, -3.390562088});
+        // R2.5: print(dgamma(x, shape=4, rate=1, log=TRUE), digits=10)
+        checkLogDensity(4, 1, x, new double[]{-inf, -43.238292143, -4.371201011, -2.791759469, -1.712317928, -1.963445732});
+        // R2.5: print(dgamma(x, shape=4, rate=10, log=TRUE), digits=10)
+        checkLogDensity(4, 10, x, new double[]{-inf, -34.0279607711, 0.3391393611, -2.5814190973, -10.5019775556, -37.7531053599});
+        // R2.5: print(dgamma(x, shape=.1, rate=10, log=TRUE), digits=10)
+        checkLogDensity(0.1, 10, x, new double[]{-inf, 10.41149536, -6.39862168, -12.02245414, -22.64628660, -53.47094826});
+        // R2.5: print(dgamma(x, shape=.1, rate=20, log=TRUE), digits=10)
+        checkLogDensity(0.1, 20, x, new double[]{-inf, 10.48080008, -11.32930696, -21.95313942, -42.57697189, -103.40163355});
+        // R2.5: print(dgamma(x, shape=.1, rate=4, log=TRUE), digits=10)
+        checkLogDensity(0.1, 4, x, new double[]{-inf, 10.319872287, -3.490250753, -6.114083216, -10.737915678, -23.562577337});
+        // R2.5: print(dgamma(x, shape=.1, rate=1, log=TRUE), digits=10)
+        checkLogDensity(0.1, 1, x, new double[]{-inf, 10.181245850, -2.128880189, -3.252712652, -4.876545114, -8.701206773});
+        // To force overflow condition
+        // R2.5: print(dgamma(x, shape=1000, rate=100, log=TRUE), digits=10)
+        checkLogDensity(1000, 100, x, new double[]{-inf, -15101.7453846, -2042.5042706, -1400.0502372, -807.5962038, -192.2217627});
+    }
+
+    private void checkLogDensity(double alpha, double rate, double[] x, double[] expected) {
+        GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
+        for (int i = 0; i < x.length; i++) {
+            Assertions.assertEquals(expected[i], d.logDensity(x[i]), Math.abs(expected[i]) * 1e-5);
         }
     }
 
