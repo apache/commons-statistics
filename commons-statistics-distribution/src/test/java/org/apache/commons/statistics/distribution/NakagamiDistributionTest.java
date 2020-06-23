@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Test;
  */
 public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
 
+    //-------------- Implementations for abstract methods -----------------------
+
     @Test
     public void testParameters() {
         NakagamiDistribution d = makeDistribution();
@@ -66,5 +68,17 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
             0.0000000, 0.1585194, 0.3108435, 0.4514938, 0.5762892, 0.6826895,
             0.7698607, 0.8384867, 0.8904014, 0.9281394, 0.9544997
         };
+    }
+
+    //----------------- Additional test cases ---------------------------------
+
+    @Test
+    public void testConstructorPrecondition1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new NakagamiDistribution(0.4999, 1.0));
+    }
+
+    @Test
+    public void testConstructorPrecondition2() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new NakagamiDistribution(0.5, 0.0));
     }
 }
