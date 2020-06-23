@@ -118,6 +118,21 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
+    public void testConstructorPrecondition1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new PascalDistribution(0, 0.5));
+    }
+
+    @Test
+    public void testConstructorPrecondition2() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new PascalDistribution(3, -0.1));
+    }
+
+    @Test
+    public void testConstructorPrecondition3() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new PascalDistribution(3, 1.1));
+    }
+
+    @Test
     public void testMoments() {
         final double tol = 1e-9;
         PascalDistribution dist;
