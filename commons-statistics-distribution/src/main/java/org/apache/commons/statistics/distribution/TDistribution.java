@@ -54,7 +54,7 @@ public class TDistribution extends AbstractContinuousDistribution {
         mean = degreesOfFreedom > 1 ? 0 :
             Double.NaN;
         variance = degreesOfFreedom > 2 ? degreesOfFreedom / (degreesOfFreedom - 2) :
-            degreesOfFreedom > 1 && degreesOfFreedom <= 2 ? Double.POSITIVE_INFINITY :
+            degreesOfFreedom > 1 ? Double.POSITIVE_INFINITY :
             Double.NaN;
     }
 
