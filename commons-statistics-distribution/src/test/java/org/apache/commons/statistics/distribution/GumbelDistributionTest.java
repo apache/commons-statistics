@@ -67,4 +67,32 @@ public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
             4.589561e-01, 6.235249e-01, 7.508835e-01, 8.404869e-01, 8.999652e-01
         };
     }
+
+    // ----------------- Additional test cases ---------------------------------
+
+    @Test
+    public void testInverseCumulativeProbabilityExtremes() {
+        setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
+        setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
+        verifyInverseCumulativeProbabilities();
+    }
+
+    @Test
+    public void testConstructorPrecondition1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new GumbelDistribution(10, -0.1));
+    }
+
+    @Test
+    public void testMoments() {
+        final double tol = 1e-9;
+        GumbelDistribution dist;
+
+        dist = new GumbelDistribution(10, 0.5);
+        Assertions.assertEquals(10 + (Math.PI / (2 * Math.E)) * 0.5, dist.getMean(), tol);
+        Assertions.assertEquals((Math.PI * Math.PI / 6) * 0.5 * 0.5, dist.getVariance(), tol);
+
+        dist = new GumbelDistribution(30, 0.3);
+        Assertions.assertEquals(30 + (Math.PI / (2 * Math.E)) * 0.3, dist.getMean(), tol);
+        Assertions.assertEquals((Math.PI * Math.PI / 6) * 0.3 * 0.3, dist.getVariance(), tol);
+    }
 }
