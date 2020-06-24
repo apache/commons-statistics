@@ -81,8 +81,8 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testDfAccessors() {
-        FDistribution dist = (FDistribution) getDistribution();
+    public void testParameterAccessors() {
+        FDistribution dist = makeDistribution();
         Assertions.assertEquals(5d, dist.getNumeratorDegreesOfFreedom(), Double.MIN_VALUE);
         Assertions.assertEquals(6d, dist.getDenominatorDegreesOfFreedom(), Double.MIN_VALUE);
     }
@@ -94,6 +94,24 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testConstructorPrecondition2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new FDistribution(1, 0));
+    }
+
+    @Test
+    public void testMoments() {
+        final double tol = 1e-9;
+        FDistribution dist;
+
+        dist = new FDistribution(1, 2);
+        Assertions.assertTrue(Double.isNaN(dist.getMean()));
+        Assertions.assertTrue(Double.isNaN(dist.getVariance()));
+
+        dist = new FDistribution(1, 3);
+        Assertions.assertEquals(3d / (3d - 2d), dist.getMean(), tol);
+        Assertions.assertTrue(Double.isNaN(dist.getVariance()));
+
+        dist = new FDistribution(1, 5);
+        Assertions.assertEquals(5d / (5d - 2d), dist.getMean(), tol);
+        Assertions.assertEquals((2d * 5d * 5d * 4d) / 9d, dist.getVariance(), tol);
     }
 
     @Test
@@ -115,24 +133,6 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
         p = fd.cumulativeProbability(0.975);
         x = fd.inverseCumulativeProbability(p);
         Assertions.assertEquals(0.975, x, 1.0e-5);
-    }
-
-    @Test
-    public void testMoments() {
-        final double tol = 1e-9;
-        FDistribution dist;
-
-        dist = new FDistribution(1, 2);
-        Assertions.assertTrue(Double.isNaN(dist.getMean()));
-        Assertions.assertTrue(Double.isNaN(dist.getVariance()));
-
-        dist = new FDistribution(1, 3);
-        Assertions.assertEquals(3d / (3d - 2d), dist.getMean(), tol);
-        Assertions.assertTrue(Double.isNaN(dist.getVariance()));
-
-        dist = new FDistribution(1, 5);
-        Assertions.assertEquals(5d / (5d - 2d), dist.getMean(), tol);
-        Assertions.assertEquals((2d * 5d * 5d * 4d) / 9d, dist.getVariance(), tol);
     }
 
     @Test

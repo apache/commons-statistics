@@ -25,20 +25,7 @@ import org.junit.jupiter.api.Test;
  */
 public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
 
-    @Test
-    public void testParameters() {
-        LaplaceDistribution d = makeDistribution();
-        Assertions.assertEquals(0, d.getLocation(), Precision.EPSILON);
-        Assertions.assertEquals(1, d.getScale(), Precision.EPSILON);
-    }
-
-    @Test
-    public void testSupport() {
-        LaplaceDistribution d = makeDistribution();
-        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
-        Assertions.assertTrue(d.isSupportConnected());
-    }
+    //-------------- Implementations for abstract methods -----------------------
 
     @Override
     public LaplaceDistribution makeDistribution() {
@@ -78,6 +65,13 @@ public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest 
     }
 
     @Test
+    public void testParameterAccessors() {
+        LaplaceDistribution d = makeDistribution();
+        Assertions.assertEquals(0, d.getLocation(), Precision.EPSILON);
+        Assertions.assertEquals(1, d.getScale(), Precision.EPSILON);
+    }
+
+    @Test
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new LaplaceDistribution(0, -0.1));
     }
@@ -93,5 +87,13 @@ public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest 
         dist = new LaplaceDistribution(-0.3, 2.5);
         Assertions.assertEquals(-0.3, dist.getMean());
         Assertions.assertEquals(2.0 * 2.5 * 2.5, dist.getVariance());
+    }
+
+    @Test
+    public void testSupport() {
+        LaplaceDistribution d = makeDistribution();
+        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
+        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertTrue(d.isSupportConnected());
     }
 }

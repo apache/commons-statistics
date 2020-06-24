@@ -31,6 +31,13 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     private static final double DEFAULT_TOLERANCE = 1e-7;
 
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
+        setTolerance(DEFAULT_TOLERANCE);
+    }
+
     //-------------- Implementations for abstract methods -----------------------
 
     /** Creates the default real distribution instance to use in tests. */
@@ -61,19 +68,13 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
                              0.00240506434076, 0.0190372444310, 0.0417464784322, 0.0736683145538, 0.125355951380};
     }
 
-    // --------------------- Override tolerance  --------------
-
-    @BeforeEach
-    public void customSetUp() {
-        setTolerance(DEFAULT_TOLERANCE);
-    }
-
     //---------------------------- Additional test cases -------------------------
 
     private void verifyQuantiles() {
-        NormalDistribution distribution = (NormalDistribution) getDistribution();
-        double mu = distribution.getMean();
-        double sigma = distribution.getStandardDeviation();
+        // Requires the current instance set by setDistribution(...)
+        final NormalDistribution distribution = (NormalDistribution) getDistribution();
+        final double mu = distribution.getMean();
+        final double sigma = distribution.getStandardDeviation();
         setCumulativeTestPoints(new double[] {mu - 2 * sigma, mu - sigma,
                                               mu,             mu + sigma,
                                               mu + 2 * sigma, mu + 3 * sigma,
@@ -123,20 +124,33 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testGetMean() {
-        NormalDistribution distribution = (NormalDistribution) getDistribution();
+    public void testParameterAccessors() {
+        NormalDistribution distribution = makeDistribution();
         Assertions.assertEquals(2.1, distribution.getMean(), 0);
-    }
-
-    @Test
-    public void testGetStandardDeviation() {
-        NormalDistribution distribution = (NormalDistribution) getDistribution();
         Assertions.assertEquals(1.4, distribution.getStandardDeviation(), 0);
     }
 
     @Test
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new NormalDistribution(1, 0));
+    }
+
+    @Test
+    public void testMoments() {
+        final double tol = 1e-9;
+        NormalDistribution dist;
+
+        dist = new NormalDistribution(0, 1);
+        Assertions.assertEquals(0, dist.getMean(), tol);
+        Assertions.assertEquals(1, dist.getVariance(), tol);
+
+        dist = new NormalDistribution(2.2, 1.4);
+        Assertions.assertEquals(2.2, dist.getMean(), tol);
+        Assertions.assertEquals(1.4 * 1.4, dist.getVariance(), tol);
+
+        dist = new NormalDistribution(-2000.9, 10.4);
+        Assertions.assertEquals(-2000.9, dist.getMean(), tol);
+        Assertions.assertEquals(10.4 * 10.4, dist.getVariance(), tol);
     }
 
     @Test
@@ -210,23 +224,5 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(4.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.9772498680518209);
         Assertions.assertEquals(2.0, result, DEFAULT_TOLERANCE);
-    }
-
-    @Test
-    public void testMoments() {
-        final double tol = 1e-9;
-        NormalDistribution dist;
-
-        dist = new NormalDistribution(0, 1);
-        Assertions.assertEquals(0, dist.getMean(), tol);
-        Assertions.assertEquals(1, dist.getVariance(), tol);
-
-        dist = new NormalDistribution(2.2, 1.4);
-        Assertions.assertEquals(2.2, dist.getMean(), tol);
-        Assertions.assertEquals(1.4 * 1.4, dist.getVariance(), tol);
-
-        dist = new NormalDistribution(-2000.9, 10.4);
-        Assertions.assertEquals(-2000.9, dist.getMean(), tol);
-        Assertions.assertEquals(10.4 * 10.4, dist.getVariance(), tol);
     }
 }

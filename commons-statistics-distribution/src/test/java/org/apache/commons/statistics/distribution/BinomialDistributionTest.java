@@ -34,8 +34,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         setTolerance(1e-12);
     }
 
-    // -------------- Implementations for abstract methods
-    // -----------------------
+    // -------------- Implementations for abstract methods -----------------------
 
     /** Creates the default discrete distribution instance to use in tests. */
     @Override
@@ -149,6 +148,17 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
+    public void testParameterAccessors() {
+        for (final int n : new int[] {11, 42, 999}) {
+            for (final double p : new double[] {0.1, 0.456, 0.999}) {
+                final BinomialDistribution dist = new BinomialDistribution(n, p);
+                Assertions.assertEquals(n, dist.getNumberOfTrials());
+                Assertions.assertEquals(p, dist.getProbabilityOfSuccess());
+            }
+        }
+    }
+
+    @Test
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new BinomialDistribution(-1, 0.1));
     }
@@ -175,22 +185,6 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         dist = new BinomialDistribution(30, 0.3);
         Assertions.assertEquals(30d * 0.3d, dist.getMean(), tol);
         Assertions.assertEquals(30d * 0.3d * (1d - 0.3d), dist.getVariance(), tol);
-    }
-
-    @Test
-    public void testGetNumberOfTrials() {
-        for (final int n : new int[] {11, 42, 999}) {
-            final BinomialDistribution dist = new BinomialDistribution(n, 0.5);
-            Assertions.assertEquals(n, dist.getNumberOfTrials());
-        }
-    }
-
-    @Test
-    public void testGetProbabilityOfSuccess() {
-        for (final double p : new double[] {0.1, 0.456, 0.999}) {
-            final BinomialDistribution dist = new BinomialDistribution(10, p);
-            Assertions.assertEquals(p, dist.getProbabilityOfSuccess());
-        }
     }
 
     @Test

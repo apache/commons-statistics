@@ -36,16 +36,6 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
         setTolerance(1e-12);
     }
 
-    @Test
-    public void testConstructorPreconditions1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(0, 1));
-    }
-
-    @Test
-    public void testConstructorPreconditions2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(1, 0));
-    }
-
     //-------------- Implementations for abstract methods -----------------------
 
     /** Creates the default discrete distribution instance to use in tests. */
@@ -106,6 +96,26 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
     @Override
     public int[] makeInverseCumulativeTestValues() {
         return new int[] {1, 1, 1, 1, 1, 1, 2, 10, 10, 10, 9, 8, 10};
+    }
+
+
+    //---------------------------- Additional test cases -------------------------
+
+    @Test
+    public void testParameterAccessors() {
+        ZipfDistribution distribution = makeDistribution();
+        Assertions.assertEquals(10, distribution.getNumberOfElements());
+        Assertions.assertEquals(1.0, distribution.getExponent());
+    }
+
+    @Test
+    public void testConstructorPreconditions1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(0, 1));
+    }
+
+    @Test
+    public void testConstructorPreconditions2() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(1, 0));
     }
 
     @Test

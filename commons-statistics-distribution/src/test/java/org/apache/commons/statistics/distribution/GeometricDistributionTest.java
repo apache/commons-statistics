@@ -156,6 +156,14 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
     // ----------------- Additional test cases ---------------------------------
 
     @Test
+    public void testParameterAccessors() {
+        for (final double x : new double[] {0.1, 0.456, 0.999}) {
+            final GeometricDistribution dist = new GeometricDistribution(x);
+            Assertions.assertEquals(x, dist.getProbabilityOfSuccess());
+        }
+    }
+
+    @Test
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new GeometricDistribution(-0.1));
     }
@@ -177,13 +185,5 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
         dist = new GeometricDistribution(0.3);
         Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
         Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
-    }
-
-    @Test
-    public void testGetProbabilityOfSuccess() {
-        for (final double x : new double[] {0.1, 0.456, 0.999}) {
-            final GeometricDistribution dist = new GeometricDistribution(x);
-            Assertions.assertEquals(x, dist.getProbabilityOfSuccess());
-        }
     }
 }

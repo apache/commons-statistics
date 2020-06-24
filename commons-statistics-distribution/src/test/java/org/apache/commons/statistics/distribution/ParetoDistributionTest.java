@@ -131,14 +131,9 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testGetScale() {
+    public void testParameterAccessors() {
         ParetoDistribution distribution = (ParetoDistribution)getDistribution();
         Assertions.assertEquals(2.1, distribution.getScale(), 0);
-    }
-
-    @Test
-    public void testGetShape() {
-        ParetoDistribution distribution = (ParetoDistribution)getDistribution();
         Assertions.assertEquals(1.4, distribution.getShape(), 0);
     }
 
@@ -150,6 +145,20 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testConstructorPrecondition2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new ParetoDistribution(0, 1));
+    }
+
+    @Test
+    public void testMoments() {
+        final double tol = 1e-9;
+        ParetoDistribution dist;
+
+        dist = new ParetoDistribution(1, 1);
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean(), tol);
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance(), tol);
+
+        dist = new ParetoDistribution(2.2, 2.4);
+        Assertions.assertEquals(3.771428571428, dist.getMean(), tol);
+        Assertions.assertEquals(14.816326530, dist.getVariance(), tol);
     }
 
     @Test
@@ -188,19 +197,5 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE), 0);
         Assertions.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
         Assertions.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
-    }
-
-    @Test
-    public void testMoments() {
-        final double tol = 1e-9;
-        ParetoDistribution dist;
-
-        dist = new ParetoDistribution(1, 1);
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean(), tol);
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance(), tol);
-
-        dist = new ParetoDistribution(2.2, 2.4);
-        Assertions.assertEquals(3.771428571428, dist.getMean(), tol);
-        Assertions.assertEquals(14.816326530, dist.getVariance(), tol);
     }
 }

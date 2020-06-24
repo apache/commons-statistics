@@ -18,6 +18,7 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -26,21 +27,6 @@ import org.junit.jupiter.api.Test;
 public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods -----------------------
-
-    @Test
-    public void testParameters() {
-        NakagamiDistribution d = makeDistribution();
-        Assertions.assertEquals(0.5, d.getShape(), Precision.EPSILON);
-        Assertions.assertEquals(1, d.getScale(), Precision.EPSILON);
-    }
-
-    @Test
-    public void testSupport() {
-        NakagamiDistribution d = makeDistribution();
-        Assertions.assertEquals(0, d.getSupportLowerBound(), Precision.EPSILON);
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
-        Assertions.assertTrue(d.isSupportConnected());
-    }
 
     @Override
     public NakagamiDistribution makeDistribution() {
@@ -73,6 +59,13 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     //----------------- Additional test cases ---------------------------------
 
     @Test
+    public void testParameterAccessors() {
+        NakagamiDistribution d = makeDistribution();
+        Assertions.assertEquals(0.5, d.getShape(), Precision.EPSILON);
+        Assertions.assertEquals(1, d.getScale(), Precision.EPSILON);
+    }
+
+    @Test
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new NakagamiDistribution(0.4999, 1.0));
     }
@@ -80,5 +73,20 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     @Test
     public void testConstructorPrecondition2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new NakagamiDistribution(0.5, 0.0));
+    }
+
+    @Test
+    @Disabled
+    public void testMoments() {
+        // TODO.
+        // Currently the mean and variance are only used when solving the inverse cumulative probability.
+    }
+
+    @Test
+    public void testSupport() {
+        NakagamiDistribution d = makeDistribution();
+        Assertions.assertEquals(0, d.getSupportLowerBound(), Precision.EPSILON);
+        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertTrue(d.isSupportConnected());
     }
 }

@@ -25,6 +25,8 @@ import org.junit.jupiter.api.Test;
  */
 public class LogisticsDistributionTest extends ContinuousDistributionAbstractTest {
 
+    //-------------- Implementations for abstract methods -----------------------
+
     @Override
     public LogisticDistribution makeDistribution() {
         return new LogisticDistribution(2, 5);
@@ -63,23 +65,15 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new LogisticDistribution(1, 0));
-    }
-
-    @Test
-    public void testParameters() {
+    public void testParametersAccessors() {
         LogisticDistribution d = makeDistribution();
         Assertions.assertEquals(2, d.getLocation(), Precision.EPSILON);
         Assertions.assertEquals(5, d.getScale(), Precision.EPSILON);
     }
 
     @Test
-    public void testSupport() {
-        LogisticDistribution d = makeDistribution();
-        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
-        Assertions.assertTrue(d.isSupportConnected());
+    public void testConstructorPrecondition1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new LogisticDistribution(1, 0));
     }
 
     @Test
@@ -90,5 +84,13 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
         // Variance = (s^2 * pi^2) / 3
         // Constructor 'scale' parameter = s
         Assertions.assertEquals(5 * 5 * Math.PI * Math.PI / 3, d.getVariance());
+    }
+
+    @Test
+    public void testSupport() {
+        LogisticDistribution d = makeDistribution();
+        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
+        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertTrue(d.isSupportConnected());
     }
 }

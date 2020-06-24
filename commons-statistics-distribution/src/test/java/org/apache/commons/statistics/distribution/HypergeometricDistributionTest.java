@@ -159,6 +159,14 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
+    public void testParameterAccessors() {
+        HypergeometricDistribution dist = new HypergeometricDistribution(5, 3, 4);
+        Assertions.assertEquals(5, dist.getPopulationSize());
+        Assertions.assertEquals(3, dist.getNumberOfSuccesses());
+        Assertions.assertEquals(4, dist.getSampleSize());
+    }
+
+    @Test
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(0, 3, 5));
     }
@@ -180,11 +188,17 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testAccessors() {
-        HypergeometricDistribution dist = new HypergeometricDistribution(5, 3, 4);
-        Assertions.assertEquals(5, dist.getPopulationSize());
-        Assertions.assertEquals(3, dist.getNumberOfSuccesses());
-        Assertions.assertEquals(4, dist.getSampleSize());
+    public void testMoments() {
+        final double tol = 1e-9;
+        HypergeometricDistribution dist;
+
+        dist = new HypergeometricDistribution(1500, 40, 100);
+        Assertions.assertEquals(40d * 100d / 1500d, dist.getMean(), tol);
+        Assertions.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)), dist.getVariance(), tol);
+
+        dist = new HypergeometricDistribution(3000, 55, 200);
+        Assertions.assertEquals(55d * 200d / 3000d, dist.getMean(), tol);
+        Assertions.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)), dist.getVariance(), tol);
     }
 
     @Test
@@ -263,20 +277,6 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
             {55.0, 1.01335245432581e-82, 1.0, 1.01335245432581e-82},
         };
         testHypergeometricDistributionProbabilities(populationSize, sampleSize, numberOfSucceses, data);
-    }
-
-    @Test
-    public void testMoments() {
-        final double tol = 1e-9;
-        HypergeometricDistribution dist;
-
-        dist = new HypergeometricDistribution(1500, 40, 100);
-        Assertions.assertEquals(40d * 100d / 1500d, dist.getMean(), tol);
-        Assertions.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)), dist.getVariance(), tol);
-
-        dist = new HypergeometricDistribution(3000, 55, 200);
-        Assertions.assertEquals(55d * 200d / 3000d, dist.getMean(), tol);
-        Assertions.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)), dist.getVariance(), tol);
     }
 
     @Test

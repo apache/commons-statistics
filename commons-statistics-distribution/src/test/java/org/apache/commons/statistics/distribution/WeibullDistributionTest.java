@@ -78,14 +78,9 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
     }
 
     @Test
-    public void testAlpha() {
-        WeibullDistribution dist = new WeibullDistribution(1, 2);
+    public void testParameterAccessors() {
+        final WeibullDistribution dist = new WeibullDistribution(1, 2);
         Assertions.assertEquals(1, dist.getShape(), 0);
-    }
-
-    @Test
-    public void testBeta() {
-        WeibullDistribution dist = new WeibullDistribution(1, 2);
         Assertions.assertEquals(2, dist.getScale(), 0);
     }
 

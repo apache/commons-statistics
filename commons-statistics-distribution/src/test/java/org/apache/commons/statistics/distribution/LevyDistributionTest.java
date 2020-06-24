@@ -22,20 +22,7 @@ import org.junit.jupiter.api.Test;
 
 public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
 
-    @Test
-    public void testParameters() {
-        LevyDistribution d = makeDistribution();
-        Assertions.assertEquals(1.2, d.getLocation(), Precision.EPSILON);
-        Assertions.assertEquals(0.4,   d.getScale(),  Precision.EPSILON);
-    }
-
-    @Test
-    public void testSupport() {
-        LevyDistribution d = makeDistribution();
-        Assertions.assertEquals(d.getLocation(), d.getSupportLowerBound(), Precision.EPSILON);
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
-        Assertions.assertTrue(d.isSupportConnected());
-    }
+    //-------------- Implementations for abstract methods -----------------------
 
     @Override
     public LevyDistribution makeDistribution() {
@@ -79,6 +66,15 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
             -2.650679030597d, -3.644945255983d};
     }
 
+    //---------------------------- Additional test cases -------------------------
+
+    @Test
+    public void testParameterAccessors() {
+        LevyDistribution d = makeDistribution();
+        Assertions.assertEquals(1.2, d.getLocation(), Precision.EPSILON);
+        Assertions.assertEquals(0.4, d.getScale(), Precision.EPSILON);
+    }
+
     @Test
     public void testMoments() {
         LevyDistribution dist;
@@ -94,5 +90,13 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
         dist = new LevyDistribution(-3, 2);
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
+    }
+
+    @Test
+    public void testSupport() {
+        LevyDistribution d = makeDistribution();
+        Assertions.assertEquals(d.getLocation(), d.getSupportLowerBound(), Precision.EPSILON);
+        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertTrue(d.isSupportConnected());
     }
 }

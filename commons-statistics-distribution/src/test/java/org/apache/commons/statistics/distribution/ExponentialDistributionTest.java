@@ -108,7 +108,7 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
 
     @Test
     public void testMeanAccessors() {
-        ExponentialDistribution distribution = (ExponentialDistribution) getDistribution();
+        ExponentialDistribution distribution = makeDistribution();
         Assertions.assertEquals(5d, distribution.getMean(), Double.MIN_VALUE);
     }
 

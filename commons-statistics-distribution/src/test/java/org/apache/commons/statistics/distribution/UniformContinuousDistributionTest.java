@@ -34,7 +34,7 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
         setTolerance(1e-4);
     }
 
-    //--- Implementations for abstract methods --------------------------------
+    //-------------- Implementations for abstract methods -----------------------
 
     /** Creates the default uniform real distribution instance to use in tests. */
     @Override
@@ -64,7 +64,7 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
         return new double[] {0, d, d, d, d, d, d, d, d, d, d, 0};
     }
 
-    //--- Additional test cases -----------------------------------------------
+    //---------------------------- Additional test cases -------------------------
 
     /** Test lower bound getter. */
     @Test

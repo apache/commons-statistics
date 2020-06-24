@@ -38,6 +38,13 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     private static final double HALF_LOG_2_PI = 0.5 * Math.log(2.0 * Math.PI);
 
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
+        setTolerance(1e-9);
+    }
+
     //-------------- Implementations for abstract methods -----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
@@ -67,17 +74,11 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000394468852816, 0.00366559696761, 0.00874649473311, 0.0166712508128, 0.0311798227954};
     }
 
-    // --------------------- Override tolerance  --------------
-
-    @BeforeEach
-    public void customSetUp() {
-        setTolerance(1e-9);
-    }
-
     //---------------------------- Additional test cases -------------------------
+
     @Test
     public void testParameterAccessors() {
-        GammaDistribution distribution = (GammaDistribution) getDistribution();
+        GammaDistribution distribution = makeDistribution();
         Assertions.assertEquals(4d, distribution.getShape(), 0);
         Assertions.assertEquals(2d, distribution.getScale(), 0);
     }
@@ -89,6 +90,20 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testConstructorPrecondition2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new GammaDistribution(1, 0));
+    }
+
+    @Test
+    public void testMoments() {
+        final double tol = 1e-9;
+        GammaDistribution dist;
+
+        dist = new GammaDistribution(1, 2);
+        Assertions.assertEquals(2, dist.getMean(), tol);
+        Assertions.assertEquals(4, dist.getVariance(), tol);
+
+        dist = new GammaDistribution(1.1, 4.2);
+        Assertions.assertEquals(1.1d * 4.2d, dist.getMean(), tol);
+        Assertions.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance(), tol);
     }
 
     @Test
@@ -188,20 +203,6 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
-    }
-
-    @Test
-    public void testMoments() {
-        final double tol = 1e-9;
-        GammaDistribution dist;
-
-        dist = new GammaDistribution(1, 2);
-        Assertions.assertEquals(2, dist.getMean(), tol);
-        Assertions.assertEquals(4, dist.getVariance(), tol);
-
-        dist = new GammaDistribution(1.1, 4.2);
-        Assertions.assertEquals(1.1d * 4.2d, dist.getMean(), tol);
-        Assertions.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance(), tol);
     }
 
     public static double logGamma(double x) {

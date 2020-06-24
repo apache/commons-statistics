@@ -25,20 +25,7 @@ import org.junit.jupiter.api.Test;
  */
 public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
 
-    @Test
-    public void testParameters() {
-        GumbelDistribution d = makeDistribution();
-        Assertions.assertEquals(0.5, d.getLocation(), Precision.EPSILON);
-        Assertions.assertEquals(2, d.getScale(), Precision.EPSILON);
-    }
-
-    @Test
-    public void testSupport() {
-        GumbelDistribution d = makeDistribution();
-        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
-        Assertions.assertTrue(d.isSupportConnected());
-    }
+    //-------------- Implementations for abstract methods -----------------------
 
     @Override
     public GumbelDistribution makeDistribution() {
@@ -78,6 +65,13 @@ public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
+    public void testParameterAccessors() {
+        GumbelDistribution d = makeDistribution();
+        Assertions.assertEquals(0.5, d.getLocation(), Precision.EPSILON);
+        Assertions.assertEquals(2, d.getScale(), Precision.EPSILON);
+    }
+
+    @Test
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new GumbelDistribution(10, -0.1));
     }
@@ -94,5 +88,13 @@ public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
         dist = new GumbelDistribution(30, 0.3);
         Assertions.assertEquals(30 + (Math.PI / (2 * Math.E)) * 0.3, dist.getMean(), tol);
         Assertions.assertEquals((Math.PI * Math.PI / 6) * 0.3 * 0.3, dist.getVariance(), tol);
+    }
+
+    @Test
+    public void testSupport() {
+        GumbelDistribution d = makeDistribution();
+        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
+        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertTrue(d.isSupportConnected());
     }
 }

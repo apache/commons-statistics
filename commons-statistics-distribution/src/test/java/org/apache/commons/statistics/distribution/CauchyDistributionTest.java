@@ -77,14 +77,9 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testMedian() {
-        CauchyDistribution distribution = (CauchyDistribution) getDistribution();
+    public void testParameterAccessors() {
+        CauchyDistribution distribution = makeDistribution();
         Assertions.assertEquals(1.2, distribution.getMedian(), 0.0);
-    }
-
-    @Test
-    public void testScale() {
-        CauchyDistribution distribution = (CauchyDistribution) getDistribution();
         Assertions.assertEquals(2.1, distribution.getScale(), 0.0);
     }
 
@@ -92,6 +87,7 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new CauchyDistribution(0, 0));
     }
+
     @Test
     public void testConstructorPrecondition2() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new CauchyDistribution(0, -1));

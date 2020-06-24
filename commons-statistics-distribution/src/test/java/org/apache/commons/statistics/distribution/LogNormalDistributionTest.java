@@ -169,20 +169,33 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testGetScale() {
+    public void testParameterAccessors() {
         LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
         Assertions.assertEquals(2.1, distribution.getScale(), 0);
-    }
-
-    @Test
-    public void testGetShape() {
-        LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
         Assertions.assertEquals(1.4, distribution.getShape(), 0);
     }
 
     @Test
     public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new LogNormalDistribution(1, 0));
+    }
+
+    @Test
+    public void testMoments() {
+        final double tol = 1e-9;
+        LogNormalDistribution dist;
+
+        dist = new LogNormalDistribution(0, 1);
+        Assertions.assertEquals(1.6487212707001282, dist.getMean(), tol);
+        Assertions.assertEquals(4.670774270471604, dist.getVariance(), tol);
+
+        dist = new LogNormalDistribution(2.2, 1.4);
+        Assertions.assertEquals(24.046753552064498, dist.getMean(), tol);
+        Assertions.assertEquals(3526.913651880464, dist.getVariance(), tol);
+
+        dist = new LogNormalDistribution(-2000.9, 10.4);
+        Assertions.assertEquals(0.0, dist.getMean(), tol);
+        Assertions.assertEquals(0.0, dist.getVariance(), tol);
     }
 
     @Test
@@ -228,24 +241,6 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
         Assertions.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE), 0);
         Assertions.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
         Assertions.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
-    }
-
-    @Test
-    public void testMoments() {
-        final double tol = 1e-9;
-        LogNormalDistribution dist;
-
-        dist = new LogNormalDistribution(0, 1);
-        Assertions.assertEquals(1.6487212707001282, dist.getMean(), tol);
-        Assertions.assertEquals(4.670774270471604, dist.getVariance(), tol);
-
-        dist = new LogNormalDistribution(2.2, 1.4);
-        Assertions.assertEquals(24.046753552064498, dist.getMean(), tol);
-        Assertions.assertEquals(3526.913651880464, dist.getVariance(), tol);
-
-        dist = new LogNormalDistribution(-2000.9, 10.4);
-        Assertions.assertEquals(0.0, dist.getMean(), tol);
-        Assertions.assertEquals(0.0, dist.getVariance(), tol);
     }
 
     @Test

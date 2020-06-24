@@ -38,6 +38,8 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         setTolerance(1e-12);
     }
 
+    //-------------- Implementations for abstract methods -----------------------
+
     /**
      * Creates the default discrete distribution instance to use in tests.
      */
@@ -118,6 +120,8 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         return new int[] {0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 10, 20};
     }
 
+    //---------------------------- Additional test cases -------------------------
+
     /**
      * Test the normal approximation of the Poisson distribution by
      * calculating P(90 &le; X &le; 110) for X = Po(100) and
@@ -147,14 +151,28 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
-    public void testNegativeMean() {
+    public void testParameterAccessors() {
+        PoissonDistribution dist = new PoissonDistribution(10.0);
+        Assertions.assertEquals(10.0, dist.getMean(), 0.0);
+    }
+
+    @Test
+    public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new PoissonDistribution(-1));
     }
 
     @Test
-    public void testMean() {
-        PoissonDistribution dist = new PoissonDistribution(10.0);
-        Assertions.assertEquals(10.0, dist.getMean(), 0.0);
+    public void testMoments() {
+        final double tol = 1e-9;
+        PoissonDistribution dist;
+
+        dist = new PoissonDistribution(1);
+        Assertions.assertEquals(1, dist.getMean(), tol);
+        Assertions.assertEquals(1, dist.getVariance(), tol);
+
+        dist = new PoissonDistribution(11.23);
+        Assertions.assertEquals(11.23, dist.getMean(), tol);
+        Assertions.assertEquals(11.23, dist.getVariance(), tol);
     }
 
     @Test
@@ -227,19 +245,5 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
             }
             mean *= 10.0;
         }
-    }
-
-    @Test
-    public void testMoments() {
-        final double tol = 1e-9;
-        PoissonDistribution dist;
-
-        dist = new PoissonDistribution(1);
-        Assertions.assertEquals(1, dist.getMean(), tol);
-        Assertions.assertEquals(1, dist.getVariance(), tol);
-
-        dist = new PoissonDistribution(11.23);
-        Assertions.assertEquals(11.23, dist.getMean(), tol);
-        Assertions.assertEquals(11.23, dist.getVariance(), tol);
     }
 }

@@ -96,9 +96,33 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
     }
 
     @Test
-    public void testDfAccessors() {
-        ChiSquaredDistribution distribution = (ChiSquaredDistribution) getDistribution();
+    public void testParameterAccessors() {
+        ChiSquaredDistribution distribution = makeDistribution();
         Assertions.assertEquals(5d, distribution.getDegreesOfFreedom(), Double.MIN_VALUE);
+    }
+
+    @Test
+    public void testConstructorPrecondition1() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ChiSquaredDistribution(0));
+    }
+
+    @Test
+    public void testConstructorPrecondition2() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ChiSquaredDistribution(-1));
+    }
+
+    @Test
+    public void testMoments() {
+        final double tol = 1e-9;
+        ChiSquaredDistribution dist;
+
+        dist = new ChiSquaredDistribution(1500);
+        Assertions.assertEquals(1500, dist.getMean(), tol);
+        Assertions.assertEquals(3000, dist.getVariance(), tol);
+
+        dist = new ChiSquaredDistribution(1.12);
+        Assertions.assertEquals(1.12, dist.getMean(), tol);
+        Assertions.assertEquals(2.24, dist.getVariance(), tol);
     }
 
     @Test
@@ -119,19 +143,5 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(expected[i], d.density(x[i]), 1e-5);
         }
-    }
-
-    @Test
-    public void testMoments() {
-        final double tol = 1e-9;
-        ChiSquaredDistribution dist;
-
-        dist = new ChiSquaredDistribution(1500);
-        Assertions.assertEquals(1500, dist.getMean(), tol);
-        Assertions.assertEquals(3000, dist.getVariance(), tol);
-
-        dist = new ChiSquaredDistribution(1.12);
-        Assertions.assertEquals(1.12, dist.getMean(), tol);
-        Assertions.assertEquals(2.24, dist.getVariance(), tol);
     }
 }

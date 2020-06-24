@@ -27,6 +27,13 @@ import org.junit.jupiter.api.Test;
  */
 public class TDistributionTest extends ContinuousDistributionAbstractTest {
 
+    // --------------------- Override tolerance  --------------
+
+    @BeforeEach
+    public void customSetUp() {
+        setTolerance(1e-9);
+    }
+
     //-------------- Implementations for abstract methods -----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
@@ -57,14 +64,8 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000756494565517, 0.0109109752919, 0.0303377878006, 0.0637967988952, 0.128289492005};
     }
 
-    // --------------------- Override tolerance  --------------
-
-    @BeforeEach
-    public void customSetUp() {
-        setTolerance(1e-9);
-    }
-
     //---------------------------- Additional test cases -------------------------
+
     /**
      * @see <a href="https://issues.apache.orgg/bugzilla/show_bug.cgi?id=27243">
      *      Bug report that prompted this unit test.</a>
@@ -114,13 +115,13 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testDfAccessors() {
-        TDistribution dist = (TDistribution) getDistribution();
+    public void testParameterAccessors() {
+        TDistribution dist = makeDistribution();
         Assertions.assertEquals(5d, dist.getDegreesOfFreedom(), Double.MIN_VALUE);
     }
 
     @Test
-    public void testConstructorPreconditions() {
+    public void testConstructorPrecondition1() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new TDistribution(0));
     }
 
@@ -161,6 +162,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
         TestUtils.assertEquals(prob, makeNistResults(args100, 100), 1.0e-4);
         return;
     }
+
     private double[] makeNistResults(double[] args, int df) {
         TDistribution td =  new TDistribution(df);
         double[] res  = new double[args.length];
