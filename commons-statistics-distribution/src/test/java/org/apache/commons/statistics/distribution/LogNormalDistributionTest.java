@@ -28,7 +28,14 @@ import org.junit.jupiter.api.Test;
  */
 public class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
 
-    //-------------- Implementations for abstract methods -----------------------
+    //---------------------- Override tolerance --------------------------------
+
+    @BeforeEach
+    public void customSetUp() {
+        setTolerance(1e-7);
+    }
+
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default real distribution instance to use in tests. */
     @Override
@@ -95,14 +102,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
         //return Arrays.copyOfRange(points, 1, points.length - 4);
     }
 
-    // --------------------- Override tolerance  --------------
-
-    @BeforeEach
-    public void customSetUp() {
-        setTolerance(1e-7);
-    }
-
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     private void verifyQuantiles() {
         LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();

@@ -27,14 +27,14 @@ import org.junit.jupiter.api.Test;
  */
 public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-12);
     }
 
-    // -------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default discrete distribution instance to use in tests. */
     @Override
@@ -91,7 +91,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         return new int[] {0, 2, 3, 4, 5, 5, 10, 10, 10, 9, 9, 10};
     }
 
-    // ----------------- Additional test cases ---------------------------------
+    //-------------------- Additional test cases -------------------------------
 
     /** Test degenerate case p = 0 */
     @Test

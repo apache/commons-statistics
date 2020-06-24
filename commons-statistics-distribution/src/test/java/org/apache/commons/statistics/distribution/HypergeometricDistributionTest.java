@@ -31,14 +31,14 @@ import org.junit.jupiter.api.Test;
  */
 public class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-12);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default discrete distribution instance to use in tests. */
     @Override
@@ -102,7 +102,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         return new int[] {0, 0, 1, 1, 1, 1, 5, 4, 4, 4, 4, 5};
     }
 
-    //-------------------- Additional test cases ------------------------------
+    //-------------------- Additional test cases -------------------------------
 
     /** Verify that if there are no failures, mass is concentrated on sampleSize */
     @Test

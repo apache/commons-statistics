@@ -29,18 +29,18 @@ import org.junit.jupiter.api.Test;
  */
 public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-12);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default discrete distribution instance to use in tests. */
     @Override
-    public DiscreteDistribution makeDistribution() {
+    public ZipfDistribution makeDistribution() {
         return new ZipfDistribution(10, 1);
     }
 
@@ -99,7 +99,7 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testParameterAccessors() {

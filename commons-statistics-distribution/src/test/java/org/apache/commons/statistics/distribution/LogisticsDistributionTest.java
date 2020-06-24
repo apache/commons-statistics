@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  */
 public class LogisticsDistributionTest extends ContinuousDistributionAbstractTest {
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     @Override
     public LogisticDistribution makeDistribution() {
@@ -55,7 +55,7 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
         };
     }
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testInverseCumulativeProbabilityExtremes() {

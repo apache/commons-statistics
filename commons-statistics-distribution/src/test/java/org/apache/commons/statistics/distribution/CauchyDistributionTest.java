@@ -29,7 +29,8 @@ import org.junit.jupiter.api.Test;
  */
 public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
+
     protected double defaultTolerance = 1e-7;
 
     @BeforeEach
@@ -37,7 +38,7 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
         setTolerance(defaultTolerance);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
     @Override
@@ -67,7 +68,7 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
                              1.49599158008e-06, 0.000149550440335, 0.000933076881878, 0.00370933207799, 0.0144742330437};
     }
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testInverseCumulativeProbabilityExtremes() {

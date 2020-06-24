@@ -29,14 +29,14 @@ import org.junit.jupiter.api.Test;
  */
 public class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-9);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
     @Override

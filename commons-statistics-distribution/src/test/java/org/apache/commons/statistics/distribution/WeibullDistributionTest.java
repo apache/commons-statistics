@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
  */
 public class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
     @Override
@@ -58,7 +58,7 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
                              0.353441418887, 0.000788590320203, 0.00737060094841, 0.0177576041516, 0.0343043442574, 0.065664589369};
     }
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testInverseCumulativeProbabilitySmallPAccuracy() {

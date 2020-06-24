@@ -28,14 +28,14 @@ import org.apache.commons.numbers.core.Precision;
  */
 public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-9);
     }
 
-    //--- Implementations for abstract methods --------------------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default discrete distribution instance to use in tests. */
     @Override
@@ -82,7 +82,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
         return new int[] {-3, -3, -3, -3, -3, -3, -2, 1, 5, 5, 5, 5, 5, 5};
     }
 
-    //--- Additional test cases -----------------------------------------------
+    //-------------------- Additional test cases -------------------------------
 
     /** Test mean/variance. */
     @Test

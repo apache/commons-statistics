@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 
 public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     @Override
     public LevyDistribution makeDistribution() {
@@ -66,7 +66,7 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
             -2.650679030597d, -3.644945255983d};
     }
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testParameterAccessors() {

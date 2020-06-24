@@ -27,14 +27,14 @@ import org.junit.jupiter.api.Test;
  */
 public class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-4);
     }
 
-    //--- Implementations for abstract methods --------------------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /**
      * Creates the default triangular distribution instance to use in tests.
@@ -130,7 +130,7 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
                              0};
     }
 
-    //--- Additional test cases -----------------------------------------------
+    //-------------------- Additional test cases -------------------------------
 
     /** Test lower bound getter. */
     @Test

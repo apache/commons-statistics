@@ -27,7 +27,14 @@ import org.junit.jupiter.api.Test;
  */
 public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
-    //-------------- Implementations for abstract methods -----------------------
+    //---------------------- Override tolerance --------------------------------
+
+    @BeforeEach
+    public void customSetUp() {
+        setTolerance(1e-7);
+    }
+
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default real distribution instance to use in tests. */
     @Override
@@ -83,14 +90,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         return points2;
     }
 
-    // --------------------- Override tolerance  --------------
-
-    @BeforeEach
-    public void customSetUp() {
-        setTolerance(1e-7);
-    }
-
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     private void verifyQuantiles() {
         ParetoDistribution distribution = (ParetoDistribution)getDistribution();

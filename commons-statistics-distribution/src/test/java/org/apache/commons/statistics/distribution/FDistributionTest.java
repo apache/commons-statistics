@@ -28,7 +28,14 @@ import org.junit.jupiter.api.Test;
  */
 public class FDistributionTest extends ContinuousDistributionAbstractTest {
 
-    //-------------- Implementations for abstract methods -----------------------
+    //---------------------- Override tolerance --------------------------------
+
+    @BeforeEach
+    public void customSetUp() {
+        setTolerance(1e-9);
+    }
+
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
     @Override
@@ -57,14 +64,7 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000133443915657, 0.00286681303403, 0.00969192007502, 0.0242883861471, 0.0605491314658};
     }
 
-    // --------------------- Override tolerance  --------------
-
-    @BeforeEach
-    public void customSetUp() {
-        setTolerance(1e-9);
-    }
-
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testCumulativeProbabilityExtremes() {

@@ -26,14 +26,14 @@ import org.junit.jupiter.api.Test;
  */
 public class ConstantContinuousDistributionTest extends ContinuousDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(0);
     }
 
-    //--- Implementations for abstract methods --------------------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default uniform real distribution instance to use in tests. */
     @Override
@@ -69,7 +69,7 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
         }
     }
 
-    //--- Additional test cases -----------------------------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testMoments() {

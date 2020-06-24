@@ -28,7 +28,8 @@ import org.junit.jupiter.api.Test;
  */
 public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
+
     protected double defaultTolerance = 1e-7;
 
     @BeforeEach
@@ -36,11 +37,11 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         setTolerance(defaultTolerance);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default discrete distribution instance to use in tests. */
     @Override
-    public DiscreteDistribution makeDistribution() {
+    public PascalDistribution makeDistribution() {
         return new PascalDistribution(10, 0.70);
     }
 
@@ -85,7 +86,7 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         return new int[] {0, 0, 0, 0, 1, 1, 14, 11, 10, 9, 8, Integer.MAX_VALUE};
     }
 
-    //----------------- Additional test cases ---------------------------------
+    //-------------------- Additional test cases -------------------------------
 
     /** Test degenerate case p = 0   */
     @Test

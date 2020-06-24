@@ -27,14 +27,14 @@ import org.junit.jupiter.api.Test;
  */
 public class TDistributionTest extends ContinuousDistributionAbstractTest {
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-9);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
     @Override
@@ -64,7 +64,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000756494565517, 0.0109109752919, 0.0303377878006, 0.0637967988952, 0.128289492005};
     }
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     /**
      * @see <a href="https://issues.apache.orgg/bugzilla/show_bug.cgi?id=27243">

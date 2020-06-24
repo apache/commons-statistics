@@ -31,14 +31,14 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     private static final double DEFAULT_TOLERANCE = 1e-7;
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(DEFAULT_TOLERANCE);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default real distribution instance to use in tests. */
     @Override
@@ -68,7 +68,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
                              0.00240506434076, 0.0190372444310, 0.0417464784322, 0.0736683145538, 0.125355951380};
     }
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     private void verifyQuantiles() {
         // Requires the current instance set by setDistribution(...)

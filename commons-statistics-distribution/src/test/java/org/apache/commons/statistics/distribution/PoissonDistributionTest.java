@@ -31,14 +31,14 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     private static final double DEFAULT_TEST_POISSON_PARAMETER = 4.0;
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-12);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /**
      * Creates the default discrete distribution instance to use in tests.
@@ -120,7 +120,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         return new int[] {0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 10, 20};
     }
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     /**
      * Test the normal approximation of the Poisson distribution by

@@ -28,7 +28,14 @@ import org.junit.jupiter.api.Test;
  */
 public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTest {
 
-    //-------------- Implementations for abstract methods -----------------------
+    //---------------------- Override tolerance --------------------------------
+
+    @BeforeEach
+    public void customSetUp() {
+        setTolerance(1e-9);
+    }
+
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
     @Override
@@ -72,14 +79,7 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
                              0.000433630076361, 0.00412780610309, 0.00999340341045, 0.0193246438937, 0.0368460089216};
     }
 
-    // --------------------- Override tolerance  --------------
-
-    @BeforeEach
-    public void customSetUp() {
-        setTolerance(1e-9);
-    }
-
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testSmallDf() {

@@ -38,14 +38,14 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     private static final double HALF_LOG_2_PI = 0.5 * Math.log(2.0 * Math.PI);
 
-    // --------------------- Override tolerance  --------------
+    //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
     public void customSetUp() {
         setTolerance(1e-9);
     }
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
     @Override
@@ -74,7 +74,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000394468852816, 0.00366559696761, 0.00874649473311, 0.0166712508128, 0.0311798227954};
     }
 
-    //---------------------------- Additional test cases -------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testParameterAccessors() {

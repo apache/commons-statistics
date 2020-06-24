@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  */
 public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
 
-    //-------------- Implementations for abstract methods -----------------------
+    //-------------- Implementations for abstract methods ----------------------
 
     @Override
     public LaplaceDistribution makeDistribution() {
@@ -55,7 +55,7 @@ public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest 
         };
     }
 
-    // ----------------- Additional test cases ---------------------------------
+    //-------------------- Additional test cases -------------------------------
 
     @Test
     public void testInverseCumulativeProbabilityExtremes() {
