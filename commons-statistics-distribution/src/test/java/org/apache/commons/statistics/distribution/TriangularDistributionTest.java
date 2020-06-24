@@ -136,14 +136,14 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
     @Test
     public void testGetLowerBound() {
         final TriangularDistribution distribution = makeDistribution();
-        Assertions.assertEquals(-3.0, distribution.getSupportLowerBound(), 0);
+        Assertions.assertEquals(-3.0, distribution.getSupportLowerBound());
     }
 
     /** Test upper bound getter. */
     @Test
     public void testGetUpperBound() {
         final TriangularDistribution distribution = makeDistribution();
-        Assertions.assertEquals(12.0, distribution.getSupportUpperBound(), 0);
+        Assertions.assertEquals(12.0, distribution.getSupportUpperBound());
     }
 
     @Test
@@ -183,15 +183,15 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         TriangularDistribution dist;
 
         dist = new TriangularDistribution(0, 0.5, 1.0);
-        Assertions.assertEquals(0.5, dist.getMean(), 0);
-        Assertions.assertEquals(1 / 24.0, dist.getVariance(), 0);
+        Assertions.assertEquals(0.5, dist.getMean());
+        Assertions.assertEquals(1 / 24.0, dist.getVariance());
 
         dist = new TriangularDistribution(0, 1, 1);
-        Assertions.assertEquals(2 / 3.0, dist.getMean(), 0);
-        Assertions.assertEquals(1 / 18.0, dist.getVariance(), 0);
+        Assertions.assertEquals(2 / 3.0, dist.getMean());
+        Assertions.assertEquals(1 / 18.0, dist.getVariance());
 
         dist = new TriangularDistribution(-3, 2, 12);
-        Assertions.assertEquals(3 + (2 / 3.0), dist.getMean(), 0);
-        Assertions.assertEquals(175 / 18.0, dist.getVariance(), 0);
+        Assertions.assertEquals(3 + (2 / 3.0), dist.getMean());
+        Assertions.assertEquals(175 / 18.0, dist.getVariance());
     }
 }

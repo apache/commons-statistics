@@ -125,8 +125,8 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testParameterAccessors() {
         final NormalDistribution distribution = makeDistribution();
-        Assertions.assertEquals(2.1, distribution.getMean(), 0);
-        Assertions.assertEquals(1.4, distribution.getStandardDeviation(), 0);
+        Assertions.assertEquals(2.1, distribution.getMean());
+        Assertions.assertEquals(1.4, distribution.getStandardDeviation());
     }
 
     @Test
@@ -206,10 +206,10 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     public void testExtremeValues() {
         final NormalDistribution distribution = new NormalDistribution(0, 1);
 
-        Assertions.assertEquals(1, distribution.cumulativeProbability(Double.MAX_VALUE), 0);
-        Assertions.assertEquals(0, distribution.cumulativeProbability(-Double.MAX_VALUE), 0);
-        Assertions.assertEquals(1, distribution.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
-        Assertions.assertEquals(0, distribution.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
+        Assertions.assertEquals(1, distribution.cumulativeProbability(Double.MAX_VALUE));
+        Assertions.assertEquals(0, distribution.cumulativeProbability(-Double.MAX_VALUE));
+        Assertions.assertEquals(1, distribution.cumulativeProbability(Double.POSITIVE_INFINITY));
+        Assertions.assertEquals(0, distribution.cumulativeProbability(Double.NEGATIVE_INFINITY));
     }
 
     @Test

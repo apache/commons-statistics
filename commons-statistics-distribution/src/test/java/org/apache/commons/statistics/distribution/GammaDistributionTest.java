@@ -78,8 +78,8 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testParameterAccessors() {
         final GammaDistribution distribution = makeDistribution();
-        Assertions.assertEquals(4d, distribution.getShape(), 0);
-        Assertions.assertEquals(2d, distribution.getScale(), 0);
+        Assertions.assertEquals(4d, distribution.getShape());
+        Assertions.assertEquals(2d, distribution.getScale());
     }
 
     @Test

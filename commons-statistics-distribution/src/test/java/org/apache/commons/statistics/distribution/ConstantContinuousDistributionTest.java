@@ -65,7 +65,7 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
     public void testInverseCumulativeProbabilities() {
         final ContinuousDistribution dist = getDistribution();
         for (final double x : getCumulativeTestValues()) {
-            Assertions.assertEquals(1, dist.inverseCumulativeProbability(x), 0);
+            Assertions.assertEquals(1, dist.inverseCumulativeProbability(x));
         }
     }
 
@@ -86,7 +86,7 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
         final double value = 12.345;
         final ContinuousDistribution.Sampler sampler = new ConstantContinuousDistribution(value).createSampler(null);
         for (int i = 0; i < 10; i++) {
-            Assertions.assertEquals(value, sampler.sample(), 0);
+            Assertions.assertEquals(value, sampler.sample());
         }
     }
 }

@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -67,8 +66,8 @@ public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest 
     @Test
     public void testParameterAccessors() {
         final LaplaceDistribution d = makeDistribution();
-        Assertions.assertEquals(0, d.getLocation(), Precision.EPSILON);
-        Assertions.assertEquals(1, d.getScale(), Precision.EPSILON);
+        Assertions.assertEquals(0, d.getLocation());
+        Assertions.assertEquals(1, d.getScale());
     }
 
     @Test

@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -67,8 +66,8 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
     @Test
     public void testParametersAccessors() {
         final LogisticDistribution d = makeDistribution();
-        Assertions.assertEquals(2, d.getLocation(), Precision.EPSILON);
-        Assertions.assertEquals(5, d.getScale(), Precision.EPSILON);
+        Assertions.assertEquals(2, d.getLocation());
+        Assertions.assertEquals(5, d.getScale());
     }
 
     @Test

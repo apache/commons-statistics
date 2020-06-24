@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -61,8 +60,8 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     @Test
     public void testParameterAccessors() {
         final NakagamiDistribution d = makeDistribution();
-        Assertions.assertEquals(0.5, d.getShape(), Precision.EPSILON);
-        Assertions.assertEquals(1, d.getScale(), Precision.EPSILON);
+        Assertions.assertEquals(0.5, d.getShape());
+        Assertions.assertEquals(1, d.getScale());
     }
 
     @Test
@@ -85,7 +84,7 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     @Test
     public void testSupport() {
         final NakagamiDistribution d = makeDistribution();
-        Assertions.assertEquals(0, d.getSupportLowerBound(), Precision.EPSILON);
+        Assertions.assertEquals(0, d.getSupportLowerBound());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());
         Assertions.assertTrue(d.isSupportConnected());
     }

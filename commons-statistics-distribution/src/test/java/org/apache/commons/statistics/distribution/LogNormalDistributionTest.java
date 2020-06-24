@@ -171,8 +171,8 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     @Test
     public void testParameterAccessors() {
         final LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
-        Assertions.assertEquals(2.1, distribution.getScale(), 0);
-        Assertions.assertEquals(1.4, distribution.getShape(), 0);
+        Assertions.assertEquals(2.1, distribution.getScale());
+        Assertions.assertEquals(1.4, distribution.getShape());
     }
 
     @Test
@@ -237,10 +237,10 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
             }
         }
 
-        Assertions.assertEquals(1, d.cumulativeProbability(Double.MAX_VALUE), 0);
-        Assertions.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE), 0);
-        Assertions.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY), 0);
-        Assertions.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY), 0);
+        Assertions.assertEquals(1, d.cumulativeProbability(Double.MAX_VALUE));
+        Assertions.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE));
+        Assertions.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY));
+        Assertions.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY));
     }
 
     @Test

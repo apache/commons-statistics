@@ -116,7 +116,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testParameterAccessors() {
         final TDistribution dist = makeDistribution();
-        Assertions.assertEquals(5d, dist.getDegreesOfFreedom(), Double.MIN_VALUE);
+        Assertions.assertEquals(5d, dist.getDegreesOfFreedom());
     }
 
     @Test

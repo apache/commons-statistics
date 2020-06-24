@@ -152,7 +152,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     @Test
     public void testParameterAccessors() {
         final PoissonDistribution dist = new PoissonDistribution(10.0);
-        Assertions.assertEquals(10.0, dist.getMean(), 0.0);
+        Assertions.assertEquals(10.0, dist.getMean());
     }
 
     @Test

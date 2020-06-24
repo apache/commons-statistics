@@ -82,8 +82,8 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testParameterAccessors() {
         final FDistribution dist = makeDistribution();
-        Assertions.assertEquals(5d, dist.getNumeratorDegreesOfFreedom(), Double.MIN_VALUE);
-        Assertions.assertEquals(6d, dist.getDenominatorDegreesOfFreedom(), Double.MIN_VALUE);
+        Assertions.assertEquals(5d, dist.getNumeratorDegreesOfFreedom());
+        Assertions.assertEquals(6d, dist.getDenominatorDegreesOfFreedom());
     }
 
     @Test

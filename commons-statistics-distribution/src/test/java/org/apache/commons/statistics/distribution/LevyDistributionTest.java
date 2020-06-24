@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -71,8 +70,8 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testParameterAccessors() {
         final LevyDistribution d = makeDistribution();
-        Assertions.assertEquals(1.2, d.getLocation(), Precision.EPSILON);
-        Assertions.assertEquals(0.4, d.getScale(), Precision.EPSILON);
+        Assertions.assertEquals(1.2, d.getLocation());
+        Assertions.assertEquals(0.4, d.getScale());
     }
 
     @Test
@@ -95,7 +94,7 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testSupport() {
         final LevyDistribution d = makeDistribution();
-        Assertions.assertEquals(d.getLocation(), d.getSupportLowerBound(), Precision.EPSILON);
+        Assertions.assertEquals(d.getLocation(), d.getSupportLowerBound());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());
         Assertions.assertTrue(d.isSupportConnected());
     }

@@ -98,7 +98,7 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
     @Test
     public void testParameterAccessors() {
         final ChiSquaredDistribution distribution = makeDistribution();
-        Assertions.assertEquals(5d, distribution.getDegreesOfFreedom(), Double.MIN_VALUE);
+        Assertions.assertEquals(5d, distribution.getDegreesOfFreedom());
     }
 
     @Test
