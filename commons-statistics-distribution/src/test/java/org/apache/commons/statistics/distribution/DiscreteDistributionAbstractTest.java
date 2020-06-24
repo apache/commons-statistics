@@ -186,7 +186,6 @@ public abstract class DiscreteDistributionAbstractTest {
         }
     }
 
-
     /**
      * Verifies that inverse cumulative probability density calculations match expected values
      * using current test instance data

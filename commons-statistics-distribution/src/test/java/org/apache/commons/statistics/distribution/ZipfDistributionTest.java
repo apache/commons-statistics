@@ -98,7 +98,6 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
         return new int[] {1, 1, 1, 1, 1, 1, 2, 10, 10, 10, 9, 8, 10};
     }
 
-
     //-------------------- Additional test cases -------------------------------
 
     @Test

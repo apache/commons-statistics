@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-
 import java.util.ArrayList;
 import java.util.Collections;
 

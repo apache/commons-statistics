@@ -351,7 +351,6 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         }
     }
 
-
     @Test
     public void testMath753Shape1() throws IOException {
         doTestMath753(1.0, 1.5, 0.5, 0.0, 0.0, "gamma-distribution-shape-1.csv");
