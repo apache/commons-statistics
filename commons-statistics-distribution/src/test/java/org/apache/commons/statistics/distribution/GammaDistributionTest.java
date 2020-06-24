@@ -32,7 +32,6 @@ import org.junit.jupiter.api.Test;
  * Test cases for GammaDistribution.
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
- *
  */
 public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 

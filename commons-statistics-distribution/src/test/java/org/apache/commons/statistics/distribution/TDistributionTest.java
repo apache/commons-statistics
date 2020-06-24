@@ -23,7 +23,6 @@ import org.junit.jupiter.api.Test;
  * Test cases for TDistribution.
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
- *
  */
 public class TDistributionTest extends ContinuousDistributionAbstractTest {
 

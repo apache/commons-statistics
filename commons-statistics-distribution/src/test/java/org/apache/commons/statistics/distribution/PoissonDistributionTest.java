@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * <code>PoissonDistributionTest</code>
- *
  */
 public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
 

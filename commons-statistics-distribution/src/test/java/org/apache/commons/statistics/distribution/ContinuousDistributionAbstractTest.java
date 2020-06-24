@@ -59,7 +59,6 @@ import org.junit.jupiter.api.BeforeEach;
  * <p>
  * See {@link NormalDistributionTest} and {@link ChiSquaredDistributionTest}
  * for examples.
- *
  */
 public abstract class ContinuousDistributionAbstractTest {
 

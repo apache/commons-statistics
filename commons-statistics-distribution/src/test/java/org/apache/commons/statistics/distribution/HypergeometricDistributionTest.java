@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
  * Test cases for HyperGeometriclDistribution.
  * Extends DiscreteDistributionAbstractTest.  See class javadoc for
  * DiscreteDistributionAbstractTest for details.
- *
  */
 public class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
 

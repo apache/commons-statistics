@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
  * Test cases for {@link NormalDistribution}. Extends
  * {@link ContinuousDistributionAbstractTest}. See class javadoc of that class
  * for details.
- *
  */
 public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 

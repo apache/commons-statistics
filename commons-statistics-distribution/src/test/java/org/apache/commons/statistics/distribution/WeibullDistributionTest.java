@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
  * Test cases for WeibullDistribution.
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
- *
  */
 public class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
 

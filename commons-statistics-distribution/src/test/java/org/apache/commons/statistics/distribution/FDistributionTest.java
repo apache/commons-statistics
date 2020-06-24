@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
  * Test cases for FDistribution.
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
- *
  */
 public class FDistributionTest extends ContinuousDistributionAbstractTest {
 

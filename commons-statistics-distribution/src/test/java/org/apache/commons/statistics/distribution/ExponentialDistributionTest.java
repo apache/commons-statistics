@@ -25,7 +25,6 @@ import org.junit.jupiter.api.Test;
  * Test cases for ExponentialDistribution.
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
- *
  */
 public class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
 

@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
  * Test cases for PascalDistribution.
  * Extends DiscreteDistributionAbstractTest.  See class javadoc for
  * DiscreteDistributionAbstractTest for details.
- *
  */
 public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 

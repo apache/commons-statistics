@@ -21,7 +21,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test cases for AbstractDiscreteDistribution default implementations.
- *
  */
 public class AbstractDiscreteDistributionTest {
     protected final DiceDistribution diceDistribution = new DiceDistribution();
