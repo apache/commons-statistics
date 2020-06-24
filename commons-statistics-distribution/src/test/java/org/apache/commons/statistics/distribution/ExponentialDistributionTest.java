@@ -113,7 +113,7 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ExponentialDistribution(0));
+        Assertions.assertThrows(DistributionException.class, () -> new ExponentialDistribution(0));
     }
 
     @Test

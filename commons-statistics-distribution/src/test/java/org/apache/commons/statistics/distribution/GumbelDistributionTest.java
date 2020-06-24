@@ -72,7 +72,7 @@ public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new GumbelDistribution(10, -0.1));
+        Assertions.assertThrows(DistributionException.class, () -> new GumbelDistribution(10, -0.1));
     }
 
     @Test

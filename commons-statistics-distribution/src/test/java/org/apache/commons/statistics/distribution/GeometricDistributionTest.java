@@ -165,12 +165,12 @@ public class GeometricDistributionTest extends DiscreteDistributionAbstractTest 
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new GeometricDistribution(-0.1));
+        Assertions.assertThrows(DistributionException.class, () -> new GeometricDistribution(-0.1));
     }
 
     @Test
     public void testConstructorPrecondition2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new GeometricDistribution(1.1));
+        Assertions.assertThrows(DistributionException.class, () -> new GeometricDistribution(1.1));
     }
 
     @Test

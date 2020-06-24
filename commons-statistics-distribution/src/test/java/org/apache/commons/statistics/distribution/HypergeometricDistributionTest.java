@@ -167,23 +167,23 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(0, 3, 5));
+        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(0, 3, 5));
     }
     @Test
     public void testConstructorPrecondition2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(5, -1, 5));
+        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, -1, 5));
     }
     @Test
     public void testConstructorPrecondition3() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(5, 3, -1));
+        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 3, -1));
     }
     @Test
     public void testConstructorPrecondition4() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(5, 6, 5));
+        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 6, 5));
     }
     @Test
     public void testConstructorPrecondition5() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HypergeometricDistribution(5, 3, 6));
+        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 3, 6));
     }
 
     @Test

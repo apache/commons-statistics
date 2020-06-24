@@ -121,7 +121,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new TDistribution(0));
+        Assertions.assertThrows(DistributionException.class, () -> new TDistribution(0));
     }
 
     @Test

@@ -72,7 +72,7 @@ public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest 
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new LaplaceDistribution(0, -0.1));
+        Assertions.assertThrows(DistributionException.class, () -> new LaplaceDistribution(0, -0.1));
     }
 
     @Test

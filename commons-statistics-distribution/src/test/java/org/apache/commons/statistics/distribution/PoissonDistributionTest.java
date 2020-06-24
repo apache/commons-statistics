@@ -157,7 +157,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new PoissonDistribution(-1));
+        Assertions.assertThrows(DistributionException.class, () -> new PoissonDistribution(-1));
     }
 
     @Test

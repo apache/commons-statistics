@@ -72,7 +72,7 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new LogisticDistribution(1, 0));
+        Assertions.assertThrows(DistributionException.class, () -> new LogisticDistribution(1, 0));
     }
 
     @Test

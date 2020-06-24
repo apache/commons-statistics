@@ -85,12 +85,12 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new WeibullDistribution(0, 2));
+        Assertions.assertThrows(DistributionException.class, () -> new WeibullDistribution(0, 2));
     }
 
     @Test
     public void testConstructorPrecondition2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new WeibullDistribution(1, 0));
+        Assertions.assertThrows(DistributionException.class, () -> new WeibullDistribution(1, 0));
     }
 
     @Test

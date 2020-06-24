@@ -109,12 +109,12 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Test
     public void testConstructorPreconditions1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(0, 1));
+        Assertions.assertThrows(DistributionException.class, () -> new ZipfDistribution(0, 1));
     }
 
     @Test
     public void testConstructorPreconditions2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ZipfDistribution(1, 0));
+        Assertions.assertThrows(DistributionException.class, () -> new ZipfDistribution(1, 0));
     }
 
     @Test

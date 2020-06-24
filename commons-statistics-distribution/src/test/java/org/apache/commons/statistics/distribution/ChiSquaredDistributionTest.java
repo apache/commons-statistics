@@ -103,12 +103,12 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ChiSquaredDistribution(0));
+        Assertions.assertThrows(DistributionException.class, () -> new ChiSquaredDistribution(0));
     }
 
     @Test
     public void testConstructorPrecondition2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new ChiSquaredDistribution(-1));
+        Assertions.assertThrows(DistributionException.class, () -> new ChiSquaredDistribution(-1));
     }
 
     @Test

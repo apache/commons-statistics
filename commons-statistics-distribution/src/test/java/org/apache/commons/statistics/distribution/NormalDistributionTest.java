@@ -131,7 +131,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new NormalDistribution(1, 0));
+        Assertions.assertThrows(DistributionException.class, () -> new NormalDistribution(1, 0));
     }
 
     @Test

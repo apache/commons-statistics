@@ -83,13 +83,13 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
     /** Test pre-condition for equal lower/upper bound. */
     @Test
     public void testConstructorPreconditions1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new UniformContinuousDistribution(0, 0));
+        Assertions.assertThrows(DistributionException.class, () -> new UniformContinuousDistribution(0, 0));
     }
 
     /** Test pre-condition for lower bound larger than upper bound. */
     @Test
     public void testConstructorPreconditions2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new UniformContinuousDistribution(1, 0));
+        Assertions.assertThrows(DistributionException.class, () -> new UniformContinuousDistribution(1, 0));
     }
 
     @Test

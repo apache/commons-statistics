@@ -65,12 +65,12 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new NakagamiDistribution(0.4999, 1.0));
+        Assertions.assertThrows(DistributionException.class, () -> new NakagamiDistribution(0.4999, 1.0));
     }
 
     @Test
     public void testConstructorPrecondition2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new NakagamiDistribution(0.5, 0.0));
+        Assertions.assertThrows(DistributionException.class, () -> new NakagamiDistribution(0.5, 0.0));
     }
 
     @Test

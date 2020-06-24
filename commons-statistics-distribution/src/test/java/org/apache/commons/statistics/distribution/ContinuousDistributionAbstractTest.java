@@ -294,15 +294,15 @@ public abstract class ContinuousDistributionAbstractTest {
      */
     @Test
     public void testPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.probability(1, 0));
+        Assertions.assertThrows(DistributionException.class, () -> distribution.probability(1, 0));
     }
     @Test
     public void testPrecondition2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(-1));
+        Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
     @Test
     public void testPrecondition3() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> distribution.inverseCumulativeProbability(2));
+        Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     @Test

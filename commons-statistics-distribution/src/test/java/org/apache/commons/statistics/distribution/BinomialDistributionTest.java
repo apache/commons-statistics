@@ -159,17 +159,17 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Test
     public void testConstructorPrecondition1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new BinomialDistribution(-1, 0.1));
+        Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(-1, 0.1));
     }
 
     @Test
     public void testConstructorPrecondition2() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new BinomialDistribution(10, -0.1));
+        Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(10, -0.1));
     }
 
     @Test
     public void testConstructorPrecondition3() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new BinomialDistribution(10, 1.1));
+        Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(10, 1.1));
     }
 
     @Test

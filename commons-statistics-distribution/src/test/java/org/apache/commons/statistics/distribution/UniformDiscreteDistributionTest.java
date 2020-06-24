@@ -101,7 +101,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
     // MATH-1141
     @Test
     public void testPreconditionUpperBoundInclusive1() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new UniformDiscreteDistribution(1, 0));
+        Assertions.assertThrows(DistributionException.class, () -> new UniformDiscreteDistribution(1, 0));
     }
 
     // MATH-1141
