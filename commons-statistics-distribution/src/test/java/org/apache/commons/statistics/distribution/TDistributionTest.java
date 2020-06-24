@@ -135,7 +135,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
 
         dist = new TDistribution(1.5);
         Assertions.assertEquals(0, dist.getMean(), tol);
-        Assertions.assertTrue(Double.isInfinite(dist.getVariance()));
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
 
         dist = new TDistribution(5);
         Assertions.assertEquals(0, dist.getMean(), tol);

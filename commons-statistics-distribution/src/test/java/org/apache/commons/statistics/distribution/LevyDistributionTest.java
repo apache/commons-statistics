@@ -96,7 +96,7 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
     public void testSupport() {
         final LevyDistribution d = makeDistribution();
         Assertions.assertEquals(d.getLocation(), d.getSupportLowerBound(), Precision.EPSILON);
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());
         Assertions.assertTrue(d.isSupportConnected());
     }
 }

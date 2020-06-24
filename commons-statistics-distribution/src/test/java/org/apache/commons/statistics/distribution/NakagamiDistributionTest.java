@@ -86,7 +86,7 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     public void testSupport() {
         final NakagamiDistribution d = makeDistribution();
         Assertions.assertEquals(0, d.getSupportLowerBound(), Precision.EPSILON);
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());
         Assertions.assertTrue(d.isSupportConnected());
     }
 }

@@ -93,8 +93,8 @@ public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testSupport() {
         final GumbelDistribution d = makeDistribution();
-        Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
-        Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.getSupportLowerBound());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());
         Assertions.assertTrue(d.isSupportConnected());
     }
 }
