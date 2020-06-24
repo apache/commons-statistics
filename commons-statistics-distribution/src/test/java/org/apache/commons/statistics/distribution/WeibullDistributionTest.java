@@ -61,8 +61,8 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
 
     @Test
     public void testInverseCumulativeProbabilitySmallPAccuracy() {
-        WeibullDistribution dist = new WeibullDistribution(2, 3);
-        double t = dist.inverseCumulativeProbability(1e-17);
+        final WeibullDistribution dist = new WeibullDistribution(2, 3);
+        final double t = dist.inverseCumulativeProbability(1e-17);
         // Analytically, answer is solution to 1e-17 = 1-exp(-(x/3)^2)
         // x = sqrt(-9*log(1-1e-17))
         // If we're not careful, answer will be 0. Answer below is computed with care in Octave:

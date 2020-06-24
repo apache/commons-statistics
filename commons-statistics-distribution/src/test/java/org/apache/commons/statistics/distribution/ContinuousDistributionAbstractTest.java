@@ -182,7 +182,7 @@ public abstract class ContinuousDistributionAbstractTest {
                 } else {
                     try {
                         distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[j]);
-                    } catch (IllegalArgumentException e) {
+                    } catch (final IllegalArgumentException e) {
                         continue;
                     }
                     Assertions.fail("distribution.probability(double, double) should have thrown an exception that second argument is too large");
@@ -279,11 +279,11 @@ public abstract class ContinuousDistributionAbstractTest {
                                    tolerance);
 
             // check that P(a < X <= b) = P(X <= b) - P(X <= a)
-            double upper = Math.max(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
-            double lower = Math.min(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
-            double diff = distribution.cumulativeProbability(upper) -
+            final double upper = Math.max(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
+            final double lower = Math.min(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
+            final double diff = distribution.cumulativeProbability(upper) -
                 distribution.cumulativeProbability(lower);
-            double direct = distribution.probability(lower, upper);
+            final double direct = distribution.probability(lower, upper);
             TestUtils.assertEquals("Inconsistent probability for (" +
                                    lower + "," + upper + ")", diff, direct, tolerance);
         }

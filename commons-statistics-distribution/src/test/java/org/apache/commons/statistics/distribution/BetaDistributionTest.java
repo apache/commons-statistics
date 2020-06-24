@@ -32,7 +32,7 @@ public class BetaDistributionTest {
 
     @Test
     public void testCumulative() {
-        double[] x = new double[]{-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1};
+        final double[] x = new double[]{-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1};
         // all test data computed using R 2.5
         checkCumulative(0.1, 0.1,
                         x, new double[]{
@@ -150,7 +150,7 @@ public class BetaDistributionTest {
     }
 
     private void checkCumulative(double alpha, double beta, double[] x, double[] cumes) {
-        BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(cumes[i], d.cumulativeProbability(x[i]), 1e-8);
         }
@@ -162,7 +162,7 @@ public class BetaDistributionTest {
 
     @Test
     public void testDensity() {
-        double[] x = new double[]{1e-6, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
+        final double[] x = new double[]{1e-6, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
         checkDensity(0.1, 0.1,
                      x, new double[]{
                          12741.2357380649, 0.4429889586665234, 2.639378715e-01, 2.066393611e-01,
@@ -292,7 +292,7 @@ public class BetaDistributionTest {
 
     @SuppressWarnings("boxing")
     private void checkDensity(double alpha, double beta, double[] x, double[] expected) {
-        BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
             final int index = i;
             Assertions.assertEquals(expected[i], d.density(x[i]), 1e-5,

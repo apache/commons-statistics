@@ -70,8 +70,8 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         // Exclude the test points less than zero, as they have cumulative
         // probability of zero, meaning the inverse returns zero, and not the
         // points less than zero.
-        double[] points = makeCumulativeTestValues();
-        double[] points2 = new double[points.length - 5];
+        final double[] points = makeCumulativeTestValues();
+        final double[] points2 = new double[points.length - 5];
         System.arraycopy(points, 5, points2, 0, points.length - 5);
         return points2;
     }
@@ -84,8 +84,8 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         // Exclude the test points less than zero, as they have cumulative
         // probability of zero, meaning the inverse returns zero, and not the
         // points less than zero.
-        double[] points = makeCumulativeTestPoints();
-        double[] points2 = new double[points.length - 5];
+        final double[] points = makeCumulativeTestPoints();
+        final double[] points2 = new double[points.length - 5];
         System.arraycopy(points, 5, points2, 0, points.length - 5);
         return points2;
     }
@@ -93,9 +93,9 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     private void verifyQuantiles() {
-        ParetoDistribution distribution = (ParetoDistribution)getDistribution();
-        double mu = distribution.getScale();
-        double sigma = distribution.getShape();
+        final ParetoDistribution distribution = (ParetoDistribution)getDistribution();
+        final double mu = distribution.getScale();
+        final double sigma = distribution.getShape();
         setCumulativeTestPoints(new double[] {mu - 2 * sigma, mu - sigma,
                                               mu,             mu + sigma,
                                               mu + 2 * sigma, mu + 3 * sigma,
@@ -132,7 +132,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testParameterAccessors() {
-        ParetoDistribution distribution = (ParetoDistribution)getDistribution();
+        final ParetoDistribution distribution = (ParetoDistribution)getDistribution();
         Assertions.assertEquals(2.1, distribution.getScale(), 0);
         Assertions.assertEquals(1.4, distribution.getShape(), 0);
     }
@@ -163,7 +163,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testDensity() {
-        double[] x = new double[] {-2, -1, 0, 1, 2};
+        final double[] x = new double[] {-2, -1, 0, 1, 2};
         // R 2.14: print(dpareto(c(-2,-1,0,1,2), scale=1, shape=1), digits=10)
         checkDensity(1, 1, x, new double[] {0.00, 0.00, 0.00, 1.00, 0.25});
         // R 2.14: print(dpareto(c(-2,-1,0,1,2), scale=1.1, shape=1), digits=10)
@@ -172,7 +172,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     private void checkDensity(double scale, double shape, double[] x,
         double[] expected) {
-        ParetoDistribution d = new ParetoDistribution(scale, shape);
+        final ParetoDistribution d = new ParetoDistribution(scale, shape);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(expected[i], d.density(x[i]), 1e-9);
         }
@@ -183,9 +183,9 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
      */
     @Test
     public void testExtremeValues() {
-        ParetoDistribution d = new ParetoDistribution(1, 1);
+        final ParetoDistribution d = new ParetoDistribution(1, 1);
         for (int i = 0; i < 1e5; i++) { // make sure no convergence exception
-            double upperTail = d.cumulativeProbability(i);
+            final double upperTail = d.cumulativeProbability(i);
             if (i <= 1000) { // make sure not top-coded
                 Assertions.assertTrue(upperTail < 1.0d);
             } else { // make sure top coding not reversed

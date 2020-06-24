@@ -66,7 +66,7 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
 
     @Test
     public void testParametersAccessors() {
-        LogisticDistribution d = makeDistribution();
+        final LogisticDistribution d = makeDistribution();
         Assertions.assertEquals(2, d.getLocation(), Precision.EPSILON);
         Assertions.assertEquals(5, d.getScale(), Precision.EPSILON);
     }
@@ -78,7 +78,7 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
 
     @Test
     public void testMeanAndVariance() {
-        LogisticDistribution d = makeDistribution();
+        final LogisticDistribution d = makeDistribution();
         // Constructor 'location' parameter = mean
         Assertions.assertEquals(2.0, d.getMean());
         // Variance = (s^2 * pi^2) / 3
@@ -88,7 +88,7 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
 
     @Test
     public void testSupport() {
-        LogisticDistribution d = makeDistribution();
+        final LogisticDistribution d = makeDistribution();
         Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
         Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
         Assertions.assertTrue(d.isSupportConnected());

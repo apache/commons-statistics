@@ -73,9 +73,9 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         // Area total = 18.75 + 37.5 = 56.25
         // Derivative left side = 7.5 / 5 = 1.5
         // Derivative right side = -7.5 / 10 = -0.75
-        double third = 1 / 3.0;
-        double left = 18.75;
-        double area = 56.25;
+        final double third = 1 / 3.0;
+        final double left = 18.75;
+        final double area = 56.25;
         return new double[] {0.0,
                              0.0,
                              0.75 / area, 3 / area, 6.75 / area, 12 / area,
@@ -95,8 +95,8 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         // Exclude the points outside the limits, as they have cumulative
         // probability of zero and one, meaning the inverse returns the
         // limits and not the points outside the limits.
-        double[] points = makeCumulativeTestValues();
-        double[] points2 = new double[points.length - 2];
+        final double[] points = makeCumulativeTestValues();
+        final double[] points2 = new double[points.length - 2];
         System.arraycopy(points, 1, points2, 0, points2.length);
         return points2;
         //return Arrays.copyOfRange(points, 1, points.length - 1);
@@ -111,8 +111,8 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
         // Exclude the points outside the limits, as they have cumulative
         // probability of zero and one, meaning the inverse returns the
         // limits and not the points outside the limits.
-        double[] points = makeCumulativeTestPoints();
-        double[] points2 = new double[points.length - 2];
+        final double[] points = makeCumulativeTestPoints();
+        final double[] points2 = new double[points.length - 2];
         System.arraycopy(points, 1, points2, 0, points2.length);
         return points2;
         //return Arrays.copyOfRange(points, 1, points.length - 1);
@@ -135,14 +135,14 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
     /** Test lower bound getter. */
     @Test
     public void testGetLowerBound() {
-        TriangularDistribution distribution = makeDistribution();
+        final TriangularDistribution distribution = makeDistribution();
         Assertions.assertEquals(-3.0, distribution.getSupportLowerBound(), 0);
     }
 
     /** Test upper bound getter. */
     @Test
     public void testGetUpperBound() {
-        TriangularDistribution distribution = makeDistribution();
+        final TriangularDistribution distribution = makeDistribution();
         Assertions.assertEquals(12.0, distribution.getSupportUpperBound(), 0);
     }
 

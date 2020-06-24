@@ -71,7 +71,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
      */
     @Test
     public void testCumulativeProbabilityAgainstStackOverflow() {
-        TDistribution td = new TDistribution(5.);
+        final TDistribution td = new TDistribution(5.);
         td.cumulativeProbability(.1);
         td.cumulativeProbability(.01);
     }
@@ -115,7 +115,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testParameterAccessors() {
-        TDistribution dist = makeDistribution();
+        final TDistribution dist = makeDistribution();
         Assertions.assertEquals(5d, dist.getDegreesOfFreedom(), Double.MIN_VALUE);
     }
 
@@ -150,11 +150,11 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
      */
     @Test
     public void nistData() {
-        double[] prob = new double[]{0.10, 0.05, 0.025, 0.01, 0.005, 0.001};
-        double[] args2 = new double[]{1.886, 2.920, 4.303, 6.965, 9.925, 22.327};
-        double[] args10 = new double[]{1.372, 1.812, 2.228, 2.764, 3.169, 4.143};
-        double[] args30 = new double[]{1.310, 1.697, 2.042, 2.457, 2.750, 3.385};
-        double[] args100 = new double[]{1.290, 1.660, 1.984, 2.364, 2.626, 3.174};
+        final double[] prob = new double[]{0.10, 0.05, 0.025, 0.01, 0.005, 0.001};
+        final double[] args2 = new double[]{1.886, 2.920, 4.303, 6.965, 9.925, 22.327};
+        final double[] args10 = new double[]{1.372, 1.812, 2.228, 2.764, 3.169, 4.143};
+        final double[] args30 = new double[]{1.310, 1.697, 2.042, 2.457, 2.750, 3.385};
+        final double[] args100 = new double[]{1.290, 1.660, 1.984, 2.364, 2.626, 3.174};
         TestUtils.assertEquals(prob, makeNistResults(args2, 2), 1.0e-4);
         TestUtils.assertEquals(prob, makeNistResults(args10, 10), 1.0e-4);
         TestUtils.assertEquals(prob, makeNistResults(args30, 30), 1.0e-4);
@@ -163,8 +163,8 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private double[] makeNistResults(double[] args, int df) {
-        TDistribution td =  new TDistribution(df);
-        double[] res  = new double[args.length];
+        final TDistribution td =  new TDistribution(df);
+        final double[] res  = new double[args.length];
         for (int i = 0; i < res.length; i++) {
             res[i] = 1.0 - td.cumulativeProbability(args[i]);
         }

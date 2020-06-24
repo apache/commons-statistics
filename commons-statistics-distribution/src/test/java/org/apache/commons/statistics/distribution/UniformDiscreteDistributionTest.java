@@ -52,7 +52,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
     /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
-        double d = 1.0 / (5 - -3 + 1);
+        final double d = 1.0 / (5 - -3 + 1);
         return new double[] {0, d, d, d, d, d, d, d, d, d, 0};
     }
 
@@ -115,7 +115,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
     @Test
     public void testLargeRangeSubtractionOverflow() {
         final int hi = Integer.MAX_VALUE / 2 + 10;
-        UniformDiscreteDistribution dist = new UniformDiscreteDistribution(-hi, hi - 1);
+        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(-hi, hi - 1);
 
         final double tol = Math.ulp(1d);
         Assertions.assertEquals(0.5 / hi, dist.probability(123456), tol);
@@ -128,7 +128,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
     @Test
     public void testLargeRangeAdditionOverflow() {
         final int hi = Integer.MAX_VALUE / 2 + 10;
-        UniformDiscreteDistribution dist = new UniformDiscreteDistribution(hi - 1, hi + 1);
+        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(hi - 1, hi + 1);
 
         final double tol = Math.ulp(1d);
         Assertions.assertEquals(1d / 3d, dist.probability(hi), tol);

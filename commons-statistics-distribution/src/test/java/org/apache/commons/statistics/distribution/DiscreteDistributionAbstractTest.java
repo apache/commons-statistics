@@ -273,13 +273,13 @@ public abstract class DiscreteDistributionAbstractTest {
      */
     @Test
     public void testSampling() {
-        int[] densityPoints = makeDensityTestPoints();
-        double[] densityValues = makeDensityTestValues();
-        int sampleSize = 1000;
-        int length = TestUtils.eliminateZeroMassPoints(densityPoints, densityValues);
-        AbstractDiscreteDistribution dist = (AbstractDiscreteDistribution) makeDistribution();
-        double[] expectedCounts = new double[length];
-        long[] observedCounts = new long[length];
+        final int[] densityPoints = makeDensityTestPoints();
+        final double[] densityValues = makeDensityTestValues();
+        final int sampleSize = 1000;
+        final int length = TestUtils.eliminateZeroMassPoints(densityPoints, densityValues);
+        final AbstractDiscreteDistribution dist = (AbstractDiscreteDistribution) makeDistribution();
+        final double[] expectedCounts = new double[length];
+        final long[] observedCounts = new long[length];
         for (int i = 0; i < length; i++) {
             expectedCounts[i] = sampleSize * densityValues[i];
         }
@@ -287,7 +287,7 @@ public abstract class DiscreteDistributionAbstractTest {
         final DiscreteDistribution.Sampler sampler =
             dist.createSampler(RandomSource.create(RandomSource.WELL_512_A,
                                                            1000));
-        int[] sample = AbstractDiscreteDistribution.sample(sampleSize, sampler);
+        final int[] sample = AbstractDiscreteDistribution.sample(sampleSize, sampler);
         for (int i = 0; i < sampleSize; i++) {
             for (int j = 0; j < length; j++) {
                 if (sample[i] == densityPoints[j]) {

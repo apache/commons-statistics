@@ -79,8 +79,8 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
         // Exclude the test points less than zero, as they have cumulative
         // probability of zero, meaning the inverse returns zero, and not the
         // points less than zero.
-        double[] points = makeCumulativeTestValues();
-        double[] points2 = new double[points.length - 4];
+        final double[] points = makeCumulativeTestValues();
+        final double[] points2 = new double[points.length - 4];
         System.arraycopy(points, 4, points2, 0, points2.length - 4);
         return points2;
         //return Arrays.copyOfRange(points, 4, points.length - 4);
@@ -95,8 +95,8 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
         // Exclude the test points less than zero, as they have cumulative
         // probability of zero, meaning the inverse returns zero, and not the
         // points less than zero.
-        double[] points = makeCumulativeTestPoints();
-        double[] points2 = new double[points.length - 4];
+        final double[] points = makeCumulativeTestPoints();
+        final double[] points2 = new double[points.length - 4];
         System.arraycopy(points, 4, points2, 0, points2.length - 4);
         return points2;
         //return Arrays.copyOfRange(points, 1, points.length - 4);
@@ -105,9 +105,9 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     //-------------------- Additional test cases -------------------------------
 
     private void verifyQuantiles() {
-        LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
-        double mu = distribution.getScale();
-        double sigma = distribution.getShape();
+        final LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
+        final double mu = distribution.getScale();
+        final double sigma = distribution.getShape();
         setCumulativeTestPoints(new double[] {mu - 2 * sigma, mu - sigma,
                                               mu,             mu + sigma,
                                               mu + 2 * sigma, mu + 3 * sigma,
@@ -170,7 +170,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
 
     @Test
     public void testParameterAccessors() {
-        LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
+        final LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
         Assertions.assertEquals(2.1, distribution.getScale(), 0);
         Assertions.assertEquals(1.4, distribution.getShape(), 0);
     }
@@ -200,7 +200,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
 
     @Test
     public void testDensity() {
-        double[] x = new double[]{-2, -1, 0, 1, 2};
+        final double[] x = new double[]{-2, -1, 0, 1, 2};
         // R 2.13: print(dlnorm(c(-2,-1,0,1,2)), digits=10)
         checkDensity(0, 1, x, new double[] {0.0000000000, 0.0000000000,
                                             0.0000000000, 0.3989422804,
@@ -215,7 +215,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
                               double shape,
                               double[] x,
                               double[] expected) {
-        LogNormalDistribution d = new LogNormalDistribution(scale, shape);
+        final LogNormalDistribution d = new LogNormalDistribution(scale, shape);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(expected[i], d.density(x[i]), 1e-9);
         }
@@ -227,9 +227,9 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
      */
     @Test
     public void testExtremeValues() {
-        LogNormalDistribution d = new LogNormalDistribution(0, 1);
+        final LogNormalDistribution d = new LogNormalDistribution(0, 1);
         for (int i = 0; i < 1e5; i++) { // make sure no convergence exception
-            double upperTail = d.cumulativeProbability(i);
+            final double upperTail = d.cumulativeProbability(i);
             if (i <= 72) { // make sure not top-coded
                 Assertions.assertTrue(upperTail < 1.0d);
             } else { // make sure top coding not reversed
@@ -245,8 +245,8 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
 
     @Test
     public void testTinyVariance() {
-        LogNormalDistribution dist = new LogNormalDistribution(0, 1e-9);
-        double t = dist.getVariance();
+        final LogNormalDistribution dist = new LogNormalDistribution(0, 1e-9);
+        final double t = dist.getVariance();
         Assertions.assertEquals(1e-18, t, 1e-20);
     }
 }

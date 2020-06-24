@@ -115,16 +115,16 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     public void testCumulativeProbability() {
         final ContinuousDistribution dist = new NormalDistribution(0, 1);
-        double x = -10;
-        double expected = 7.61985e-24;
-        double v = dist.cumulativeProbability(x);
-        double tol = 1e-5;
+        final double x = -10;
+        final double expected = 7.61985e-24;
+        final double v = dist.cumulativeProbability(x);
+        final double tol = 1e-5;
         Assertions.assertEquals(1, v / expected, 1e-5);
     }
 
     @Test
     public void testParameterAccessors() {
-        NormalDistribution distribution = makeDistribution();
+        final NormalDistribution distribution = makeDistribution();
         Assertions.assertEquals(2.1, distribution.getMean(), 0);
         Assertions.assertEquals(1.4, distribution.getStandardDeviation(), 0);
     }
@@ -154,7 +154,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testDensity() {
-        double[] x = new double[] {-2, -1, 0, 1, 2};
+        final double[] x = new double[] {-2, -1, 0, 1, 2};
         // R 2.5: print(dnorm(c(-2,-1,0,1,2)), digits=10)
         checkDensity(0, 1, x, new double[] {0.05399096651, 0.24197072452, 0.39894228040, 0.24197072452, 0.05399096651});
         // R 2.5: print(dnorm(c(-2,-1,0,1,2), mean=1.1), digits=10)
@@ -162,7 +162,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void checkDensity(double mean, double sd, double[] x, double[] expected) {
-        NormalDistribution d = new NormalDistribution(mean, sd);
+        final NormalDistribution d = new NormalDistribution(mean, sd);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(expected[i], d.density(x[i]), 1e-9);
         }
@@ -214,7 +214,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testMath280() {
-        NormalDistribution normal = new NormalDistribution(0, 1);
+        final NormalDistribution normal = new NormalDistribution(0, 1);
         double result = normal.inverseCumulativeProbability(0.9986501019683698);
         Assertions.assertEquals(3.0, result, DEFAULT_TOLERANCE);
         result = normal.inverseCumulativeProbability(0.841344746068543);

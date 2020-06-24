@@ -95,7 +95,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     /** Test degenerate case p = 0 */
     @Test
     public void testDegenerate0() {
-        BinomialDistribution dist = new BinomialDistribution(5, 0.0d);
+        final BinomialDistribution dist = new BinomialDistribution(5, 0.0d);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 5, 10});
         setCumulativeTestValues(new double[] {0d, 1d, 1d, 1d, 1d});
@@ -113,7 +113,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     /** Test degenerate case p = 1 */
     @Test
     public void testDegenerate1() {
-        BinomialDistribution dist = new BinomialDistribution(5, 1.0d);
+        final BinomialDistribution dist = new BinomialDistribution(5, 1.0d);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
         setCumulativeTestValues(new double[] {0d, 0d, 0d, 0d, 1d, 1d});
@@ -131,7 +131,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     /** Test degenerate case n = 0 */
     @Test
     public void testDegenerate2() {
-        BinomialDistribution dist = new BinomialDistribution(0, 0.01d);
+        final BinomialDistribution dist = new BinomialDistribution(0, 0.01d);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
         setCumulativeTestValues(new double[] {0d, 1d, 1d, 1d, 1d, 1d});
@@ -193,8 +193,8 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         // numerically stable.
 
         for (int trials = 500000; trials < 20000000; trials += 100000) {
-            BinomialDistribution dist = new BinomialDistribution(trials, 0.5);
-            int p = dist.inverseCumulativeProbability(0.5);
+            final BinomialDistribution dist = new BinomialDistribution(trials, 0.5);
+            final int p = dist.inverseCumulativeProbability(0.5);
             Assertions.assertEquals(trials / 2, p);
         }
     }

@@ -28,7 +28,7 @@ public class AbstractDiscreteDistributionTest {
 
     @Test
     public void testInverseCumulativeProbabilityMethod() {
-        double precision = 0.000000000000001;
+        final double precision = 0.000000000000001;
         Assertions.assertEquals(1, diceDistribution.inverseCumulativeProbability(0));
         Assertions.assertEquals(1, diceDistribution.inverseCumulativeProbability((1d - Double.MIN_VALUE) / 6d));
         Assertions.assertEquals(2, diceDistribution.inverseCumulativeProbability((1d + precision) / 6d));

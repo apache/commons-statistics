@@ -60,7 +60,7 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
     /** Creates the default probability density test expected values */
     @Override
     public double[] makeDensityTestValues() {
-        double d = 1 / 1.75;
+        final double d = 1 / 1.75;
         return new double[] {0, d, d, d, d, d, d, d, d, d, d, 0};
     }
 
@@ -69,14 +69,14 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
     /** Test lower bound getter. */
     @Test
     public void testGetLowerBound() {
-        UniformContinuousDistribution distribution = makeDistribution();
+        final UniformContinuousDistribution distribution = makeDistribution();
         Assertions.assertEquals(-0.5, distribution.getSupportLowerBound(), 0);
     }
 
     /** Test upper bound getter. */
     @Test
     public void testGetUpperBound() {
-        UniformContinuousDistribution distribution = makeDistribution();
+        final UniformContinuousDistribution distribution = makeDistribution();
         Assertions.assertEquals(1.25, distribution.getSupportUpperBound(), 0);
     }
 
@@ -115,7 +115,7 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
      */
     @Test
     public void testInverseCumulativeDistribution() {
-        UniformContinuousDistribution dist = new UniformContinuousDistribution(0, 1e-9);
+        final UniformContinuousDistribution dist = new UniformContinuousDistribution(0, 1e-9);
 
         Assertions.assertEquals(2.5e-10, dist.inverseCumulativeProbability(0.25), 0);
     }

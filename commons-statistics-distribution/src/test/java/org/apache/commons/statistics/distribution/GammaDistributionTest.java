@@ -77,7 +77,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testParameterAccessors() {
-        GammaDistribution distribution = makeDistribution();
+        final GammaDistribution distribution = makeDistribution();
         Assertions.assertEquals(4d, distribution.getShape(), 0);
         Assertions.assertEquals(2d, distribution.getScale(), 0);
     }
@@ -123,20 +123,20 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void testProbability(double x, double a, double b, double expected) {
-        GammaDistribution distribution = new GammaDistribution(a, b);
-        double actual = distribution.cumulativeProbability(x);
+        final GammaDistribution distribution = new GammaDistribution(a, b);
+        final double actual = distribution.cumulativeProbability(x);
         Assertions.assertEquals(expected, actual, 10e-4, () -> "probability for " + x);
     }
 
     private void testValue(double expected, double a, double b, double p) {
-        GammaDistribution distribution = new GammaDistribution(a, b);
-        double actual = distribution.inverseCumulativeProbability(p);
+        final GammaDistribution distribution = new GammaDistribution(a, b);
+        final double actual = distribution.inverseCumulativeProbability(p);
         Assertions.assertEquals(expected, actual, 10e-4, () -> "critical value for " + p);
     }
 
     @Test
     public void testDensity() {
-        double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
+        final double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
         // R2.5: print(dgamma(x, shape=1, rate=1), digits=10)
         checkDensity(1, 1, x, new double[]{0.000000000000, 0.999999000001, 0.606530659713, 0.367879441171, 0.135335283237, 0.006737946999});
         // R2.5: print(dgamma(x, shape=2, rate=1), digits=10)
@@ -159,7 +159,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void checkDensity(double alpha, double rate, double[] x, double[] expected) {
-        GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
+        final GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(expected[i], d.density(x[i]), Math.abs(expected[i]) * 1e-5);
         }
@@ -167,7 +167,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testLogDensity() {
-        double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
+        final double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
         final double inf = Double.POSITIVE_INFINITY;
         // R2.5: print(dgamma(x, shape=1, rate=1, log=TRUE), digits=10)
         checkLogDensity(1, 1, x, new double[]{-inf, -1e-06, -5e-01, -1e+00, -2e+00, -5e+00});
@@ -191,7 +191,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void checkLogDensity(double alpha, double rate, double[] x, double[] expected) {
-        GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
+        final GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(expected[i], d.logDensity(x[i]), Math.abs(expected[i]) * 1e-5);
         }
@@ -215,8 +215,8 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         if (Double.isNaN(x) || (x <= 0.0)) {
             ret = Double.NaN;
         } else {
-            double sum = LanczosApproximation.value(x);
-            double tmp = x + LanczosApproximation.g() + .5;
+            final double sum = LanczosApproximation.value(x);
+            final double tmp = x + LanczosApproximation.g() + .5;
             ret = ((x + .5) * Math.log(tmp)) - tmp +
                 HALF_LOG_2_PI + Math.log(sum / x);
         }
@@ -343,7 +343,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                 Assertions.assertTrue(newMean <= meanOF, msg);
                 Assertions.assertTrue(newSd <= sdOF, msg);
             }
-        } catch (IOException e) {
+        } catch (final IOException e) {
             Assertions.fail(e.getMessage());
         } finally {
             in.close();

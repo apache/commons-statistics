@@ -66,7 +66,7 @@ public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testParameterAccessors() {
-        GumbelDistribution d = makeDistribution();
+        final GumbelDistribution d = makeDistribution();
         Assertions.assertEquals(0.5, d.getLocation(), Precision.EPSILON);
         Assertions.assertEquals(2, d.getScale(), Precision.EPSILON);
     }
@@ -92,7 +92,7 @@ public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testSupport() {
-        GumbelDistribution d = makeDistribution();
+        final GumbelDistribution d = makeDistribution();
         Assertions.assertTrue(Double.isInfinite(d.getSupportLowerBound()));
         Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
         Assertions.assertTrue(d.isSupportConnected());

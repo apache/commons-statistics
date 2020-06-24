@@ -78,7 +78,7 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testParameterAccessors() {
-        CauchyDistribution distribution = makeDistribution();
+        final CauchyDistribution distribution = makeDistribution();
         Assertions.assertEquals(1.2, distribution.getMedian(), 0.0);
         Assertions.assertEquals(2.1, distribution.getScale(), 0.0);
     }

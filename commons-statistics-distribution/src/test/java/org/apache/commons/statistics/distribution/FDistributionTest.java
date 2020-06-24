@@ -81,7 +81,7 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testParameterAccessors() {
-        FDistribution dist = makeDistribution();
+        final FDistribution dist = makeDistribution();
         Assertions.assertEquals(5d, dist.getNumeratorDegreesOfFreedom(), Double.MIN_VALUE);
         Assertions.assertEquals(6d, dist.getDenominatorDegreesOfFreedom(), Double.MIN_VALUE);
     }
@@ -115,9 +115,9 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     public void testLargeDegreesOfFreedom() {
-        FDistribution fd = new FDistribution(100000, 100000);
-        double p = fd.cumulativeProbability(.999);
-        double x = fd.inverseCumulativeProbability(p);
+        final FDistribution fd = new FDistribution(100000, 100000);
+        final double p = fd.cumulativeProbability(.999);
+        final double x = fd.inverseCumulativeProbability(p);
         Assertions.assertEquals(.999, x, 1.0e-5);
     }
 
@@ -139,11 +139,11 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
         // this test was failing due to inaccurate results from ContinuedFraction.
 
         try {
-            double prob = 0.01;
-            FDistribution f = new FDistribution(200000, 200000);
-            double result = f.inverseCumulativeProbability(prob);
+            final double prob = 0.01;
+            final FDistribution f = new FDistribution(200000, 200000);
+            final double result = f.inverseCumulativeProbability(prob);
             Assertions.assertTrue(result < 1.0);
-        } catch (AssertionError ex) {
+        } catch (final AssertionError ex) {
             Assertions.fail("Failing to calculate inverse cumulative probability");
         }
     }

@@ -63,8 +63,8 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
     @Override
     @Test
     public void testInverseCumulativeProbabilities() {
-        ContinuousDistribution dist = getDistribution();
-        for (double x : getCumulativeTestValues()) {
+        final ContinuousDistribution dist = getDistribution();
+        for (final double x : getCumulativeTestValues()) {
             Assertions.assertEquals(1, dist.inverseCumulativeProbability(x), 0);
         }
     }

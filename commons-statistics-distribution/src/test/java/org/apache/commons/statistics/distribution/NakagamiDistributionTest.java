@@ -60,7 +60,7 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
 
     @Test
     public void testParameterAccessors() {
-        NakagamiDistribution d = makeDistribution();
+        final NakagamiDistribution d = makeDistribution();
         Assertions.assertEquals(0.5, d.getShape(), Precision.EPSILON);
         Assertions.assertEquals(1, d.getScale(), Precision.EPSILON);
     }
@@ -84,7 +84,7 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
 
     @Test
     public void testSupport() {
-        NakagamiDistribution d = makeDistribution();
+        final NakagamiDistribution d = makeDistribution();
         Assertions.assertEquals(0, d.getSupportLowerBound(), Precision.EPSILON);
         Assertions.assertTrue(Double.isInfinite(d.getSupportUpperBound()));
         Assertions.assertTrue(d.isSupportConnected());

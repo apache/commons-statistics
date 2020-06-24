@@ -104,7 +104,7 @@ public final class TestUtils {
         } else if (expected == 0.0) {
             Assertions.assertEquals(actual, expected, relativeError, msg);
         } else {
-            double absError = Math.abs(expected) * relativeError;
+            final double absError = Math.abs(expected) * relativeError;
             Assertions.assertEquals(expected, actual, absError, msg);
         }
     }
@@ -114,7 +114,7 @@ public final class TestUtils {
                                     double[] expected,
                                     double[] observed,
                                     double tolerance) {
-        StringBuilder out = new StringBuilder(msg);
+        final StringBuilder out = new StringBuilder(msg);
         if (expected.length != observed.length) {
             out.append("\n Arrays not same length. \n");
             out.append("expected has length ");
@@ -154,12 +154,12 @@ public final class TestUtils {
                                              double[] expected,
                                              long[] observed,
                                              double alpha) {
-        ChiSquareTest chiSquareTest = new ChiSquareTest();
+        final ChiSquareTest chiSquareTest = new ChiSquareTest();
 
         // Fail if we can reject null hypothesis that distributions are the same
         if (chiSquareTest.chiSquareTest(expected, observed, alpha)) {
-            StringBuilder msgBuffer = new StringBuilder();
-            DecimalFormat df = new DecimalFormat("#.##");
+            final StringBuilder msgBuffer = new StringBuilder();
+            final DecimalFormat df = new DecimalFormat("#.##");
             msgBuffer.append("Chisquare test failed");
             msgBuffer.append(" p-value = ");
             msgBuffer.append(chiSquareTest.chiSquareTest(expected, observed));
@@ -195,7 +195,7 @@ public final class TestUtils {
                                              double[] expected,
                                              long[] observed,
                                              double alpha) {
-        String[] labels = new String[values.length];
+        final String[] labels = new String[values.length];
         for (int i = 0; i < values.length; i++) {
             labels[i] = Integer.toString(values[i]);
         }
@@ -213,7 +213,7 @@ public final class TestUtils {
     public static void assertChiSquareAccept(double[] expected,
                                              long[] observed,
                                              double alpha) {
-        String[] labels = new String[expected.length];
+        final String[] labels = new String[expected.length];
         for (int i = 0; i < labels.length; i++) {
             labels[i] = Integer.toString(i + 1);
         }
@@ -225,7 +225,7 @@ public final class TestUtils {
      * these values in an array.
      */
     public static double[] getDistributionQuartiles(ContinuousDistribution distribution) {
-        double[] quantiles = new double[3];
+        final double[] quantiles = new double[3];
         quantiles[0] = distribution.inverseCumulativeProbability(0.25d);
         quantiles[1] = distribution.inverseCumulativeProbability(0.5d);
         quantiles[2] = distribution.inverseCumulativeProbability(0.75d);
@@ -262,8 +262,8 @@ public final class TestUtils {
             }
         }
         if (positiveMassCount < densityValues.length) {
-            int[] newPoints = new int[positiveMassCount];
-            double[] newValues = new double[positiveMassCount];
+            final int[] newPoints = new int[positiveMassCount];
+            final double[] newValues = new double[positiveMassCount];
             int j = 0;
             for (int i = 0; i < densityValues.length; i++) {
                 if (densityValues[i] > 0) {

@@ -103,7 +103,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
-        DiscreteDistribution dist = getDistribution();
+        final DiscreteDistribution dist = getDistribution();
         return new double[] {0d, 0.018315638886d, 0.018315638890d,
                              0.091578194441d, 0.091578194445d, 0.238103305552d,
                              0.238103305556d, dist.cumulativeProbability(3),
@@ -144,14 +144,14 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      */
     @Test
     public void testDegenerateInverseCumulativeProbability() {
-        PoissonDistribution dist = new PoissonDistribution(DEFAULT_TEST_POISSON_PARAMETER);
+        final PoissonDistribution dist = new PoissonDistribution(DEFAULT_TEST_POISSON_PARAMETER);
         Assertions.assertEquals(Integer.MAX_VALUE, dist.inverseCumulativeProbability(1.0d));
         Assertions.assertEquals(0, dist.inverseCumulativeProbability(0d));
     }
 
     @Test
     public void testParameterAccessors() {
-        PoissonDistribution dist = new PoissonDistribution(10.0);
+        final PoissonDistribution dist = new PoissonDistribution(10.0);
         Assertions.assertEquals(10.0, dist.getMean(), 0.0);
     }
 
@@ -178,12 +178,12 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     public void testLargeMeanCumulativeProbability() {
         double mean = 1.0;
         while (mean <= 10000000.0) {
-            PoissonDistribution dist = new PoissonDistribution(mean);
+            final PoissonDistribution dist = new PoissonDistribution(mean);
 
             double x = mean * 2.0;
-            double dx = x / 10.0;
+            final double dx = x / 10.0;
             double p = Double.NaN;
-            double sigma = Math.sqrt(mean);
+            final double sigma = Math.sqrt(mean);
             while (x >= 0) {
                 try {
                     p = dist.cumulativeProbability((int) x);
@@ -191,7 +191,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
                     if (x > mean - 2 * sigma) {
                         Assertions.assertTrue(p > 0, "Zero cumulative probaility");
                     }
-                } catch (AssertionError ex) {
+                } catch (final AssertionError ex) {
                     Assertions.fail("mean of " + mean + " and x of " + x + " caused " + ex.getMessage());
                 }
                 x -= dx;
@@ -228,16 +228,16 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     public void testLargeMeanInverseCumulativeProbability() {
         double mean = 1.0;
         while (mean <= 100000.0) { // Extended test value: 1E7.  Reduced to limit run time.
-            PoissonDistribution dist = new PoissonDistribution(mean);
+            final PoissonDistribution dist = new PoissonDistribution(mean);
             double p = 0.1;
-            double dp = p;
+            final double dp = p;
             while (p < .99) {
                 try {
-                    int ret = dist.inverseCumulativeProbability(p);
+                    final int ret = dist.inverseCumulativeProbability(p);
                     // Verify that returned value satisties definition
                     Assertions.assertTrue(p <= dist.cumulativeProbability(ret));
                     Assertions.assertTrue(p > dist.cumulativeProbability(ret - 1));
-                } catch (AssertionError ex) {
+                } catch (final AssertionError ex) {
                     Assertions.fail("mean of " + mean + " and p of " + p + " caused " + ex.getMessage());
                 }
                 p += dp;
