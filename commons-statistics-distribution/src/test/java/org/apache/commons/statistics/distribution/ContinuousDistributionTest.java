@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
  */
 public class ContinuousDistributionTest {
     /**
-     * Test the default interface methods
+     * Test the default interface methods.
      */
     @Test
     public void testDefaultMethods() {
