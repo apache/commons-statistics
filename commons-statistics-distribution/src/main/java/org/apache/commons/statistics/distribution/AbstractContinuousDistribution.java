@@ -99,8 +99,8 @@ abstract class AbstractContinuousDistribution
 
         final double mu = getMean();
         final double sig = Math.sqrt(getVariance());
-        final boolean chebyshevApplies = !(Double.isInfinite(mu)  || Double.isNaN(mu) ||
-                                           Double.isInfinite(sig) || Double.isNaN(sig));
+        final boolean chebyshevApplies = Double.isFinite(mu) &&
+                                         Double.isFinite(sig);
 
         if (lowerBound == Double.NEGATIVE_INFINITY) {
             if (chebyshevApplies) {

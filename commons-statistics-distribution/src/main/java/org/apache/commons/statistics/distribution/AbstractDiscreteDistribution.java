@@ -83,11 +83,10 @@ abstract class AbstractDiscreteDistribution
         // cf. AbstractRealDistribution.inverseCumulativeProbability(double)
         final double mu = getMean();
         final double sigma = Math.sqrt(getVariance());
-        final boolean chebyshevApplies = !(Double.isInfinite(mu) ||
-                                           Double.isNaN(mu) ||
-                                           Double.isInfinite(sigma) ||
-                                           Double.isNaN(sigma) ||
-                                           sigma == 0.0);
+        final boolean chebyshevApplies = Double.isFinite(mu) &&
+                                         Double.isFinite(sigma) &&
+                                         sigma != 0.0;
+
         if (chebyshevApplies) {
             double k = Math.sqrt((1.0 - p) / p);
             double tmp = mu - k * sigma;
