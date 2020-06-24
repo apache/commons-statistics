@@ -17,7 +17,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -75,10 +74,21 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     }
 
     @Test
-    @Disabled
     public void testMoments() {
-        // TODO.
-        // Currently the mean and variance are only used when solving the inverse cumulative probability.
+        // Values obtained using Matlab, e.g.
+        // format long;
+        // pd = makedist('Nakagami','mu',0.5,'omega',1.0);
+        // disp([pd.mean, pd.var])
+        NakagamiDistribution dist;
+        final double eps = 1e-9;
+
+        dist = new NakagamiDistribution(0.5, 1.0);
+        Assertions.assertEquals(0.797884560802866, dist.getMean(), eps);
+        Assertions.assertEquals(0.363380227632418, dist.getVariance(), eps);
+
+        dist = new NakagamiDistribution(1.23, 2.5);
+        Assertions.assertEquals(1.431786259006201, dist.getMean(), eps);
+        Assertions.assertEquals(0.449988108521028, dist.getVariance(), eps);
     }
 
     @Test
