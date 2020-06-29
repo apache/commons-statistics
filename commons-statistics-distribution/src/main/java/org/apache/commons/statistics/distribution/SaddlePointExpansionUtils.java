@@ -94,7 +94,7 @@ final class SaddlePointExpansionUtils {
         if (z <= STIRLING_ERROR_THRESHOLD) {
             ret = EXACT_STIRLING_ERRORS[2 * z];
         } else {
-            final double z2 = z * z;
+            final double z2 = (double) z * z;
             ret = (0.083333333333333333333 -
                     (0.00277777777777777777778 -
                             (0.00079365079365079365079365 -
