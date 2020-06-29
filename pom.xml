@@ -79,7 +79,7 @@
     <!-- do not use snapshot suffix here -->
     <commons.release.version>1.0</commons.release.version>
     <commons.release.desc>(requires Java 8)</commons.release.desc>
-    <!-- <commons.rc.version>RC1</commons.rc.version> -->
+    <commons.rc.version>RC1</commons.rc.version>
     <commons.binary.suffix>-bin</commons.binary.suffix>
 
     <commons.jira.id>STATISTICS</commons.jira.id>
@@ -195,7 +195,6 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
           <compilerArgs>
-            <!-- <arg>-verbose</arg> -->
             <arg>-Xlint:all,-options,-path</arg>
           </compilerArgs>
         </configuration>
@@ -330,7 +329,6 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <additionalOptions>${doclint.javadoc.qualifier} ${allowscript.javadoc.qualifier} -header '&lt;script type="text/javascript" async src="${statistics.mathjax.url}"&gt;&lt;/script&gt;'</additionalOptions>
-          <!-- <aggregate>true</aggregate> -->
         </configuration>
       </plugin>
     </plugins>
@@ -454,7 +452,6 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <additionalOptions>${doclint.javadoc.qualifier} ${allowscript.javadoc.qualifier} -header '&lt;script type="text/javascript" async src="${statistics.mathjax.url}"&gt;&lt;/script&gt;'</additionalOptions>
-          <!-- <aggregate>true</aggregate> -->
         </configuration>
       </plugin>
     </plugins>
