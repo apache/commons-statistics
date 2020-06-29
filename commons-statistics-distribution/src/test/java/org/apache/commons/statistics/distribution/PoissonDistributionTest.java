@@ -127,7 +127,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      * P(9900 &le; X &le; 10200) for X  = Po(10000)
      */
     @Test
-    public void testNormalApproximateProbability() {
+    void testNormalApproximateProbability() {
         PoissonDistribution dist = new PoissonDistribution(100);
         double result = dist.normalApproximateProbability(110) -
             dist.normalApproximateProbability(89);
@@ -143,25 +143,25 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      * Test the degenerate cases of a 0.0 and 1.0 inverse cumulative probability.
      */
     @Test
-    public void testDegenerateInverseCumulativeProbability() {
+    void testDegenerateInverseCumulativeProbability() {
         final PoissonDistribution dist = new PoissonDistribution(DEFAULT_TEST_POISSON_PARAMETER);
         Assertions.assertEquals(Integer.MAX_VALUE, dist.inverseCumulativeProbability(1.0d));
         Assertions.assertEquals(0, dist.inverseCumulativeProbability(0d));
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final PoissonDistribution dist = new PoissonDistribution(10.0);
         Assertions.assertEquals(10.0, dist.getMean());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new PoissonDistribution(-1));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         PoissonDistribution dist;
 
@@ -175,7 +175,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
-    public void testLargeMeanCumulativeProbability() {
+    void testLargeMeanCumulativeProbability() {
         double mean = 1.0;
         while (mean <= 10000000.0) {
             final PoissonDistribution dist = new PoissonDistribution(mean);
@@ -205,7 +205,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
      * JIRA: MATH-282
      */
     @Test
-    public void testCumulativeProbabilitySpecial() {
+    void testCumulativeProbabilitySpecial() {
         PoissonDistribution dist;
         dist = new PoissonDistribution(9120);
         checkProbability(dist, 9075);
@@ -225,7 +225,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
-    public void testLargeMeanInverseCumulativeProbability() {
+    void testLargeMeanInverseCumulativeProbability() {
         double mean = 1.0;
         while (mean <= 100000.0) { // Extended test value: 1E7.  Reduced to limit run time.
             final PoissonDistribution dist = new PoissonDistribution(mean);

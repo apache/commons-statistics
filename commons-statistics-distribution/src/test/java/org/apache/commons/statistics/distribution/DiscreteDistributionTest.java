@@ -28,7 +28,7 @@ public class DiscreteDistributionTest {
      * Test the default interface methods.
      */
     @Test
-    public void testDefaultMethods() {
+    void testDefaultMethods() {
         final DiscreteDistribution dist = new DiscreteDistribution() {
             @Override
             public double probability(int x) {

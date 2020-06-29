@@ -27,7 +27,7 @@ public class AbstractDiscreteDistributionTest {
     protected final double p = diceDistribution.probability(1);
 
     @Test
-    public void testInverseCumulativeProbabilityMethod() {
+    void testInverseCumulativeProbabilityMethod() {
         final double precision = 0.000000000000001;
         Assertions.assertEquals(1, diceDistribution.inverseCumulativeProbability(0));
         Assertions.assertEquals(1, diceDistribution.inverseCumulativeProbability((1d - Double.MIN_VALUE) / 6d));
@@ -45,7 +45,7 @@ public class AbstractDiscreteDistributionTest {
     }
 
     @Test
-    public void testCumulativeProbabilitiesSingleArguments() {
+    void testCumulativeProbabilitiesSingleArguments() {
         for (int i = 1; i < 7; i++) {
             Assertions.assertEquals(p * i,
                     diceDistribution.cumulativeProbability(i), Double.MIN_VALUE);
@@ -57,7 +57,7 @@ public class AbstractDiscreteDistributionTest {
     }
 
     @Test
-    public void testProbabilitiesRangeArguments() {
+    void testProbabilitiesRangeArguments() {
         int lower = 0;
         int upper = 6;
         for (int i = 0; i < 2; i++) {
@@ -73,7 +73,7 @@ public class AbstractDiscreteDistributionTest {
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         // Require a lower bound of MIN_VALUE and the cumulative probability
         // at that bound to be lower/higher than the argument cumulative probability.
         final DiscreteDistribution dist = new AbstractDiscreteDistribution() {
@@ -111,7 +111,7 @@ public class AbstractDiscreteDistributionTest {
     }
 
     @Test
-    public void testInverseCumulativeProbabilityWithNaN() {
+    void testInverseCumulativeProbabilityWithNaN() {
         final DiscreteDistribution dist = new AbstractDiscreteDistribution() {
             @Override
             public double probability(int x) {

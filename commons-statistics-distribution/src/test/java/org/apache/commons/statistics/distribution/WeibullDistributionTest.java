@@ -60,7 +60,7 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testInverseCumulativeProbabilitySmallPAccuracy() {
+    void testInverseCumulativeProbabilitySmallPAccuracy() {
         final WeibullDistribution dist = new WeibullDistribution(2, 3);
         final double t = dist.inverseCumulativeProbability(1e-17);
         // Analytically, answer is solution to 1e-17 = 1-exp(-(x/3)^2)
@@ -70,31 +70,31 @@ public class WeibullDistributionTest extends ContinuousDistributionAbstractTest 
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
         setInverseCumulativeTestValues(new double[] {0.0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final WeibullDistribution dist = new WeibullDistribution(1, 2);
         Assertions.assertEquals(1, dist.getShape());
         Assertions.assertEquals(2, dist.getScale());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new WeibullDistribution(0, 2));
     }
 
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new WeibullDistribution(1, 0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         WeibullDistribution dist;
 

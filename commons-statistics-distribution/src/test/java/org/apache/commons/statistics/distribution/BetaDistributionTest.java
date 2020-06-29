@@ -31,7 +31,7 @@ public class BetaDistributionTest {
     static final double EPSILON = StatUtils.min(ALPHA_BETAS);
 
     @Test
-    public void testCumulative() {
+    void testCumulative() {
         final double[] x = new double[]{-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1};
         // all test data computed using R 2.5
         checkCumulative(0.1, 0.1,
@@ -161,7 +161,7 @@ public class BetaDistributionTest {
     }
 
     @Test
-    public void testDensity() {
+    void testDensity() {
         final double[] x = new double[]{1e-6, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
         checkDensity(0.1, 0.1,
                      x, new double[]{
@@ -301,7 +301,7 @@ public class BetaDistributionTest {
     }
 
     @Test
-    public void testDensityExtremes() {
+    void testDensityExtremes() {
         final BetaDistribution d = new BetaDistribution(2, 3);
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(-0.1));
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(1.1));
@@ -313,19 +313,19 @@ public class BetaDistributionTest {
     }
 
     @Test
-    public void testLogDensityPrecondition1() {
+    void testLogDensityPrecondition1() {
         final BetaDistribution d = new BetaDistribution(0.5, 3);
         Assertions.assertThrows(DistributionException.class, () -> d.logDensity(0.0));
     }
 
     @Test
-    public void testLogDensityPrecondition2() {
+    void testLogDensityPrecondition2() {
         final BetaDistribution d = new BetaDistribution(2, 0.5);
         Assertions.assertThrows(DistributionException.class, () -> d.logDensity(1.0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         BetaDistribution dist;
 
@@ -339,7 +339,7 @@ public class BetaDistributionTest {
     }
 
     @Test
-    public void testMomentsSampling() {
+    void testMomentsSampling() {
         final UniformRandomProvider rng = RandomSource.create(RandomSource.WELL_1024_A,
                                                               123456789L);
         final int numSamples = 1000;
@@ -359,7 +359,7 @@ public class BetaDistributionTest {
     }
 
     @Test
-    public void testGoodnessOfFit() {
+    void testGoodnessOfFit() {
         final UniformRandomProvider rng = RandomSource.create(RandomSource.WELL_19937_A,
                                                               123456789L);
 

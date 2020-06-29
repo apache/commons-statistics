@@ -70,14 +70,14 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
      *      Bug report that prompted this unit test.</a>
      */
     @Test
-    public void testCumulativeProbabilityAgainstStackOverflow() {
+    void testCumulativeProbabilityAgainstStackOverflow() {
         final TDistribution td = new TDistribution(5.);
         td.cumulativeProbability(.1);
         td.cumulativeProbability(.01);
     }
 
     @Test
-    public void testSmallDf() {
+    void testSmallDf() {
         setDistribution(new TDistribution(1d));
         // quantiles computed using R version 2.9.2
         setCumulativeTestPoints(new double[] {-318.308838986, -31.8205159538, -12.7062047362,
@@ -95,14 +95,14 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testCumulativeProbablilityExtremes() {
+    void testCumulativeProbablilityExtremes() {
         TDistribution dist;
         for (int i = 1; i < 11; i++) {
             dist = new TDistribution(i * 5);
@@ -114,18 +114,18 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final TDistribution dist = makeDistribution();
         Assertions.assertEquals(5d, dist.getDegreesOfFreedom());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new TDistribution(0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         TDistribution dist;
 
@@ -149,7 +149,7 @@ public class TDistributionTest extends ContinuousDistributionAbstractTest {
      * Have chosen problevels from 0.10 to 0.001
      */
     @Test
-    public void nistData() {
+    void nistData() {
         final double[] prob = new double[]{0.10, 0.05, 0.025, 0.01, 0.005, 0.001};
         final double[] args2 = new double[]{1.886, 2.920, 4.303, 6.965, 9.925, 22.327};
         final double[] args10 = new double[]{1.372, 1.812, 2.228, 2.764, 3.169, 4.143};

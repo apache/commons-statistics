@@ -66,37 +66,37 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testCumulativeProbabilityExtremes() {
+    void testCumulativeProbabilityExtremes() {
         setCumulativeTestPoints(new double[] {-2, 0});
         setCumulativeTestValues(new double[] {0, 0});
         verifyCumulativeProbabilities();
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final FDistribution dist = makeDistribution();
         Assertions.assertEquals(5d, dist.getNumeratorDegreesOfFreedom());
         Assertions.assertEquals(6d, dist.getDenominatorDegreesOfFreedom());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new FDistribution(0, 1));
     }
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new FDistribution(1, 0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         FDistribution dist;
 
@@ -114,7 +114,7 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testLargeDegreesOfFreedom() {
+    void testLargeDegreesOfFreedom() {
         final FDistribution fd = new FDistribution(100000, 100000);
         final double p = fd.cumulativeProbability(.999);
         final double x = fd.inverseCumulativeProbability(p);
@@ -122,7 +122,7 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testSmallDegreesOfFreedom() {
+    void testSmallDegreesOfFreedom() {
         FDistribution fd = new FDistribution(1, 1);
         double p = fd.cumulativeProbability(0.975);
         double x = fd.inverseCumulativeProbability(p);
@@ -135,7 +135,7 @@ public class FDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testMath785() {
+    void testMath785() {
         // this test was failing due to inaccurate results from ContinuedFraction.
         final double prob = 0.01;
         final FDistribution f = new FDistribution(200000, 200000);

@@ -94,7 +94,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
 
     /** Test degenerate case p = 0 */
     @Test
-    public void testDegenerate0() {
+    void testDegenerate0() {
         final BinomialDistribution dist = new BinomialDistribution(5, 0.0d);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 5, 10});
@@ -112,7 +112,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
 
     /** Test degenerate case p = 1 */
     @Test
-    public void testDegenerate1() {
+    void testDegenerate1() {
         final BinomialDistribution dist = new BinomialDistribution(5, 1.0d);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
@@ -130,7 +130,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
 
     /** Test degenerate case n = 0 */
     @Test
-    public void testDegenerate2() {
+    void testDegenerate2() {
         final BinomialDistribution dist = new BinomialDistribution(0, 0.01d);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
@@ -147,7 +147,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         for (final int n : new int[] {11, 42, 999}) {
             for (final double p : new double[] {0.1, 0.456, 0.999}) {
                 final BinomialDistribution dist = new BinomialDistribution(n, p);
@@ -158,22 +158,22 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(-1, 0.1));
     }
 
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(10, -0.1));
     }
 
     @Test
-    public void testConstructorPrecondition3() {
+    void testConstructorPrecondition3() {
         Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(10, 1.1));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         BinomialDistribution dist;
 
@@ -187,7 +187,7 @@ public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
-    public void testMath718() {
+    void testMath718() {
         // for large trials the evaluation of ContinuedFraction was inaccurate
         // do a sweep over several large trials to test if the current implementation is
         // numerically stable.

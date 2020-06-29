@@ -105,7 +105,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
 
     /** Verify that if there are no failures, mass is concentrated on sampleSize */
     @Test
-    public void testDegenerateNoFailures() {
+    void testDegenerateNoFailures() {
         final HypergeometricDistribution dist = new HypergeometricDistribution(5, 5, 3);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
@@ -123,7 +123,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
 
     /** Verify that if there are no successes, mass is concentrated on 0 */
     @Test
-    public void testDegenerateNoSuccesses() {
+    void testDegenerateNoSuccesses() {
         final HypergeometricDistribution dist = new HypergeometricDistribution(5, 0, 3);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
@@ -141,7 +141,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
 
     /** Verify that if sampleSize = populationSize, mass is concentrated on numberOfSuccesses */
     @Test
-    public void testDegenerateFullSample() {
+    void testDegenerateFullSample() {
         final HypergeometricDistribution dist = new HypergeometricDistribution(5, 3, 5);
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
@@ -158,7 +158,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final HypergeometricDistribution dist = new HypergeometricDistribution(5, 3, 4);
         Assertions.assertEquals(5, dist.getPopulationSize());
         Assertions.assertEquals(3, dist.getNumberOfSuccesses());
@@ -166,28 +166,28 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(0, 3, 5));
     }
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, -1, 5));
     }
     @Test
-    public void testConstructorPrecondition3() {
+    void testConstructorPrecondition3() {
         Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 3, -1));
     }
     @Test
-    public void testConstructorPrecondition4() {
+    void testConstructorPrecondition4() {
         Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 6, 5));
     }
     @Test
-    public void testConstructorPrecondition5() {
+    void testConstructorPrecondition5() {
         Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 3, 6));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         HypergeometricDistribution dist;
 
@@ -201,7 +201,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testLargeValues() {
+    void testLargeValues() {
         final int populationSize = 3456;
         final int sampleSize = 789;
         final int numberOfSucceses = 101;
@@ -251,7 +251,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testMoreLargeValues() {
+    void testMoreLargeValues() {
         final int populationSize = 26896;
         final int sampleSize = 895;
         final int numberOfSucceses = 55;
@@ -279,7 +279,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testMath644() {
+    void testMath644() {
         final int N = 14761461;  // population
         final int m = 1035;      // successes in population
         final int n = 1841;      // number of trials
@@ -296,7 +296,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testZeroTrial() {
+    void testZeroTrial() {
         final int n = 11; // population
         final int m = 4;  // successes in population
         final int s = 0;  // number of trials
@@ -310,7 +310,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testMath1356() {
+    void testMath1356() {
         final int n = 11;  // population
         final int m = 11;  // successes in population
 
@@ -322,7 +322,7 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
     }
 
     @Test
-    public void testMath1021() {
+    void testMath1021() {
         final int N = 43130568;
         final int m = 42976365;
         final int n = 50;

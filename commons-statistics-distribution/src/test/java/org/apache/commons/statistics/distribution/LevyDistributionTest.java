@@ -68,14 +68,14 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final LevyDistribution d = makeDistribution();
         Assertions.assertEquals(1.2, d.getLocation());
         Assertions.assertEquals(0.4, d.getScale());
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         LevyDistribution dist;
 
         dist = new LevyDistribution(0, 0.5);
@@ -92,7 +92,7 @@ public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testSupport() {
+    void testSupport() {
         final LevyDistribution d = makeDistribution();
         Assertions.assertEquals(d.getLocation(), d.getSupportLowerBound());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());

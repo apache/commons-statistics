@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 public class AbstractContinuousDistributionTest {
 
     @Test
-    public void testContinuous() {
+    void testContinuous() {
         final double x0 = 0.0;
         final double x1 = 1.0;
         final double x2 = 2.0;
@@ -108,7 +108,7 @@ public class AbstractContinuousDistributionTest {
     }
 
     @Test
-    public void testDiscontinuous() {
+    void testDiscontinuous() {
         final double x0 = 0.0;
         final double x1 = 0.25;
         final double x2 = 0.5;

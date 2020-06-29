@@ -205,7 +205,7 @@ public abstract class DiscreteDistributionAbstractTest {
      * using default test instance data
      */
     @Test
-    public void testDensities() {
+    void testDensities() {
         verifyDensities();
     }
 
@@ -214,7 +214,7 @@ public abstract class DiscreteDistributionAbstractTest {
      * using default test instance data
      */
     @Test
-    public void testLogDensities() {
+    void testLogDensities() {
         verifyLogDensities();
     }
 
@@ -223,7 +223,7 @@ public abstract class DiscreteDistributionAbstractTest {
      * using default test instance data
      */
     @Test
-    public void testCumulativeProbabilities() {
+    void testCumulativeProbabilities() {
         verifyCumulativeProbabilities();
     }
 
@@ -232,12 +232,12 @@ public abstract class DiscreteDistributionAbstractTest {
      * using default test instance data
      */
     @Test
-    public void testInverseCumulativeProbabilities() {
+    void testInverseCumulativeProbabilities() {
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testConsistencyAtSupportBounds() {
+    void testConsistencyAtSupportBounds() {
         final int lower = distribution.getSupportLowerBound();
         Assertions.assertEquals(0.0, distribution.cumulativeProbability(lower - 1), 0.0,
                 "Cumulative probability mmust be 0 below support lower bound.");
@@ -256,15 +256,15 @@ public abstract class DiscreteDistributionAbstractTest {
     }
 
     @Test
-    public void testPrecondition1() {
+    void testPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> distribution.probability(1, 0));
     }
     @Test
-    public void testPrecondition2() {
+    void testPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
     @Test
-    public void testPrecondition3() {
+    void testPrecondition3() {
         Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
@@ -272,7 +272,7 @@ public abstract class DiscreteDistributionAbstractTest {
      * Test sampling
      */
     @Test
-    public void testSampling() {
+    void testSampling() {
         final int[] densityPoints = makeDensityTestPoints();
         final double[] densityValues = makeDensityTestValues();
         final int sampleSize = 1000;
@@ -303,7 +303,7 @@ public abstract class DiscreteDistributionAbstractTest {
      * connected property is tested.
      */
     @Test
-    public void testIsSupportConnected() {
+    void testIsSupportConnected() {
         Assertions.assertEquals(isSupportConnected(), distribution.isSupportConnected());
     }
 

@@ -235,7 +235,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * using default test instance data
      */
     @Test
-    public void testCumulativeProbabilities() {
+    void testCumulativeProbabilities() {
         verifyCumulativeProbabilities();
     }
 
@@ -244,7 +244,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * using default test instance data
      */
     @Test
-    public void testInverseCumulativeProbabilities() {
+    void testInverseCumulativeProbabilities() {
         verifyInverseCumulativeProbabilities();
     }
 
@@ -253,7 +253,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * for default test instance data
      */
     @Test
-    public void testDensities() {
+    void testDensities() {
         verifyDensities();
     }
 
@@ -262,7 +262,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * for default test instance data
      */
     @Test
-    public void testLogDensities() {
+    void testLogDensities() {
         verifyLogDensities();
     }
 
@@ -270,7 +270,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * Verifies that probability computations are consistent
      */
     @Test
-    public void testConsistency() {
+    void testConsistency() {
         for (int i = 1; i < cumulativeTestPoints.length; i++) {
 
             // check that cdf(x, x) = 0
@@ -293,20 +293,20 @@ public abstract class ContinuousDistributionAbstractTest {
      * Verifies that illegal arguments are correctly handled
      */
     @Test
-    public void testPrecondition1() {
+    void testPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> distribution.probability(1, 0));
     }
     @Test
-    public void testPrecondition2() {
+    void testPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
     @Test
-    public void testPrecondition3() {
+    void testPrecondition3() {
         Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     @Test
-    public void testOutsideSupport() {
+    void testOutsideSupport() {
         // Test various quantities when the variable is outside the support.
         final double lo = distribution.getSupportLowerBound();
         final double hi = distribution.getSupportUpperBound();
@@ -325,7 +325,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * Test sampling
      */
     @Test
-    public void testSampler() {
+    void testSampler() {
         final int sampleSize = 1000;
         final ContinuousDistribution.Sampler sampler =
             distribution.createSampler(RandomSource.create(RandomSource.WELL_19937_C, 123456789L));
@@ -349,7 +349,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * are discarded.
      */
     @Test
-    public void testDensityIntegrals() {
+    void testDensityIntegrals() {
         final double tol = 1e-9;
         final BaseAbstractUnivariateIntegrator integrator =
             new IterativeLegendreGaussIntegrator(5, 1e-12, 1e-10);
@@ -386,7 +386,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * then the support connected property is not used elsewhere in the standard tests.
      */
     @Test
-    public void testIsSupportConnected() {
+    void testIsSupportConnected() {
         Assertions.assertEquals(isSupportConnected(), distribution.isSupportConnected());
     }
 

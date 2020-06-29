@@ -76,23 +76,23 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final GammaDistribution distribution = makeDistribution();
         Assertions.assertEquals(4d, distribution.getShape());
         Assertions.assertEquals(2d, distribution.getScale());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new GammaDistribution(0, 1));
     }
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new GammaDistribution(1, 0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         GammaDistribution dist;
 
@@ -106,7 +106,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testProbabilities() {
+    void testProbabilities() {
         testProbability(-1.000, 4.0, 2.0, .0000);
         testProbability(15.501, 4.0, 2.0, .9499);
         testProbability(0.504, 4.0, 1.0, .0018);
@@ -115,7 +115,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testValues() {
+    void testValues() {
         testValue(15.501, 4.0, 2.0, .9499);
         testValue(0.504, 4.0, 1.0, .0018);
         testValue(10.011, 1.0, 2.0, .9933);
@@ -135,7 +135,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testDensity() {
+    void testDensity() {
         final double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
         // R2.5: print(dgamma(x, shape=1, rate=1), digits=10)
         checkDensity(1, 1, x, new double[]{0.000000000000, 0.999999000001, 0.606530659713, 0.367879441171, 0.135335283237, 0.006737946999});
@@ -166,7 +166,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testLogDensity() {
+    void testLogDensity() {
         final double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
         final double inf = Double.POSITIVE_INFINITY;
         // R2.5: print(dgamma(x, shape=1, rate=1, log=TRUE), digits=10)
@@ -198,7 +198,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
@@ -351,34 +351,34 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testMath753Shape1() throws IOException {
+    void testMath753Shape1() throws IOException {
         doTestMath753(1.0, 1.5, 0.5, 0.0, 0.0, "gamma-distribution-shape-1.csv");
     }
 
     @Test
-    public void testMath753Shape8() throws IOException {
+    void testMath753Shape8() throws IOException {
         doTestMath753(8.0, 1.5, 1.0, 0.0, 0.0, "gamma-distribution-shape-8.csv");
     }
 
     @Test
-    public void testMath753Shape10() throws IOException {
+    void testMath753Shape10() throws IOException {
         doTestMath753(10.0, 1.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-10.csv");
     }
 
     @Test
-    public void testMath753Shape100() throws IOException {
+    void testMath753Shape100() throws IOException {
         // XXX Increased tolerance ("1.5" -> "2.0") to make test pass with JDK "Math"
         // where CM used "FastMath" (cf. "XXX" comment in main source code).
         doTestMath753(100.0, 2.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-100.csv");
     }
 
     @Test
-    public void testMath753Shape142() throws IOException {
+    void testMath753Shape142() throws IOException {
         doTestMath753(142.0, 3.3, 1.6, 40.0, 40.0, "gamma-distribution-shape-142.csv");
     }
 
     @Test
-    public void testMath753Shape1000() throws IOException {
+    void testMath753Shape1000() throws IOException {
         // XXX Increased tolerance ("220.0" -> "230.0") to make test pass with JDK "Math"
         // where CM used "FastMath" (cf. "XXX" comment in main source code).
         doTestMath753(1000.0, 1.0, 1.0, 160.0, 230.0, "gamma-distribution-shape-1000.csv");

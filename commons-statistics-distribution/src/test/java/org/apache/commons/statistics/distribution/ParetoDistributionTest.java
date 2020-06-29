@@ -104,7 +104,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testQuantiles() {
+    void testQuantiles() {
         setCumulativeTestValues(new double[] {0, 0, 0, 0.510884134236, 0.694625688662, 0.785201995008, 0.837811522357, 0.871634279326});
         setDensityTestValues(new double[] {0, 0, 0.666666666, 0.195646346305, 0.0872498032394, 0.0477328899983, 0.0294888141169, 0.0197485724114});
         verifyQuantiles();
@@ -124,31 +124,31 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {2.1, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final ParetoDistribution distribution = (ParetoDistribution)getDistribution();
         Assertions.assertEquals(2.1, distribution.getScale());
         Assertions.assertEquals(1.4, distribution.getShape());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new ParetoDistribution(1, 0));
     }
 
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new ParetoDistribution(0, 1));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         ParetoDistribution dist;
 
@@ -162,7 +162,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testDensity() {
+    void testDensity() {
         final double[] x = new double[] {-2, -1, 0, 1, 2};
         // R 2.14: print(dpareto(c(-2,-1,0,1,2), scale=1, shape=1), digits=10)
         checkDensity(1, 1, x, new double[] {0.00, 0.00, 0.00, 1.00, 0.25});
@@ -182,7 +182,7 @@ public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
      * Check to make sure top-coding of extreme values works correctly.
      */
     @Test
-    public void testExtremeValues() {
+    void testExtremeValues() {
         final ParetoDistribution d = new ParetoDistribution(1, 1);
         for (int i = 0; i < 1e5; i++) { // make sure no convergence exception
             final double upperTail = d.cumulativeProbability(i);

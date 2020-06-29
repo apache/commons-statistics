@@ -82,7 +82,7 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testSmallDf() {
+    void testSmallDf() {
         setDistribution(new ChiSquaredDistribution(0.1d));
         setTolerance(1E-4);
         // quantiles computed using R version 1.8.1 (linux version)
@@ -96,23 +96,23 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final ChiSquaredDistribution distribution = makeDistribution();
         Assertions.assertEquals(5d, distribution.getDegreesOfFreedom());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new ChiSquaredDistribution(0));
     }
 
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new ChiSquaredDistribution(-1));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         ChiSquaredDistribution dist;
 
@@ -126,7 +126,7 @@ public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTe
     }
 
     @Test
-    public void testDensity() {
+    void testDensity() {
         final double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
         //R 2.5: print(dchisq(x, df=1), digits=10)
         checkDensity(1, x, new double[]{0.00000000000, 398.94208093034, 0.43939128947, 0.24197072452, 0.10377687436, 0.01464498256});

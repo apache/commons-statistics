@@ -57,26 +57,26 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testParametersAccessors() {
+    void testParametersAccessors() {
         final LogisticDistribution d = makeDistribution();
         Assertions.assertEquals(2, d.getLocation());
         Assertions.assertEquals(5, d.getScale());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new LogisticDistribution(1, 0));
     }
 
     @Test
-    public void testMeanAndVariance() {
+    void testMeanAndVariance() {
         final LogisticDistribution d = makeDistribution();
         // Constructor 'location' parameter = mean
         Assertions.assertEquals(2.0, d.getMean());
@@ -86,7 +86,7 @@ public class LogisticsDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testSupport() {
+    void testSupport() {
         final LogisticDistribution d = makeDistribution();
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.getSupportLowerBound());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());

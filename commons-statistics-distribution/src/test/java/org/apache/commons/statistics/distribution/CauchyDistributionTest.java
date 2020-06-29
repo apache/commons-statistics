@@ -70,31 +70,31 @@ public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
         setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final CauchyDistribution distribution = makeDistribution();
         Assertions.assertEquals(1.2, distribution.getMedian());
         Assertions.assertEquals(2.1, distribution.getScale());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new CauchyDistribution(0, 0));
     }
 
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new CauchyDistribution(0, -1));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         CauchyDistribution dist;
 
         dist = new CauchyDistribution(10.2, 0.15);

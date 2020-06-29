@@ -68,27 +68,27 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
     //------------ Additional tests -------------------------------------------
 
     @Test
-    public void testCumulativeProbabilityExtremes() {
+    void testCumulativeProbabilityExtremes() {
         setCumulativeTestPoints(new double[] {-2, 0});
         setCumulativeTestValues(new double[] {0, 0});
         verifyCumulativeProbabilities();
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testCumulativeProbability2() {
+    void testCumulativeProbability2() {
         final double actual = getDistribution().probability(0.25, 0.75);
         Assertions.assertEquals(0.0905214, actual, 10e-4);
     }
 
     @Test
-    public void testDensity() {
+    void testDensity() {
         final ExponentialDistribution d1 = new ExponentialDistribution(1);
         Assertions.assertTrue(Precision.equals(0.0, d1.density(-1e-9), 1));
         Assertions.assertTrue(Precision.equals(1.0, d1.density(0.0), 1));
@@ -106,18 +106,18 @@ public class ExponentialDistributionTest extends ContinuousDistributionAbstractT
     }
 
     @Test
-    public void testMeanAccessors() {
+    void testMeanAccessors() {
         final ExponentialDistribution distribution = makeDistribution();
         Assertions.assertEquals(5d, distribution.getMean());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new ExponentialDistribution(0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         ExponentialDistribution dist;
 

@@ -28,7 +28,7 @@ public class ContinuousDistributionTest {
      * Test the default interface methods.
      */
     @Test
-    public void testDefaultMethods() {
+    void testDefaultMethods() {
         final double high = 0.54;
         final double low = 0.313;
 

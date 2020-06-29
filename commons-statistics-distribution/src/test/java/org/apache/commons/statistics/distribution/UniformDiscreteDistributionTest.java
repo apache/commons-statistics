@@ -86,7 +86,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
 
     /** Test mean/variance. */
     @Test
-    public void testMoments() {
+    void testMoments() {
         UniformDiscreteDistribution dist;
 
         dist = new UniformDiscreteDistribution(0, 5);
@@ -100,20 +100,20 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
 
     // MATH-1141
     @Test
-    public void testPreconditionUpperBoundInclusive1() {
+    void testPreconditionUpperBoundInclusive1() {
         Assertions.assertThrows(DistributionException.class, () -> new UniformDiscreteDistribution(1, 0));
     }
 
     // MATH-1141
     @Test
-    public void testPreconditionUpperBoundInclusive2() {
+    void testPreconditionUpperBoundInclusive2() {
         // Degenerate case is allowed.
         new UniformDiscreteDistribution(0, 0);
     }
 
     // MATH-1396
     @Test
-    public void testLargeRangeSubtractionOverflow() {
+    void testLargeRangeSubtractionOverflow() {
         final int hi = Integer.MAX_VALUE / 2 + 10;
         final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(-hi, hi - 1);
 
@@ -126,7 +126,7 @@ public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstrac
 
     // MATH-1396
     @Test
-    public void testLargeRangeAdditionOverflow() {
+    void testLargeRangeAdditionOverflow() {
         final int hi = Integer.MAX_VALUE / 2 + 10;
         final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(hi - 1, hi + 1);
 

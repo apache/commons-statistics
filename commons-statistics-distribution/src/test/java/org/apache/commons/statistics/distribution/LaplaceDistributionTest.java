@@ -57,26 +57,26 @@ public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest 
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
         setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final LaplaceDistribution d = makeDistribution();
         Assertions.assertEquals(0, d.getLocation());
         Assertions.assertEquals(1, d.getScale());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new LaplaceDistribution(0, -0.1));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         LaplaceDistribution dist;
 
         dist = new LaplaceDistribution(0.5, 1.0);
@@ -89,7 +89,7 @@ public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest 
     }
 
     @Test
-    public void testSupport() {
+    void testSupport() {
         final LaplaceDistribution d = makeDistribution();
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.getSupportLowerBound());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());

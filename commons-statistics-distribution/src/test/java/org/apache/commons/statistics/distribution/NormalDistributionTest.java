@@ -85,7 +85,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testQuantiles() {
+    void testQuantiles() {
         setDensityTestValues(new double[] {0.0385649760808, 0.172836231799, 0.284958771715, 0.172836231799, 0.0385649760808,
                                            0.00316560600853, 9.55930184035e-05, 1.06194251052e-06});
         verifyQuantiles();
@@ -105,7 +105,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
@@ -113,7 +113,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     // MATH-1257
     @Test
-    public void testCumulativeProbability() {
+    void testCumulativeProbability() {
         final ContinuousDistribution dist = new NormalDistribution(0, 1);
         final double x = -10;
         final double expected = 7.61985e-24;
@@ -123,19 +123,19 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final NormalDistribution distribution = makeDistribution();
         Assertions.assertEquals(2.1, distribution.getMean());
         Assertions.assertEquals(1.4, distribution.getStandardDeviation());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new NormalDistribution(1, 0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         NormalDistribution dist;
 
@@ -153,7 +153,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testDensity() {
+    void testDensity() {
         final double[] x = new double[] {-2, -1, 0, 1, 2};
         // R 2.5: print(dnorm(c(-2,-1,0,1,2)), digits=10)
         checkDensity(0, 1, x, new double[] {0.05399096651, 0.24197072452, 0.39894228040, 0.24197072452, 0.05399096651});
@@ -173,7 +173,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
      * Verifies fixes for JIRA MATH-167, MATH-414
      */
     @Test
-    public void testLowerTail() {
+    void testLowerTail() {
         final NormalDistribution distribution = new NormalDistribution(0, 1);
         for (int i = 0; i < 100; i++) { // make sure no convergence exception
             final double lowerTail = distribution.cumulativeProbability(-i);
@@ -190,7 +190,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
      * Verifies fixes for JIRA MATH-167, MATH-414
      */
     @Test
-    public void testUpperTail() {
+    void testUpperTail() {
         final NormalDistribution distribution = new NormalDistribution(0, 1);
         for (int i = 0; i < 100; i++) { // make sure no convergence exception
             final double upperTail = distribution.cumulativeProbability(i);
@@ -203,7 +203,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testExtremeValues() {
+    void testExtremeValues() {
         final NormalDistribution distribution = new NormalDistribution(0, 1);
 
         Assertions.assertEquals(1, distribution.cumulativeProbability(Double.MAX_VALUE));
@@ -213,7 +213,7 @@ public class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    public void testMath280() {
+    void testMath280() {
         final NormalDistribution normal = new NormalDistribution(0, 1);
         double result = normal.inverseCumulativeProbability(0.9986501019683698);
         Assertions.assertEquals(3.0, result, DEFAULT_TOLERANCE);

@@ -68,32 +68,32 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
 
     /** Test lower bound getter. */
     @Test
-    public void testGetLowerBound() {
+    void testGetLowerBound() {
         final UniformContinuousDistribution distribution = makeDistribution();
         Assertions.assertEquals(-0.5, distribution.getSupportLowerBound());
     }
 
     /** Test upper bound getter. */
     @Test
-    public void testGetUpperBound() {
+    void testGetUpperBound() {
         final UniformContinuousDistribution distribution = makeDistribution();
         Assertions.assertEquals(1.25, distribution.getSupportUpperBound());
     }
 
     /** Test pre-condition for equal lower/upper bound. */
     @Test
-    public void testConstructorPreconditions1() {
+    void testConstructorPreconditions1() {
         Assertions.assertThrows(DistributionException.class, () -> new UniformContinuousDistribution(0, 0));
     }
 
     /** Test pre-condition for lower bound larger than upper bound. */
     @Test
-    public void testConstructorPreconditions2() {
+    void testConstructorPreconditions2() {
         Assertions.assertThrows(DistributionException.class, () -> new UniformContinuousDistribution(1, 0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         UniformContinuousDistribution dist;
 
         dist = new UniformContinuousDistribution(0, 1);
@@ -114,7 +114,7 @@ public class UniformContinuousDistributionTest extends ContinuousDistributionAbs
      * with the default accuracy.
      */
     @Test
-    public void testInverseCumulativeDistribution() {
+    void testInverseCumulativeDistribution() {
         final UniformContinuousDistribution dist = new UniformContinuousDistribution(0, 1e-9);
 
         Assertions.assertEquals(2.5e-10, dist.inverseCumulativeProbability(0.25));

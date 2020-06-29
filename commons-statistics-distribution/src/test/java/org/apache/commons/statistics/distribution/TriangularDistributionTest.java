@@ -134,20 +134,20 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
 
     /** Test lower bound getter. */
     @Test
-    public void testGetLowerBound() {
+    void testGetLowerBound() {
         final TriangularDistribution distribution = makeDistribution();
         Assertions.assertEquals(-3.0, distribution.getSupportLowerBound());
     }
 
     /** Test upper bound getter. */
     @Test
-    public void testGetUpperBound() {
+    void testGetUpperBound() {
         final TriangularDistribution distribution = makeDistribution();
         Assertions.assertEquals(12.0, distribution.getSupportUpperBound());
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         for (final double x : new double[] {0.1, 0.2, 0.45}) {
             final TriangularDistribution dist = new TriangularDistribution(0, x, 1.0);
             Assertions.assertEquals(x, dist.getMode());
@@ -156,30 +156,30 @@ public class TriangularDistributionTest extends ContinuousDistributionAbstractTe
 
     /** Test pre-condition for equal lower/upper limit. */
     @Test
-    public void testConstructorPreconditions1() {
+    void testConstructorPreconditions1() {
         Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(0, 0, 0));
     }
 
     /** Test pre-condition for lower limit larger than upper limit. */
     @Test
-    public void testConstructorPreconditions2() {
+    void testConstructorPreconditions2() {
         Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(1, 1, 0));
     }
 
     /** Test pre-condition for mode larger than upper limit. */
     @Test
-    public void testConstructorPreconditions3() {
+    void testConstructorPreconditions3() {
         Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(0, 2, 1));
     }
 
     /** Test pre-condition for mode smaller than lower limit. */
     @Test
-    public void testConstructorPreconditions4() {
+    void testConstructorPreconditions4() {
         Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(2, 1, 3));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         TriangularDistribution dist;
 
         dist = new TriangularDistribution(0, 0.5, 1.0);

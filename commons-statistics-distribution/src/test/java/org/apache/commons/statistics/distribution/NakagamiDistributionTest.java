@@ -57,24 +57,24 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final NakagamiDistribution d = makeDistribution();
         Assertions.assertEquals(0.5, d.getShape());
         Assertions.assertEquals(1, d.getScale());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new NakagamiDistribution(0.4999, 1.0));
     }
 
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new NakagamiDistribution(0.5, 0.0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         // Values obtained using Matlab, e.g.
         // format long;
         // pd = makedist('Nakagami','mu',0.5,'omega',1.0);
@@ -92,7 +92,7 @@ public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest
     }
 
     @Test
-    public void testSupport() {
+    void testSupport() {
         final NakagamiDistribution d = makeDistribution();
         Assertions.assertEquals(0, d.getSupportLowerBound());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());

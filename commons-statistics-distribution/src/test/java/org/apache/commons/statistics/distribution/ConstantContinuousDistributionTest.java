@@ -62,7 +62,7 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
     /** Override default test, verifying that inverse cum is constant */
     @Override
     @Test
-    public void testInverseCumulativeProbabilities() {
+    void testInverseCumulativeProbabilities() {
         final ContinuousDistribution dist = getDistribution();
         for (final double x : getCumulativeTestValues()) {
             Assertions.assertEquals(1, dist.inverseCumulativeProbability(x));
@@ -72,7 +72,7 @@ public class ConstantContinuousDistributionTest extends ContinuousDistributionAb
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         ConstantContinuousDistribution dist;
 
         dist = new ConstantContinuousDistribution(-1);

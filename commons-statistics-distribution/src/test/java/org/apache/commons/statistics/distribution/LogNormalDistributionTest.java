@@ -116,7 +116,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testQuantiles() {
+    void testQuantiles() {
         setCumulativeTestValues(new double[] {0, 0.0396495152787,
                                               0.16601209243, 0.272533253269,
                                               0.357618409638, 0.426488363093,
@@ -153,14 +153,14 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testInverseCumulativeProbabilityExtremes() {
+    void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
     @Test
-    public void testCumulativeProbabilityExtremes() {
+    void testCumulativeProbabilityExtremes() {
         // Use a small shape parameter so that we can exceed 40 * shape
         setDistribution(new LogNormalDistribution(1, 0.0001));
         setCumulativeTestPoints(new double[] {0.5, 10});
@@ -169,19 +169,19 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
         Assertions.assertEquals(2.1, distribution.getScale());
         Assertions.assertEquals(1.4, distribution.getShape());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new LogNormalDistribution(1, 0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         LogNormalDistribution dist;
 
@@ -199,7 +199,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testDensity() {
+    void testDensity() {
         final double[] x = new double[]{-2, -1, 0, 1, 2};
         // R 2.13: print(dlnorm(c(-2,-1,0,1,2)), digits=10)
         checkDensity(0, 1, x, new double[] {0.0000000000, 0.0000000000,
@@ -226,7 +226,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
      * Verifies fixes for JIRA MATH-167, MATH-414
      */
     @Test
-    public void testExtremeValues() {
+    void testExtremeValues() {
         final LogNormalDistribution d = new LogNormalDistribution(0, 1);
         for (int i = 0; i < 1e5; i++) { // make sure no convergence exception
             final double upperTail = d.cumulativeProbability(i);
@@ -244,7 +244,7 @@ public class LogNormalDistributionTest extends ContinuousDistributionAbstractTes
     }
 
     @Test
-    public void testTinyVariance() {
+    void testTinyVariance() {
         final LogNormalDistribution dist = new LogNormalDistribution(0, 1e-9);
         final double t = dist.getVariance();
         Assertions.assertEquals(1e-18, t, 1e-20);

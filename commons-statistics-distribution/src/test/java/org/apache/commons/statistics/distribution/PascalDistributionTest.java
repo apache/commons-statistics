@@ -89,7 +89,7 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
     /** Test degenerate case p = 0   */
     @Test
-    public void testDegenerate0() {
+    void testDegenerate0() {
         setDistribution(new PascalDistribution(5, 0.0d));
         setCumulativeTestPoints(new int[] {-1, 0, 1, 5, 10 });
         setCumulativeTestValues(new double[] {0d, 0d, 0d, 0d, 0d});
@@ -104,7 +104,7 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
     /** Test degenerate case p = 1   */
     @Test
-    public void testDegenerate1() {
+    void testDegenerate1() {
         setDistribution(new PascalDistribution(5, 1.0d));
         setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10 });
         setCumulativeTestValues(new double[] {0d, 1d, 1d, 1d, 1d, 1d});
@@ -118,29 +118,29 @@ public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final PascalDistribution distribution = makeDistribution();
         Assertions.assertEquals(10, distribution.getNumberOfSuccesses());
         Assertions.assertEquals(0.7, distribution.getProbabilityOfSuccess());
     }
 
     @Test
-    public void testConstructorPrecondition1() {
+    void testConstructorPrecondition1() {
         Assertions.assertThrows(DistributionException.class, () -> new PascalDistribution(0, 0.5));
     }
 
     @Test
-    public void testConstructorPrecondition2() {
+    void testConstructorPrecondition2() {
         Assertions.assertThrows(DistributionException.class, () -> new PascalDistribution(3, -0.1));
     }
 
     @Test
-    public void testConstructorPrecondition3() {
+    void testConstructorPrecondition3() {
         Assertions.assertThrows(DistributionException.class, () -> new PascalDistribution(3, 1.1));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         PascalDistribution dist;
 

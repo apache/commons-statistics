@@ -101,24 +101,24 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    public void testParameterAccessors() {
+    void testParameterAccessors() {
         final ZipfDistribution distribution = makeDistribution();
         Assertions.assertEquals(10, distribution.getNumberOfElements());
         Assertions.assertEquals(1.0, distribution.getExponent());
     }
 
     @Test
-    public void testConstructorPreconditions1() {
+    void testConstructorPreconditions1() {
         Assertions.assertThrows(DistributionException.class, () -> new ZipfDistribution(0, 1));
     }
 
     @Test
-    public void testConstructorPreconditions2() {
+    void testConstructorPreconditions2() {
         Assertions.assertThrows(DistributionException.class, () -> new ZipfDistribution(1, 0));
     }
 
     @Test
-    public void testMoments() {
+    void testMoments() {
         final double tol = 1e-9;
         ZipfDistribution dist;
 
@@ -131,7 +131,7 @@ public class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
      * Test sampling for various number of points and exponents.
      */
     @Test
-    public void testSamplingExtended() {
+    void testSamplingExtended() {
         final int sampleSize = 1000;
 
         final int[] numPointsValues = {
