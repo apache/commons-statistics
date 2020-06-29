@@ -51,11 +51,16 @@ public class TDistribution extends AbstractContinuousDistribution {
         factor = LogGamma.value(dofOver2 + 0.5) -
                  0.5 * (Math.log(Math.PI) + Math.log(degreesOfFreedom)) -
                  LogGamma.value(dofOver2);
-        mean = degreesOfFreedom > 1 ? 0 :
-            Double.NaN;
-        variance = degreesOfFreedom > 2 ? degreesOfFreedom / (degreesOfFreedom - 2) :
-            degreesOfFreedom > 1 ? Double.POSITIVE_INFINITY :
-            Double.NaN;
+        if (degreesOfFreedom > 2) {
+            mean = 0;
+            variance = degreesOfFreedom / (degreesOfFreedom - 2);
+        } else if (degreesOfFreedom > 1) {
+            mean = 0;
+            variance = Double.POSITIVE_INFINITY;
+        } else {
+            mean = Double.NaN;
+            variance = Double.NaN;
+        }
     }
 
     /**
