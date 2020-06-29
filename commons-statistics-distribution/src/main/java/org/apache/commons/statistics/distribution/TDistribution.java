@@ -23,6 +23,9 @@ import org.apache.commons.numbers.gamma.LogGamma;
  * Implementation of <a href='http://en.wikipedia.org/wiki/Student&apos;s_t-distribution'>Student's t-distribution</a>.
  */
 public class TDistribution extends AbstractContinuousDistribution {
+    /** 2. */
+    private static final double TWO = 2;
+
     /** The degrees of freedom. */
     private final double degreesOfFreedom;
     /** degreesOfFreedom / 2. */
@@ -51,7 +54,7 @@ public class TDistribution extends AbstractContinuousDistribution {
         factor = LogGamma.value(dofOver2 + 0.5) -
                  0.5 * (Math.log(Math.PI) + Math.log(degreesOfFreedom)) -
                  LogGamma.value(dofOver2);
-        if (degreesOfFreedom > 2) {
+        if (degreesOfFreedom > TWO) {
             mean = 0;
             variance = degreesOfFreedom / (degreesOfFreedom - 2);
         } else if (degreesOfFreedom > 1) {
