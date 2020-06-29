@@ -268,7 +268,7 @@ public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                     continue;
                 }
                 final String[] tokens = line.split(", ");
-                Assertions.assertTrue(tokens.length == 2, "expected two floating-point values");
+                Assertions.assertEquals(2, tokens.length, "expected two floating-point values");
                 final double x = Double.parseDouble(tokens[0]);
                 final String msg = "x = " + x + ", shape = " + shape +
                                    ", scale = 1.0";

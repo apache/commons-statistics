@@ -287,12 +287,12 @@ public class HypergeometricDistributionTest extends DiscreteDistributionAbstract
         final int k = 0;
         final HypergeometricDistribution dist = new HypergeometricDistribution(N, m, n);
 
-        Assertions.assertTrue(Precision.compareTo(1.0, dist.upperCumulativeProbability(k), 1) == 0);
+        Assertions.assertEquals(0, Precision.compareTo(1.0, dist.upperCumulativeProbability(k), 1));
         Assertions.assertTrue(Precision.compareTo(dist.cumulativeProbability(k), 0.0, 1) > 0);
 
         // another way to calculate the upper cumulative probability
         final double upper = 1.0 - dist.cumulativeProbability(k) + dist.probability(k);
-        Assertions.assertTrue(Precision.compareTo(1.0, upper, 1) == 0);
+        Assertions.assertEquals(0, Precision.compareTo(1.0, upper, 1));
     }
 
     @Test
