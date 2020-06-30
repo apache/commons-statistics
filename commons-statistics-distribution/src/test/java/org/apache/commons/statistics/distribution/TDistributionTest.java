@@ -71,9 +71,11 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
      */
     @Test
     void testCumulativeProbabilityAgainstStackOverflow() {
-        final TDistribution td = new TDistribution(5.);
-        td.cumulativeProbability(.1);
-        td.cumulativeProbability(.01);
+        Assertions.assertDoesNotThrow(() -> {
+            final TDistribution td = new TDistribution(5.);
+            td.cumulativeProbability(.1);
+            td.cumulativeProbability(.01);
+        });
     }
 
     @Test

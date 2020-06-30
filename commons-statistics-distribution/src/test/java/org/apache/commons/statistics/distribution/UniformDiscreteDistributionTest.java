@@ -108,7 +108,7 @@ class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
     @Test
     void testPreconditionUpperBoundInclusive2() {
         // Degenerate case is allowed.
-        new UniformDiscreteDistribution(0, 0);
+        Assertions.assertDoesNotThrow(() -> new UniformDiscreteDistribution(0, 0));
     }
 
     // MATH-1396
