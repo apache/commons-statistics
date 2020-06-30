@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
  *  use the setXxx methods for the instance data in test cases and call the verifyXxx methods
  *  to verify results.
  */
-public abstract class DiscreteDistributionAbstractTest {
+abstract class DiscreteDistributionAbstractTest {
 
 //-------------------- Private test instance data -------------------------
     /** Discrete distribution instance used to perform tests */

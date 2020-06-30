@@ -60,7 +60,7 @@ import org.junit.jupiter.api.BeforeEach;
  * See {@link NormalDistributionTest} and {@link ChiSquaredDistributionTest}
  * for examples.
  */
-public abstract class ContinuousDistributionAbstractTest {
+abstract class ContinuousDistributionAbstractTest {
 
 //-------------------- Private test instance data -------------------------
     /**  Distribution instance used to perform tests */
