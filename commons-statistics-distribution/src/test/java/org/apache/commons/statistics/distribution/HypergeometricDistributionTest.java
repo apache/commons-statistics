@@ -28,12 +28,12 @@ import org.junit.jupiter.api.Test;
  * Extends DiscreteDistributionAbstractTest.  See class javadoc for
  * DiscreteDistributionAbstractTest for details.
  */
-public class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
+class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-12);
     }
 

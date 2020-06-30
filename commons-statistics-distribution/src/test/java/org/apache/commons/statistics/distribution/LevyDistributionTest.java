@@ -19,7 +19,7 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class LevyDistributionTest extends ContinuousDistributionAbstractTest {
+class LevyDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 

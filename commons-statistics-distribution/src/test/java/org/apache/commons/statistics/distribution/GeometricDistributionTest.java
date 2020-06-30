@@ -24,12 +24,12 @@ import org.junit.jupiter.api.Test;
  * Test cases for GeometricDistribution.
  * See class javadoc for DiscreteDistributionAbstractTest for details.
  */
-public class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
+class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-12);
     }
 

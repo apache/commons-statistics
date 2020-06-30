@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /** Various tests related to MATH-699. */
-public class AbstractContinuousDistributionTest {
+class AbstractContinuousDistributionTest {
 
     @Test
     void testContinuous() {

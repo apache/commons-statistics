@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test cases for LaplaceDistribution.
  */
-public class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
+class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 

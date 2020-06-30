@@ -134,7 +134,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * to alter the defaults.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         distribution = makeDistribution();
         cumulativeTestPoints = makeCumulativeTestPoints();
         cumulativeTestValues = makeCumulativeTestValues();
@@ -148,7 +148,7 @@ public abstract class ContinuousDistributionAbstractTest {
      * Cleans up test instance data
      */
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         distribution = null;
         cumulativeTestPoints = null;
         cumulativeTestValues = null;

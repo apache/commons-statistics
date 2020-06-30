@@ -26,12 +26,12 @@ import org.apache.commons.numbers.core.Precision;
  * Test cases for UniformDiscreteDistribution. See class javadoc for
  * {@link DiscreteDistributionAbstractTest} for further details.
  */
-public class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
+class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-9);
     }
 

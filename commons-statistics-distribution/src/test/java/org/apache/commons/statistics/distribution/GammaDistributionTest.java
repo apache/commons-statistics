@@ -33,14 +33,14 @@ import org.junit.jupiter.api.Test;
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
  */
-public class GammaDistributionTest extends ContinuousDistributionAbstractTest {
+class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     private static final double HALF_LOG_2_PI = 0.5 * Math.log(2.0 * Math.PI);
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-9);
     }
 

@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test cases for GumbelDistribution.
  */
-public class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
+class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 

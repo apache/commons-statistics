@@ -25,12 +25,12 @@ import org.junit.jupiter.api.Test;
  * Test cases for {@link ParetoDistribution}.
  * Extends {@link ContinuousDistributionAbstractTest}. See class javadoc of that class for details.
  */
-public class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
+class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-7);
     }
 

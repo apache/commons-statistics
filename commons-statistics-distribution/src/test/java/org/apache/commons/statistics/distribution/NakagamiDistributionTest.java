@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test cases for NakagamiDistribution.
  */
-public class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
+class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 

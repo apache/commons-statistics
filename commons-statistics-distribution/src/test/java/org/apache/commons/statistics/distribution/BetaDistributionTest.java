@@ -25,7 +25,7 @@ import org.apache.commons.math3.stat.inference.GTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class BetaDistributionTest {
+class BetaDistributionTest {
 
     static final double[] ALPHA_BETAS = {0.1, 1, 10, 100, 1000};
     static final double EPSILON = StatUtils.min(ALPHA_BETAS);

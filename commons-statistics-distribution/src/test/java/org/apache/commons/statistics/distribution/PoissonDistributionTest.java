@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 /**
  * <code>PoissonDistributionTest</code>
  */
-public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
+class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
 
     /**
      * Poisson parameter value for the test distribution.
@@ -33,7 +33,7 @@ public class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-12);
     }
 

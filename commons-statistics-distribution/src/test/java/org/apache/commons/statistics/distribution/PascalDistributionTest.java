@@ -25,14 +25,14 @@ import org.junit.jupiter.api.Test;
  * Extends DiscreteDistributionAbstractTest.  See class javadoc for
  * DiscreteDistributionAbstractTest for details.
  */
-public class PascalDistributionTest extends DiscreteDistributionAbstractTest {
+class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
     private static final double DEFAULT_TOLERANCE = 1e-7;
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(DEFAULT_TOLERANCE);
     }
 

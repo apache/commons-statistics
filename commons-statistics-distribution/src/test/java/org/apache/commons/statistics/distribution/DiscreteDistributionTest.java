@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test default implementations in the {@link DiscreteDistribution} interface.
  */
-public class DiscreteDistributionTest {
+class DiscreteDistributionTest {
     /**
      * Test the default interface methods.
      */

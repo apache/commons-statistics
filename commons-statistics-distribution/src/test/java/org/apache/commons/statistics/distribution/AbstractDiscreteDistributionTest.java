@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test cases for AbstractDiscreteDistribution default implementations.
  */
-public class AbstractDiscreteDistributionTest {
+class AbstractDiscreteDistributionTest {
     protected final DiceDistribution diceDistribution = new DiceDistribution();
     protected final double p = diceDistribution.probability(1);
 

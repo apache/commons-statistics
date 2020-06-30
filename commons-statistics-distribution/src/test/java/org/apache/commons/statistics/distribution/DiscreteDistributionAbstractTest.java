@@ -117,7 +117,7 @@ public abstract class DiscreteDistributionAbstractTest {
      * Setup sets all test instance data to default values
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         distribution = makeDistribution();
         densityTestPoints = makeDensityTestPoints();
         densityTestValues = makeDensityTestValues();
@@ -132,7 +132,7 @@ public abstract class DiscreteDistributionAbstractTest {
      * Cleans up test instance data
      */
     @AfterEach
-    public void tearDown() {
+    void tearDown() {
         distribution = null;
         densityTestPoints = null;
         densityTestValues = null;

@@ -25,12 +25,12 @@ import org.junit.jupiter.api.Test;
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
  */
-public class FDistributionTest extends ContinuousDistributionAbstractTest {
+class FDistributionTest extends ContinuousDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-9);
     }
 

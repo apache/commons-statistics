@@ -26,12 +26,12 @@ import org.junit.jupiter.api.Test;
  * {@link ContinuousDistributionAbstractTest}. See class javadoc of that class
  * for details.
  */
-public class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
+class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-7);
     }
 

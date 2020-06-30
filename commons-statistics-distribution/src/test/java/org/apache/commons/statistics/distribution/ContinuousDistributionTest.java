@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test default implementations in the {@link ContinuousDistribution} interface.
  */
-public class ContinuousDistributionTest {
+class ContinuousDistributionTest {
     /**
      * Test the default interface methods.
      */

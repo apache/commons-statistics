@@ -25,12 +25,12 @@ import org.junit.jupiter.api.Test;
  * Test cases for UniformContinuousDistribution. See class javadoc for
  * {@link ContinuousDistributionAbstractTest} for further details.
  */
-public class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTest {
+class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-4);
     }
 

@@ -26,14 +26,14 @@ import org.junit.jupiter.api.Test;
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
  */
-public class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
+class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
 
     private static final double DEFAULT_TOLERANCE = 1e-7;
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(DEFAULT_TOLERANCE);
     }
 

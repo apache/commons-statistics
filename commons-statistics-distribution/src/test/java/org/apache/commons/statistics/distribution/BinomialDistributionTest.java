@@ -24,12 +24,12 @@ import org.junit.jupiter.api.Test;
  * Test cases for BinomialDistribution. Extends DiscreteDistributionAbstractTest.
  * See class javadoc for DiscreteDistributionAbstractTest for details.
  */
-public class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
+class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-12);
     }
 

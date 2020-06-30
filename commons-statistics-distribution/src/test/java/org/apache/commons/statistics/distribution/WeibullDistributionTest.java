@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
  * ContinuousDistributionAbstractTest for details.
  */
-public class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
+class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 

@@ -26,12 +26,12 @@ import org.junit.jupiter.api.Test;
  *
  * @see ContinuousDistributionAbstractTest
  */
-public class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTest {
+class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTest {
 
     //---------------------- Override tolerance --------------------------------
 
     @BeforeEach
-    public void customSetUp() {
+    void customSetUp() {
         setTolerance(1e-9);
     }
 
