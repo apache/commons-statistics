@@ -305,7 +305,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
         for (int i = 1; i <= n; i++) {
             final double p = dist.probability(i);
-            Assertions.assertEquals(0, p, 0d, () -> "p=" + p);
+            Assertions.assertEquals(0, p, () -> "p=" + p);
         }
     }
 
@@ -317,7 +317,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         for (int s = 0; s <= n; s++) {
             final HypergeometricDistribution dist = new HypergeometricDistribution(n, m, s);
             final double p = dist.probability(s);
-            Assertions.assertEquals(1, p, 0d, () -> "p=" + p);
+            Assertions.assertEquals(1, p, () -> "p=" + p);
         }
     }
 

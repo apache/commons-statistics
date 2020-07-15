@@ -180,7 +180,7 @@ class NormalDistributionTest extends ContinuousDistributionAbstractTest {
             if (i < 39) { // make sure not top-coded
                 Assertions.assertTrue(lowerTail > 0);
             } else { // make sure top coding not reversed
-                Assertions.assertEquals(0, lowerTail, 0d);
+                Assertions.assertEquals(0, lowerTail);
             }
         }
     }
@@ -197,7 +197,7 @@ class NormalDistributionTest extends ContinuousDistributionAbstractTest {
             if (i < 9) { // make sure not top-coded
                 Assertions.assertTrue(upperTail < 1);
             } else { // make sure top coding not reversed
-                Assertions.assertEquals(1, upperTail, 0d);
+                Assertions.assertEquals(1, upperTail);
             }
         }
     }

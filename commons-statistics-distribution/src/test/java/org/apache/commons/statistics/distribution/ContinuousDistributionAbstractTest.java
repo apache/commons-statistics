@@ -313,12 +313,12 @@ abstract class ContinuousDistributionAbstractTest {
         final double below = lo - Math.ulp(lo);
         final double above = hi + Math.ulp(hi);
 
-        Assertions.assertEquals(0d, distribution.density(below), 0d);
-        Assertions.assertEquals(0d, distribution.density(above), 0d);
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(below), 0d);
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(above), 0d);
-        Assertions.assertEquals(0d, distribution.cumulativeProbability(below), 0d);
-        Assertions.assertEquals(1d, distribution.cumulativeProbability(above), 0d);
+        Assertions.assertEquals(0d, distribution.density(below));
+        Assertions.assertEquals(0d, distribution.density(above));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(below));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(above));
+        Assertions.assertEquals(0d, distribution.cumulativeProbability(below));
+        Assertions.assertEquals(1d, distribution.cumulativeProbability(above));
     }
 
     /**
