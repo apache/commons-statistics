@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.RegularizedBeta;
+import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.LogGamma;
 
 /**
@@ -25,6 +26,10 @@ import org.apache.commons.numbers.gamma.LogGamma;
 public class TDistribution extends AbstractContinuousDistribution {
     /** 2. */
     private static final double TWO = 2;
+    /** 1 / sqrt(2). */
+    private static final double ONE_OVER_SQRT_TWO = 1 / Math.sqrt(2);
+    /** Number of degrees of freedom above which to use the normal distribution. */
+    private static final double DOF_THRESHOLD_NORMAL = 2.99e6;
 
     /** The degrees of freedom. */
     private final double degreesOfFreedom;
@@ -94,13 +99,16 @@ public class TDistribution extends AbstractContinuousDistribution {
         if (x == 0) {
             return 0.5;
         } else {
-            final double t =
-                RegularizedBeta.value(degreesOfFreedom / (degreesOfFreedom + (x * x)),
-                                      dofOver2,
-                                      0.5);
-            return x < 0 ?
-                0.5 * t :
-                1 - 0.5 * t;
+            if (degreesOfFreedom > DOF_THRESHOLD_NORMAL) {
+                return 0.5 * (1 + Erf.value(x * ONE_OVER_SQRT_TWO));
+            } else {
+                final double a = 1 / (1 + x * x / degreesOfFreedom);
+                final double t = RegularizedBeta.value(a, dofOver2, 0.5);
+
+                return x < 0 ?
+                    0.5 * t :
+                    1 - 0.5 * t;
+            }
         }
     }
 

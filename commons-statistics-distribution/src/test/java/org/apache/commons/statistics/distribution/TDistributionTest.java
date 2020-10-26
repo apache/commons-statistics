@@ -164,6 +164,39 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
         return;
     }
 
+    // See https://issues.apache.org/jira/browse/STATISTICS-25
+    @Test
+    public void testStatistics25() {
+        final double[] df = {1, 10, 1e2, 1e3, 1e4, 1e5,
+                             1e6, 2e6, 2.98e6, 2.99e6, 3e6, 4e6,
+                             1e7, 1e8, 1e9, 1e10};
+        // Generated from Python.
+        final double[] expected = {0.507956089912,
+                                   0.509726595102,
+                                   0.509947608093,
+                                   0.509970024339,
+                                   0.509972268782,
+                                   0.509972493254,
+                                   0.509972515701,
+                                   0.509972516948,
+                                   0.509972517358,
+                                   0.509972517361,
+                                   0.509972517364,
+                                   0.509972517572,
+                                   0.509972517946,
+                                   0.50997251817,
+                                   0.509972518193,
+                                   0.509972518195};
+
+        final double c = 0.025;
+        final double tol = 1e-9;
+        for (int i = 0; i < df.length; i++) {
+            final TDistribution dist = new TDistribution(df[i]);
+            final double x = dist.cumulativeProbability(c);
+            Assertions.assertEquals(expected[i], x, tol);
+        }
+    }
+
     private double[] makeNistResults(double[] args, int df) {
         final TDistribution td =  new TDistribution(df);
         final double[] res  = new double[args.length];
