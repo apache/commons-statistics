@@ -171,7 +171,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
      * @param m Exponent (special case {@code m = 1} is the harmonic series).
      * @return the n<sup>th</sup> generalized harmonic number.
      */
-    private double generalizedHarmonic(final int n, final double m) {
+    private static double generalizedHarmonic(final int n, final double m) {
         double value = 0;
         for (int k = n; k > 0; --k) {
             value += 1 / Math.pow(k, m);

@@ -94,7 +94,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * @return a two element array containing the lower and upper bounds of the
      * hypergeometric distribution.
      */
-    private int[] getDomain(int n, int m, int k) {
+    private static int[] getDomain(int n, int m, int k) {
         return new int[] {getLowerDomain(n, m, k), getUpperDomain(m, k)};
     }
 
@@ -107,7 +107,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * @param k Sample size.
      * @return the lowest domain value of the hypergeometric distribution.
      */
-    private int getLowerDomain(int n, int m, int k) {
+    private static int getLowerDomain(int n, int m, int k) {
         return Math.max(0, m - (n - k));
     }
 
@@ -146,7 +146,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * @param k Sample size.
      * @return the highest domain value of the hypergeometric distribution.
      */
-    private int getUpperDomain(int m, int k) {
+    private static int getUpperDomain(int m, int k) {
         return Math.min(k, m);
     }
 
