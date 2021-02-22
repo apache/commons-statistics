@@ -150,8 +150,6 @@ class AbstractDiscreteDistributionTest {
      * Simple distribution modeling a 6-sided die
      */
     class DiceDistribution extends AbstractDiscreteDistribution {
-        public static final long serialVersionUID = 23734213;
-
         private final double p = 1d / 6d;
 
         @Override

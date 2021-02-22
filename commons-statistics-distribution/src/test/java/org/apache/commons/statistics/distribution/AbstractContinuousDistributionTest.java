@@ -34,8 +34,6 @@ class AbstractContinuousDistributionTest {
         final double p12 = 0.5;
         final AbstractContinuousDistribution distribution;
         distribution = new AbstractContinuousDistribution() {
-            private static final long serialVersionUID = 1L;
-
             @Override
             public double cumulativeProbability(final double x) {
                 if (x < x0 ||
