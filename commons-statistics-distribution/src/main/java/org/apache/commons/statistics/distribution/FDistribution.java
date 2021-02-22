@@ -52,11 +52,11 @@ public class FDistribution extends AbstractContinuousDistribution {
     public FDistribution(double numeratorDegreesOfFreedom,
                          double denominatorDegreesOfFreedom) {
         if (numeratorDegreesOfFreedom <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             numeratorDegreesOfFreedom);
         }
         if (denominatorDegreesOfFreedom <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             denominatorDegreesOfFreedom);
         }
         this.numeratorDegreesOfFreedom = numeratorDegreesOfFreedom;

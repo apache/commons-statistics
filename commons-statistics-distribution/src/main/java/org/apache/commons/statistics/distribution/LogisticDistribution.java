@@ -43,7 +43,7 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     public LogisticDistribution(double mu,
                                 double scale) {
         if (scale <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             scale);
         }
 

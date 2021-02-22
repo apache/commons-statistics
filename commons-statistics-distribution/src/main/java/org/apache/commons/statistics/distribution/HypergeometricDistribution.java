@@ -42,7 +42,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
                                       int numberOfSuccesses,
                                       int sampleSize) {
         if (populationSize <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             populationSize);
         }
         if (numberOfSuccesses < 0) {

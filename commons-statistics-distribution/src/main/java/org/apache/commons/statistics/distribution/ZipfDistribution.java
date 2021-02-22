@@ -55,11 +55,11 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     public ZipfDistribution(int numberOfElements,
                             double exponent) {
         if (numberOfElements <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             numberOfElements);
         }
         if (exponent <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             exponent);
         }
 

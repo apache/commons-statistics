@@ -48,11 +48,11 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     public WeibullDistribution(double alpha,
                                double beta) {
         if (alpha <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             alpha);
         }
         if (beta <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             beta);
         }
         scale = beta;

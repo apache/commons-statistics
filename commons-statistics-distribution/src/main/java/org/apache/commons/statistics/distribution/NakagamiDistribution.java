@@ -49,7 +49,7 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
             throw new DistributionException(DistributionException.TOO_SMALL, mu, MIN_SHAPE);
         }
         if (omega <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, omega);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, omega);
         }
 
         this.mu = mu;

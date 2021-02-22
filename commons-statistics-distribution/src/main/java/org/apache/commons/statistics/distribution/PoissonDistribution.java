@@ -63,7 +63,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
                                 double epsilon,
                                 int maxIterations) {
         if (p <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, p);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, p);
         }
         mean = p;
         this.epsilon = epsilon;

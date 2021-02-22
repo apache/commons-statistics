@@ -40,7 +40,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
      */
     public ExponentialDistribution(double mean) {
         if (mean <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, mean);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, mean);
         }
         this.mean = mean;
         logMean = Math.log(mean);

@@ -35,7 +35,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     public CauchyDistribution(double median,
                               double scale) {
         if (scale <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, scale);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
         }
         this.scale = scale;
         this.median = median;

@@ -47,7 +47,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     public NormalDistribution(double mean,
                               double sd) {
         if (sd <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, sd);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
         }
 
         this.mean = mean;

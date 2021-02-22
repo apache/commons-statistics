@@ -53,11 +53,11 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     public ParetoDistribution(double scale,
                               double shape) {
         if (scale <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, scale);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
         }
 
         if (shape <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, shape);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
         }
 
         this.scale = scale;

@@ -50,7 +50,7 @@ public class TDistribution extends AbstractContinuousDistribution {
      */
     public TDistribution(double degreesOfFreedom) {
         if (degreesOfFreedom <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             degreesOfFreedom);
         }
         this.degreesOfFreedom = degreesOfFreedom;

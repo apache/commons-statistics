@@ -65,7 +65,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     public LogNormalDistribution(double scale,
                                  double shape) {
         if (shape <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, shape);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
         }
 
         this.scale = scale;

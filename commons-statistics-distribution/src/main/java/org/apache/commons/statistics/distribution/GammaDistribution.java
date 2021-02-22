@@ -100,10 +100,10 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     public GammaDistribution(double shape,
                              double scale) {
         if (shape <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, shape);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
         }
         if (scale <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, scale);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
         }
 
         this.shape = shape;

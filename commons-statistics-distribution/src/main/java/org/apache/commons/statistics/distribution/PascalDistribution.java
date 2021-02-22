@@ -70,7 +70,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     public PascalDistribution(int r,
                               double p) {
         if (r <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE,
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             r);
         }
         if (p < 0 ||

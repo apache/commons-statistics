@@ -37,7 +37,7 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
     public LaplaceDistribution(double mu,
                                double beta) {
         if (beta <= 0) {
-            throw new DistributionException(DistributionException.NEGATIVE, beta);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, beta);
         }
 
         this.mu = mu;
