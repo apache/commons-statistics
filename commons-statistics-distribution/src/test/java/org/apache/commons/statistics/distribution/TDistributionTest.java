@@ -166,7 +166,7 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
 
     // See https://issues.apache.org/jira/browse/STATISTICS-25
     @Test
-    public void testStatistics25() {
+    void testStatistics25() {
         final double[] df = {1, 10, 1e2, 1e3, 1e4, 1e5,
                              1e6, 2e6, 2.98e6, 2.99e6, 3e6, 4e6,
                              1e7, 1e8, 1e9, 1e10};
