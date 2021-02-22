@@ -434,6 +434,20 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
+     * @return Returns the logDensityTestValues.
+     */
+    protected double[] getLogDensityTestValues() {
+        return logDensityTestValues;
+    }
+
+    /**
+     * @param logDensityTestValues The logDensityTestValues to set.
+     */
+    protected void setLogDensityTestValues(double[] logDensityTestValues) {
+        this.logDensityTestValues = logDensityTestValues;
+    }
+
+    /**
      * @return Returns the distribution.
      */
     protected ContinuousDistribution getDistribution() {
