@@ -38,8 +38,6 @@ class DistributionException extends IllegalArgumentException {
     static final String NEGATIVE = "Number %s is negative";
     /** Error message for "not strictly positive" condition when "x <= 0". */
     static final String NOT_STRICTLY_POSITIVE = "Number %s is not greater than 0";
-    /** Error message for "mismatch" condition when "x != y". */
-    static final String MISMATCH = "Expected %s but was %s";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20180119L;
