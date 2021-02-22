@@ -35,9 +35,9 @@ abstract class AbstractDiscreteDistribution
     @Override
     public double probability(int x0,
                               int x1) {
-        if (x1 < x0) {
-            throw new DistributionException(DistributionException.TOO_SMALL,
-                                            x1, x0);
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
+                                            x0, x1);
         }
         return cumulativeProbability(x1) - cumulativeProbability(x0);
     }

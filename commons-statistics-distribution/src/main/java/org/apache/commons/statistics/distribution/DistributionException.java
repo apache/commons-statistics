@@ -28,8 +28,10 @@ class DistributionException extends IllegalArgumentException {
     static final String TOO_SMALL = "%s < %s";
     /** Error message for "out of range" condition. */
     static final String OUT_OF_RANGE = "Number %s is out of range [%s, %s]";
-    /** Error message for "invalid range" condition. */
-    static final String INVALID_RANGE = "Lower bound %s is not below the upper bound %s";
+    /** Error message for "invalid range" condition when "lower >= upper". */
+    static final String INVALID_RANGE_LOW_GTE_HIGH = "Lower bound %s >= upper bound %s";
+    /** Error message for "invalid range" condition when "lower > upper". */
+    static final String INVALID_RANGE_LOW_GT_HIGH = "Lower bound %s > upper bound %s";
     /** Error message for "invalid probability" condition. */
     static final String INVALID_PROBABILITY = "Not a probability: %s is out of range [0, 1]";
     /** Error message for "out of range" condition. */

@@ -44,7 +44,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
                                   double c,
                                   double b) {
         if (a >= b) {
-            throw new DistributionException(DistributionException.TOO_LARGE,
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH,
                                             a, b);
         }
         if (c < a) {

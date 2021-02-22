@@ -39,7 +39,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     public UniformContinuousDistribution(double lower,
                                          double upper) {
         if (lower >= upper) {
-            throw new DistributionException(DistributionException.TOO_LARGE,
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH,
                                             lower, upper);
         }
 

@@ -62,8 +62,8 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
         if (sd <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
         }
-        if (upper <= lower) {
-            throw new DistributionException(DistributionException.INVALID_RANGE, lower, upper);
+        if (lower >= upper) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH, lower, upper);
         }
 
         this.lower = lower;

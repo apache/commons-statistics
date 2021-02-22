@@ -51,7 +51,7 @@ public interface ContinuousDistribution {
     default double probability(double x0,
                                double x1) {
         if (x0 > x1) {
-            throw new DistributionException(DistributionException.TOO_LARGE, x0, x1);
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH, x0, x1);
         }
         return cumulativeProbability(x1) - cumulativeProbability(x0);
     }

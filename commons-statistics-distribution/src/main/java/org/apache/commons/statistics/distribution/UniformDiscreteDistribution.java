@@ -47,7 +47,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     public UniformDiscreteDistribution(int lower,
                                        int upper) {
         if (lower > upper) {
-            throw new DistributionException(DistributionException.TOO_LARGE,
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
                                             lower, upper);
         }
         this.lower = lower;
