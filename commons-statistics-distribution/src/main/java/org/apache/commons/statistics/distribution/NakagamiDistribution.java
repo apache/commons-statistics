@@ -100,6 +100,18 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double survivalProbability(double x) {
+        if (x <= SUPPORT_LO) {
+            return 1;
+        } else if (x >= SUPPORT_HI) {
+            return 0;
+        }
+
+        return RegularizedGamma.Q.value(mu, mu * x * x / omega);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double getMean() {
         return Gamma.value(mu + 0.5) / Gamma.value(mu) * Math.sqrt(omega / mu);
     }

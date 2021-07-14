@@ -255,6 +255,17 @@ public class GammaDistribution extends AbstractContinuousDistribution {
         return RegularizedGamma.P.value(shape, x / scale);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x) {
+        if (x <= SUPPORT_LO) {
+            return 1;
+        } else if (x >= SUPPORT_HI) {
+            return 0;
+        }
+        return RegularizedGamma.Q.value(shape, x / scale);
+    }
+
     /**
      * {@inheritDoc}
      *

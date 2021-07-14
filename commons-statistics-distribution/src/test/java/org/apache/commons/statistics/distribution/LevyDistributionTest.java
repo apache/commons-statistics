@@ -65,6 +65,28 @@ class LevyDistributionTest extends ContinuousDistributionAbstractTest {
             -2.650679030597d, -3.644945255983d};
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {1.205, 1.2049};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {3.7440973842063723e-19, 1.6388396909072308e-19};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {1e39, 42e37};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {1.5957691216057308e-20, 2.4623252122982907e-20};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

@@ -92,6 +92,13 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double survivalProbability(double x) {
+        final double z = (x - mu) / beta;
+        return -Math.expm1(-Math.exp(-z));
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double inverseCumulativeProbability(double p) {
         if (p < 0 || p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);

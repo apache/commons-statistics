@@ -63,6 +63,28 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000756494565517, 0.0109109752919, 0.0303377878006, 0.0637967988952, 0.128289492005};
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {-4200, -6400};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {7.261513520181652e-18, 8.838404680725267e-19};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {4200, 6400};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {7.261513520181652e-18, 8.838404680725267e-19};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     /**

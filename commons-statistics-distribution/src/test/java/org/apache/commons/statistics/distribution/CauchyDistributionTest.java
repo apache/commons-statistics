@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Test;
  */
 class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
 
-    private static final double DEFAULT_TOLERANCE = 1e-7;
+    private static final double DEFAULT_TOLERANCE = 1e-8;
 
     //---------------------- Override tolerance --------------------------------
 
@@ -65,6 +65,28 @@ class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
     public double[] makeDensityTestValues() {
         return new double[] {1.49599158008e-06, 0.000149550440335, 0.000933076881878, 0.00370933207799, 0.0144742330437,
                              1.49599158008e-06, 0.000149550440335, 0.000933076881878, 0.00370933207799, 0.0144742330437};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {-1e16};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {5.551115123125783e-17};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {1e16};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return makeCumulativePrecisionTestValues();
     }
 
     //-------------------- Additional test cases -------------------------------

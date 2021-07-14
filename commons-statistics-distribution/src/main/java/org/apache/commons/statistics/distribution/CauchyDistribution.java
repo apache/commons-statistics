@@ -44,7 +44,22 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x) {
-        return 0.5 + (Math.atan((x - median) / scale) / Math.PI);
+        return cdf((x - median) / scale);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x) {
+        return cdf(-(x - median) / scale);
+    }
+
+    /**
+     * Compute the CDF of the Cauchy distribution with location 0 and scale 1.
+     * @param x Point at which the CDF is evaluated
+     * @return CDF(x)
+     */
+    private static double cdf(double x) {
+        return 0.5 + (Math.atan(x) / Math.PI);
     }
 
     /**

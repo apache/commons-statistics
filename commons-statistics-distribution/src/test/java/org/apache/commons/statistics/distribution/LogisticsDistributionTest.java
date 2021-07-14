@@ -54,6 +54,28 @@ class LogisticsDistributionTest extends ContinuousDistributionAbstractTest {
         };
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {-197, -203};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {5.188951605054656e-18, 1.5628821893349888e-18};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {197, 203};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {1.1548224173015786e-17, 3.478258278776922e-18};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

@@ -54,6 +54,28 @@ class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
         };
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {-7.0, -7.1};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha, specifically =CDF[ExtremeValueDistribution[0.5, 2], x]
+        return new double[] {3.414512624812977e-19, 3.859421750095851e-20};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {75};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // Not calculated via WolframAlpha, instead utilizing scipy gumbel_r, Wolframalpha could not get precise enough
+        return new double[] {6.64554417291507e-17};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

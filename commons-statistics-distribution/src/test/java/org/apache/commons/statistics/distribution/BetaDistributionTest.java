@@ -29,10 +29,13 @@ class BetaDistributionTest {
 
     static final double[] ALPHA_BETAS = {0.1, 1, 10, 100, 1000};
     static final double EPSILON = StatUtils.min(ALPHA_BETAS);
+    static final double[] CUMULATIVE_TEST_POINTS = new double[]{
+        -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1
+    };
 
     @Test
     void testCumulative() {
-        final double[] x = new double[]{-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1};
+        final double[] x = CUMULATIVE_TEST_POINTS;
         // all test data computed using R 2.5
         checkCumulative(0.1, 0.1,
                         x, new double[]{
@@ -149,6 +152,72 @@ class BetaDistributionTest {
                             0.710208, 0.873964, 0.966656, 0.997272, 1.000000, 1.000000});
     }
 
+    @Test
+    void testSurvival() {
+        checkSurvival(1, 1, new double[]{
+            0.0, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.0});
+        checkSurvival(4, 1, new double[]{
+            0.0000, 0.0000, 0.0001, 0.0016, 0.0081, 0.0256, 0.0625, 0.1296, 0.2401,
+            0.4096, 0.6561, 1.0000, 1.0000});
+        checkSurvival(2, 4, new double[]{
+            0.00000, 0.00000, 0.08146, 0.26272, 0.47178, 0.66304, 0.81250, 0.91296,
+            0.96922, 0.99328, 0.99954, 1.00000, 1.00000});
+    }
+
+    @Test
+    void testCumulativeAndSurvivalComplement() {
+        checkCumulativeSurvivalComplement(0.1, 0.1);
+        checkCumulativeSurvivalComplement(0.1, 0.5);
+        checkCumulativeSurvivalComplement(0.1, 1.0);
+        checkCumulativeSurvivalComplement(0.1, 2.0);
+        checkCumulativeSurvivalComplement(0.1, 4.0);
+        checkCumulativeSurvivalComplement(0.5, 0.1);
+        checkCumulativeSurvivalComplement(0.5, 0.5);
+        checkCumulativeSurvivalComplement(0.5, 1.0);
+        checkCumulativeSurvivalComplement(0.5, 2.0);
+        checkCumulativeSurvivalComplement(0.5, 4.0);
+        checkCumulativeSurvivalComplement(1.0, 0.1);
+        checkCumulativeSurvivalComplement(1.0, 0.5);
+        checkCumulativeSurvivalComplement(1, 1);
+        checkCumulativeSurvivalComplement(1, 2);
+        checkCumulativeSurvivalComplement(1, 4);
+        checkCumulativeSurvivalComplement(2.0, 0.1);
+        checkCumulativeSurvivalComplement(2, 1);
+        checkCumulativeSurvivalComplement(2.0, 0.5);
+        checkCumulativeSurvivalComplement(2, 2);
+        checkCumulativeSurvivalComplement(2, 4);
+        checkCumulativeSurvivalComplement(4.0, 0.1);
+        checkCumulativeSurvivalComplement(4.0, 0.5);
+        checkCumulativeSurvivalComplement(4, 1);
+        checkCumulativeSurvivalComplement(4, 2);
+        checkCumulativeSurvivalComplement(4, 4);
+    }
+
+    /** Precision tests for verifying that CDF calculates accurately in cases where 1-cdf(x) is inaccurately 1. */
+    @Test
+    void testCumulativePrecision() {
+        // Calculated using WolframAlpha
+        checkCumulativePrecision(5.0, 5.0, 0.0001, 1.2595800539968654e-18);
+        checkCumulativePrecision(4.0, 5.0, 0.00001, 6.999776002800025e-19);
+        checkCumulativePrecision(5.0, 4.0, 0.0001, 5.598600119996539e-19);
+        checkCumulativePrecision(6.0, 2.0, 0.001, 6.994000000000028e-18);
+        checkCumulativePrecision(2.0, 6.0, 1e-9, 2.0999999930000014e-17);
+    }
+
+    /**
+     * Precision tests for verifying that survivalFunction calculates accurately in cases
+     * where 1-sf(x) is inaccurately 1.
+     */
+    @Test
+    void testSurvivalPrecision() {
+        // Calculated using WolframAlpha
+        checkSurvivalPrecision(5.0, 5.0, 0.9999, 1.2595800539961496e-18);
+        checkSurvivalPrecision(4.0, 5.0, 0.9999, 5.598600119993397e-19);
+        checkSurvivalPrecision(5.0, 4.0, 0.99998, 1.1199283217964632e-17);
+        checkSurvivalPrecision(6.0, 2.0, 0.999999999, 2.0999998742158932e-17);
+        checkSurvivalPrecision(2.0, 6.0, 0.999, 6.994000000000077e-18);
+    }
+
     private void checkCumulative(double alpha, double beta, double[] x, double[] cumes) {
         final BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
@@ -158,6 +227,41 @@ class BetaDistributionTest {
         for (int i = 1; i < x.length - 1; i++) {
             Assertions.assertEquals(x[i], d.inverseCumulativeProbability(cumes[i]), 1e-5);
         }
+    }
+
+    private void checkSurvival(double alpha, double beta, double[] cumes) {
+        final BetaDistribution d = new BetaDistribution(alpha, beta);
+        for (int i = 0; i < CUMULATIVE_TEST_POINTS.length; i++) {
+            Assertions.assertEquals(1 - cumes[i], d.survivalProbability(CUMULATIVE_TEST_POINTS[i]), 1e-8);
+        }
+    }
+
+    private void checkCumulativeSurvivalComplement(double alpha, double beta) {
+        final BetaDistribution d = new BetaDistribution(alpha, beta);
+        for (int i = 0; i < CUMULATIVE_TEST_POINTS.length; i++) {
+            double x = CUMULATIVE_TEST_POINTS[i];
+            Assertions.assertEquals(1, d.cumulativeProbability(x) + d.survivalProbability(x), 1e-8);
+        }
+    }
+
+    private void checkCumulativePrecision(double alpha, double beta, double value, double expected) {
+        final double tolerance = 1e-22;
+        BetaDistribution d = new BetaDistribution(alpha, beta);
+        TestUtils.assertEquals(
+                "cumulative probability not precise at " + value + " for a=" + alpha + " & b=" + beta,
+                d.cumulativeProbability(value),
+                expected,
+                tolerance);
+    }
+
+    private void checkSurvivalPrecision(double alpha, double beta, double value, double expected) {
+        final double tolerance = 1e-22;
+        BetaDistribution d = new BetaDistribution(alpha, beta);
+        TestUtils.assertEquals(
+                "survival function not precise at " + value + " for a=" + alpha + " & b=" + beta,
+                d.survivalProbability(value),
+                expected,
+                tolerance);
     }
 
     @Test

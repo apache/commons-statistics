@@ -112,6 +112,12 @@ public class TDistribution extends AbstractContinuousDistribution {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x) {
+        return cumulativeProbability(-x);
+    }
+
     /**
      * {@inheritDoc}
      *

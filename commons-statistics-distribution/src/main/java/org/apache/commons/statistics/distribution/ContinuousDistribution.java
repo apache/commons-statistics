@@ -95,6 +95,23 @@ public interface ContinuousDistribution {
     double cumulativeProbability(double x);
 
     /**
+     * For a random variable {@code X} whose values are distributed according
+     * to this distribution, this method returns {@code P(X > x)}.
+     * In other words, this method represents the complementary cumulative
+     * distribution function.
+     * <p>
+     * By default, this is defined as {@code 1 - cumulativeProbability(x)}, but
+     * the specific implementation may be more accurate.
+     *
+     * @param x Point at which the survival function is evaluated.
+     * @return the probability that a random variable with this
+     * distribution takes a value greater than {@code x}.
+     */
+    default double survivalProbability(double x) {
+        return 1.0 - cumulativeProbability(x);
+    }
+
+    /**
      * Computes the quantile function of this distribution. For a random
      * variable {@code X} distributed according to this distribution, the
      * returned value is

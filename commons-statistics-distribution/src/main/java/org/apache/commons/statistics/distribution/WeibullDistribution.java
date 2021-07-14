@@ -126,7 +126,17 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
             return 0;
         }
 
-        return 1 - Math.exp(-Math.pow(x / scale, shape));
+        return -Math.expm1(-Math.pow(x / scale, shape));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x) {
+        if (x <= SUPPORT_LO) {
+            return 1;
+        }
+
+        return Math.exp(-Math.pow(x / scale, shape));
     }
 
     /**

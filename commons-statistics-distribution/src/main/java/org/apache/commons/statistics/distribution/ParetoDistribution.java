@@ -126,7 +126,17 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
         if (x <= scale) {
             return 0;
         }
-        return 1 - Math.pow(scale / x, shape);
+        // Can be improved by improving log calculation
+        return -Math.expm1(shape * Math.log(scale / x));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x)  {
+        if (x <= scale) {
+            return 1;
+        }
+        return Math.pow(scale / x, shape);
     }
 
     /**

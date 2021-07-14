@@ -73,6 +73,28 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000394468852816, 0.00366559696761, 0.00874649473311, 0.0166712508128, 0.0311798227954};
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {1e-4, 9e-5};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {2.6040625021701086e-19, 1.7085322417782863e-19};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {99, 103};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {6.833817088979342e-18, 1.0390567840208212e-18};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

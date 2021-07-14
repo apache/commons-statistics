@@ -63,6 +63,28 @@ class FDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000133443915657, 0.00286681303403, 0.00969192007502, 0.0242883861471, 0.0605491314658};
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {1e-7, 4e-8, 9e-8};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {1.578691625481747e-17, 1.597523916857153e-18, 1.2131195257872846e-17};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {1e6, 42e5, 63e5};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {1.1339943867175144e-17, 1.5306104409634358e-19, 4.535143828961954e-20};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

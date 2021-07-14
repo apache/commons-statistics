@@ -32,7 +32,7 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @BeforeEach
     void customSetUp() {
-        setTolerance(1e-7);
+        setTolerance(1e-10);
     }
 
     //-------------- Implementations for abstract methods ----------------------
@@ -102,6 +102,28 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
         //return Arrays.copyOfRange(points, 1, points.length - 4);
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {4e-5, 7e-5};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {1.2366527173500762e-18, 3.9216120913158885e-17};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {999999, 2e6};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {2.924727705260493e-17, 3.8830698713006447e-19};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     private void verifyQuantiles() {
@@ -166,6 +188,15 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
         setCumulativeTestPoints(new double[] {0.5, 10});
         setCumulativeTestValues(new double[] {0, 1.0});
         verifyCumulativeProbabilities();
+    }
+
+    @Test
+    void testSurvivalProbabilityExtremes() {
+        // Use a small shape parameter so that we can exceed 40 * shape
+        setDistribution(new LogNormalDistribution(1, 0.0001));
+        setCumulativeTestPoints(new double[] {0.5, 10});
+        setCumulativeTestValues(new double[] {0, 1.0});
+        verifySurvivalProbability();
     }
 
     @Test

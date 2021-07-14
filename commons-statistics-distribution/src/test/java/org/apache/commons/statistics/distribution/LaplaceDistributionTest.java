@@ -54,6 +54,30 @@ class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
         };
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        // Negative values only as anything > 0 falls into an imprecise calculation by being subtracted from 1
+        return new double[] {-42, -43};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {2.87476113214678e-19, 1.0575655187955402e-19};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        // Positive values only as anything < 0 falls into an imprecise calculation by being subtracted from 1
+        return new double[] {42, 43};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {2.87476113214678e-19, 1.0575655187955402e-19};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test
