@@ -42,7 +42,7 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         return new ParetoDistribution(2.1, 1.4);
     }
 
-    /** Creates the default cumulative probability distribution test input values */
+    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R
@@ -50,13 +50,13 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
                              +6.42632522863494, 5.35688702365718, 4.843949578356074, 4.40279507773206, 3.89417219176244};
     }
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 0, 0, 0, 0, 0.791089998892, 0.730456085931, 0.689667290488, 0.645278794701, 0.578763688757};
     }
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0, 0, 0, 0, 0, 0.0455118580441, 0.070444173646, 0.0896924681582, 0.112794186114, 0.151439332084};

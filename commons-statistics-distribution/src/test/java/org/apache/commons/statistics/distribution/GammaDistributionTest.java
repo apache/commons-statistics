@@ -52,7 +52,7 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         return new GammaDistribution(4d, 2d);
     }
 
-    /** Creates the default cumulative probability distribution test input values */
+    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R version 2.9.2
@@ -60,13 +60,13 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                              26.1244815584, 20.0902350297, 17.5345461395, 15.5073130559, 13.3615661365};
     }
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0.001, 0.01, 0.025, 0.05, 0.1, 0.999, 0.990, 0.975, 0.950, 0.900};
     }
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0.00427280075546, 0.0204117166709, 0.0362756163658, 0.0542113174239, 0.0773195272491,

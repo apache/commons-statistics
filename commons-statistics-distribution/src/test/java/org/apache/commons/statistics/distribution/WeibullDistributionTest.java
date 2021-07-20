@@ -42,7 +42,7 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
         return new WeibullDistribution(1.2, 2.1);
     }
 
-    /** Creates the default cumulative probability distribution test input values */
+    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R version 2.9.2
@@ -50,13 +50,13 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
                              10.5115496887, 7.4976304671, 6.23205600701, 5.23968436955, 4.2079028257};
     }
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0.001, 0.01, 0.025, 0.05, 0.1, 0.999, 0.990, 0.975, 0.950, 0.900};
     }
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0.180535929306, 0.262801138133, 0.301905425199, 0.330899152971,

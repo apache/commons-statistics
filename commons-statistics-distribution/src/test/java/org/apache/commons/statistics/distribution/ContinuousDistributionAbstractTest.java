@@ -77,43 +77,43 @@ import org.junit.jupiter.api.BeforeEach;
 abstract class ContinuousDistributionAbstractTest {
 
 //-------------------- Private test instance data -------------------------
-    /**  Distribution instance used to perform tests */
+    /**  Distribution instance used to perform tests. */
     private ContinuousDistribution distribution;
 
-    /** Tolerance used in comparing expected and returned values */
+    /** Tolerance used in comparing expected and returned values. */
     private double tolerance = 1e-4;
 
-    /** Tolerance used in high precision tests */
+    /** Tolerance used in high precision tests. */
     private final double highPrecisionTolerance = 1e-22;
 
-    /** Arguments used to test cumulative probability density calculations */
+    /** Arguments used to test cumulative probability density calculations. */
     private double[] cumulativeTestPoints;
 
-    /** Values used to test cumulative probability density calculations */
+    /** Values used to test cumulative probability density calculations. */
     private double[] cumulativeTestValues;
 
-    /** Arguments used to test cumulative probability precision, effectively any x where 1-cdf(x) would result in 1 */
+    /** Arguments used to test cumulative probability precision, effectively any x where 1-cdf(x) would result in 1. */
     private double[] cumulativePrecisionTestPoints;
 
-    /** Values used to test cumulative probability precision, usually exceptionally tiny values */
+    /** Values used to test cumulative probability precision, usually exceptionally tiny values. */
     private double[] cumulativePrecisionTestValues;
 
-    /** Arguments used to test survival probability precision, effectively any x where 1-sf(x) would result in 1 */
+    /** Arguments used to test survival probability precision, effectively any x where 1-sf(x) would result in 1. */
     private double[] survivalPrecisionTestPoints;
 
-    /** Values used to test survival probability precision, usually exceptionally tiny values */
+    /** Values used to test survival probability precision, usually exceptionally tiny values. */
     private double[] survivalPrecisionTestValues;
 
-    /** Arguments used to test inverse cumulative probability density calculations */
+    /** Arguments used to test inverse cumulative probability density calculations. */
     private double[] inverseCumulativeTestPoints;
 
-    /** Values used to test inverse cumulative probability density calculations */
+    /** Values used to test inverse cumulative probability density calculations. */
     private double[] inverseCumulativeTestValues;
 
-    /** Values used to test density calculations */
+    /** Values used to test density calculations. */
     private double[] densityTestValues;
 
-    /** Values used to test logarithmic density calculations */
+    /** Values used to test logarithmic density calculations. */
     private double[] logDensityTestValues;
 
     //-------------------- Abstract methods -----------------------------------
@@ -121,13 +121,13 @@ abstract class ContinuousDistributionAbstractTest {
     /** Creates the default continuous distribution instance to use in tests. */
     public abstract ContinuousDistribution makeDistribution();
 
-    /** Creates the default cumulative probability test input values */
+    /** Creates the default cumulative probability test input values. */
     public abstract double[] makeCumulativeTestPoints();
 
-    /** Creates the default cumulative probability test expected values */
+    /** Creates the default cumulative probability test expected values. */
     public abstract double[] makeCumulativeTestValues();
 
-    /** Creates the default cumulative probability precision test input values */
+    /** Creates the default cumulative probability precision test input values. */
     public double[] makeCumulativePrecisionTestPoints() {
         return new double[0];
     }
@@ -141,7 +141,7 @@ abstract class ContinuousDistributionAbstractTest {
         return new double[0];
     }
 
-    /** Creates the default survival probability precision test input values */
+    /** Creates the default survival probability precision test input values. */
     public double[] makeSurvivalPrecisionTestPoints() {
         return new double[0];
     }
@@ -155,7 +155,7 @@ abstract class ContinuousDistributionAbstractTest {
         return new double[0];
     }
 
-    /** Creates the default density test expected values */
+    /** Creates the default density test expected values. */
     public abstract double[] makeDensityTestValues();
 
     /** Creates the default logarithmic density test expected values.
@@ -172,12 +172,12 @@ abstract class ContinuousDistributionAbstractTest {
 
     //---- Default implementations of inverse test data generation methods ----
 
-    /** Creates the default inverse cumulative probability test input values */
+    /** Creates the default inverse cumulative probability test input values. */
     public double[] makeInverseCumulativeTestPoints() {
         return makeCumulativeTestValues();
     }
 
-    /** Creates the default inverse cumulative probability density test expected values */
+    /** Creates the default inverse cumulative probability density test expected values. */
     public double[] makeInverseCumulativeTestValues() {
         return makeCumulativeTestPoints();
     }
@@ -206,7 +206,7 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Cleans up test instance data
+     * Cleans up test instance data.
      */
     @AfterEach
     void tearDown() {
@@ -223,7 +223,7 @@ abstract class ContinuousDistributionAbstractTest {
 
     /**
      * Verifies that cumulative probability density calculations match expected values
-     * using current test instance data
+     * using current test instance data.
      */
     protected void verifyCumulativeProbabilities() {
         // verify cumulativeProbability(double)
@@ -302,7 +302,7 @@ abstract class ContinuousDistributionAbstractTest {
 
     /**
      * Verifies that inverse cumulative probability density calculations match expected values
-     * using current test instance data
+     * using current test instance data.
      */
     protected void verifyInverseCumulativeProbabilities() {
         for (int i = 0; i < inverseCumulativeTestPoints.length; i++) {
@@ -314,7 +314,7 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Verifies that density calculations match expected values
+     * Verifies that density calculations match expected values.
      */
     protected void verifyDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
@@ -326,7 +326,7 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Verifies that logarithmic density calculations match expected values
+     * Verifies that logarithmic density calculations match expected values.
      */
     protected void verifyLogDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
@@ -341,7 +341,7 @@ abstract class ContinuousDistributionAbstractTest {
 
     /**
      * Verifies that cumulative probability density calculations match expected values
-     * using default test instance data
+     * using default test instance data.
      */
     @Test
     void testCumulativeProbabilities() {
@@ -370,7 +370,7 @@ abstract class ContinuousDistributionAbstractTest {
 
     /**
      * Verifies that inverse cumulative probability density calculations match expected values
-     * using default test instance data
+     * using default test instance data.
      */
     @Test
     void testInverseCumulativeProbabilities() {
@@ -379,7 +379,7 @@ abstract class ContinuousDistributionAbstractTest {
 
     /**
      * Verifies that density calculations return expected values
-     * for default test instance data
+     * for default test instance data.
      */
     @Test
     void testDensities() {
@@ -388,7 +388,7 @@ abstract class ContinuousDistributionAbstractTest {
 
     /**
      * Verifies that logarithmic density calculations return expected values
-     * for default test instance data
+     * for default test instance data.
      */
     @Test
     void testLogDensities() {
@@ -396,7 +396,7 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Verifies that probability computations are consistent
+     * Verifies that probability computations are consistent.
      */
     @Test
     void testConsistency() {
@@ -453,7 +453,7 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Test sampling
+     * Test sampling.
      */
     @Test
     void testSampler() {
@@ -628,7 +628,7 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * @return Returns the high precision tolerance
+     * @return Returns the high precision tolerance.
      */
     protected double getHighPrecisionTolerance() {
         return highPrecisionTolerance;
@@ -646,7 +646,7 @@ abstract class ContinuousDistributionAbstractTest {
      * The default is {@code true}. Test class should override this when the distribution
      * is not support connected.
      *
-     * @return Returns true if the distribution is support connected
+     * @return Returns true if the distribution is support connected.
      */
     protected boolean isSupportConnected() {
         return true;

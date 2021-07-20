@@ -44,7 +44,7 @@ class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
         return new ZipfDistribution(10, 1);
     }
 
-    /** Creates the default probability density test input values */
+    /** Creates the default probability density test input values. */
     @Override
     public int[] makeDensityTestPoints() {
         return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
@@ -72,27 +72,27 @@ class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
                              -3.2718748066008, -3.37723532225863, Double.NEGATIVE_INFINITY};
     }
 
-    /** Creates the default cumulative probability density test input values */
+    /** Creates the default cumulative probability density test input values. */
     @Override
     public int[] makeCumulativeTestPoints() {
         return makeDensityTestPoints();
     }
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 0, 0.341417152147, 0.512125728221, 0.625931445604, 0.71128573364,
                              0.77956916407, 0.836472022761, 0.885245901639, 0.927923045658, 0.965858284785, 1d, 1d};
     }
 
-    /** Creates the default inverse cumulative probability test input values */
+    /** Creates the default inverse cumulative probability test input values. */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0d, 0.001d, 0.010d, 0.025d, 0.050d, 0.3413d, 0.3415d, 0.999d,
                              0.990d, 0.975d, 0.950d, 0.900d, 1d};
     }
 
-    /** Creates the default inverse cumulative probability density test expected values */
+    /** Creates the default inverse cumulative probability density test expected values. */
     @Override
     public int[] makeInverseCumulativeTestValues() {
         return new int[] {1, 1, 1, 1, 1, 1, 2, 10, 10, 10, 9, 8, 10};

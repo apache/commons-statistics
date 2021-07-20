@@ -41,25 +41,25 @@ class ConstantContinuousDistributionTest extends ContinuousDistributionAbstractT
         return new ConstantContinuousDistribution(1);
     }
 
-    /** Creates the default cumulative probability distribution test input values */
+    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         return new double[] {0, 0.5, 1};
     }
 
-    /** Creates the default cumulative probability distribution test expected values */
+    /** Creates the default cumulative probability distribution test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 0, 1};
     }
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0, 0, 1};
     }
 
-    /** Override default test, verifying that inverse cum is constant */
+    /** Override default test, verifying that inverse cum is constant. */
     @Override
     @Test
     void testInverseCumulativeProbabilities() {

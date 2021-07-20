@@ -58,7 +58,7 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
                              0.2334744405, 0.121060821, 0.0282475249, 0d};
     }
 
-    /** Creates the default cumulative probability density test input values */
+    /** Creates the default cumulative probability density test input values. */
     @Override
     public int[] makeCumulativeTestPoints() {
         return makeDensityTestPoints();
@@ -74,7 +74,7 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
                              0.1502683326, 0.3503892816, 0.6172172136, 0.8506916541, 0.9717524751, 1d, 1d};
     }
 
-    /** Creates the default inverse cumulative probability test input values */
+    /** Creates the default inverse cumulative probability test input values. */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0, 0.001d, 0.010d, 0.025d, 0.050d, 0.100d,
@@ -83,7 +83,7 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
 
     /**
      * Creates the default inverse cumulative probability density test expected
-     * values
+     * values.
      */
     @Override
     public int[] makeInverseCumulativeTestValues() {

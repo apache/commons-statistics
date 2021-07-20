@@ -42,7 +42,7 @@ class FDistributionTest extends ContinuousDistributionAbstractTest {
         return new FDistribution(5.0, 6.0);
     }
 
-    /** Creates the default cumulative probability distribution test input values */
+    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R version 2.9.2
@@ -50,13 +50,13 @@ class FDistributionTest extends ContinuousDistributionAbstractTest {
                              20.8026639595, 8.74589525602, 5.98756512605, 4.38737418741, 3.10751166664};
     }
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0.001, 0.01, 0.025, 0.05, 0.1, 0.999, 0.990, 0.975, 0.950, 0.900};
     }
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0.0689156576706, 0.236735653193, 0.364074131941, 0.481570789649, 0.595880479994,

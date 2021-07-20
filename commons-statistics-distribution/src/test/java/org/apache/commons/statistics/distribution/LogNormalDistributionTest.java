@@ -43,7 +43,7 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
         return new LogNormalDistribution(2.1, 1.4);
     }
 
-    /** Creates the default cumulative probability distribution test input values */
+    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R
@@ -54,7 +54,7 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
                              4.40279507773206, 3.89417219176244};
     }
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 0, 0, 0, 0.00948199951485, 0.432056525076,
@@ -62,7 +62,7 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
                              0.298422824228};
     }
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0, 0, 0, 0, 0.0594218160072, 0.0436977691036,

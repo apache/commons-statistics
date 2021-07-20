@@ -69,14 +69,14 @@ class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
                              6 / 9.0, 7 / 9.0, 8 / 9.0, 1, 1};
     }
 
-    /** Creates the default inverse cumulative probability test input values */
+    /** Creates the default inverse cumulative probability test input values. */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0, 0.001, 0.010, 0.025, 0.050, 0.100, 0.200,
                              0.5, 0.999, 0.990, 0.975, 0.950, 0.900, 1};
     }
 
-    /** Creates the default inverse cumulative probability density test expected values */
+    /** Creates the default inverse cumulative probability density test expected values. */
     @Override
     public int[] makeInverseCumulativeTestValues() {
         return new int[] {-3, -3, -3, -3, -3, -3, -2, 1, 5, 5, 5, 5, 5, 5};

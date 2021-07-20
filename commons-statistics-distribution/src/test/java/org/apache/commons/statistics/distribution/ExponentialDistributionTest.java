@@ -43,7 +43,7 @@ class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
         return new ExponentialDistribution(5.0);
     }
 
-    /** Creates the default cumulative probability distribution test input values */
+    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R version 2.9.2
@@ -51,14 +51,14 @@ class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
                              0.526802578289, 34.5387763949, 23.0258509299, 18.4443972706, 14.9786613678, 11.5129254650};
     }
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0.001, 0.01, 0.025, 0.05, 0.1, 0.999,
                              0.990, 0.975, 0.950, 0.900};
     }
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0.1998, 0.198, 0.195, 0.19, 0.18, 0.000200000000000,
@@ -73,7 +73,7 @@ class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
     @Override
     public double[] makeCumulativePrecisionTestValues() {
         // calculated via scipy, specifically expon.cdf(x/5).
-        // WolframAlpha provided either too accurate or inaccurate values
+        // WolframAlpha provided either too accurate or inaccurate values.
         return new double[] {2.0000000000000002e-16, 7.999999999999999e-17, 1.8000000000000002e-16};
     }
 

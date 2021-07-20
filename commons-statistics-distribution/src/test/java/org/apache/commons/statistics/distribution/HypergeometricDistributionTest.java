@@ -45,14 +45,14 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         return new HypergeometricDistribution(10, 5, 5);
     }
 
-    /** Creates the default probability density test input values */
+    /** Creates the default probability density test input values. */
     @Override
     public int[] makeDensityTestPoints() {
         return new int[] {-1, 0, 1, 2, 3, 4, 5, 10};
     }
 
     /**
-     * Creates the default probability density test expected values
+     * Creates the default probability density test expected values.
      * Reference values are from R, version 2.15.3.
      */
     @Override
@@ -62,7 +62,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     /**
-     * Creates the default probability log density test expected values
+     * Creates the default probability log density test expected values.
      * Reference values are from R, version 2.14.1.
      */
     @Override
@@ -72,14 +72,14 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
                              -0.924258901523332, -2.31055326264322, -5.52942908751142, Double.NEGATIVE_INFINITY};
     }
 
-    /** Creates the default cumulative probability density test input values */
+    /** Creates the default cumulative probability density test input values. */
     @Override
     public int[] makeCumulativeTestPoints() {
         return makeDensityTestPoints();
     }
 
     /**
-     * Creates the default cumulative probability density test expected values
+     * Creates the default cumulative probability density test expected values.
      * Reference values are from R, version 2.15.3.
      */
     @Override
@@ -88,7 +88,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
                              1, 1};
     }
 
-    /** Creates the default inverse cumulative probability test input values */
+    /** Creates the default inverse cumulative probability test input values. */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0d, 0.001d, 0.010d, 0.025d, 0.050d, 0.100d, 0.999d,
@@ -103,7 +103,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    /** Verify that if there are no failures, mass is concentrated on sampleSize */
+    /** Verify that if there are no failures, mass is concentrated on sampleSize. */
     @Test
     void testDegenerateNoFailures() {
         final HypergeometricDistribution dist = new HypergeometricDistribution(5, 5, 3);
@@ -139,7 +139,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         Assertions.assertEquals(0, dist.getSupportUpperBound());
     }
 
-    /** Verify that if sampleSize = populationSize, mass is concentrated on numberOfSuccesses */
+    /** Verify that if sampleSize = populationSize, mass is concentrated on numberOfSuccesses. */
     @Test
     void testDegenerateFullSample() {
         final HypergeometricDistribution dist = new HypergeometricDistribution(5, 3, 5);

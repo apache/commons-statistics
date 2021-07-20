@@ -45,7 +45,7 @@ class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
         return new CauchyDistribution(1.2, 2.1);
     }
 
-    /** Creates the default cumulative probability distribution test input values */
+    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R 2.9.2
@@ -53,14 +53,14 @@ class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
                              -5.26313542807, 669.64856187, 68.0230835029, 27.8830299460, 14.4588781808, 7.66313542807};
     }
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0.001, 0.01, 0.025, 0.05, 0.1, 0.999,
                              0.990, 0.975, 0.950, 0.900};
     }
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {1.49599158008e-06, 0.000149550440335, 0.000933076881878, 0.00370933207799, 0.0144742330437,

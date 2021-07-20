@@ -45,31 +45,31 @@ import org.junit.jupiter.api.Test;
 abstract class DiscreteDistributionAbstractTest {
 
 //-------------------- Private test instance data -------------------------
-    /** Discrete distribution instance used to perform tests */
+    /** Discrete distribution instance used to perform tests. */
     private DiscreteDistribution distribution;
 
-    /** Tolerance used in comparing expected and returned values */
+    /** Tolerance used in comparing expected and returned values. */
     private double tolerance = 1e-12;
 
-    /** Arguments used to test probability density calculations */
+    /** Arguments used to test probability density calculations. */
     private int[] densityTestPoints;
 
-    /** Values used to test probability density calculations */
+    /** Values used to test probability density calculations. */
     private double[] densityTestValues;
 
-    /** Values used to test logarithmic probability density calculations */
+    /** Values used to test logarithmic probability density calculations. */
     private double[] logDensityTestValues;
 
-    /** Arguments used to test cumulative probability density calculations */
+    /** Arguments used to test cumulative probability density calculations. */
     private int[] cumulativeTestPoints;
 
-    /** Values used to test cumulative probability density calculations */
+    /** Values used to test cumulative probability density calculations. */
     private double[] cumulativeTestValues;
 
-    /** Arguments used to test inverse cumulative probability density calculations */
+    /** Arguments used to test inverse cumulative probability density calculations. */
     private double[] inverseCumulativeTestPoints;
 
-    /** Values used to test inverse cumulative probability density calculations */
+    /** Values used to test inverse cumulative probability density calculations. */
     private int[] inverseCumulativeTestValues;
 
     //-------------------- Abstract methods -----------------------------------
@@ -77,10 +77,10 @@ abstract class DiscreteDistributionAbstractTest {
     /** Creates the default discrete distribution instance to use in tests. */
     public abstract DiscreteDistribution makeDistribution();
 
-    /** Creates the default probability density test input values */
+    /** Creates the default probability density test input values. */
     public abstract int[] makeDensityTestPoints();
 
-    /** Creates the default probability density test expected values */
+    /** Creates the default probability density test expected values. */
     public abstract double[] makeDensityTestValues();
 
     /** Creates the default logarithmic probability density test expected values.
@@ -99,22 +99,22 @@ abstract class DiscreteDistributionAbstractTest {
         return logDensity;
     }
 
-    /** Creates the default cumulative probability density test input values */
+    /** Creates the default cumulative probability density test input values. */
     public abstract int[] makeCumulativeTestPoints();
 
-    /** Creates the default cumulative probability density test expected values */
+    /** Creates the default cumulative probability density test expected values. */
     public abstract double[] makeCumulativeTestValues();
 
-    /** Creates the default inverse cumulative probability test input values */
+    /** Creates the default inverse cumulative probability test input values. */
     public abstract double[] makeInverseCumulativeTestPoints();
 
-    /** Creates the default inverse cumulative probability density test expected values */
+    /** Creates the default inverse cumulative probability density test expected values. */
     public abstract int[] makeInverseCumulativeTestValues();
 
     //-------------------- Setup / tear down ----------------------------------
 
     /**
-     * Setup sets all test instance data to default values
+     * Setup sets all test instance data to default values.
      */
     @BeforeEach
     void setUp() {
@@ -147,7 +147,7 @@ abstract class DiscreteDistributionAbstractTest {
 
     /**
      * Verifies that probability density calculations match expected values
-     * using current test instance data
+     * using current test instance data.
      */
     protected void verifyDensities() {
         for (int i = 0; i < densityTestPoints.length; i++) {
@@ -174,7 +174,7 @@ abstract class DiscreteDistributionAbstractTest {
 
     /**
      * Verifies that cumulative probability density calculations match expected values
-     * using current test instance data
+     * using current test instance data.
      */
     protected void verifyCumulativeProbabilities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
@@ -187,7 +187,7 @@ abstract class DiscreteDistributionAbstractTest {
 
     /**
      * Verifies that inverse cumulative probability density calculations match expected values
-     * using current test instance data
+     * using current test instance data.
      */
     protected void verifyInverseCumulativeProbabilities() {
         for (int i = 0; i < inverseCumulativeTestPoints.length; i++) {
@@ -202,7 +202,7 @@ abstract class DiscreteDistributionAbstractTest {
 
     /**
      * Verifies that probability density calculations match expected values
-     * using default test instance data
+     * using default test instance data.
      */
     @Test
     void testDensities() {
@@ -211,7 +211,7 @@ abstract class DiscreteDistributionAbstractTest {
 
     /**
      * Verifies that logarithmic probability density calculations match expected values
-     * using default test instance data
+     * using default test instance data.
      */
     @Test
     void testLogDensities() {
@@ -220,7 +220,7 @@ abstract class DiscreteDistributionAbstractTest {
 
     /**
      * Verifies that cumulative probability density calculations match expected values
-     * using default test instance data
+     * using default test instance data.
      */
     @Test
     void testCumulativeProbabilities() {
@@ -229,7 +229,7 @@ abstract class DiscreteDistributionAbstractTest {
 
     /**
      * Verifies that inverse cumulative probability density calculations match expected values
-     * using default test instance data
+     * using default test instance data.
      */
     @Test
     void testInverseCumulativeProbabilities() {
@@ -269,7 +269,7 @@ abstract class DiscreteDistributionAbstractTest {
     }
 
     /**
-     * Test sampling
+     * Test sampling.
      */
     @Test
     void testSampling() {
@@ -425,7 +425,7 @@ abstract class DiscreteDistributionAbstractTest {
      * The default is {@code true}. Test class should override this when the distribution
      * is not support connected.
      *
-     * @return Returns true if the distribution is support connected
+     * @return Returns true if the distribution is support connected.
      */
     protected boolean isSupportConnected() {
         return true;
