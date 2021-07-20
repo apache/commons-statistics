@@ -53,12 +53,9 @@ class LevyDistributionTest extends ContinuousDistributionAbstractTest {
         };
     }
 
-    /**
-     * Creates the default logarithmic probability density test expected values.
-     * Reference values are from R, version 2.14.1.
-     */
     @Override
     public double[] makeLogDensityTestValues() {
+        // Reference values are from R, version 2.14.1.
         return new double[] {
             -1987.561573341398d, -14.469328620160d, -3.843764717971d,
             -0.883485488811d, 0.076793740349d, -1.127785768948d,

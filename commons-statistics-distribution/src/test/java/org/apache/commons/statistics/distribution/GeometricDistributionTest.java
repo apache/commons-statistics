@@ -35,13 +35,11 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /** Creates the default discrete distribution instance to use in tests. */
     @Override
     public DiscreteDistribution makeDistribution() {
         return new GeometricDistribution(0.40);
     }
 
-    /** Creates the default probability density test input values. */
     @Override
     public int[] makeDensityTestPoints() {
         return new int[] {-1,  0,  1,  2,  3,  4,  5,  6,  7,  8,
@@ -49,12 +47,9 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
                           19, 20, 21, 22, 23, 24, 25, 26, 27, 28};
     }
 
-    /**
-     * Creates the default probability density test expected values.
-     * Reference values are from R, version version 2.15.3.
-     */
     @Override
     public double[] makeDensityTestValues() {
+        // Reference values are from R, version version 2.15.3.
         return new double[] {
             0d, 0.4, 0.24, 0.144, 0.0864, 0.05184, 0.031104, 0.0186624,
             0.01119744, 0.006718464, 0.0040310784, 0.00241864704,
@@ -66,12 +61,9 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         };
     }
 
-    /**
-     * Creates the default log probability density test expected values.
-     * Reference values are from R, version version 2.14.1.
-     */
     @Override
     public double[] makeLogDensityTestValues() {
+        // Reference values are from R, version version 2.14.1.
         return new double[] {
             Double.NEGATIVE_INFINITY, -0.916290731874155, -1.42711635564015, -1.93794197940614,
             -2.44876760317213, -2.95959322693812, -3.47041885070411, -3.9812444744701,
@@ -84,13 +76,11 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         };
     }
 
-    /** Creates the default cumulative probability density test input values. */
     @Override
     public int[] makeCumulativeTestPoints() {
         return makeDensityTestPoints();
     }
 
-    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         final double[] densities = makeDensityTestValues();
@@ -103,7 +93,6 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         return ret;
     }
 
-    /** Creates the default inverse cumulative probability test input values. */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {
@@ -133,10 +122,6 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         };
     }
 
-    /**
-     * Creates the default inverse cumulative probability density test expected
-     * values.
-     */
     @Override
     public int[] makeInverseCumulativeTestValues() {
         return new int[] {

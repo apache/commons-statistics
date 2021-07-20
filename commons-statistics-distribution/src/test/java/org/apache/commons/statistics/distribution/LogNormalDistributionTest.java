@@ -37,13 +37,11 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /** Creates the default real distribution instance to use in tests. */
     @Override
     public LogNormalDistribution makeDistribution() {
         return new LogNormalDistribution(2.1, 1.4);
     }
 
-    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R
@@ -54,7 +52,6 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
                              4.40279507773206, 3.89417219176244};
     }
 
-    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 0, 0, 0, 0.00948199951485, 0.432056525076,
@@ -62,7 +59,6 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
                              0.298422824228};
     }
 
-    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0, 0, 0, 0, 0.0594218160072, 0.0436977691036,
@@ -70,10 +66,6 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
                              0.0636229042785};
     }
 
-    /**
-     * Creates the default inverse cumulative probability distribution test
-     * input values.
-     */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         // Exclude the test points less than zero, as they have cumulative
@@ -86,10 +78,6 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
         //return Arrays.copyOfRange(points, 4, points.length - 4);
     }
 
-    /**
-     * Creates the default inverse cumulative probability test expected
-     * values.
-     */
     @Override
     public double[] makeInverseCumulativeTestValues() {
         // Exclude the test points less than zero, as they have cumulative

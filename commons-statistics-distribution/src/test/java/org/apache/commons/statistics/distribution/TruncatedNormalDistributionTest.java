@@ -37,13 +37,11 @@ class TruncatedNormalDistributionTest extends ContinuousDistributionAbstractTest
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /** {@inheritDoc} */
     @Override
     public ContinuousDistribution makeDistribution() {
         return new TruncatedNormalDistribution(1.9, 1.3, -1.1, 3.4);
     }
 
-    /** {@inheritDoc} */
     @Override
     public double[] makeCumulativeTestPoints() {
         return new double[]{-1.1, -1.09597275767544, -1.0609616183922, -0.79283350106842,
@@ -53,14 +51,12 @@ class TruncatedNormalDistributionTest extends ContinuousDistributionAbstractTest
                             3.39945153287941, 3.4};
     }
 
-    /** {@inheritDoc} */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[]{0, 0.0001, 0.001, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95,
                             0.975, 0.99, 0.999, 0.9999, 1};
     }
 
-    /** {@inheritDoc} */
     @Override
     public double[] makeDensityTestValues() {
         return new double[]{0.0247422752302618, 0.0249196707321102, 0.0265057408263321,

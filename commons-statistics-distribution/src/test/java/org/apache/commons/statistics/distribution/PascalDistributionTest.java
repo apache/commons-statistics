@@ -38,19 +38,16 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /** Creates the default discrete distribution instance to use in tests. */
     @Override
     public PascalDistribution makeDistribution() {
         return new PascalDistribution(10, 0.70);
     }
 
-    /** Creates the default probability density test input values. */
     @Override
     public int[] makeDensityTestPoints() {
         return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
     }
 
-    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0, 0.0282475249, 0.0847425747, 0.139825248255, 0.167790297906, 0.163595540458,
@@ -58,13 +55,11 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
                              0.0154085404500, 0.0084046584273};
     }
 
-    /** Creates the default cumulative probability density test input values. */
     @Override
     public int[] makeCumulativeTestPoints() {
         return makeDensityTestPoints();
     }
 
-    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 0.0282475249, 0.1129900996, 0.252815347855, 0.420605645761, 0.584201186219,
@@ -72,14 +67,12 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
                              0.982855183569, 0.991259841996};
     }
 
-    /** Creates the default inverse cumulative probability test input values. */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0.0, 0.001, 0.010, 0.025, 0.050, 0.100, 0.999,
                              0.990, 0.975, 0.950, 0.900, 1.0};
     }
 
-    /** Creates the default inverse cumulative probability density test expected values. */
     @Override
     public int[] makeInverseCumulativeTestValues() {
         return new int[] {0, 0, 0, 0, 1, 1, 14, 11, 10, 9, 8, Integer.MAX_VALUE};

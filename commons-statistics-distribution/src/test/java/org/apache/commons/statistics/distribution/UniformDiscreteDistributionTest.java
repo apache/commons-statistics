@@ -37,46 +37,39 @@ class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /** Creates the default discrete distribution instance to use in tests. */
     @Override
     public DiscreteDistribution makeDistribution() {
         return new UniformDiscreteDistribution(-3, 5);
     }
 
-    /** Creates the default probability density test input values. */
     @Override
     public int[] makeDensityTestPoints() {
         return new int[] {-4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6};
     }
 
-    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         final double d = 1.0 / (5 - -3 + 1);
         return new double[] {0, d, d, d, d, d, d, d, d, d, 0};
     }
 
-    /** Creates the default cumulative probability density test input values. */
     @Override
     public int[] makeCumulativeTestPoints() {
         return makeDensityTestPoints();
     }
 
-    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0, 1 / 9.0, 2 / 9.0, 3 / 9.0, 4 / 9.0, 5 / 9.0,
                              6 / 9.0, 7 / 9.0, 8 / 9.0, 1, 1};
     }
 
-    /** Creates the default inverse cumulative probability test input values. */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0, 0.001, 0.010, 0.025, 0.050, 0.100, 0.200,
                              0.5, 0.999, 0.990, 0.975, 0.950, 0.900, 1};
     }
 
-    /** Creates the default inverse cumulative probability density test expected values. */
     @Override
     public int[] makeInverseCumulativeTestValues() {
         return new int[] {-3, -3, -3, -3, -3, -3, -2, 1, 5, 5, 5, 5, 5, 5};

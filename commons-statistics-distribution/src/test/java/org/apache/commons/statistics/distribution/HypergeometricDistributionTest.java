@@ -39,63 +39,49 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /** Creates the default discrete distribution instance to use in tests. */
     @Override
     public DiscreteDistribution makeDistribution() {
         return new HypergeometricDistribution(10, 5, 5);
     }
 
-    /** Creates the default probability density test input values. */
     @Override
     public int[] makeDensityTestPoints() {
         return new int[] {-1, 0, 1, 2, 3, 4, 5, 10};
     }
 
-    /**
-     * Creates the default probability density test expected values.
-     * Reference values are from R, version 2.15.3.
-     */
     @Override
     public double[] makeDensityTestValues() {
+        // Reference values are from R, version 2.15.3.
         return new double[] {0d, 0.00396825396825, 0.0992063492063, 0.396825396825, 0.396825396825,
                              0.0992063492063, 0.00396825396825, 0d};
     }
 
-    /**
-     * Creates the default probability log density test expected values.
-     * Reference values are from R, version 2.14.1.
-     */
     @Override
     public double[] makeLogDensityTestValues() {
+        // Reference values are from R, version 2.14.1.
         //-Inf  -Inf
         return new double[] {Double.NEGATIVE_INFINITY, -5.52942908751142, -2.31055326264322, -0.924258901523332,
                              -0.924258901523332, -2.31055326264322, -5.52942908751142, Double.NEGATIVE_INFINITY};
     }
 
-    /** Creates the default cumulative probability density test input values. */
     @Override
     public int[] makeCumulativeTestPoints() {
         return makeDensityTestPoints();
     }
 
-    /**
-     * Creates the default cumulative probability density test expected values.
-     * Reference values are from R, version 2.15.3.
-     */
     @Override
     public double[] makeCumulativeTestValues() {
+        // Reference values are from R, version 2.15.3.
         return new double[] {0d, 0.00396825396825, 0.103174603175, .5, 0.896825396825, 0.996031746032,
                              1, 1};
     }
 
-    /** Creates the default inverse cumulative probability test input values. */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         return new double[] {0d, 0.001d, 0.010d, 0.025d, 0.050d, 0.100d, 0.999d,
                              0.990d, 0.975d, 0.950d, 0.900d, 1d};
     }
 
-    /** Creates the default inverse cumulative probability density test expected values. */
     @Override
     public int[] makeInverseCumulativeTestValues() {
         return new int[] {0, 0, 1, 1, 1, 1, 5, 4, 4, 4, 4, 5};

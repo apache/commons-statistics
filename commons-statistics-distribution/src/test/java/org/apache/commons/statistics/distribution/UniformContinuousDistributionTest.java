@@ -36,20 +36,17 @@ class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTe
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /** Creates the default uniform real distribution instance to use in tests. */
     @Override
     public UniformContinuousDistribution makeDistribution() {
         return new UniformContinuousDistribution(-0.5, 1.25);
     }
 
-    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         return new double[] {-0.5001, -0.5, -0.4999, -0.25, -0.0001, 0.0,
                              0.0001, 0.25, 1.0, 1.2499, 1.25, 1.2501};
     }
 
-    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0.0, 0.0, 0.0001, 0.25 / 1.75, 0.4999 / 1.75,
@@ -57,7 +54,6 @@ class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTe
                              1.7499 / 1.75, 1.0, 1.0};
     }
 
-    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         final double d = 1 / 1.75;

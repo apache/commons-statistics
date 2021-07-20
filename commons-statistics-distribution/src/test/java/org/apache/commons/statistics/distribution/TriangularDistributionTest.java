@@ -36,19 +36,12 @@ class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /**
-     * Creates the default triangular distribution instance to use in tests.
-     */
     @Override
     public TriangularDistribution makeDistribution() {
         // Left side 5 wide, right side 10 wide.
         return new TriangularDistribution(-3, 2, 12);
     }
 
-    /**
-     * Creates the default cumulative probability distribution test input
-     * values.
-     */
     @Override
     public double[] makeCumulativeTestPoints() {
         return new double[] {
@@ -62,9 +55,6 @@ class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
         };
     }
 
-    /**
-     * Creates the default cumulative probability density test expected values.
-     */
     @Override
     public double[] makeCumulativeTestValues() {
         // Top at 2 / (b - a) = 2 / (12 - -3) = 2 / 15 = 7.5
@@ -86,10 +76,6 @@ class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
                              1.0};
     }
 
-    /**
-     * Creates the default inverse cumulative probability distribution test
-     * input values.
-     */
     @Override
     public double[] makeInverseCumulativeTestPoints() {
         // Exclude the points outside the limits, as they have cumulative
@@ -102,10 +88,6 @@ class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
         //return Arrays.copyOfRange(points, 1, points.length - 1);
     }
 
-    /**
-     * Creates the default inverse cumulative probability density test expected
-     * values.
-     */
     @Override
     public double[] makeInverseCumulativeTestValues() {
         // Exclude the points outside the limits, as they have cumulative
@@ -118,7 +100,6 @@ class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
         //return Arrays.copyOfRange(points, 1, points.length - 1);
     }
 
-    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0,

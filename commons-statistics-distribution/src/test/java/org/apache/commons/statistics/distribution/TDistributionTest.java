@@ -35,13 +35,11 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
-    /** Creates the default continuous distribution instance to use in tests. */
     @Override
     public TDistribution makeDistribution() {
         return new TDistribution(5.0);
     }
 
-    /** Creates the default cumulative probability distribution test input values. */
     @Override
     public double[] makeCumulativeTestPoints() {
         // quantiles computed using R version 2.9.2
@@ -49,14 +47,12 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
                              5.89342953136, 3.36492999891, 2.57058183564, 2.01504837333, 1.47588404882};
     }
 
-    /** Creates the default cumulative probability density test expected values. */
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {0.001, 0.01, 0.025, 0.05, 0.1, 0.999,
                              0.990, 0.975, 0.950, 0.900};
     }
 
-    /** Creates the default probability density test expected values. */
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {0.000756494565517, 0.0109109752919, 0.0303377878006, 0.0637967988952, 0.128289492005,
