@@ -98,18 +98,16 @@ public class TDistribution extends AbstractContinuousDistribution {
     public double cumulativeProbability(double x) {
         if (x == 0) {
             return 0.5;
-        } else {
-            if (degreesOfFreedom > DOF_THRESHOLD_NORMAL) {
-                return 0.5 * (1 + Erf.value(x * ONE_OVER_SQRT_TWO));
-            } else {
-                final double a = 1 / (1 + x * x / degreesOfFreedom);
-                final double t = RegularizedBeta.value(a, dofOver2, 0.5);
-
-                return x < 0 ?
-                    0.5 * t :
-                    1 - 0.5 * t;
-            }
         }
+        if (degreesOfFreedom > DOF_THRESHOLD_NORMAL) {
+            return 0.5 * (1 + Erf.value(x * ONE_OVER_SQRT_TWO));
+        }
+        final double a = 1 / (1 + x * x / degreesOfFreedom);
+        final double t = RegularizedBeta.value(a, dofOver2, 0.5);
+
+        return x < 0 ?
+            0.5 * t :
+            1 - 0.5 * t;
     }
 
     /** {@inheritDoc} */

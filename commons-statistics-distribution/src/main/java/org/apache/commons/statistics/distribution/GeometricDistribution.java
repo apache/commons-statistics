@@ -57,9 +57,8 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     public double probability(int x) {
         if (x < 0) {
             return 0.0;
-        } else {
-            return Math.exp(log1mProbabilityOfSuccess * x) * probabilityOfSuccess;
         }
+        return Math.exp(log1mProbabilityOfSuccess * x) * probabilityOfSuccess;
     }
 
     /** {@inheritDoc} */
@@ -67,9 +66,8 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     public double logProbability(int x) {
         if (x < 0) {
             return Double.NEGATIVE_INFINITY;
-        } else {
-            return x * log1mProbabilityOfSuccess + logProbabilityOfSuccess;
         }
+        return x * log1mProbabilityOfSuccess + logProbabilityOfSuccess;
     }
 
     /** {@inheritDoc} */
@@ -77,9 +75,8 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     public double cumulativeProbability(int x) {
         if (x < 0) {
             return 0.0;
-        } else {
-            return -Math.expm1(log1mProbabilityOfSuccess * (x + 1));
         }
+        return -Math.expm1(log1mProbabilityOfSuccess * (x + 1));
     }
 
     /**
