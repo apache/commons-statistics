@@ -79,6 +79,28 @@ class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTest {
                              0.000433630076361, 0.00412780610309, 0.00999340341045, 0.0193246438937, 0.0368460089216};
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {1e-7, 4e-7, 9e-8};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {1.6820882879388572e-19, 5.382681944688393e-18, 1.292572946953654e-19};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {93, 97.3};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {1.5731947657596637e-18, 1.9583114656146269e-19};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

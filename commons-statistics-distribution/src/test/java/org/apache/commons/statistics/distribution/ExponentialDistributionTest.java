@@ -65,6 +65,29 @@ class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
                              0.00200000000002, 0.00499999999997, 0.00999999999994, 0.0199999999999};
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {1e-15, 4e-16, 9e-16};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // calculated via scipy, specifically expon.cdf(x/5).
+        // WolframAlpha provided either too accurate or inaccurate values
+        return new double[] {2.0000000000000002e-16, 7.999999999999999e-17, 1.8000000000000002e-16};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {183, 197};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha. NOTE lambda parameter is 1/mean
+        return new double[] {1.2729811194234181e-16, 7.741006159285781e-18};
+    }
+
     //------------ Additional tests -------------------------------------------
 
     @Test

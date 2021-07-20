@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.Erfc;
 import org.apache.commons.numbers.gamma.InverseErfc;
 
@@ -98,6 +99,15 @@ public class LevyDistribution extends AbstractContinuousDistribution {
             return 0;
         }
         return Erfc.value(Math.sqrt(halfC / (x - mu)));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(final double x) {
+        if (x < mu) {
+            return 1;
+        }
+        return Erf.value(Math.sqrt(halfC / (x - mu)));
     }
 
     /** {@inheritDoc} */

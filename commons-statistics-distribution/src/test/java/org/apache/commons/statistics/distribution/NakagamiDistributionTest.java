@@ -54,6 +54,28 @@ class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
         };
     }
 
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {1e-16, 4e-17};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {7.978845608028653e-17, 3.1915382432114614e-17};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {9, 8.7};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {2.2571768119076845e-19, 3.318841739929575e-18};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

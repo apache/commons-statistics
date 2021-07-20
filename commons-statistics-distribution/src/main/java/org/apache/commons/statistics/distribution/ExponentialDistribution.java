@@ -80,7 +80,17 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
             return 0;
         }
 
-        return 1 - Math.exp(-x / mean);
+        return -Math.expm1(-x / mean);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x)  {
+        if (x <= SUPPORT_LO) {
+            return 1;
+        }
+
+        return Math.exp(-x / mean);
     }
 
     /**

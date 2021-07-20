@@ -96,6 +96,16 @@ public class NormalDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double survivalProbability(double x) {
+        final double dev = x - mean;
+        if (Math.abs(dev) > 40 * standardDeviation) {
+            return dev > 0 ? 0.0d : 1.0d;
+        }
+        return 0.5 * Erfc.value(dev / (standardDeviation * SQRT2));
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double inverseCumulativeProbability(final double p) {
         if (p < 0 ||
             p > 1) {

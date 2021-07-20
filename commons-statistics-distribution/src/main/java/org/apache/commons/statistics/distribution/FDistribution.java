@@ -118,6 +118,23 @@ public class FDistribution extends AbstractContinuousDistribution {
                                      0.5 * m);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x)  {
+        if (x <= SUPPORT_LO) {
+            return 1;
+        } else if (x >= SUPPORT_HI) {
+            return 0;
+        }
+
+        final double n = numeratorDegreesOfFreedom;
+        final double m = denominatorDegreesOfFreedom;
+
+        return RegularizedBeta.value(m / (m + n * x),
+                0.5 * m,
+                0.5 * n);
+    }
+
     /**
      * Access the numerator degrees of freedom.
      *

@@ -19,6 +19,7 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.LogGamma;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -27,6 +28,11 @@ import org.junit.jupiter.api.Test;
  * ContinuousDistributionAbstractTest for details.
  */
 class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
+
+    @BeforeEach
+    void customSetUp() {
+        setTolerance(1e-10);
+    }
 
     //-------------- Implementations for abstract methods ----------------------
 
@@ -55,6 +61,28 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
     public double[] makeDensityTestValues() {
         return new double[] {0.180535929306, 0.262801138133, 0.301905425199, 0.330899152971,
                              0.353441418887, 0.000788590320203, 0.00737060094841, 0.0177576041516, 0.0343043442574, 0.065664589369};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {1e-14, 1e-15};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {6.506341377907031e-18, 4.1052238780858223e-19};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {45, 47.2};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {6.6352694710268576e-18, 6.444810903667567e-19};
     }
 
     //-------------------- Additional test cases -------------------------------

@@ -80,6 +80,16 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double survivalProbability(double x) {
+        if (x <= mu) {
+            return 1.0 - Math.exp((x - mu) / beta) / 2.0;
+        } else {
+            return Math.exp((mu - x) / beta) / 2.0;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double inverseCumulativeProbability(double p) {
         if (p < 0 ||
             p > 1) {

@@ -17,8 +17,8 @@
 
 package org.apache.commons.statistics.distribution;
 
-import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.ErfDifference;
+import org.apache.commons.numbers.gamma.Erfc;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.LogNormalSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSampler;
@@ -151,7 +151,20 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
         if (Math.abs(dev) > 40 * shape) {
             return dev < 0 ? 0.0d : 1.0d;
         }
-        return 0.5 + 0.5 * Erf.value(dev / (shape * SQRT2));
+        return 0.5 * Erfc.value(-dev / (shape * SQRT2));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x)  {
+        if (x <= 0) {
+            return 1;
+        }
+        final double dev = Math.log(x) - scale;
+        if (Math.abs(dev) > 40 * shape) {
+            return dev > 0 ? 0.0d : 1.0d;
+        }
+        return 0.5 * Erfc.value(dev / (shape * SQRT2));
     }
 
     /** {@inheritDoc} */

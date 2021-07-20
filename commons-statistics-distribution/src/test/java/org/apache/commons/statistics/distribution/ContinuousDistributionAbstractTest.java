@@ -46,6 +46,20 @@ import org.junit.jupiter.api.BeforeEach;
  * makeInverseCumulativeTestPoints() -- arguments used to test inverse cdf
  * makeInverseCumulativeTestValues() -- expected inverse cdf values
  * <p>
+ * If the continuous distribution provides higher precision implementations of cumulativeProbability
+ * and/or survivalProbability, the following methods should be implemented to provide testing.
+ * To use these tests, calculate the cumulativeProbability and survivalProbability such that their naive
+ * complement is exceptionally close to `1` and consequently could lose precision due to floating point
+ * arithmetic.
+ *
+ * NOTE: The default high-precision threshold is 1e-22.
+ * <pre>
+ * makeCumulativePrecisionTestPoints() -- high precision test inputs
+ * makeCumulativePrecisionTestValues() -- high precision expected results
+ * makeSurvivalPrecisionTestPoints() -- high precision test inputs
+ * makeSurvivalPrecisionTestValues() -- high precision expected results
+ * </pre>
+ * <p>
  * To implement additional test cases with different distribution instances and
  * test data, use the setXxx methods for the instance data in test cases and
  * call the verifyXxx methods to verify results.
@@ -69,11 +83,26 @@ abstract class ContinuousDistributionAbstractTest {
     /** Tolerance used in comparing expected and returned values */
     private double tolerance = 1e-4;
 
+    /** Tolerance used in high precision tests */
+    private final double highPrecisionTolerance = 1e-22;
+
     /** Arguments used to test cumulative probability density calculations */
     private double[] cumulativeTestPoints;
 
     /** Values used to test cumulative probability density calculations */
     private double[] cumulativeTestValues;
+
+    /** Arguments used to test cumulative probability precision, effectively any x where 1-cdf(x) would result in 1 */
+    private double[] cumulativePrecisionTestPoints;
+
+    /** Values used to test cumulative probability precision, usually exceptionally tiny values */
+    private double[] cumulativePrecisionTestValues;
+
+    /** Arguments used to test survival probability precision, effectively any x where 1-sf(x) would result in 1 */
+    private double[] survivalPrecisionTestPoints;
+
+    /** Values used to test survival probability precision, usually exceptionally tiny values */
+    private double[] survivalPrecisionTestValues;
 
     /** Arguments used to test inverse cumulative probability density calculations */
     private double[] inverseCumulativeTestPoints;
@@ -97,6 +126,34 @@ abstract class ContinuousDistributionAbstractTest {
 
     /** Creates the default cumulative probability test expected values */
     public abstract double[] makeCumulativeTestValues();
+
+    /** Creates the default cumulative probability precision test input values */
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[0];
+    }
+
+    /**
+     * Creates the default cumulative probability precision test expected values.
+     * Note: The default threshold is 1e-22, any expected values with much higher precision may
+     *       not test the desired results without increasing precision threshold.
+     */
+    public double[] makeCumulativePrecisionTestValues() {
+        return new double[0];
+    }
+
+    /** Creates the default survival probability precision test input values */
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[0];
+    }
+
+    /**
+     * Creates the default survival probability precision test expected values.
+     * Note: The default threshold is 1e-22, any expected values with much higher precision may
+     *       not test the desired results without increasing precision threshold.
+     */
+    public double[] makeSurvivalPrecisionTestValues() {
+        return new double[0];
+    }
 
     /** Creates the default density test expected values */
     public abstract double[] makeDensityTestValues();
@@ -138,6 +195,10 @@ abstract class ContinuousDistributionAbstractTest {
         distribution = makeDistribution();
         cumulativeTestPoints = makeCumulativeTestPoints();
         cumulativeTestValues = makeCumulativeTestValues();
+        cumulativePrecisionTestPoints = makeCumulativePrecisionTestPoints();
+        cumulativePrecisionTestValues = makeCumulativePrecisionTestValues();
+        survivalPrecisionTestPoints = makeSurvivalPrecisionTestPoints();
+        survivalPrecisionTestValues = makeSurvivalPrecisionTestValues();
         inverseCumulativeTestPoints = makeInverseCumulativeTestPoints();
         inverseCumulativeTestValues = makeInverseCumulativeTestValues();
         densityTestValues = makeDensityTestValues();
@@ -191,6 +252,54 @@ abstract class ContinuousDistributionAbstractTest {
         }
     }
 
+    protected void verifySurvivalProbability() {
+        for (int i = 0; i < cumulativeTestPoints.length; i++) {
+            TestUtils.assertEquals("Incorrect survival probability value returned for " +
+                            cumulativeTestPoints[i], 1 - cumulativeTestValues[i],
+                    distribution.survivalProbability(cumulativeTestPoints[i]),
+                    getTolerance());
+        }
+    }
+
+    protected void verifySurvivalAndCumulativeProbabilityComplement() {
+        for (final double x : cumulativeTestPoints) {
+            TestUtils.assertEquals("survival + cumulative probability were not close to 1.0" +
+                    x, 1.0,
+                distribution.survivalProbability(x) + distribution.cumulativeProbability(x),
+                getTolerance());
+        }
+    }
+
+    /**
+     * Verifies that survival is simply not 1-cdf by testing calculations that would underflow that calculation and
+     * result in an inaccurate answer.
+     */
+    protected void verifySurvivalProbabilityPrecision() {
+        for (int i = 0; i < survivalPrecisionTestPoints.length; i++) {
+            final double x = survivalPrecisionTestPoints[i];
+            TestUtils.assertEquals(
+                    "survival probability is not precise for value " + x,
+                    survivalPrecisionTestValues[i],
+                    distribution.survivalProbability(x),
+                    getHighPrecisionTolerance());
+        }
+    }
+
+    /**
+     * Verifies that CDF is simply not 1-survival function by testing values that would result with inaccurate results
+     * if simply calculating 1-survival function.
+     */
+    protected void verifyCumulativeProbabilityPrecision() {
+        for (int i = 0; i < cumulativePrecisionTestPoints.length; i++) {
+            final double x = cumulativePrecisionTestPoints[i];
+            TestUtils.assertEquals(
+                    "cumulative probability is not precise for value " + x,
+                    cumulativePrecisionTestValues[i],
+                    distribution.cumulativeProbability(x),
+                    getHighPrecisionTolerance());
+        }
+    }
+
     /**
      * Verifies that inverse cumulative probability density calculations match expected values
      * using current test instance data
@@ -237,6 +346,26 @@ abstract class ContinuousDistributionAbstractTest {
     @Test
     void testCumulativeProbabilities() {
         verifyCumulativeProbabilities();
+    }
+
+    @Test
+    void testSurvivalProbability() {
+        verifySurvivalProbability();
+    }
+
+    @Test
+    void testSurvivalAndCumulativeProbabilitiesAreComplementary() {
+        verifySurvivalAndCumulativeProbabilityComplement();
+    }
+
+    @Test
+    void testCumulativeProbabilityPrecision() {
+        verifyCumulativeProbabilityPrecision();
+    }
+
+    @Test
+    void testSurvivalProbabilityPrecision() {
+        verifySurvivalProbabilityPrecision();
     }
 
     /**
@@ -319,6 +448,8 @@ abstract class ContinuousDistributionAbstractTest {
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(above));
         Assertions.assertEquals(0d, distribution.cumulativeProbability(below));
         Assertions.assertEquals(1d, distribution.cumulativeProbability(above));
+        Assertions.assertEquals(1d, distribution.survivalProbability(below));
+        Assertions.assertEquals(0d, distribution.survivalProbability(above));
     }
 
     /**
@@ -494,6 +625,13 @@ abstract class ContinuousDistributionAbstractTest {
      */
     protected double getTolerance() {
         return tolerance;
+    }
+
+    /**
+     * @return Returns the high precision tolerance
+     */
+    protected double getHighPrecisionTolerance() {
+        return highPrecisionTolerance;
     }
 
     /**

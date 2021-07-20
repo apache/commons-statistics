@@ -61,6 +61,12 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
         return gamma.cumulativeProbability(x);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x) {
+        return gamma.survivalProbability(x);
+    }
+
     /**
      * {@inheritDoc}
      *

@@ -107,6 +107,18 @@ public class BetaDistribution extends AbstractContinuousDistribution {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x) {
+        if (x <= 0) {
+            return 1;
+        } else if (x >= 1) {
+            return 0;
+        } else {
+            return RegularizedBeta.value(1 - x, beta, alpha);
+        }
+    }
+
     /**
      * {@inheritDoc}
      *

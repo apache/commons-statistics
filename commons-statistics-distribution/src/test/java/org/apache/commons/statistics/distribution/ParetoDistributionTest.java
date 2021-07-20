@@ -31,7 +31,7 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     @BeforeEach
     void customSetUp() {
-        setTolerance(1e-7);
+        setTolerance(1e-9);
     }
 
     //-------------- Implementations for abstract methods ----------------------
@@ -88,6 +88,28 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         final double[] points2 = new double[points.length - 5];
         System.arraycopy(points, 5, points2, 0, points.length - 5);
         return points2;
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestPoints() {
+        return new double[] {2.100000000000001, 2.100000000000005};
+    }
+
+    @Override
+    public double[] makeCumulativePrecisionTestValues() {
+        // These were not created using WolframAlpha, the calculation for Math.log underflows in java
+        return new double[] {6.217248937900875e-16, 3.2640556923979585e-15};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestPoints() {
+        return new double[] {42e11, 64e11};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // These were created using WolframAlpha
+        return new double[] {6.005622169907148e-18, 3.330082930386111e-18};
     }
 
     //-------------------- Additional test cases -------------------------------
