@@ -33,32 +33,6 @@ public final class TestUtils {
     private TestUtils() {}
 
     /**
-     * Verifies that expected and actual are within delta, or are both NaN or
-     * infinities of the same sign.
-     */
-    public static void assertEquals(double expected,
-                                    double actual,
-                                    double delta) {
-        Assertions.assertEquals(expected, actual, delta);
-    }
-
-    /**
-     * Verifies that expected and actual are within delta, or are both NaN or
-     * infinities of the same sign.
-     */
-    public static void assertEquals(Supplier<String> msg,
-                                    double expected,
-                                    double actual,
-                                    double delta) {
-        // check for NaN
-        if (Double.isNaN(expected)) {
-            Assertions.assertTrue(Double.isNaN(actual), () -> actual + " is not NaN.");
-        } else {
-            Assertions.assertEquals(expected, actual, delta, msg);
-        }
-    }
-
-    /**
      * Verifies that two double arrays have equal entries, up to tolerance
      */
     public static void assertEquals(double[] expected,

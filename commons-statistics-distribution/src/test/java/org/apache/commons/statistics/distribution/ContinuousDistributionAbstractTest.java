@@ -229,18 +229,20 @@ abstract class ContinuousDistributionAbstractTest {
         // verify cumulativeProbability(double)
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
             final double x = cumulativeTestPoints[i];
-            TestUtils.assertEquals(() -> "Incorrect cumulative probability value returned for " + x,
-                                   cumulativeTestValues[i],
-                                   distribution.cumulativeProbability(cumulativeTestPoints[i]),
-                                   getTolerance());
+            Assertions.assertEquals(
+                cumulativeTestValues[i],
+                distribution.cumulativeProbability(cumulativeTestPoints[i]),
+                getTolerance(),
+                () -> "Incorrect cumulative probability value returned for " + x);
         }
         // verify probability(double, double)
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
             for (int j = 0; j < cumulativeTestPoints.length; j++) {
                 if (cumulativeTestPoints[i] <= cumulativeTestPoints[j]) {
-                    TestUtils.assertEquals(cumulativeTestValues[j] - cumulativeTestValues[i],
-                                           distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[j]),
-                                           getTolerance());
+                    Assertions.assertEquals(
+                        cumulativeTestValues[j] - cumulativeTestValues[i],
+                        distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[j]),
+                        getTolerance());
                 } else {
                     try {
                         distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[j]);
@@ -256,19 +258,21 @@ abstract class ContinuousDistributionAbstractTest {
     protected void verifySurvivalProbability() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
             final double x = cumulativeTestPoints[i];
-            TestUtils.assertEquals(() -> "Incorrect survival probability value returned for " + x,
-                                   1 - cumulativeTestValues[i],
-                                   distribution.survivalProbability(cumulativeTestPoints[i]),
-                                   getTolerance());
+            Assertions.assertEquals(
+                1 - cumulativeTestValues[i],
+                distribution.survivalProbability(cumulativeTestPoints[i]),
+                getTolerance(),
+                () -> "Incorrect survival probability value returned for " + x);
         }
     }
 
     protected void verifySurvivalAndCumulativeProbabilityComplement() {
         for (final double x : cumulativeTestPoints) {
-            TestUtils.assertEquals(() -> "survival + cumulative probability were not close to 1.0" + x,
-                                   1.0,
-                                   distribution.survivalProbability(x) + distribution.cumulativeProbability(x),
-                                   getTolerance());
+            Assertions.assertEquals(
+                1.0,
+                distribution.survivalProbability(x) + distribution.cumulativeProbability(x),
+                getTolerance(),
+                () -> "survival + cumulative probability were not close to 1.0" + x);
         }
     }
 
@@ -279,10 +283,11 @@ abstract class ContinuousDistributionAbstractTest {
     protected void verifySurvivalProbabilityPrecision() {
         for (int i = 0; i < survivalPrecisionTestPoints.length; i++) {
             final double x = survivalPrecisionTestPoints[i];
-            TestUtils.assertEquals(() -> "survival probability is not precise for value " + x,
-                                   survivalPrecisionTestValues[i],
-                                   distribution.survivalProbability(x),
-                                   getHighPrecisionTolerance());
+            Assertions.assertEquals(
+                survivalPrecisionTestValues[i],
+                distribution.survivalProbability(x),
+                getHighPrecisionTolerance(),
+                () -> "survival probability is not precise for value " + x);
         }
     }
 
@@ -293,10 +298,11 @@ abstract class ContinuousDistributionAbstractTest {
     protected void verifyCumulativeProbabilityPrecision() {
         for (int i = 0; i < cumulativePrecisionTestPoints.length; i++) {
             final double x = cumulativePrecisionTestPoints[i];
-            TestUtils.assertEquals(() -> "cumulative probability is not precise for value " + x,
-                                   cumulativePrecisionTestValues[i],
-                                   distribution.cumulativeProbability(x),
-                                   getHighPrecisionTolerance());
+            Assertions.assertEquals(
+                cumulativePrecisionTestValues[i],
+                distribution.cumulativeProbability(x),
+                getHighPrecisionTolerance(),
+                () -> "cumulative probability is not precise for value " + x);
         }
     }
 
@@ -307,10 +313,11 @@ abstract class ContinuousDistributionAbstractTest {
     protected void verifyInverseCumulativeProbabilities() {
         for (int i = 0; i < inverseCumulativeTestPoints.length; i++) {
             final double x = inverseCumulativeTestPoints[i];
-            TestUtils.assertEquals(() -> "Incorrect inverse cumulative probability value returned for " + x,
-                                   inverseCumulativeTestValues[i],
-                                   distribution.inverseCumulativeProbability(inverseCumulativeTestPoints[i]),
-                                   getTolerance());
+            Assertions.assertEquals(
+                inverseCumulativeTestValues[i],
+                distribution.inverseCumulativeProbability(inverseCumulativeTestPoints[i]),
+                getTolerance(),
+                () -> "Incorrect inverse cumulative probability value returned for " + x);
         }
     }
 
@@ -320,10 +327,11 @@ abstract class ContinuousDistributionAbstractTest {
     protected void verifyDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
             final double x = cumulativeTestPoints[i];
-            TestUtils.assertEquals(() -> "Incorrect probability density value returned for " + x,
-                                   densityTestValues[i],
-                                   distribution.density(cumulativeTestPoints[i]),
-                                   getTolerance());
+            Assertions.assertEquals(
+                densityTestValues[i],
+                distribution.density(cumulativeTestPoints[i]),
+                getTolerance(),
+                () -> "Incorrect probability density value returned for " + x);
         }
     }
 
@@ -333,10 +341,11 @@ abstract class ContinuousDistributionAbstractTest {
     protected void verifyLogDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
             final double x = cumulativeTestPoints[i];
-            TestUtils.assertEquals(() -> "Incorrect probability density value returned for " + x,
-                                   logDensityTestValues[i],
-                                   distribution.logDensity(cumulativeTestPoints[i]),
-                                   getTolerance());
+            Assertions.assertEquals(
+                logDensityTestValues[i],
+                distribution.logDensity(cumulativeTestPoints[i]),
+                getTolerance(),
+                () -> "Incorrect probability density value returned for " + x);
         }
     }
 
@@ -406,9 +415,10 @@ abstract class ContinuousDistributionAbstractTest {
         for (int i = 1; i < cumulativeTestPoints.length; i++) {
 
             // check that cdf(x, x) = 0
-            TestUtils.assertEquals(0d,
-                                   distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[i]),
-                                   tolerance);
+            Assertions.assertEquals(
+                0d,
+                distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[i]),
+                tolerance);
 
             // check that P(a < X <= b) = P(X <= b) - P(X <= a)
             final double upper = Math.max(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
@@ -416,8 +426,8 @@ abstract class ContinuousDistributionAbstractTest {
             final double diff = distribution.cumulativeProbability(upper) -
                 distribution.cumulativeProbability(lower);
             final double direct = distribution.probability(lower, upper);
-            TestUtils.assertEquals(() -> "Inconsistent probability for (" +
-                                   lower + "," + upper + ")", diff, direct, tolerance);
+            Assertions.assertEquals(diff, direct, tolerance,
+                () -> "Inconsistent probability for (" + lower + "," + upper + ")");
         }
     }
 
@@ -504,10 +514,12 @@ abstract class ContinuousDistributionAbstractTest {
         }
         Collections.sort(integrationTestPoints);
         for (int i = 1; i < integrationTestPoints.size(); i++) {
-            Assertions.assertEquals(distribution.probability(integrationTestPoints.get(0), integrationTestPoints.get(i)),
-                                integrator.integrate(1000000, // Triangle integrals are very slow to converge
-                                                     d, integrationTestPoints.get(0),
-                                                     integrationTestPoints.get(i)), tol);
+            Assertions.assertEquals(
+                distribution.probability(integrationTestPoints.get(0),
+                integrationTestPoints.get(i)),
+                integrator.integrate(1000000, // Triangle integrals are very slow to converge
+                                     d, integrationTestPoints.get(0),
+                                     integrationTestPoints.get(i)), tol);
         }
     }
 
