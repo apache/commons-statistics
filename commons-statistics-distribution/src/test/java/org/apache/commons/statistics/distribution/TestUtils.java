@@ -33,7 +33,11 @@ public final class TestUtils {
     private TestUtils() {}
 
     /**
-     * Verifies that two double arrays have equal entries, up to tolerance
+     * Verifies that two double arrays have equal entries, up to tolerance.
+     *
+     * @param expected Expected values.
+     * @param observed Observed values.
+     * @param tolerance Amount of absolute error to allow.
      */
     public static void assertEquals(double[] expected,
                                     double[] observed,
@@ -84,7 +88,14 @@ public final class TestUtils {
         }
     }
 
-    /** verifies that two arrays are close (sup norm) */
+    /**
+     * Verifies that two arrays are close (sup norm).
+     *
+     * @param msg Supplier of a failure message. This is prefixed to a detailed description of the failure.
+     * @param expected Expected values.
+     * @param observed Observed values.
+     * @param tolerance Amount of absolute error to allow.
+     */
     public static void assertEquals(Supplier<String> msg,
                                     double[] expected,
                                     double[] observed,
@@ -198,6 +209,9 @@ public final class TestUtils {
     /**
      * Computes the 25th, 50th and 75th percentiles of the given distribution and returns
      * these values in an array.
+     *
+     * @param distribution Distribution.
+     * @return the quartiles
      */
     public static double[] getDistributionQuartiles(ContinuousDistribution distribution) {
         final double[] quantiles = new double[3];
@@ -210,6 +224,10 @@ public final class TestUtils {
     /**
      * Updates observed counts of values in quartiles.
      * counts[0] <-> 1st quartile ... counts[3] <-> top quartile
+     *
+     * @param value Observed value.
+     * @param counts Counts for each quartile.
+     * @param quartiles Quartiles.
      */
     public static void updateCounts(double value, long[] counts, double[] quartiles) {
         if (value < quartiles[0]) {
@@ -225,9 +243,13 @@ public final class TestUtils {
 
     /**
      * Eliminates points with zero mass from densityPoints and densityValues parallel
-     * arrays.  Returns the number of positive mass points and collapses the arrays so
-     * that the first <returned value> elements of the input arrays represent the positive
-     * mass points.
+     * arrays. Returns the number of positive mass points and collapses the arrays so that
+     * the first <returned value> elements of the input arrays represent the positive mass
+     * points.
+     *
+     * @param densityPoints Density points.
+     * @param densityValues Density values.
+     * @return number of positive mass points
      */
     public static int eliminateZeroMassPoints(int[] densityPoints, double[] densityValues) {
         int positiveMassCount = 0;
