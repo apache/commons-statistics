@@ -230,14 +230,10 @@ public final class TestUtils {
      * @param quartiles Quartiles.
      */
     public static void updateCounts(double value, long[] counts, double[] quartiles) {
-        if (value < quartiles[0]) {
-            counts[0]++;
-        } else if (value > quartiles[2]) {
-            counts[3]++;
-        } else if (value > quartiles[1]) {
-            counts[2]++;
+        if (value > quartiles[1]) {
+            counts[value <= quartiles[2] ? 2 : 3]++;
         } else {
-            counts[1]++;
+            counts[value <= quartiles[0] ? 0 : 1]++;
         }
     }
 
