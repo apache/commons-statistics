@@ -218,7 +218,7 @@ class BetaDistributionTest {
         checkSurvivalPrecision(2.0, 6.0, 0.999, 6.994000000000077e-18);
     }
 
-    private void checkCumulative(double alpha, double beta, double[] x, double[] cumes) {
+    private static void checkCumulative(double alpha, double beta, double[] x, double[] cumes) {
         final BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(cumes[i], d.cumulativeProbability(x[i]), 1e-8);
@@ -229,14 +229,14 @@ class BetaDistributionTest {
         }
     }
 
-    private void checkSurvival(double alpha, double beta, double[] cumes) {
+    private static void checkSurvival(double alpha, double beta, double[] cumes) {
         final BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < CUMULATIVE_TEST_POINTS.length; i++) {
             Assertions.assertEquals(1 - cumes[i], d.survivalProbability(CUMULATIVE_TEST_POINTS[i]), 1e-8);
         }
     }
 
-    private void checkCumulativeSurvivalComplement(double alpha, double beta) {
+    private static void checkCumulativeSurvivalComplement(double alpha, double beta) {
         final BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < CUMULATIVE_TEST_POINTS.length; i++) {
             final double x = CUMULATIVE_TEST_POINTS[i];
@@ -244,7 +244,7 @@ class BetaDistributionTest {
         }
     }
 
-    private void checkCumulativePrecision(double alpha, double beta, double value, double expected) {
+    private static void checkCumulativePrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
         final BetaDistribution d = new BetaDistribution(alpha, beta);
         Assertions.assertEquals(
@@ -254,7 +254,7 @@ class BetaDistributionTest {
             () -> "cumulative probability not precise at " + value + " for a=" + alpha + " & b=" + beta);
     }
 
-    private void checkSurvivalPrecision(double alpha, double beta, double value, double expected) {
+    private static void checkSurvivalPrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
         final BetaDistribution d = new BetaDistribution(alpha, beta);
         Assertions.assertEquals(
@@ -395,7 +395,7 @@ class BetaDistributionTest {
     }
 
     @SuppressWarnings("boxing")
-    private void checkDensity(double alpha, double beta, double[] x, double[] expected) {
+    private static void checkDensity(double alpha, double beta, double[] x, double[] expected) {
         final BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
             final int index = i;
@@ -483,7 +483,7 @@ class BetaDistributionTest {
         }
     }
 
-    private double gTest(final ContinuousDistribution expectedDistribution, final double[] values) {
+    private static double gTest(final ContinuousDistribution expectedDistribution, final double[] values) {
         final int numBins = values.length / 30;
         final double[] breaks = new double[numBins];
         for (int b = 0; b < breaks.length; b++) {
