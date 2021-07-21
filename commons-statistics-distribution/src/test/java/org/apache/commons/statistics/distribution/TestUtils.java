@@ -155,10 +155,10 @@ public final class TestUtils {
      * @param observed observed counts
      * @param alpha significance level of the test
      */
-    public static void assertChiSquareAccept(String[] valueLabels,
-                                             double[] expected,
-                                             long[] observed,
-                                             double alpha) {
+    private static void assertChiSquare(int[] valueLabels,
+                                        double[] expected,
+                                        long[] observed,
+                                        double alpha) {
         final ChiSquareTest chiSquareTest = new ChiSquareTest();
 
         // Fail if we can reject null hypothesis that distributions are the same
@@ -200,11 +200,7 @@ public final class TestUtils {
                                              double[] expected,
                                              long[] observed,
                                              double alpha) {
-        final String[] labels = new String[values.length];
-        for (int i = 0; i < values.length; i++) {
-            labels[i] = Integer.toString(values[i]);
-        }
-        assertChiSquareAccept(labels, expected, observed, alpha);
+        assertChiSquare(values, expected, observed, alpha);
     }
 
     /**
@@ -218,11 +214,11 @@ public final class TestUtils {
     public static void assertChiSquareAccept(double[] expected,
                                              long[] observed,
                                              double alpha) {
-        final String[] labels = new String[expected.length];
-        for (int i = 0; i < labels.length; i++) {
-            labels[i] = Integer.toString(i + 1);
+        final int[] values = new int[expected.length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = i + 1;
         }
-        assertChiSquareAccept(labels, expected, observed, alpha);
+        assertChiSquare(values, expected, observed, alpha);
     }
 
     /**
