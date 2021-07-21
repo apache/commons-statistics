@@ -248,20 +248,20 @@ class BetaDistributionTest {
         final double tolerance = 1e-22;
         BetaDistribution d = new BetaDistribution(alpha, beta);
         TestUtils.assertEquals(
-                "cumulative probability not precise at " + value + " for a=" + alpha + " & b=" + beta,
-                d.cumulativeProbability(value),
-                expected,
-                tolerance);
+            () -> "cumulative probability not precise at " + value + " for a=" + alpha + " & b=" + beta,
+            d.cumulativeProbability(value),
+            expected,
+            tolerance);
     }
 
     private void checkSurvivalPrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
         BetaDistribution d = new BetaDistribution(alpha, beta);
         TestUtils.assertEquals(
-                "survival function not precise at " + value + " for a=" + alpha + " & b=" + beta,
-                d.survivalProbability(value),
-                expected,
-                tolerance);
+            () -> "survival function not precise at " + value + " for a=" + alpha + " & b=" + beta,
+            d.survivalProbability(value),
+            expected,
+            tolerance);
     }
 
     @Test

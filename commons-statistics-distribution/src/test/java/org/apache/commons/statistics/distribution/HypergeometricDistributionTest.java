@@ -224,15 +224,15 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
             final int x = (int)data[i][0];
             final double pmf = data[i][1];
             final double actualPmf = dist.probability(x);
-            TestUtils.assertRelativelyEquals("Expected equals for <" + x + "> pmf", pmf, actualPmf, 1.0e-9);
+            TestUtils.assertRelativelyEquals(() -> "Expected equals for <" + x + "> pmf", pmf, actualPmf, 1.0e-9);
 
             final double cdf = data[i][2];
             final double actualCdf = dist.cumulativeProbability(x);
-            TestUtils.assertRelativelyEquals("Expected equals for <" + x + "> cdf", cdf, actualCdf, 1.0e-9);
+            TestUtils.assertRelativelyEquals(() -> "Expected equals for <" + x + "> cdf", cdf, actualCdf, 1.0e-9);
 
             final double cdf1 = data[i][3];
             final double actualCdf1 = dist.upperCumulativeProbability(x);
-            TestUtils.assertRelativelyEquals("Expected equals for <" + x + "> cdf1", cdf1, actualCdf1, 1.0e-9);
+            TestUtils.assertRelativelyEquals(() -> "Expected equals for <" + x + "> cdf1", cdf1, actualCdf1, 1.0e-9);
         }
     }
 

@@ -18,6 +18,7 @@
 package org.apache.commons.statistics.distribution;
 
 import java.text.DecimalFormat;
+import java.util.function.Supplier;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
@@ -45,7 +46,7 @@ public final class TestUtils {
      * Verifies that expected and actual are within delta, or are both NaN or
      * infinities of the same sign.
      */
-    public static void assertEquals(String msg,
+    public static void assertEquals(Supplier<String> msg,
                                     double expected,
                                     double actual,
                                     double delta) {
@@ -63,7 +64,7 @@ public final class TestUtils {
     public static void assertEquals(double[] expected,
                                     double[] observed,
                                     double tolerance) {
-        assertEquals("Array comparison failure", expected, observed, tolerance);
+        assertEquals(() -> "Array comparison failure", expected, observed, tolerance);
     }
 
     /**
@@ -91,7 +92,7 @@ public final class TestUtils {
      * @param actual  observed value
      * @param relativeError  maximum allowable relative error
      */
-    public static void assertRelativelyEquals(String msg,
+    public static void assertRelativelyEquals(Supplier<String> msg,
                                               double expected,
                                               double actual,
                                               double relativeError) {
@@ -110,12 +111,12 @@ public final class TestUtils {
     }
 
     /** verifies that two arrays are close (sup norm) */
-    public static void assertEquals(String msg,
+    public static void assertEquals(Supplier<String> msg,
                                     double[] expected,
                                     double[] observed,
                                     double tolerance) {
-        final StringBuilder out = new StringBuilder(msg);
         if (expected.length != observed.length) {
+            final StringBuilder out = new StringBuilder(msg.get());
             out.append("\n Arrays not same length. \n");
             out.append("expected has length ");
             out.append(expected.length);
@@ -124,9 +125,13 @@ public final class TestUtils {
             Assertions.fail(out.toString());
         }
         boolean failure = false;
+        final StringBuilder out = new StringBuilder();
         for (int i = 0; i < expected.length; i++) {
             if (!Precision.equalsIncludingNaN(expected[i], observed[i], tolerance)) {
-                failure = true;
+                if (!failure) {
+                    out.append(msg.get());
+                    failure = true;
+                }
                 out.append("\n Elements at index ");
                 out.append(i);
                 out.append(" differ. ");
