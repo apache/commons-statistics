@@ -239,14 +239,14 @@ class BetaDistributionTest {
     private void checkCumulativeSurvivalComplement(double alpha, double beta) {
         final BetaDistribution d = new BetaDistribution(alpha, beta);
         for (int i = 0; i < CUMULATIVE_TEST_POINTS.length; i++) {
-            double x = CUMULATIVE_TEST_POINTS[i];
+            final double x = CUMULATIVE_TEST_POINTS[i];
             Assertions.assertEquals(1, d.cumulativeProbability(x) + d.survivalProbability(x), 1e-8);
         }
     }
 
     private void checkCumulativePrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
-        BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution d = new BetaDistribution(alpha, beta);
         Assertions.assertEquals(
             d.cumulativeProbability(value),
             expected,
@@ -256,7 +256,7 @@ class BetaDistributionTest {
 
     private void checkSurvivalPrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
-        BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution d = new BetaDistribution(alpha, beta);
         Assertions.assertEquals(
             d.survivalProbability(value),
             expected,
