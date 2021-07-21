@@ -109,7 +109,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
         } else if (p == 1) {
             ret = Double.POSITIVE_INFINITY;
         } else {
-            ret = -mean * Math.log(1 - p);
+            ret = -mean * Math.log1p(-p);
         }
 
         return ret;
