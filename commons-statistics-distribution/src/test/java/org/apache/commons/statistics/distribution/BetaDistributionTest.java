@@ -454,10 +454,10 @@ class BetaDistributionTest {
                         betaDistribution.createSampler(rng));
                 Arrays.sort(observed);
 
-                Assertions.assertEquals(betaDistribution.getMean(), StatUtils.mean(observed),
-                                        EPSILON, () -> String.format("E[Beta(%.2f, %.2f)]", alpha, beta));
-                Assertions.assertEquals(betaDistribution.getVariance(), StatUtils.variance(observed),
-                                        EPSILON, () -> String.format("Var[Beta(%.2f, %.2f)]", alpha, beta));
+                Assertions.assertEquals(betaDistribution.getMean(), StatUtils.mean(observed), EPSILON,
+                    () -> String.format("E[Beta(%.2f, %.2f)]", alpha, beta));
+                Assertions.assertEquals(betaDistribution.getVariance(), StatUtils.variance(observed), EPSILON,
+                    () -> String.format("Var[Beta(%.2f, %.2f)]", alpha, beta));
             }
         }
     }
