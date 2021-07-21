@@ -285,8 +285,7 @@ abstract class DiscreteDistributionAbstractTest {
         }
         // Use fixed seed.
         final DiscreteDistribution.Sampler sampler =
-            dist.createSampler(RandomSource.create(RandomSource.WELL_512_A,
-                                                           1000));
+            dist.createSampler(RandomSource.create(RandomSource.WELL_512_A, 1000));
         final int[] sample = AbstractDiscreteDistribution.sample(sampleSize, sampler);
         for (int i = 0; i < sampleSize; i++) {
             for (int j = 0; j < length; j++) {
@@ -295,7 +294,7 @@ abstract class DiscreteDistributionAbstractTest {
                 }
             }
         }
-        TestUtils.assertChiSquareAccept(densityPoints, expectedCounts, observedCounts, .001);
+        TestUtils.assertChiSquareAccept(densityPoints, expectedCounts, observedCounts, 0.001);
     }
 
     /**
