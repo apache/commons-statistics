@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Assertions;
 /**
  * Test utilities.
  */
-public final class TestUtils {
+final class TestUtils {
     /**
      * Collection of static methods used in math unit tests.
      */
@@ -39,9 +39,9 @@ public final class TestUtils {
      * @param observed Observed values.
      * @param tolerance Amount of absolute error to allow.
      */
-    public static void assertEquals(double[] expected,
-                                    double[] observed,
-                                    double tolerance) {
+    static void assertEquals(double[] expected,
+                             double[] observed,
+                             double tolerance) {
         assertEquals(() -> "Array comparison failure", expected, observed, tolerance);
     }
 
@@ -54,9 +54,9 @@ public final class TestUtils {
      * @param actual  observed value
      * @param relativeError  maximum allowable relative error
      */
-    public static void assertRelativelyEquals(double expected,
-                                              double actual,
-                                              double relativeError) {
+    static void assertRelativelyEquals(double expected,
+                                       double actual,
+                                       double relativeError) {
         assertRelativelyEquals(null, expected, actual, relativeError);
     }
 
@@ -70,10 +70,10 @@ public final class TestUtils {
      * @param actual  observed value
      * @param relativeError  maximum allowable relative error
      */
-    public static void assertRelativelyEquals(Supplier<String> msg,
-                                              double expected,
-                                              double actual,
-                                              double relativeError) {
+    static void assertRelativelyEquals(Supplier<String> msg,
+                                       double expected,
+                                       double actual,
+                                       double relativeError) {
         if (Double.isNaN(expected)) {
             Assertions.assertTrue(Double.isNaN(actual), msg);
         } else if (Double.isNaN(actual)) {
@@ -96,10 +96,10 @@ public final class TestUtils {
      * @param observed Observed values.
      * @param tolerance Amount of absolute error to allow.
      */
-    public static void assertEquals(Supplier<String> msg,
-                                    double[] expected,
-                                    double[] observed,
-                                    double tolerance) {
+    static void assertEquals(Supplier<String> msg,
+                             double[] expected,
+                             double[] observed,
+                             double tolerance) {
         if (expected.length != observed.length) {
             final StringBuilder out = new StringBuilder(msg.get());
             out.append("\n Arrays not same length. \n");
@@ -181,10 +181,10 @@ public final class TestUtils {
      * @param observed observed counts
      * @param alpha significance level of the test
      */
-    public static void assertChiSquareAccept(int[] values,
-                                             double[] expected,
-                                             long[] observed,
-                                             double alpha) {
+    static void assertChiSquareAccept(int[] values,
+                                      double[] expected,
+                                      long[] observed,
+                                      double alpha) {
         assertChiSquare(values, expected, observed, alpha);
     }
 
@@ -196,9 +196,9 @@ public final class TestUtils {
      * @param observed observed counts
      * @param alpha significance level of the test
      */
-    public static void assertChiSquareAccept(double[] expected,
-                                             long[] observed,
-                                             double alpha) {
+    static void assertChiSquareAccept(double[] expected,
+                                      long[] observed,
+                                      double alpha) {
         final int[] values = new int[expected.length];
         for (int i = 0; i < values.length; i++) {
             values[i] = i + 1;
@@ -213,7 +213,7 @@ public final class TestUtils {
      * @param distribution Distribution.
      * @return the quartiles
      */
-    public static double[] getDistributionQuartiles(ContinuousDistribution distribution) {
+    static double[] getDistributionQuartiles(ContinuousDistribution distribution) {
         final double[] quantiles = new double[3];
         quantiles[0] = distribution.inverseCumulativeProbability(0.25d);
         quantiles[1] = distribution.inverseCumulativeProbability(0.5d);
@@ -229,7 +229,7 @@ public final class TestUtils {
      * @param counts Counts for each quartile.
      * @param quartiles Quartiles.
      */
-    public static void updateCounts(double value, long[] counts, double[] quartiles) {
+    static void updateCounts(double value, long[] counts, double[] quartiles) {
         if (value > quartiles[1]) {
             counts[value <= quartiles[2] ? 2 : 3]++;
         } else {
@@ -247,7 +247,7 @@ public final class TestUtils {
      * @param densityValues Density values.
      * @return number of positive mass points
      */
-    public static int eliminateZeroMassPoints(int[] densityPoints, double[] densityValues) {
+    static int eliminateZeroMassPoints(int[] densityPoints, double[] densityValues) {
         int positiveMassCount = 0;
         for (int i = 0; i < densityValues.length; i++) {
             if (densityValues[i] > 0) {
@@ -279,8 +279,8 @@ public final class TestUtils {
      * @param sampler Sampler.
      * @return an array of size {@code n}.
      */
-    public static double[] sample(int n,
-                                  ContinuousDistribution.Sampler sampler) {
+    static double[] sample(int n,
+                           ContinuousDistribution.Sampler sampler) {
         final double[] samples = new double[n];
         for (int i = 0; i < n; i++) {
             samples[i] = sampler.sample();
@@ -296,8 +296,8 @@ public final class TestUtils {
      * @param sampler Sampler.
      * @return an array of size {@code n}.
      */
-    public static int[] sample(int n,
-                               DiscreteDistribution.Sampler sampler) {
+    static int[] sample(int n,
+                        DiscreteDistribution.Sampler sampler) {
         final int[] samples = new int[n];
         for (int i = 0; i < n; i++) {
             samples[i] = sampler.sample();
