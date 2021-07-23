@@ -450,7 +450,7 @@ class BetaDistributionTest {
         for (final double alpha : ALPHA_BETAS) {
             for (final double beta : ALPHA_BETAS) {
                 final BetaDistribution betaDistribution = new BetaDistribution(alpha, beta);
-                final double[] observed = AbstractContinuousDistribution.sample(numSamples,
+                final double[] observed = TestUtils.sample(numSamples,
                         betaDistribution.createSampler(rng));
                 Arrays.sort(observed);
 
@@ -474,7 +474,7 @@ class BetaDistributionTest {
                 final BetaDistribution betaDistribution = new BetaDistribution(alpha, beta);
 
                 final ContinuousDistribution.Sampler sampler = betaDistribution.createSampler(rng);
-                final double[] observed = AbstractContinuousDistribution.sample(numSamples, sampler);
+                final double[] observed = TestUtils.sample(numSamples, sampler);
 
                 final double gT = gTest(betaDistribution, observed);
                 Assertions.assertFalse(gT < level,

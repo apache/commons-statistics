@@ -473,7 +473,7 @@ abstract class ContinuousDistributionAbstractTest {
         final int sampleSize = 1000;
         final ContinuousDistribution.Sampler sampler =
             distribution.createSampler(RandomSource.create(RandomSource.WELL_19937_C, 123456789L));
-        final double[] sample = AbstractContinuousDistribution.sample(sampleSize, sampler);
+        final double[] sample = TestUtils.sample(sampleSize, sampler);
         final double[] quartiles = TestUtils.getDistributionQuartiles(distribution);
         final double[] expected = {250, 250, 250, 250};
         final long[] counts = new long[4];

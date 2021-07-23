@@ -152,7 +152,7 @@ class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
                 for (int i = 0; i < numPoints; i++) {
                     expectedCounts[i] = sampleSize * (weights[i] / weightSum);
                 }
-                final int[] sample = AbstractDiscreteDistribution.sample(sampleSize, distribution);
+                final int[] sample = TestUtils.sample(sampleSize, distribution);
                 for (final int s : sample) {
                     observedCounts[s - 1]++;
                 }
