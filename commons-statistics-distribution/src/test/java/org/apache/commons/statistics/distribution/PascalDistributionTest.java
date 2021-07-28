@@ -78,6 +78,17 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         return new int[] {0, 0, 0, 0, 1, 1, 14, 11, 10, 9, 8, Integer.MAX_VALUE};
     }
 
+    @Override
+    public int[] makeSurvivalPrecisionTestPoints() {
+        return new int[] {47, 52};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // computed using R version 3.4.4
+        return new double[] {3.1403888119656772712e-17, 1.7075879020163069251e-19};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     /** Test degenerate case p = 0   */
@@ -91,7 +102,10 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {Integer.MAX_VALUE, Integer.MAX_VALUE});
         verifyDensities();
+        verifyLogDensities();
         verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
         verifyInverseCumulativeProbabilities();
     }
 
@@ -106,7 +120,10 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {0, 0});
         verifyDensities();
+        verifyLogDensities();
         verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
         verifyInverseCumulativeProbabilities();
     }
 

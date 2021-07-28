@@ -101,7 +101,10 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {3, 3});
         verifyDensities();
+        verifyLogDensities();
         verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
         verifyInverseCumulativeProbabilities();
         Assertions.assertEquals(3, dist.getSupportLowerBound());
         Assertions.assertEquals(3, dist.getSupportUpperBound());
@@ -119,7 +122,10 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {0, 0});
         verifyDensities();
+        verifyLogDensities();
         verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
         verifyInverseCumulativeProbabilities();
         Assertions.assertEquals(0, dist.getSupportLowerBound());
         Assertions.assertEquals(0, dist.getSupportUpperBound());
@@ -137,7 +143,10 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {3, 3});
         verifyDensities();
+        verifyLogDensities();
         verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
         verifyInverseCumulativeProbabilities();
         Assertions.assertEquals(3, dist.getSupportLowerBound());
         Assertions.assertEquals(3, dist.getSupportUpperBound());
@@ -320,5 +329,23 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
             Assertions.assertTrue(0 <= sample, () -> "sample=" + sample);
             Assertions.assertTrue(sample <= n, () -> "sample=" + sample);
         }
+    }
+
+    @Test
+    void testHighPrecisionCumulativeProbabilities() {
+        // computed using R version 3.4.4
+        setDistribution(new HypergeometricDistribution(500, 70, 300));
+        setCumulativePrecisionTestPoints(new int[] {10, 8});
+        setCumulativePrecisionTestValues(new double[] {2.4055720603264525e-17, 1.2848174992266236e-19});
+        verifySurvivalProbabilityPrecision();
+    }
+
+    @Test
+    void testHighPrecisionSurvivalProbabilities() {
+        // computed using R version 3.4.4
+        setDistribution(new HypergeometricDistribution(500, 70, 300));
+        setSurvivalPrecisionTestPoints(new int[] {68, 69});
+        setSurvivalPrecisionTestValues(new double[] {4.570379934029859e-16, 7.4187180434325268e-18});
+        verifySurvivalProbabilityPrecision();
     }
 }

@@ -108,6 +108,19 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
                                         maxIterations);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(int x) {
+        if (x < 0) {
+            return 1;
+        }
+        if (x == Integer.MAX_VALUE) {
+            return 0;
+        }
+        return RegularizedGamma.P.value((double) x + 1, mean, epsilon,
+                                        maxIterations);
+    }
+
     /**
      * Calculates the Poisson distribution function using a normal
      * approximation. The {@code N(mean, sqrt(mean))} distribution is used

@@ -108,6 +108,9 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
         double ret;
         if (x < 0) {
             ret = 0.0;
+        } else if (x == 0) {
+            // Special case exploiting cancellation.
+            ret = Math.pow(probabilityOfSuccess, numberOfSuccesses);
         } else {
             ret = BinomialCoefficientDouble.value(x +
                   numberOfSuccesses - 1, numberOfSuccesses - 1) *
@@ -123,6 +126,9 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
         double ret;
         if (x < 0) {
             ret = Double.NEGATIVE_INFINITY;
+        } else if (x == 0) {
+            // Special case exploiting cancellation.
+            ret = logProbabilityOfSuccess * numberOfSuccesses;
         } else {
             ret = LogBinomialCoefficient.value(x +
                   numberOfSuccesses - 1, numberOfSuccesses - 1) +
@@ -141,6 +147,20 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
         } else {
             ret = RegularizedBeta.value(probabilityOfSuccess,
                                         numberOfSuccesses, x + 1.0);
+        }
+        return ret;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(int x) {
+        double ret;
+        if (x < 0) {
+            ret = 1.0;
+        } else {
+            // Use a helper function to compute the complement of the cumulative probability
+            ret = RegularizedBetaUtils.complement(probabilityOfSuccess,
+                                                  numberOfSuccesses, x + 1.0);
         }
         return ret;
     }

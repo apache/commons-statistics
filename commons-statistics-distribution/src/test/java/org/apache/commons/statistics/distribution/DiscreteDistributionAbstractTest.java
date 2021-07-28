@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.Arrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -38,6 +39,20 @@ import org.junit.jupiter.api.Test;
  *  makeInverseCumulativeTestPoints() -- arguments used to test inverse cdf evaluation
  *  makeInverseCumulativeTestValues() -- expected inverse cdf values
  * <p>
+ * If the discrete distribution provides higher precision implementations of cumulativeProbability
+ * and/or survivalProbability, the following methods should be implemented to provide testing.
+ * To use these tests, calculate the cumulativeProbability and survivalProbability such that their naive
+ * complement is exceptionally close to `1` and consequently could lose precision due to floating point
+ * arithmetic.
+ *
+ * NOTE: The default high-precision threshold is 1e-22.
+ * <pre>
+ * makeCumulativePrecisionTestPoints() -- high precision test inputs
+ * makeCumulativePrecisionTestValues() -- high precision expected results
+ * makeSurvivalPrecisionTestPoints() -- high precision test inputs
+ * makeSurvivalPrecisionTestValues() -- high precision expected results
+ * </pre>
+ * <p>
  *  To implement additional test cases with different distribution instances and test data,
  *  use the setXxx methods for the instance data in test cases and call the verifyXxx methods
  *  to verify results.
@@ -50,6 +65,9 @@ abstract class DiscreteDistributionAbstractTest {
 
     /** Tolerance used in comparing expected and returned values. */
     private double tolerance = 1e-12;
+
+    /** Tolerance used in high precision tests. */
+    private double highPrecisionTolerance = 1e-22;
 
     /** Arguments used to test probability density calculations. */
     private int[] densityTestPoints;
@@ -65,6 +83,18 @@ abstract class DiscreteDistributionAbstractTest {
 
     /** Values used to test cumulative probability density calculations. */
     private double[] cumulativeTestValues;
+
+    /** Arguments used to test cumulative probability precision, effectively any x where 1-cdf(x) would result in 1. */
+    private int[] cumulativePrecisionTestPoints;
+
+    /** Values used to test cumulative probability precision, usually exceptionally tiny values. */
+    private double[] cumulativePrecisionTestValues;
+
+    /** Arguments used to test survival probability precision, effectively any x where 1-sf(x) would result in 1. */
+    private int[] survivalPrecisionTestPoints;
+
+    /** Values used to test survival probability precision, usually exceptionally tiny values. */
+    private double[] survivalPrecisionTestValues;
 
     /** Arguments used to test inverse cumulative probability density calculations. */
     private double[] inverseCumulativeTestPoints;
@@ -91,12 +121,7 @@ abstract class DiscreteDistributionAbstractTest {
      * @return double[] the default logarithmic probability density test expected values.
      */
     public double[] makeLogDensityTestValues() {
-        final double[] density = makeDensityTestValues();
-        final double[] logDensity = new double[density.length];
-        for (int i = 0; i < density.length; i++) {
-            logDensity[i] = Math.log(density[i]);
-        }
-        return logDensity;
+        return Arrays.stream(makeDensityTestValues()).map(Math::log).toArray();
     }
 
     /** Creates the default cumulative probability density test input values. */
@@ -104,6 +129,34 @@ abstract class DiscreteDistributionAbstractTest {
 
     /** Creates the default cumulative probability density test expected values. */
     public abstract double[] makeCumulativeTestValues();
+
+    /** Creates the default cumulative probability precision test input values. */
+    public int[] makeCumulativePrecisionTestPoints() {
+        return new int[0];
+    }
+
+    /**
+     * Creates the default cumulative probability precision test expected values.
+     * Note: The default threshold is 1e-22, any expected values with much higher precision may
+     *       not test the desired results without increasing precision threshold.
+     */
+    public double[] makeCumulativePrecisionTestValues() {
+        return new double[0];
+    }
+
+    /** Creates the default survival probability precision test input values. */
+    public int[] makeSurvivalPrecisionTestPoints() {
+        return new int[0];
+    }
+
+    /**
+     * Creates the default survival probability precision test expected values.
+     * Note: The default threshold is 1e-22, any expected values with much higher precision may
+     *       not test the desired results without increasing precision threshold.
+     */
+    public double[] makeSurvivalPrecisionTestValues() {
+        return new double[0];
+    }
 
     /** Creates the default inverse cumulative probability test input values. */
     public abstract double[] makeInverseCumulativeTestPoints();
@@ -124,6 +177,10 @@ abstract class DiscreteDistributionAbstractTest {
         logDensityTestValues = makeLogDensityTestValues();
         cumulativeTestPoints = makeCumulativeTestPoints();
         cumulativeTestValues = makeCumulativeTestValues();
+        cumulativePrecisionTestPoints = makeCumulativePrecisionTestPoints();
+        cumulativePrecisionTestValues = makeCumulativePrecisionTestValues();
+        survivalPrecisionTestPoints = makeSurvivalPrecisionTestPoints();
+        survivalPrecisionTestValues = makeSurvivalPrecisionTestValues();
         inverseCumulativeTestPoints = makeInverseCumulativeTestPoints();
         inverseCumulativeTestValues = makeInverseCumulativeTestValues();
     }
@@ -139,6 +196,10 @@ abstract class DiscreteDistributionAbstractTest {
         logDensityTestValues = null;
         cumulativeTestPoints = null;
         cumulativeTestValues = null;
+        cumulativePrecisionTestPoints = null;
+        cumulativePrecisionTestValues = null;
+        survivalPrecisionTestPoints = null;
+        survivalPrecisionTestValues = null;
         inverseCumulativeTestPoints = null;
         inverseCumulativeTestValues = null;
     }
@@ -164,10 +225,9 @@ abstract class DiscreteDistributionAbstractTest {
      */
     protected void verifyLogDensities() {
         for (int i = 0; i < densityTestPoints.length; i++) {
-            // FIXME: when logProbability methods are added to DiscreteDistribution in 4.0, remove cast below
             final int testPoint = densityTestPoints[i];
             Assertions.assertEquals(logDensityTestValues[i],
-                ((AbstractDiscreteDistribution) distribution).logProbability(testPoint), tolerance,
+                distribution.logProbability(testPoint), tolerance,
                 () -> "Incorrect log density value returned for " + testPoint);
         }
     }
@@ -182,6 +242,57 @@ abstract class DiscreteDistributionAbstractTest {
             Assertions.assertEquals(cumulativeTestValues[i],
                 distribution.cumulativeProbability(testPoint), getTolerance(),
                 () -> "Incorrect cumulative probability value returned for " + testPoint);
+        }
+    }
+
+    protected void verifySurvivalProbability() {
+        for (int i = 0; i < cumulativeTestPoints.length; i++) {
+            final int x = cumulativeTestPoints[i];
+            Assertions.assertEquals(
+                1 - cumulativeTestValues[i],
+                distribution.survivalProbability(cumulativeTestPoints[i]),
+                getTolerance(),
+                () -> "Incorrect survival probability value returned for " + x);
+        }
+    }
+
+    protected void verifySurvivalAndCumulativeProbabilityComplement() {
+        for (final int x : cumulativeTestPoints) {
+            Assertions.assertEquals(
+                1.0,
+                distribution.survivalProbability(x) + distribution.cumulativeProbability(x),
+                getTolerance(),
+                () -> "survival + cumulative probability were not close to 1.0 for " + x);
+        }
+    }
+
+    /**
+     * Verifies that survival is simply not 1-cdf by testing calculations that would underflow that calculation and
+     * result in an inaccurate answer.
+     */
+    protected void verifySurvivalProbabilityPrecision() {
+        for (int i = 0; i < survivalPrecisionTestPoints.length; i++) {
+            final int x = survivalPrecisionTestPoints[i];
+            Assertions.assertEquals(
+                survivalPrecisionTestValues[i],
+                distribution.survivalProbability(x),
+                getHighPrecisionTolerance(),
+                () -> "survival probability is not precise for " + x);
+        }
+    }
+
+    /**
+     * Verifies that CDF is simply not 1-survival function by testing values that would result with inaccurate results
+     * if simply calculating 1-survival function.
+     */
+    protected void verifyCumulativeProbabilityPrecision() {
+        for (int i = 0; i < cumulativePrecisionTestPoints.length; i++) {
+            final int x = cumulativePrecisionTestPoints[i];
+            Assertions.assertEquals(
+                cumulativePrecisionTestValues[i],
+                distribution.cumulativeProbability(x),
+                getHighPrecisionTolerance(),
+                () -> "cumulative probability is not precise for " + x);
         }
     }
 
@@ -227,6 +338,26 @@ abstract class DiscreteDistributionAbstractTest {
         verifyCumulativeProbabilities();
     }
 
+    @Test
+    void testSurvivalProbability() {
+        verifySurvivalProbability();
+    }
+
+    @Test
+    void testSurvivalAndCumulativeProbabilitiesAreComplementary() {
+        verifySurvivalAndCumulativeProbabilityComplement();
+    }
+
+    @Test
+    void testCumulativeProbabilityPrecision() {
+        verifyCumulativeProbabilityPrecision();
+    }
+
+    @Test
+    void testSurvivalProbabilityPrecision() {
+        verifySurvivalProbabilityPrecision();
+    }
+
     /**
      * Verifies that inverse cumulative probability density calculations match expected values
      * using default test instance data.
@@ -240,9 +371,11 @@ abstract class DiscreteDistributionAbstractTest {
     void testConsistencyAtSupportBounds() {
         final int lower = distribution.getSupportLowerBound();
         Assertions.assertEquals(0.0, distribution.cumulativeProbability(lower - 1), 0.0,
-                "Cumulative probability mmust be 0 below support lower bound.");
+                "Cumulative probability must be 0 below support lower bound.");
         Assertions.assertEquals(distribution.probability(lower), distribution.cumulativeProbability(lower), getTolerance(),
                 "Cumulative probability of support lower bound must be equal to probability mass at this point.");
+        Assertions.assertEquals(1.0, distribution.survivalProbability(lower - 1), 0.0,
+            "Survival probability must be 1.0 below support lower bound.");
         Assertions.assertEquals(lower, distribution.inverseCumulativeProbability(0.0),
                 "Inverse cumulative probability of 0 must be equal to support lower bound.");
 
@@ -250,6 +383,8 @@ abstract class DiscreteDistributionAbstractTest {
         if (upper != Integer.MAX_VALUE) {
             Assertions.assertEquals(1.0, distribution.cumulativeProbability(upper), 0.0,
                     "Cumulative probability of support upper bound must be equal to 1.");
+            Assertions.assertEquals(0.0, distribution.survivalProbability(upper), 0.0,
+                    "Survival probability of support upper bound must be equal to 0.");
         }
         Assertions.assertEquals(upper, distribution.inverseCumulativeProbability(1.0),
                 "Inverse cumulative probability of 1 must be equal to support upper bound.");
@@ -357,10 +492,84 @@ abstract class DiscreteDistributionAbstractTest {
     }
 
     /**
+     * Set the density test values.
+     * For convenience this recomputes the log density test values using {@link Math#log(double)}.
+     *
      * @param densityTestValues The densityTestValues to set.
      */
     protected void setDensityTestValues(double[] densityTestValues) {
         this.densityTestValues = densityTestValues;
+        logDensityTestValues = Arrays.stream(densityTestValues).map(Math::log).toArray();
+    }
+
+    /**
+     * @return Returns the logDensityTestValues.
+     */
+    protected double[] getLogDensityTestValues() {
+        return logDensityTestValues;
+    }
+
+    /**
+     * @param logDensityTestValues The logDensityTestValues to set.
+     */
+    protected void setLogDensityTestValues(double[] logDensityTestValues) {
+        this.logDensityTestValues = logDensityTestValues;
+    }
+
+    /**
+     * @return Returns the cumulativePrecisionTestPoints.
+     */
+    protected int[] getCumulativePrecisionTestPoints() {
+        return cumulativePrecisionTestPoints;
+    }
+
+    /**
+     * @param cumulativePrecisionTestPoints The cumulativePrecisionTestPoints to set.
+     */
+    protected void setCumulativePrecisionTestPoints(int[] cumulativePrecisionTestPoints) {
+        this.cumulativePrecisionTestPoints = cumulativePrecisionTestPoints;
+    }
+
+    /**
+     * @return Returns the cumulativePrecisionTestValues.
+     */
+    protected double[] getCumulativePrecisionTestValues() {
+        return cumulativePrecisionTestValues;
+    }
+
+    /**
+     * @param cumulativePrecisionTestValues The cumulativePrecisionTestValues to set.
+     */
+    protected void setCumulativePrecisionTestValues(double[] cumulativePrecisionTestValues) {
+        this.cumulativePrecisionTestValues = cumulativePrecisionTestValues;
+    }
+
+    /**
+     * @return Returns the survivalPrecisionTestPoints.
+     */
+    protected int[] getSurvivalPrecisionTestPoints() {
+        return survivalPrecisionTestPoints;
+    }
+
+    /**
+     * @param survivalPrecisionTestPoints The survivalPrecisionTestPoints to set.
+     */
+    protected void setSurvivalPrecisionTestPoints(int[] survivalPrecisionTestPoints) {
+        this.survivalPrecisionTestPoints = survivalPrecisionTestPoints;
+    }
+
+    /**
+     * @return Returns the survivalPrecisionTestValues.
+     */
+    protected double[] getSurvivalPrecisionTestValues() {
+        return survivalPrecisionTestValues;
+    }
+
+    /**
+     * @param survivalPrecisionTestValues The survivalPrecisionTestValues to set.
+     */
+    protected void setSurvivalPrecisionTestValues(double[] survivalPrecisionTestValues) {
+        this.survivalPrecisionTestValues = survivalPrecisionTestValues;
     }
 
     /**
@@ -417,6 +626,20 @@ abstract class DiscreteDistributionAbstractTest {
      */
     protected void setTolerance(double tolerance) {
         this.tolerance = tolerance;
+    }
+
+    /**
+     * @return Returns the high precision tolerance.
+     */
+    protected double getHighPrecisionTolerance() {
+        return highPrecisionTolerance;
+    }
+
+    /**
+     * @param highPrecisionTolerance The high precision highPrecisionTolerance to set.
+     */
+    protected void setHighPrecisionTolerance(double highPrecisionTolerance) {
+        this.highPrecisionTolerance = highPrecisionTolerance;
     }
 
     /**

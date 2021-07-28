@@ -138,6 +138,17 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         };
     }
 
+    @Override
+    public int[] makeSurvivalPrecisionTestPoints() {
+        return new int[] {74, 81};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // computed using R version 3.4.4
+        return new double[] {2.2979669527522718895e-17, 6.4328367688565960968e-19};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

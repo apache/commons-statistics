@@ -95,6 +95,17 @@ class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         return new int[] {0, 0, 1, 1, 2, 2, 3, 3, 4, 5, 10, 20};
     }
 
+    @Override
+    public int[] makeSurvivalPrecisionTestPoints() {
+        return new int[] {30, 32};
+    }
+
+    @Override
+    public double[] makeSurvivalPrecisionTestValues() {
+        // computed using R version 3.4.4
+        return new double[] {1.1732435431464340474e-17, 1.7630174687875970627e-19};
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     /**
@@ -220,5 +231,14 @@ class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
             }
             mean *= 10.0;
         }
+    }
+
+    @Test
+    void testLargeMeanHighPrecisionCumulativeProbabilities() {
+        // computed using R version 3.4.4
+        setDistribution(new PoissonDistribution(100));
+        setCumulativePrecisionTestPoints(new int[] {28, 25});
+        setCumulativePrecisionTestValues(new double[] {1.6858675763053070496e-17, 3.184075559619425735e-19});
+        verifyCumulativeProbabilityPrecision();
     }
 }

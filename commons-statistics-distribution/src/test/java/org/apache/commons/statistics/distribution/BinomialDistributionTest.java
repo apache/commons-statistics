@@ -78,6 +78,29 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------------- Additional test cases -------------------------------
 
+    /** Test case n = 10, p = 0.3. */
+    @Test
+    void testSmallPValue() {
+        final BinomialDistribution dist = new BinomialDistribution(10, 0.3);
+        setDistribution(dist);
+        // computed using R version 3.4.4
+        setCumulativeTestValues(new double[] {0.00000000000000000000, 0.02824752489999998728, 0.14930834590000002793,
+            0.38278278639999974153, 0.64961071840000017552, 0.84973166740000016794, 0.95265101260000006889,
+            0.98940792160000001765, 0.99840961360000002323, 0.99985631409999997654, 0.99999409509999992451,
+            1.00000000000000000000, 1.00000000000000000000});
+        setDensityTestValues(new double[] {0.0000000000000000000e+00, 2.8247524899999980341e-02,
+            1.2106082099999991575e-01, 2.3347444049999999116e-01, 2.6682793199999993439e-01, 2.0012094900000007569e-01,
+            1.0291934520000002584e-01, 3.6756909000000004273e-02, 9.0016919999999864960e-03, 1.4467005000000008035e-03,
+            1.3778099999999990615e-04, 5.9048999999999949131e-06, 0.0000000000000000000e+00});
+        setInverseCumulativeTestValues(new int[] {0, 0, 0, 0, 1, 1, 8, 7, 6, 5, 5, 10});
+        verifyDensities();
+        verifyLogDensities();
+        verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
+        verifyInverseCumulativeProbabilities();
+    }
+
     /** Test degenerate case p = 0 */
     @Test
     void testDegenerate0() {
@@ -90,7 +113,10 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {0, 0});
         verifyDensities();
+        verifyLogDensities();
         verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
         verifyInverseCumulativeProbabilities();
         Assertions.assertEquals(0, dist.getSupportLowerBound());
         Assertions.assertEquals(0, dist.getSupportUpperBound());
@@ -108,7 +134,10 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {5, 5});
         verifyDensities();
+        verifyLogDensities();
         verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
         verifyInverseCumulativeProbabilities();
         Assertions.assertEquals(5, dist.getSupportLowerBound());
         Assertions.assertEquals(5, dist.getSupportUpperBound());
@@ -126,7 +155,10 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {0, 0});
         verifyDensities();
+        verifyLogDensities();
         verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
         verifyInverseCumulativeProbabilities();
         Assertions.assertEquals(0, dist.getSupportLowerBound());
         Assertions.assertEquals(0, dist.getSupportUpperBound());
@@ -183,5 +215,23 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
             final int p = dist.inverseCumulativeProbability(0.5);
             Assertions.assertEquals(trials / 2, p);
         }
+    }
+
+    @Test
+    void testHighPrecisionCumulativeProbabilities() {
+        // computed using R version 3.4.4
+        setDistribution(new BinomialDistribution(100, 0.99));
+        setCumulativePrecisionTestPoints(new int[] {82, 81});
+        setCumulativePrecisionTestValues(new double[] {1.4061271955993513664e-17, 6.1128083336354843707e-19});
+        verifyCumulativeProbabilityPrecision();
+    }
+
+    @Test
+    void testHighPrecisionSurvivalProbabilities() {
+        // computed using R version 3.4.4
+        setDistribution(new BinomialDistribution(100, 0.01));
+        setSurvivalPrecisionTestPoints(new int[] {18, 19});
+        setSurvivalPrecisionTestValues(new double[] {6.1128083336353977038e-19, 2.4944165604029235392e-20});
+        verifySurvivalProbabilityPrecision();
     }
 }

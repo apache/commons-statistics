@@ -79,6 +79,15 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
         return -Math.expm1(log1mProbabilityOfSuccess * (x + 1));
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(int x) {
+        if (x < 0) {
+            return 1.0;
+        }
+        return Math.exp(log1mProbabilityOfSuccess * (x + 1));
+    }
+
     /**
      * {@inheritDoc}
      *

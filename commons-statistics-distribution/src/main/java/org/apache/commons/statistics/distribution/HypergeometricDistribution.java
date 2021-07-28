@@ -79,7 +79,24 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         } else if (x >= domain[1]) {
             ret = 1.0;
         } else {
-            ret = innerCumulativeProbability(domain[0], x, 1);
+            ret = innerCumulativeProbability(domain[0], x);
+        }
+
+        return ret;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(int x) {
+        double ret;
+
+        final int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
+        if (x < domain[0]) {
+            ret = 1.0;
+        } else if (x >= domain[1]) {
+            ret = 0.0;
+        } else {
+            ret = innerCumulativeProbability(domain[1], x + 1);
         }
 
         return ret;
@@ -168,21 +185,35 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         } else {
             final double p = (double) sampleSize / (double) populationSize;
             final double q = (double) (populationSize - sampleSize) / (double) populationSize;
-            final double p1 = SaddlePointExpansionUtils.logBinomialProbability(x,
-                    numberOfSuccesses, p, q);
-            final double p2 =
-                    SaddlePointExpansionUtils.logBinomialProbability(sampleSize - x,
-                            populationSize - numberOfSuccesses, p, q);
-            final double p3 =
-                    SaddlePointExpansionUtils.logBinomialProbability(sampleSize, populationSize, p, q);
-            ret = p1 + p2 - p3;
+            ret = logProbability(x, p, q);
         }
 
         return ret;
     }
 
     /**
+     * Compute the log probability.
+     *
+     * @param x Value.
+     * @param p sample size / population size.
+     * @param q (population size - sample size) / population size
+     * @return log(P(X = x))
+     */
+    private double logProbability(int x, double p, double q) {
+        final double p1 =
+                SaddlePointExpansionUtils.logBinomialProbability(x, numberOfSuccesses, p, q);
+        final double p2 =
+                SaddlePointExpansionUtils.logBinomialProbability(sampleSize - x,
+                        populationSize - numberOfSuccesses, p, q);
+        final double p3 =
+                SaddlePointExpansionUtils.logBinomialProbability(sampleSize, populationSize, p, q);
+        return p1 + p2 - p3;
+    }
+
+    /**
      * For this distribution, {@code X}, this method returns {@code P(X >= x)}.
+     *
+     * <p>Note: This is not equals to {@link #survivalProbability(int)} which computes {@code P(X > x)}.
      *
      * @param x Value at which the CDF is evaluated.
      * @return the upper tail CDF for this distribution.
@@ -196,7 +227,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         } else if (x > domain[1]) {
             ret = 0.0;
         } else {
-            ret = innerCumulativeProbability(domain[1], x, -1);
+            ret = innerCumulativeProbability(domain[1], x);
         }
 
         return ret;
@@ -206,21 +237,32 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * For this distribution, {@code X}, this method returns
      * {@code P(x0 <= X <= x1)}.
      * This probability is computed by summing the point probabilities for the
-     * values {@code x0, x0 + 1, x0 + 2, ..., x1}, in the order directed by
-     * {@code dx}.
+     * values {@code x0, x0 + dx, x0 + 2 * dx, ..., x1}; the direction {@code dx} is determined
+     * using a comparison of the input bounds.
+     * This should be called by using {@code x0} as the domain limit and {@code x1}
+     * as the internal value. This will result in an initial sum of increasing larger magnitudes.
      *
-     * @param x0 Inclusive lower bound.
-     * @param x1 Inclusive upper bound.
-     * @param dx Direction of summation (1 indicates summing from x0 to x1, and
-     * 0 indicates summing from x1 to x0).
+     * @param x0 Inclusive domain bound.
+     * @param x1 Inclusive internal bound.
      * @return {@code P(x0 <= X <= x1)}.
      */
-    private double innerCumulativeProbability(int x0, int x1, int dx) {
+    private double innerCumulativeProbability(int x0, int x1) {
+        // Assume the range is within the domain.
+        // Reuse the computation for probability(x) but avoid checking the domain for each call.
+        final double p = (double) sampleSize / (double) populationSize;
+        final double q = (double) (populationSize - sampleSize) / (double) populationSize;
         int x = x0;
-        double ret = probability(x);
-        while (x != x1) {
-            x += dx;
-            ret += probability(x);
+        double ret = Math.exp(logProbability(x, p, q));
+        if (x0 < x1) {
+            while (x != x1) {
+                x++;
+                ret += Math.exp(logProbability(x, p, q));
+            }
+        } else {
+            while (x != x1) {
+                x--;
+                ret += Math.exp(logProbability(x, p, q));
+            }
         }
         return ret;
     }

@@ -101,8 +101,24 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
         } else if (x >= numberOfTrials) {
             ret = 1.0;
         } else {
-            ret = 1.0 - RegularizedBeta.value(probabilityOfSuccess,
-                                              x + 1.0, (double) numberOfTrials - x);
+            // Use a helper function to compute the complement of the survival probability
+            ret = RegularizedBetaUtils.complement(probabilityOfSuccess,
+                                                  x + 1.0, (double) numberOfTrials - x);
+        }
+        return ret;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(int x) {
+        double ret;
+        if (x < 0) {
+            ret = 1.0;
+        } else if (x >= numberOfTrials) {
+            ret = 0.0;
+        } else {
+            ret = RegularizedBeta.value(probabilityOfSuccess,
+                                        x + 1.0, (double) numberOfTrials - x);
         }
         return ret;
     }
