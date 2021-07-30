@@ -66,8 +66,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
-        final double logDensity = logDensity(x);
-        return logDensity == Double.NEGATIVE_INFINITY ? 0 : Math.exp(logDensity);
+        return Math.exp(logDensity(x));
     }
 
     /** {@inheritDoc} **/
