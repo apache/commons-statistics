@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 /**
  * Test cases for LogisticsDistribution.
  */
-class LogisticsDistributionTest extends ContinuousDistributionAbstractTest {
+class LogisticDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
