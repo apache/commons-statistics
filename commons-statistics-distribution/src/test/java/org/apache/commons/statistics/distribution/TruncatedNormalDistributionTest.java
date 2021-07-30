@@ -98,7 +98,7 @@ class TruncatedNormalDistributionTest extends ContinuousDistributionAbstractTest
         testMoments(distribution, mean, variance);
 
         testConsistency();
-        testSampler();
+        testSampling();
         testOutsideSupport();
         testDensities();
         testLogDensities();
@@ -107,9 +107,9 @@ class TruncatedNormalDistributionTest extends ContinuousDistributionAbstractTest
         testDensityIntegrals();
         testCumulativeProbabilities();
         testIsSupportConnected();
-        testPrecondition1();
-        testPrecondition2();
-        testPrecondition3();
+        testProbabilityWithLowerBoundAboveUpperBound();
+        testInverseCumulativeProbabilityWithProbabilityBelowZero();
+        testInverseCumulativeProbabilityWithProbabilityAboveOne();
 
         // Bound test
         Assertions.assertTrue(distribution.getSupportLowerBound() <= distribution.inverseCumulativeProbability(Double.MIN_VALUE));

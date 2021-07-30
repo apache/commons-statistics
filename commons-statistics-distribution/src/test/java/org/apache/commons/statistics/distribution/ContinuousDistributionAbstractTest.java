@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -39,12 +40,13 @@ import org.junit.jupiter.api.BeforeEach;
  * distribution returned by makeDistribution().  Default implementations
  * are provided for the makeInverseXxx methods that just invert the mapping
  * defined by the arrays returned by the makeCumulativeXxx methods.
- * <p>
- * makeCumulativeTestPoints() -- arguments used to test cumulative probabilities
- * makeCumulativeTestValues() -- expected cumulative probabilities
- * makeDensityTestValues() -- expected density values at cumulativeTestPoints
- * makeInverseCumulativeTestPoints() -- arguments used to test inverse cdf
- * makeInverseCumulativeTestValues() -- expected inverse cdf values
+ * <ul>
+ *  <li>makeCumulativeTestPoints() -- arguments used to test cumulative probabilities
+ *  <li>makeCumulativeTestValues() -- expected cumulative probabilities
+ *  <li>makeDensityTestValues() -- expected density values at cumulativeTestPoints
+ *  <li>makeInverseCumulativeTestPoints() -- arguments used to test inverse cdf evaluation
+ *  <li>makeInverseCumulativeTestValues() -- expected inverse cdf values
+ * </ul>
  * <p>
  * If the continuous distribution provides higher precision implementations of cumulativeProbability
  * and/or survivalProbability, the following methods should be implemented to provide testing.
@@ -53,12 +55,12 @@ import org.junit.jupiter.api.BeforeEach;
  * arithmetic.
  *
  * NOTE: The default high-precision threshold is 1e-22.
- * <pre>
- * makeCumulativePrecisionTestPoints() -- high precision test inputs
- * makeCumulativePrecisionTestValues() -- high precision expected results
- * makeSurvivalPrecisionTestPoints() -- high precision test inputs
- * makeSurvivalPrecisionTestValues() -- high precision expected results
- * </pre>
+ * <ul>
+ *  <li>makeCumulativePrecisionTestPoints() -- high precision test inputs
+ *  <li>makeCumulativePrecisionTestValues() -- high precision expected results
+ *  <li>makeSurvivalPrecisionTestPoints() -- high precision test inputs
+ *  <li>makeSurvivalPrecisionTestValues() -- high precision expected results
+ * </ul>
  * <p>
  * To implement additional test cases with different distribution instances and
  * test data, use the setXxx methods for the instance data in test cases and
@@ -76,7 +78,8 @@ import org.junit.jupiter.api.BeforeEach;
  */
 abstract class ContinuousDistributionAbstractTest {
 
-//-------------------- Private test instance data -------------------------
+    //-------------------- Private test instance data -------------------------
+
     /**  Distribution instance used to perform tests. */
     private ContinuousDistribution distribution;
 
@@ -84,7 +87,17 @@ abstract class ContinuousDistributionAbstractTest {
     private double tolerance = 1e-4;
 
     /** Tolerance used in high precision tests. */
-    private final double highPrecisionTolerance = 1e-22;
+    private double highPrecisionTolerance = 1e-22;
+
+    // Note:
+    // The ContinuousDistribution interface defines the density as the gradient of the CDF.
+    // It is evaluated using the cumulativeTestPoints.
+
+    /** Values used to test density calculations. */
+    private double[] densityTestValues;
+
+    /** Values used to test logarithmic density calculations. */
+    private double[] logDensityTestValues;
 
     /** Arguments used to test cumulative probability density calculations. */
     private double[] cumulativeTestPoints;
@@ -110,16 +123,24 @@ abstract class ContinuousDistributionAbstractTest {
     /** Values used to test inverse cumulative probability density calculations. */
     private double[] inverseCumulativeTestValues;
 
-    /** Values used to test density calculations. */
-    private double[] densityTestValues;
-
-    /** Values used to test logarithmic density calculations. */
-    private double[] logDensityTestValues;
-
     //-------------------- Abstract methods -----------------------------------
 
     /** Creates the default continuous distribution instance to use in tests. */
     public abstract ContinuousDistribution makeDistribution();
+
+    /** Creates the default density test expected values. */
+    public abstract double[] makeDensityTestValues();
+
+    /** Creates the default logarithmic probability density test expected values.
+     *
+     * <p>The default implementation simply computes the logarithm of all the values in
+     * {@link #makeDensityTestValues()}.
+     *
+     * @return the default logarithmic probability density test expected values.
+     */
+    public double[] makeLogDensityTestValues() {
+        return Arrays.stream(makeDensityTestValues()).map(Math::log).toArray();
+    }
 
     /** Creates the default cumulative probability test input values. */
     public abstract double[] makeCumulativeTestPoints();
@@ -155,21 +176,6 @@ abstract class ContinuousDistributionAbstractTest {
         return new double[0];
     }
 
-    /** Creates the default density test expected values. */
-    public abstract double[] makeDensityTestValues();
-
-    /** Creates the default logarithmic density test expected values.
-     * The default implementation simply computes the logarithm
-     * of each value returned by {@link #makeDensityTestValues()}.*/
-    public double[] makeLogDensityTestValues() {
-        final double[] density = makeDensityTestValues();
-        final double[] logDensity = new double[density.length];
-        for (int i = 0; i < density.length; i++) {
-            logDensity[i] = Math.log(density[i]);
-        }
-        return logDensity;
-    }
-
     //---- Default implementations of inverse test data generation methods ----
 
     /** Creates the default inverse cumulative probability test input values. */
@@ -193,6 +199,8 @@ abstract class ContinuousDistributionAbstractTest {
     @BeforeEach
     void setUp() {
         distribution = makeDistribution();
+        densityTestValues = makeDensityTestValues();
+        logDensityTestValues = makeLogDensityTestValues();
         cumulativeTestPoints = makeCumulativeTestPoints();
         cumulativeTestValues = makeCumulativeTestValues();
         cumulativePrecisionTestPoints = makeCumulativePrecisionTestPoints();
@@ -201,8 +209,6 @@ abstract class ContinuousDistributionAbstractTest {
         survivalPrecisionTestValues = makeSurvivalPrecisionTestValues();
         inverseCumulativeTestPoints = makeInverseCumulativeTestPoints();
         inverseCumulativeTestValues = makeInverseCumulativeTestValues();
-        densityTestValues = makeDensityTestValues();
-        logDensityTestValues = makeLogDensityTestValues();
     }
 
     /**
@@ -211,15 +217,45 @@ abstract class ContinuousDistributionAbstractTest {
     @AfterEach
     void tearDown() {
         distribution = null;
-        cumulativeTestPoints = null;
-        cumulativeTestValues = null;
-        inverseCumulativeTestPoints = null;
-        inverseCumulativeTestValues = null;
         densityTestValues = null;
         logDensityTestValues = null;
+        cumulativeTestPoints = null;
+        cumulativeTestValues = null;
+        cumulativePrecisionTestPoints = null;
+        cumulativePrecisionTestValues = null;
+        survivalPrecisionTestPoints = null;
+        survivalPrecisionTestValues = null;
+        inverseCumulativeTestPoints = null;
+        inverseCumulativeTestValues = null;
     }
 
     //-------------------- Verification methods -------------------------------
+
+    /**
+     * Verifies that density calculations match expected values
+     * using current test instance data.
+     */
+    protected void verifyDensities() {
+        for (int i = 0; i < cumulativeTestPoints.length; i++) {
+            final double x = cumulativeTestPoints[i];
+            Assertions.assertEquals(densityTestValues[i],
+                distribution.density(x), getTolerance(),
+                () -> "Incorrect probability density value returned for " + x);
+        }
+    }
+
+    /**
+     * Verifies that logarithmic density calculations match expected values
+     * using current test instance data.
+     */
+    protected void verifyLogDensities() {
+        for (int i = 0; i < cumulativeTestPoints.length; i++) {
+            final double x = cumulativeTestPoints[i];
+            Assertions.assertEquals(logDensityTestValues[i],
+                distribution.logDensity(x), getTolerance(),
+                () -> "Incorrect probability density value returned for " + x);
+        }
+    }
 
     /**
      * Verifies that cumulative probability density calculations match expected values
@@ -229,9 +265,8 @@ abstract class ContinuousDistributionAbstractTest {
         // verify cumulativeProbability(double)
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
             final double x = cumulativeTestPoints[i];
-            Assertions.assertEquals(
-                cumulativeTestValues[i],
-                distribution.cumulativeProbability(cumulativeTestPoints[i]),
+            Assertions.assertEquals(cumulativeTestValues[i],
+                distribution.cumulativeProbability(x),
                 getTolerance(),
                 () -> "Incorrect cumulative probability value returned for " + x);
         }
@@ -272,7 +307,7 @@ abstract class ContinuousDistributionAbstractTest {
                 1.0,
                 distribution.survivalProbability(x) + distribution.cumulativeProbability(x),
                 getTolerance(),
-                () -> "survival + cumulative probability were not close to 1.0" + x);
+                () -> "survival + cumulative probability were not close to 1.0 for " + x);
         }
     }
 
@@ -321,40 +356,18 @@ abstract class ContinuousDistributionAbstractTest {
         }
     }
 
-    /**
-     * Verifies that density calculations match expected values.
-     */
-    protected void verifyDensities() {
-        for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            final double x = cumulativeTestPoints[i];
-            Assertions.assertEquals(
-                densityTestValues[i],
-                distribution.density(cumulativeTestPoints[i]),
-                getTolerance(),
-                () -> "Incorrect probability density value returned for " + x);
-        }
-    }
-
-    /**
-     * Verifies that logarithmic density calculations match expected values.
-     */
-    protected void verifyLogDensities() {
-        for (int i = 0; i < cumulativeTestPoints.length; i++) {
-            final double x = cumulativeTestPoints[i];
-            Assertions.assertEquals(
-                logDensityTestValues[i],
-                distribution.logDensity(cumulativeTestPoints[i]),
-                getTolerance(),
-                () -> "Incorrect probability density value returned for " + x);
-        }
-    }
-
     //------------------------ Default test cases -----------------------------
 
-    /**
-     * Verifies that cumulative probability density calculations match expected values
-     * using default test instance data.
-     */
+    @Test
+    void testDensities() {
+        verifyDensities();
+    }
+
+    @Test
+    void testLogDensities() {
+        verifyLogDensities();
+    }
+
     @Test
     void testCumulativeProbabilities() {
         verifyCumulativeProbabilities();
@@ -380,31 +393,9 @@ abstract class ContinuousDistributionAbstractTest {
         verifySurvivalProbabilityPrecision();
     }
 
-    /**
-     * Verifies that inverse cumulative probability density calculations match expected values
-     * using default test instance data.
-     */
     @Test
     void testInverseCumulativeProbabilities() {
         verifyInverseCumulativeProbabilities();
-    }
-
-    /**
-     * Verifies that density calculations return expected values
-     * for default test instance data.
-     */
-    @Test
-    void testDensities() {
-        verifyDensities();
-    }
-
-    /**
-     * Verifies that logarithmic density calculations return expected values
-     * for default test instance data.
-     */
-    @Test
-    void testLogDensities() {
-        verifyLogDensities();
     }
 
     /**
@@ -416,9 +407,9 @@ abstract class ContinuousDistributionAbstractTest {
 
             // check that cdf(x, x) = 0
             Assertions.assertEquals(
-                0d,
+                0.0,
                 distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[i]),
-                tolerance);
+                getTolerance());
 
             // check that P(a < X <= b) = P(X <= b) - P(X <= a)
             final double upper = Math.max(cumulativeTestPoints[i], cumulativeTestPoints[i - 1]);
@@ -426,61 +417,65 @@ abstract class ContinuousDistributionAbstractTest {
             final double diff = distribution.cumulativeProbability(upper) -
                 distribution.cumulativeProbability(lower);
             final double direct = distribution.probability(lower, upper);
-            Assertions.assertEquals(diff, direct, tolerance,
+            Assertions.assertEquals(diff, direct, getTolerance(),
                 () -> "Inconsistent probability for (" + lower + "," + upper + ")");
         }
-    }
-
-    /**
-     * Verifies that illegal arguments are correctly handled
-     */
-    @Test
-    void testPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> distribution.probability(1, 0));
-    }
-    @Test
-    void testPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(-1));
-    }
-    @Test
-    void testPrecondition3() {
-        Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     @Test
     void testOutsideSupport() {
         // Test various quantities when the variable is outside the support.
         final double lo = distribution.getSupportLowerBound();
-        final double hi = distribution.getSupportUpperBound();
-        final double below = lo - Math.ulp(lo);
-        final double above = hi + Math.ulp(hi);
+        Assertions.assertEquals(lo, distribution.inverseCumulativeProbability(0.0));
 
-        Assertions.assertEquals(0d, distribution.density(below));
-        Assertions.assertEquals(0d, distribution.density(above));
+        final double below = Math.nextDown(lo);
+        Assertions.assertEquals(0.0, distribution.probability(below));
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(below));
+        Assertions.assertEquals(0.0, distribution.cumulativeProbability(below));
+        Assertions.assertEquals(1.0, distribution.survivalProbability(below));
+
+        final double hi = distribution.getSupportUpperBound();
+        Assertions.assertEquals(0.0, distribution.survivalProbability(hi));
+        Assertions.assertEquals(hi, distribution.inverseCumulativeProbability(1.0));
+
+        final double above = Math.nextUp(hi);
+        Assertions.assertEquals(0.0, distribution.probability(above));
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(above));
-        Assertions.assertEquals(0d, distribution.cumulativeProbability(below));
-        Assertions.assertEquals(1d, distribution.cumulativeProbability(above));
-        Assertions.assertEquals(1d, distribution.survivalProbability(below));
-        Assertions.assertEquals(0d, distribution.survivalProbability(above));
+        Assertions.assertEquals(1.0, distribution.cumulativeProbability(above));
+        Assertions.assertEquals(0.0, distribution.survivalProbability(above));
     }
 
-    /**
-     * Test sampling.
-     */
     @Test
-    void testSampler() {
+    void testProbabilityWithLowerBoundAboveUpperBound() {
+        Assertions.assertThrows(DistributionException.class, () -> distribution.probability(1, 0));
+    }
+
+    @Test
+    void testInverseCumulativeProbabilityWithProbabilityBelowZero() {
+        Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(-1));
+    }
+
+    @Test
+    void testInverseCumulativeProbabilityWithProbabilityAboveOne() {
+        Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(2));
+    }
+
+    @Test
+    void testSampling() {
+        // Use fixed seed.
         final int sampleSize = 1000;
         final ContinuousDistribution.Sampler sampler =
-            distribution.createSampler(RandomSource.create(RandomSource.WELL_19937_C, 123456789L));
+            getDistribution().createSampler(RandomSource.create(RandomSource.WELL_19937_C, 123456789L));
         final double[] sample = TestUtils.sample(sampleSize, sampler);
-        final double[] quartiles = TestUtils.getDistributionQuartiles(distribution);
-        final double[] expected = {250, 250, 250, 250};
-        final long[] counts = new long[4];
 
+        final double[] quartiles = TestUtils.getDistributionQuartiles(getDistribution());
+        final double[] expected = {250, 250, 250, 250};
+
+        final long[] counts = new long[4];
         for (int i = 0; i < sampleSize; i++) {
             TestUtils.updateCounts(sample[i], counts, quartiles);
         }
+
         TestUtils.assertChiSquareAccept(expected, counts, 0.001);
     }
 
@@ -537,6 +532,81 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     //------------------ Getters / Setters for test instance data -----------
+
+    /**
+     * @return Returns the distribution.
+     */
+    protected ContinuousDistribution getDistribution() {
+        return distribution;
+    }
+
+    /**
+     * @param distribution The distribution to set.
+     */
+    protected void setDistribution(ContinuousDistribution distribution) {
+        this.distribution = distribution;
+    }
+
+    /**
+     * @return Returns the tolerance.
+     */
+    protected double getTolerance() {
+        return tolerance;
+    }
+
+    /**
+     * @param tolerance The tolerance to set.
+     */
+    protected void setTolerance(double tolerance) {
+        this.tolerance = tolerance;
+    }
+
+    /**
+     * @return Returns the high precision tolerance.
+     */
+    protected double getHighPrecisionTolerance() {
+        return highPrecisionTolerance;
+    }
+
+    /**
+     * @param highPrecisionTolerance The high precision highPrecisionTolerance to set.
+     */
+    protected void setHighPrecisionTolerance(double highPrecisionTolerance) {
+        this.highPrecisionTolerance = highPrecisionTolerance;
+    }
+
+    /**
+     * @return Returns the densityTestValues.
+     */
+    protected double[] getDensityTestValues() {
+        return densityTestValues;
+    }
+
+    /**
+     * Set the density test values.
+     * For convenience this recomputes the log density test values using {@link Math#log(double)}.
+     *
+     * @param densityTestValues The densityTestValues to set.
+     */
+    protected void setDensityTestValues(double[] densityTestValues) {
+        this.densityTestValues = densityTestValues;
+        logDensityTestValues = Arrays.stream(densityTestValues).map(Math::log).toArray();
+    }
+
+    /**
+     * @return Returns the logDensityTestValues.
+     */
+    protected double[] getLogDensityTestValues() {
+        return logDensityTestValues;
+    }
+
+    /**
+     * @param logDensityTestValues The logDensityTestValues to set.
+     */
+    protected void setLogDensityTestValues(double[] logDensityTestValues) {
+        this.logDensityTestValues = logDensityTestValues;
+    }
+
     /**
      * @return Returns the cumulativeTestPoints.
      */
@@ -566,45 +636,59 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * @return Returns the densityTestValues.
+     * @return Returns the cumulativePrecisionTestPoints.
      */
-    protected double[] getDensityTestValues() {
-        return densityTestValues;
+    protected double[] getCumulativePrecisionTestPoints() {
+        return cumulativePrecisionTestPoints;
     }
 
     /**
-     * @param densityTestValues The densityTestValues to set.
+     * @param cumulativePrecisionTestPoints The cumulativePrecisionTestPoints to set.
      */
-    protected void setDensityTestValues(double[] densityTestValues) {
-        this.densityTestValues = densityTestValues;
+    protected void setCumulativePrecisionTestPoints(double[] cumulativePrecisionTestPoints) {
+        this.cumulativePrecisionTestPoints = cumulativePrecisionTestPoints;
     }
 
     /**
-     * @return Returns the logDensityTestValues.
+     * @return Returns the cumulativePrecisionTestValues.
      */
-    protected double[] getLogDensityTestValues() {
-        return logDensityTestValues;
+    protected double[] getCumulativePrecisionTestValues() {
+        return cumulativePrecisionTestValues;
     }
 
     /**
-     * @param logDensityTestValues The logDensityTestValues to set.
+     * @param cumulativePrecisionTestValues The cumulativePrecisionTestValues to set.
      */
-    protected void setLogDensityTestValues(double[] logDensityTestValues) {
-        this.logDensityTestValues = logDensityTestValues;
+    protected void setCumulativePrecisionTestValues(double[] cumulativePrecisionTestValues) {
+        this.cumulativePrecisionTestValues = cumulativePrecisionTestValues;
     }
 
     /**
-     * @return Returns the distribution.
+     * @return Returns the survivalPrecisionTestPoints.
      */
-    protected ContinuousDistribution getDistribution() {
-        return distribution;
+    protected double[] getSurvivalPrecisionTestPoints() {
+        return survivalPrecisionTestPoints;
     }
 
     /**
-     * @param distribution The distribution to set.
+     * @param survivalPrecisionTestPoints The survivalPrecisionTestPoints to set.
      */
-    protected void setDistribution(ContinuousDistribution distribution) {
-        this.distribution = distribution;
+    protected void setSurvivalPrecisionTestPoints(double[] survivalPrecisionTestPoints) {
+        this.survivalPrecisionTestPoints = survivalPrecisionTestPoints;
+    }
+
+    /**
+     * @return Returns the survivalPrecisionTestValues.
+     */
+    protected double[] getSurvivalPrecisionTestValues() {
+        return survivalPrecisionTestValues;
+    }
+
+    /**
+     * @param survivalPrecisionTestValues The survivalPrecisionTestValues to set.
+     */
+    protected void setSurvivalPrecisionTestValues(double[] survivalPrecisionTestValues) {
+        this.survivalPrecisionTestValues = survivalPrecisionTestValues;
     }
 
     /**
@@ -633,27 +717,6 @@ abstract class ContinuousDistributionAbstractTest {
      */
     protected void setInverseCumulativeTestValues(double[] inverseCumulativeTestValues) {
         this.inverseCumulativeTestValues = inverseCumulativeTestValues;
-    }
-
-    /**
-     * @return Returns the tolerance.
-     */
-    protected double getTolerance() {
-        return tolerance;
-    }
-
-    /**
-     * @return Returns the high precision tolerance.
-     */
-    protected double getHighPrecisionTolerance() {
-        return highPrecisionTolerance;
-    }
-
-    /**
-     * @param tolerance The tolerance to set.
-     */
-    protected void setTolerance(double tolerance) {
-        this.tolerance = tolerance;
     }
 
     /**

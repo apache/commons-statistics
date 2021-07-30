@@ -77,7 +77,7 @@ class ConstantContinuousDistributionTest extends ContinuousDistributionAbstractT
 
     @Test
     @Override
-    void testSampler() {
+    void testSampling() {
         final double value = 12.345;
         final ContinuousDistribution.Sampler sampler = new ConstantContinuousDistribution(value).createSampler(null);
         for (int i = 0; i < 10; i++) {
