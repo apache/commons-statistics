@@ -520,14 +520,14 @@ abstract class ContinuousDistributionAbstractTest {
 
     @Test
     void testSampling() {
+        final double[] quartiles = TestUtils.getDistributionQuartiles(getDistribution());
+        final double[] expected = {0.25, 0.25, 0.25, 0.25};
+
         // Use fixed seed.
         final int sampleSize = 1000;
         final ContinuousDistribution.Sampler sampler =
             getDistribution().createSampler(RandomSource.create(RandomSource.WELL_19937_C, 123456789L));
         final double[] sample = TestUtils.sample(sampleSize, sampler);
-
-        final double[] quartiles = TestUtils.getDistributionQuartiles(getDistribution());
-        final double[] expected = {250, 250, 250, 250};
 
         final long[] counts = new long[4];
         for (int i = 0; i < sampleSize; i++) {
