@@ -113,8 +113,8 @@ class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testParameterAccessors() {
-        final ChiSquaredDistribution distribution = makeDistribution();
-        Assertions.assertEquals(5d, distribution.getDegreesOfFreedom());
+        final ChiSquaredDistribution dist = makeDistribution();
+        Assertions.assertEquals(5d, dist.getDegreesOfFreedom());
     }
 
     @Test
@@ -155,9 +155,9 @@ class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void checkDensity(double df, double[] x, double[] expected) {
-        final ChiSquaredDistribution d = new ChiSquaredDistribution(df);
+        final ChiSquaredDistribution dist = new ChiSquaredDistribution(df);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-5);
+            Assertions.assertEquals(expected[i], dist.density(x[i]), 1e-5);
         }
     }
 }

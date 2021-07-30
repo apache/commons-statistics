@@ -95,16 +95,16 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testDensityAtSupportBounds() {
-        final GammaDistribution distribution = makeDistribution();
-        Assertions.assertEquals(0.0, distribution.density(0));
-        Assertions.assertEquals(0.0, distribution.density(Double.POSITIVE_INFINITY));
+        final GammaDistribution dist = makeDistribution();
+        Assertions.assertEquals(0.0, dist.density(0));
+        Assertions.assertEquals(0.0, dist.density(Double.POSITIVE_INFINITY));
     }
 
     @Test
     void testParameterAccessors() {
-        final GammaDistribution distribution = makeDistribution();
-        Assertions.assertEquals(4d, distribution.getShape());
-        Assertions.assertEquals(2d, distribution.getScale());
+        final GammaDistribution dist = makeDistribution();
+        Assertions.assertEquals(4d, dist.getShape());
+        Assertions.assertEquals(2d, dist.getScale());
     }
 
     @Test
@@ -184,9 +184,9 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void checkDensity(double alpha, double rate, double[] x, double[] expected) {
-        final GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
+        final GammaDistribution dist = new GammaDistribution(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], d.density(x[i]), Math.abs(expected[i]) * 1e-5);
+            Assertions.assertEquals(expected[i], dist.density(x[i]), Math.abs(expected[i]) * 1e-5);
         }
     }
 
@@ -216,9 +216,9 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void checkLogDensity(double alpha, double rate, double[] x, double[] expected) {
-        final GammaDistribution d = new GammaDistribution(alpha, 1 / rate);
+        final GammaDistribution dist = new GammaDistribution(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], d.logDensity(x[i]), Math.abs(expected[i]) * 1e-5);
+            Assertions.assertEquals(expected[i], dist.logDensity(x[i]), Math.abs(expected[i]) * 1e-5);
         }
     }
 

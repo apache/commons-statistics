@@ -89,9 +89,9 @@ class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testParameterAccessors() {
-        final LaplaceDistribution d = makeDistribution();
-        Assertions.assertEquals(0, d.getLocation());
-        Assertions.assertEquals(1, d.getScale());
+        final LaplaceDistribution dist = makeDistribution();
+        Assertions.assertEquals(0, dist.getLocation());
+        Assertions.assertEquals(1, dist.getScale());
     }
 
     @Test
@@ -114,9 +114,9 @@ class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testSupport() {
-        final LaplaceDistribution d = makeDistribution();
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.getSupportLowerBound());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());
-        Assertions.assertTrue(d.isSupportConnected());
+        final LaplaceDistribution dist = makeDistribution();
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.getSupportLowerBound());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getSupportUpperBound());
+        Assertions.assertTrue(dist.isSupportConnected());
     }
 }

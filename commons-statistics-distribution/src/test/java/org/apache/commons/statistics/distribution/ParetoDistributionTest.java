@@ -184,9 +184,9 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     private void checkDensity(double scale, double shape, double[] x,
         double[] expected) {
-        final ParetoDistribution d = new ParetoDistribution(scale, shape);
+        final ParetoDistribution dist = new ParetoDistribution(scale, shape);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-9);
+            Assertions.assertEquals(expected[i], dist.density(x[i]), 1e-9);
         }
     }
 
@@ -195,9 +195,9 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
      */
     @Test
     void testExtremeValues() {
-        final ParetoDistribution d = new ParetoDistribution(1, 1);
+        final ParetoDistribution dist = new ParetoDistribution(1, 1);
         for (int i = 0; i < 1e5; i++) { // make sure no convergence exception
-            final double upperTail = d.cumulativeProbability(i);
+            final double upperTail = dist.cumulativeProbability(i);
             if (i <= 1000) { // make sure not top-coded
                 Assertions.assertTrue(upperTail < 1.0d);
             } else { // make sure top coding not reversed
@@ -205,9 +205,9 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
             }
         }
 
-        Assertions.assertEquals(1, d.cumulativeProbability(Double.MAX_VALUE));
-        Assertions.assertEquals(0, d.cumulativeProbability(-Double.MAX_VALUE));
-        Assertions.assertEquals(1, d.cumulativeProbability(Double.POSITIVE_INFINITY));
-        Assertions.assertEquals(0, d.cumulativeProbability(Double.NEGATIVE_INFINITY));
+        Assertions.assertEquals(1, dist.cumulativeProbability(Double.MAX_VALUE));
+        Assertions.assertEquals(0, dist.cumulativeProbability(-Double.MAX_VALUE));
+        Assertions.assertEquals(1, dist.cumulativeProbability(Double.POSITIVE_INFINITY));
+        Assertions.assertEquals(0, dist.cumulativeProbability(Double.NEGATIVE_INFINITY));
     }
 }

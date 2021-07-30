@@ -87,9 +87,9 @@ class LogisticDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testParametersAccessors() {
-        final LogisticDistribution d = makeDistribution();
-        Assertions.assertEquals(2, d.getLocation());
-        Assertions.assertEquals(5, d.getScale());
+        final LogisticDistribution dist = makeDistribution();
+        Assertions.assertEquals(2, dist.getLocation());
+        Assertions.assertEquals(5, dist.getScale());
     }
 
     @Test
@@ -99,19 +99,19 @@ class LogisticDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testMeanAndVariance() {
-        final LogisticDistribution d = makeDistribution();
+        final LogisticDistribution dist = makeDistribution();
         // Constructor 'location' parameter = mean
-        Assertions.assertEquals(2.0, d.getMean());
+        Assertions.assertEquals(2.0, dist.getMean());
         // Variance = (s^2 * pi^2) / 3
         // Constructor 'scale' parameter = s
-        Assertions.assertEquals(5 * 5 * Math.PI * Math.PI / 3, d.getVariance());
+        Assertions.assertEquals(5 * 5 * Math.PI * Math.PI / 3, dist.getVariance());
     }
 
     @Test
     void testSupport() {
-        final LogisticDistribution d = makeDistribution();
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.getSupportLowerBound());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());
-        Assertions.assertTrue(d.isSupportConnected());
+        final LogisticDistribution dist = makeDistribution();
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.getSupportLowerBound());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getSupportUpperBound());
+        Assertions.assertTrue(dist.isSupportConnected());
     }
 }

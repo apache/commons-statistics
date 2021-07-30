@@ -85,9 +85,9 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testDensityAtSupportBounds() {
-        final WeibullDistribution distribution = makeDistribution();
-        Assertions.assertEquals(0.0, distribution.density(0));
-        Assertions.assertEquals(0.0, distribution.density(Double.POSITIVE_INFINITY));
+        final WeibullDistribution dist = makeDistribution();
+        Assertions.assertEquals(0.0, dist.density(0));
+        Assertions.assertEquals(0.0, dist.density(Double.POSITIVE_INFINITY));
     }
 
     @Test

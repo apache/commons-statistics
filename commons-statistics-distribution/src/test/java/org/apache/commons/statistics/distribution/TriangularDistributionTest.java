@@ -116,15 +116,15 @@ class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
     /** Test lower bound getter. */
     @Test
     void testGetLowerBound() {
-        final TriangularDistribution distribution = makeDistribution();
-        Assertions.assertEquals(-3.0, distribution.getSupportLowerBound());
+        final TriangularDistribution dist = makeDistribution();
+        Assertions.assertEquals(-3.0, dist.getSupportLowerBound());
     }
 
     /** Test upper bound getter. */
     @Test
     void testGetUpperBound() {
-        final TriangularDistribution distribution = makeDistribution();
-        Assertions.assertEquals(12.0, distribution.getSupportUpperBound());
+        final TriangularDistribution dist = makeDistribution();
+        Assertions.assertEquals(12.0, dist.getSupportUpperBound());
     }
 
     @Test

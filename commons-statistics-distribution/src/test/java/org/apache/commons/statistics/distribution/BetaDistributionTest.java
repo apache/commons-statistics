@@ -219,36 +219,36 @@ class BetaDistributionTest {
     }
 
     private static void checkCumulative(double alpha, double beta, double[] x, double[] cumes) {
-        final BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution dist = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(cumes[i], d.cumulativeProbability(x[i]), 1e-8);
+            Assertions.assertEquals(cumes[i], dist.cumulativeProbability(x[i]), 1e-8);
         }
 
         for (int i = 1; i < x.length - 1; i++) {
-            Assertions.assertEquals(x[i], d.inverseCumulativeProbability(cumes[i]), 1e-5);
+            Assertions.assertEquals(x[i], dist.inverseCumulativeProbability(cumes[i]), 1e-5);
         }
     }
 
     private static void checkSurvival(double alpha, double beta, double[] cumes) {
-        final BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution dist = new BetaDistribution(alpha, beta);
         for (int i = 0; i < CUMULATIVE_TEST_POINTS.length; i++) {
-            Assertions.assertEquals(1 - cumes[i], d.survivalProbability(CUMULATIVE_TEST_POINTS[i]), 1e-8);
+            Assertions.assertEquals(1 - cumes[i], dist.survivalProbability(CUMULATIVE_TEST_POINTS[i]), 1e-8);
         }
     }
 
     private static void checkCumulativeSurvivalComplement(double alpha, double beta) {
-        final BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution dist = new BetaDistribution(alpha, beta);
         for (int i = 0; i < CUMULATIVE_TEST_POINTS.length; i++) {
             final double x = CUMULATIVE_TEST_POINTS[i];
-            Assertions.assertEquals(1, d.cumulativeProbability(x) + d.survivalProbability(x), 1e-8);
+            Assertions.assertEquals(1, dist.cumulativeProbability(x) + dist.survivalProbability(x), 1e-8);
         }
     }
 
     private static void checkCumulativePrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
-        final BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution dist = new BetaDistribution(alpha, beta);
         Assertions.assertEquals(
-            d.cumulativeProbability(value),
+            dist.cumulativeProbability(value),
             expected,
             tolerance,
             () -> "cumulative probability not precise at " + value + " for a=" + alpha + " & b=" + beta);
@@ -256,9 +256,9 @@ class BetaDistributionTest {
 
     private static void checkSurvivalPrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
-        final BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution dist = new BetaDistribution(alpha, beta);
         Assertions.assertEquals(
-            d.survivalProbability(value),
+            dist.survivalProbability(value),
             expected,
             tolerance,
             () -> "survival function not precise at " + value + " for a=" + alpha + " & b=" + beta);
@@ -396,36 +396,36 @@ class BetaDistributionTest {
 
     @SuppressWarnings("boxing")
     private static void checkDensity(double alpha, double beta, double[] x, double[] expected) {
-        final BetaDistribution d = new BetaDistribution(alpha, beta);
+        final BetaDistribution dist = new BetaDistribution(alpha, beta);
         for (int i = 0; i < x.length; i++) {
             final int index = i;
-            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-5,
+            Assertions.assertEquals(expected[i], dist.density(x[i]), 1e-5,
                 () -> String.format("density at x=%.1f for alpha=%.1f, beta=%.1f", x[index], alpha, beta));
         }
     }
 
     @Test
     void testDensityExtremes() {
-        final BetaDistribution d = new BetaDistribution(2, 3);
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(-0.1));
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(1.1));
-        Assertions.assertEquals(0.0, d.density(-0.1));
-        Assertions.assertEquals(0.0, d.density(1.1));
+        final BetaDistribution dist = new BetaDistribution(2, 3);
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logDensity(-0.1));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logDensity(1.1));
+        Assertions.assertEquals(0.0, dist.density(-0.1));
+        Assertions.assertEquals(0.0, dist.density(1.1));
 
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(0.0));
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, d.logDensity(1.0));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logDensity(0.0));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logDensity(1.0));
     }
 
     @Test
     void testLogDensityPrecondition1() {
-        final BetaDistribution d = new BetaDistribution(0.5, 3);
-        Assertions.assertThrows(DistributionException.class, () -> d.logDensity(0.0));
+        final BetaDistribution dist = new BetaDistribution(0.5, 3);
+        Assertions.assertThrows(DistributionException.class, () -> dist.logDensity(0.0));
     }
 
     @Test
     void testLogDensityPrecondition2() {
-        final BetaDistribution d = new BetaDistribution(2, 0.5);
-        Assertions.assertThrows(DistributionException.class, () -> d.logDensity(1.0));
+        final BetaDistribution dist = new BetaDistribution(2, 0.5);
+        Assertions.assertThrows(DistributionException.class, () -> dist.logDensity(1.0));
     }
 
     @Test

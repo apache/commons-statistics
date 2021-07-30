@@ -129,9 +129,9 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Test
     void testParameterAccessors() {
-        final PascalDistribution distribution = makeDistribution();
-        Assertions.assertEquals(10, distribution.getNumberOfSuccesses());
-        Assertions.assertEquals(0.7, distribution.getProbabilityOfSuccess());
+        final PascalDistribution dist = makeDistribution();
+        Assertions.assertEquals(10, dist.getNumberOfSuccesses());
+        Assertions.assertEquals(0.7, dist.getProbabilityOfSuccess());
     }
 
     @Test

@@ -180,9 +180,9 @@ class NormalDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     private void checkDensity(double mean, double sd, double[] x, double[] expected) {
-        final NormalDistribution d = new NormalDistribution(mean, sd);
+        final NormalDistribution dist = new NormalDistribution(mean, sd);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], d.density(x[i]), 1e-9);
+            Assertions.assertEquals(expected[i], dist.density(x[i]), 1e-9);
         }
     }
 

@@ -65,15 +65,15 @@ class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTe
     /** Test lower bound getter. */
     @Test
     void testGetLowerBound() {
-        final UniformContinuousDistribution distribution = makeDistribution();
-        Assertions.assertEquals(-0.5, distribution.getSupportLowerBound());
+        final UniformContinuousDistribution dist = makeDistribution();
+        Assertions.assertEquals(-0.5, dist.getSupportLowerBound());
     }
 
     /** Test upper bound getter. */
     @Test
     void testGetUpperBound() {
-        final UniformContinuousDistribution distribution = makeDistribution();
-        Assertions.assertEquals(1.25, distribution.getSupportUpperBound());
+        final UniformContinuousDistribution dist = makeDistribution();
+        Assertions.assertEquals(1.25, dist.getSupportUpperBound());
     }
 
     /** Test pre-condition for equal lower/upper bound. */

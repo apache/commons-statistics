@@ -95,9 +95,9 @@ class LevyDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testParameterAccessors() {
-        final LevyDistribution d = makeDistribution();
-        Assertions.assertEquals(1.2, d.getLocation());
-        Assertions.assertEquals(0.4, d.getScale());
+        final LevyDistribution dist = makeDistribution();
+        Assertions.assertEquals(1.2, dist.getLocation());
+        Assertions.assertEquals(0.4, dist.getScale());
     }
 
     @Test
@@ -119,9 +119,9 @@ class LevyDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testSupport() {
-        final LevyDistribution d = makeDistribution();
-        Assertions.assertEquals(d.getLocation(), d.getSupportLowerBound());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, d.getSupportUpperBound());
-        Assertions.assertTrue(d.isSupportConnected());
+        final LevyDistribution dist = makeDistribution();
+        Assertions.assertEquals(dist.getLocation(), dist.getSupportLowerBound());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getSupportUpperBound());
+        Assertions.assertTrue(dist.isSupportConnected());
     }
 }

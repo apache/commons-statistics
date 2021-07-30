@@ -90,9 +90,9 @@ class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Test
     void testParameterAccessors() {
-        final ZipfDistribution distribution = makeDistribution();
-        Assertions.assertEquals(10, distribution.getNumberOfElements());
-        Assertions.assertEquals(1.0, distribution.getExponent());
+        final ZipfDistribution dist = makeDistribution();
+        Assertions.assertEquals(10, dist.getNumberOfElements());
+        Assertions.assertEquals(1.0, dist.getExponent());
     }
 
     @Test
