@@ -112,10 +112,16 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
             // Special case exploiting cancellation.
             ret = Math.pow(probabilityOfSuccess, numberOfSuccesses);
         } else {
-            ret = BinomialCoefficientDouble.value(x +
-                  numberOfSuccesses - 1, numberOfSuccesses - 1) *
-                  Math.pow(probabilityOfSuccess, numberOfSuccesses) *
-                  Math.pow(1.0 - probabilityOfSuccess, x);
+            final int n = x + numberOfSuccesses - 1;
+            if (n < 0) {
+                // overflow
+                // The binomial coefficient -> inf when n -> inf
+                ret = 0.0;
+            } else {
+                ret = BinomialCoefficientDouble.value(n, numberOfSuccesses - 1) *
+                      Math.pow(probabilityOfSuccess, numberOfSuccesses) *
+                      Math.pow(1.0 - probabilityOfSuccess, x);
+            }
         }
         return ret;
     }
@@ -130,10 +136,17 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
             // Special case exploiting cancellation.
             ret = logProbabilityOfSuccess * numberOfSuccesses;
         } else {
-            ret = LogBinomialCoefficient.value(x +
-                  numberOfSuccesses - 1, numberOfSuccesses - 1) +
-                  logProbabilityOfSuccess * numberOfSuccesses +
-                  log1mProbabilityOfSuccess * x;
+            final int n = x + numberOfSuccesses - 1;
+            if (n < 0) {
+                // overflow
+                // The binomial coefficient -> inf when n -> inf
+                ret = Double.NEGATIVE_INFINITY;
+            } else {
+                ret = LogBinomialCoefficient.value(x +
+                      numberOfSuccesses - 1, numberOfSuccesses - 1) +
+                      logProbabilityOfSuccess * numberOfSuccesses +
+                      log1mProbabilityOfSuccess * x;
+            }
         }
         return ret;
     }
