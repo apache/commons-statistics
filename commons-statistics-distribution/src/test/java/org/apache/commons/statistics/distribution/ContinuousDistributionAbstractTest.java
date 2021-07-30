@@ -77,6 +77,8 @@ import org.junit.jupiter.api.BeforeEach;
  * for examples.
  */
 abstract class ContinuousDistributionAbstractTest {
+    /** A zero length double[] array. */
+    private static final double[] EMPTY_DOUBLE_ARRAY = {};
 
     //-------------------- Private test instance data -------------------------
 
@@ -143,12 +145,12 @@ abstract class ContinuousDistributionAbstractTest {
      * define points to test.
      */
     public double[] makeProbabilityTestPoints() {
-        return new double[0];
+        return EMPTY_DOUBLE_ARRAY;
     }
 
     /** Creates the default probability test expected values. */
     public double[] makeProbabilityTestValues() {
-        return new double[0];
+        return EMPTY_DOUBLE_ARRAY;
     }
 
     /** Creates the default logarithmic probability density test expected values.
@@ -184,7 +186,7 @@ abstract class ContinuousDistributionAbstractTest {
 
     /** Creates the default cumulative probability precision test input values. */
     public double[] makeCumulativePrecisionTestPoints() {
-        return new double[0];
+        return EMPTY_DOUBLE_ARRAY;
     }
 
     /**
@@ -193,12 +195,12 @@ abstract class ContinuousDistributionAbstractTest {
      *       not test the desired results without increasing precision threshold.
      */
     public double[] makeCumulativePrecisionTestValues() {
-        return new double[0];
+        return EMPTY_DOUBLE_ARRAY;
     }
 
     /** Creates the default survival probability precision test input values. */
     public double[] makeSurvivalPrecisionTestPoints() {
-        return new double[0];
+        return EMPTY_DOUBLE_ARRAY;
     }
 
     /**
@@ -207,7 +209,7 @@ abstract class ContinuousDistributionAbstractTest {
      *       not test the desired results without increasing precision threshold.
      */
     public double[] makeSurvivalPrecisionTestValues() {
-        return new double[0];
+        return EMPTY_DOUBLE_ARRAY;
     }
 
     //---- Default implementations of inverse test data generation methods ----

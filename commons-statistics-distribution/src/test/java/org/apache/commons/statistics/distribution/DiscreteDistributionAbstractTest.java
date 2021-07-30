@@ -72,6 +72,10 @@ import org.junit.jupiter.api.Test;
  * for examples.
  */
 abstract class DiscreteDistributionAbstractTest {
+    /** A zero length int[] array. */
+    private static final int[] EMPTY_INT_ARRAY = {};
+    /** A zero length double[] array. */
+    private static final double[] EMPTY_DOUBLE_ARRAY = {};
 
     //-------------------- Private test instance data -------------------------
 
@@ -147,7 +151,7 @@ abstract class DiscreteDistributionAbstractTest {
 
     /** Creates the default cumulative probability precision test input values. */
     public int[] makeCumulativePrecisionTestPoints() {
-        return new int[0];
+        return EMPTY_INT_ARRAY;
     }
 
     /**
@@ -156,12 +160,12 @@ abstract class DiscreteDistributionAbstractTest {
      *       not test the desired results without increasing precision threshold.
      */
     public double[] makeCumulativePrecisionTestValues() {
-        return new double[0];
+        return EMPTY_DOUBLE_ARRAY;
     }
 
     /** Creates the default survival probability precision test input values. */
     public int[] makeSurvivalPrecisionTestPoints() {
-        return new int[0];
+        return EMPTY_INT_ARRAY;
     }
 
     /**
@@ -170,7 +174,7 @@ abstract class DiscreteDistributionAbstractTest {
      *       not test the desired results without increasing precision threshold.
      */
     public double[] makeSurvivalPrecisionTestValues() {
-        return new double[0];
+        return EMPTY_DOUBLE_ARRAY;
     }
 
     //---- Default implementations of inverse test data generation methods ----
