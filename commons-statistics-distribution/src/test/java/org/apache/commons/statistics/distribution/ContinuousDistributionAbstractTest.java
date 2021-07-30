@@ -487,7 +487,7 @@ abstract class ContinuousDistributionAbstractTest {
         Assertions.assertEquals(lo, distribution.inverseCumulativeProbability(0.0));
 
         final double below = Math.nextDown(lo);
-        Assertions.assertEquals(0.0, distribution.probability(below));
+        Assertions.assertEquals(0.0, distribution.density(below));
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(below));
         Assertions.assertEquals(0.0, distribution.cumulativeProbability(below));
         Assertions.assertEquals(1.0, distribution.survivalProbability(below));
@@ -497,7 +497,7 @@ abstract class ContinuousDistributionAbstractTest {
         Assertions.assertEquals(hi, distribution.inverseCumulativeProbability(1.0));
 
         final double above = Math.nextUp(hi);
-        Assertions.assertEquals(0.0, distribution.probability(above));
+        Assertions.assertEquals(0.0, distribution.density(above));
         Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.logDensity(above));
         Assertions.assertEquals(1.0, distribution.cumulativeProbability(above));
         Assertions.assertEquals(0.0, distribution.survivalProbability(above));
