@@ -90,19 +90,16 @@ final class SaddlePointExpansionUtils {
      * @return the Striling's series error.
      */
     static double getStirlingError(int z) {
-        double ret;
         if (z <= STIRLING_ERROR_THRESHOLD) {
-            ret = EXACT_STIRLING_ERRORS[2 * z];
-        } else {
-            final double z2 = (double) z * z;
-            ret = (0.083333333333333333333 -
-                    (0.00277777777777777777778 -
-                            (0.00079365079365079365079365 -
-                                    (0.000595238095238095238095238 -
-                                            0.0008417508417508417508417508 /
-                                            z2) / z2) / z2) / z2) / z;
+            return EXACT_STIRLING_ERRORS[2 * z];
         }
-        return ret;
+        final double z2 = (double) z * z;
+        return (0.083333333333333333333 -
+                       (0.00277777777777777777778 -
+                               (0.00079365079365079365079365 -
+                                       (0.000595238095238095238095238 -
+                                               0.0008417508417508417508417508 /
+                                               z2) / z2) / z2) / z2) / z;
     }
 
     /**
@@ -124,7 +121,6 @@ final class SaddlePointExpansionUtils {
      * @return a part of the deviance.
      */
     static double getDeviancePart(int x, double mu) {
-        double ret;
         if (Math.abs(x - mu) < 0.1 * (x + mu)) {
             final double d = x - mu;
             double v = d / (x + mu);
@@ -139,14 +135,11 @@ final class SaddlePointExpansionUtils {
                 s1 = s + ej / ((j * 2) + 1);
                 ++j;
             }
-            ret = s1;
-        } else {
-            if (x == 0) {
-                return mu;
-            }
-            ret = x * Math.log(x / mu) + mu - x;
+            return s1;
+        } else if (x == 0) {
+            return mu;
         }
-        return ret;
+        return x * Math.log(x / mu) + mu - x;
     }
 
     /**
@@ -160,30 +153,24 @@ final class SaddlePointExpansionUtils {
      * @return log(p(x)).
      */
     static double logBinomialProbability(int x, int n, double p, double q) {
-        double ret;
         if (x == 0) {
             if (p < ONE_TENTH) {
-                ret = -getDeviancePart(n, n * q) - n * p;
-            } else {
-                if (n == 0) {
-                    return 0;
-                }
-                ret = n * Math.log(q);
+                return -getDeviancePart(n, n * q) - n * p;
+            } else if (n == 0) {
+                return 0;
             }
+            return n * Math.log(q);
         } else if (x == n) {
             if (q < ONE_TENTH) {
-                ret = -getDeviancePart(n, n * p) - n * q;
-            } else {
-                ret = n * Math.log(p);
+                return -getDeviancePart(n, n * p) - n * q;
             }
-        } else {
-            final int nMx = n - x;
-            ret = getStirlingError(n) - getStirlingError(x) -
-                  getStirlingError(nMx) - getDeviancePart(x, n * p) -
-                  getDeviancePart(nMx, n * q);
-            final double f = (TWO_PI * x * nMx) / n;
-            ret = -0.5 * Math.log(f) + ret;
+            return n * Math.log(p);
         }
-        return ret;
+        final int nMx = n - x;
+        final double ret = getStirlingError(n) - getStirlingError(x) -
+                           getStirlingError(nMx) - getDeviancePart(x, n * p) -
+                           getDeviancePart(nMx, n * q);
+        final double f = (TWO_PI * x * nMx) / n;
+        return -0.5 * Math.log(f) + ret;
     }
 }

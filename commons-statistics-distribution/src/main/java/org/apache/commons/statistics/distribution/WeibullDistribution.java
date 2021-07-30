@@ -147,18 +147,15 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double inverseCumulativeProbability(double p) {
-        double ret;
         if (p < 0 ||
             p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         } else if (p == 0) {
-            ret = 0.0;
+            return 0.0;
         } else  if (p == 1) {
-            ret = Double.POSITIVE_INFINITY;
-        } else {
-            ret = scale * Math.pow(-Math.log1p(-p), 1.0 / shape);
+            return Double.POSITIVE_INFINITY;
         }
-        return ret;
+        return scale * Math.pow(-Math.log1p(-p), 1.0 / shape);
     }
 
     /**

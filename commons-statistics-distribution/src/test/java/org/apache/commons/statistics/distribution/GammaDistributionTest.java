@@ -235,18 +235,13 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
          * double Gamma.logGamma(double)
          * prior to MATH-849
          */
-        double ret;
-
         if (Double.isNaN(x) || (x <= 0.0)) {
-            ret = Double.NaN;
-        } else {
-            final double sum = LanczosApproximation.value(x);
-            final double tmp = x + LanczosApproximation.g() + .5;
-            ret = ((x + .5) * Math.log(tmp)) - tmp +
-                HALF_LOG_2_PI + Math.log(sum / x);
+            return Double.NaN;
         }
-
-        return ret;
+        final double sum = LanczosApproximation.value(x);
+        final double tmp = x + LanczosApproximation.g() + .5;
+        return ((x + .5) * Math.log(tmp)) - tmp +
+            HALF_LOG_2_PI + Math.log(sum / x);
     }
 
     public static double density(final double x,

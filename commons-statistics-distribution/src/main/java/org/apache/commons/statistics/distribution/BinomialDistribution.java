@@ -80,47 +80,37 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
     public double logProbability(int x) {
         if (numberOfTrials == 0) {
             return (x == 0) ? 0. : Double.NEGATIVE_INFINITY;
+        } else if (x < 0 || x > numberOfTrials) {
+            return Double.NEGATIVE_INFINITY;
         }
-        double ret;
-        if (x < 0 || x > numberOfTrials) {
-            ret = Double.NEGATIVE_INFINITY;
-        } else {
-            ret = SaddlePointExpansionUtils.logBinomialProbability(x,
-                    numberOfTrials, probabilityOfSuccess,
-                    1.0 - probabilityOfSuccess);
-        }
-        return ret;
+        return SaddlePointExpansionUtils.logBinomialProbability(x,
+                numberOfTrials, probabilityOfSuccess,
+                1.0 - probabilityOfSuccess);
     }
 
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(int x) {
-        double ret;
         if (x < 0) {
-            ret = 0.0;
+            return 0.0;
         } else if (x >= numberOfTrials) {
-            ret = 1.0;
-        } else {
-            // Use a helper function to compute the complement of the survival probability
-            ret = RegularizedBetaUtils.complement(probabilityOfSuccess,
-                                                  x + 1.0, (double) numberOfTrials - x);
+            return 1.0;
         }
-        return ret;
+        // Use a helper function to compute the complement of the survival probability
+        return RegularizedBetaUtils.complement(probabilityOfSuccess,
+                                              x + 1.0, (double) numberOfTrials - x);
     }
 
     /** {@inheritDoc} */
     @Override
     public double survivalProbability(int x) {
-        double ret;
         if (x < 0) {
-            ret = 1.0;
+            return 1.0;
         } else if (x >= numberOfTrials) {
-            ret = 0.0;
-        } else {
-            ret = RegularizedBeta.value(probabilityOfSuccess,
-                                        x + 1.0, (double) numberOfTrials - x);
+            return 0.0;
         }
-        return ret;
+        return RegularizedBeta.value(probabilityOfSuccess,
+                                     x + 1.0, (double) numberOfTrials - x);
     }
 
     /**

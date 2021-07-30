@@ -101,18 +101,13 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double inverseCumulativeProbability(double p) {
-        double ret;
-
         if (p < 0 ||
             p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         } else if (p == 1) {
-            ret = Double.POSITIVE_INFINITY;
-        } else {
-            ret = -mean * Math.log1p(-p);
+            return Double.POSITIVE_INFINITY;
         }
-
-        return ret;
+        return -mean * Math.log1p(-p);
     }
 
     /** {@inheritDoc} */

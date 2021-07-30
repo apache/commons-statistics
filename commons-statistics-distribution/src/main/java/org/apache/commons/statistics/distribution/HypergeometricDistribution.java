@@ -136,17 +136,12 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double logProbability(int x) {
-        double ret;
-
         if (x < lowerBound || x > upperBound) {
-            ret = Double.NEGATIVE_INFINITY;
-        } else {
-            final double p = (double) sampleSize / (double) populationSize;
-            final double q = (double) (populationSize - sampleSize) / (double) populationSize;
-            ret = logProbability(x, p, q);
+            return Double.NEGATIVE_INFINITY;
         }
-
-        return ret;
+        final double p = (double) sampleSize / (double) populationSize;
+        final double q = (double) (populationSize - sampleSize) / (double) populationSize;
+        return logProbability(x, p, q);
     }
 
     /**
@@ -171,33 +166,23 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(int x) {
-        double ret;
-
         if (x < lowerBound) {
-            ret = 0.0;
+            return 0.0;
         } else if (x >= upperBound) {
-            ret = 1.0;
-        } else {
-            ret = innerCumulativeProbability(lowerBound, x);
+            return 1.0;
         }
-
-        return ret;
+        return innerCumulativeProbability(lowerBound, x);
     }
 
     /** {@inheritDoc} */
     @Override
     public double survivalProbability(int x) {
-        double ret;
-
         if (x < lowerBound) {
-            ret = 1.0;
+            return 1.0;
         } else if (x >= upperBound) {
-            ret = 0.0;
-        } else {
-            ret = innerCumulativeProbability(upperBound, x + 1);
+            return 0.0;
         }
-
-        return ret;
+        return innerCumulativeProbability(upperBound, x + 1);
     }
 
     /**
@@ -209,17 +194,12 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      * @return the upper tail CDF for this distribution.
      */
     public double upperCumulativeProbability(int x) {
-        double ret;
-
         if (x <= lowerBound) {
-            ret = 1.0;
+            return 1.0;
         } else if (x > upperBound) {
-            ret = 0.0;
-        } else {
-            ret = innerCumulativeProbability(upperBound, x);
+            return 0.0;
         }
-
-        return ret;
+        return innerCumulativeProbability(upperBound, x);
     }
 
     /**
