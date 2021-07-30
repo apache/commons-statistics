@@ -55,7 +55,7 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     * </code></div>
     * <p>
     * For this distribution, {@code X}, this method returns {@code P(X < x)}.
-    * If {@code x} is less than location parameter &mu;, {@code Double.NaN} is
+    * If {@code x} is less than location parameter &mu;, {@code 0} is
     * returned, as in these cases the distribution is not defined.
     * </p>
     */
