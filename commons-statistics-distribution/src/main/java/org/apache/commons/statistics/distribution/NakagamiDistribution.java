@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.Gamma;
+import org.apache.commons.numbers.gamma.LogGamma;
 import org.apache.commons.numbers.gamma.RegularizedGamma;
 
 /**
@@ -29,6 +30,8 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
     /** The minimum allowed for the shape parameter. */
     private static final double MIN_SHAPE = 0.5;
+    /** Natural logarithm of 2. */
+    private static final double LN_2 = 0.6931471805599453094172321;
 
     /** The shape parameter. */
     private final double mu;
@@ -84,6 +87,18 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
 
         return 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu)) *
                      Math.pow(x, 2 * mu - 1) * Math.exp(-mu * x * x / omega);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double logDensity(double x) {
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
+            return Double.NEGATIVE_INFINITY;
+        }
+
+        return LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu +
+                      Math.log(x) * (2 * mu - 1) - (mu * x * x / omega);
     }
 
     /** {@inheritDoc} */

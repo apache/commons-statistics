@@ -79,6 +79,15 @@ class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
+    void testExtremeLogDensity() {
+        // XXX: Verify with more test data from a reference distribution
+        final NakagamiDistribution dist = new NakagamiDistribution(0.5, 1);
+        final double x = 50;
+        Assertions.assertEquals(0.0, dist.density(x));
+        Assertions.assertEquals(-1250.22579, dist.logDensity(x), 1e-4);
+    }
+
+    @Test
     void testParameterAccessors() {
         final NakagamiDistribution dist = makeDistribution();
         Assertions.assertEquals(0.5, dist.getShape());

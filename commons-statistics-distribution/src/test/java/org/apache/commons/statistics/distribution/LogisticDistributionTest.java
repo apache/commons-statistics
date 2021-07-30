@@ -79,6 +79,16 @@ class LogisticDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
+    void testExtremeLogDensity() {
+        final double scale = 2.5;
+        final LogisticDistribution dist = new LogisticDistribution(0, scale);
+        final double x = 1e160;
+        Assertions.assertEquals(0.0, dist.density(x));
+        final double expected = -Math.log(scale) - x / scale;
+        Assertions.assertEquals(expected, dist.logDensity(x), Math.abs(expected) * 1e-14);
+    }
+
+    @Test
     void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});

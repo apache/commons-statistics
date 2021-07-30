@@ -85,6 +85,19 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double logDensity(double x) {
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
+            return Double.NEGATIVE_INFINITY;
+        }
+
+        final double z = oneOverScale * (x - mu);
+        final double v = Math.exp(-z);
+        return -Math.log(scale) - z - 2 * Math.log(1 + v);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double cumulativeProbability(double x) {
         final double z = oneOverScale * (x - mu);
         return 1 / (1 + Math.exp(-z));
