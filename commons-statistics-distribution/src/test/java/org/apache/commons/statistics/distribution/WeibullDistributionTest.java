@@ -84,6 +84,13 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
+    void testDensityAtSupportBounds() {
+        final WeibullDistribution distribution = makeDistribution();
+        Assertions.assertEquals(0.0, distribution.density(0));
+        Assertions.assertEquals(0.0, distribution.density(Double.POSITIVE_INFINITY));
+    }
+
+    @Test
     void testInverseCumulativeProbabilitySmallPAccuracy() {
         final WeibullDistribution dist = new WeibullDistribution(2, 3);
         final double t = dist.inverseCumulativeProbability(1e-17);

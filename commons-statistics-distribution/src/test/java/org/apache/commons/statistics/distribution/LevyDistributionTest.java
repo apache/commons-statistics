@@ -87,6 +87,13 @@ class LevyDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
+    void testDensityAtSupportBounds() {
+        final LevyDistribution distribution = makeDistribution();
+        // Below the location
+        Assertions.assertEquals(0.0, distribution.density(distribution.getLocation() - 1));
+    }
+
+    @Test
     void testParameterAccessors() {
         final LevyDistribution d = makeDistribution();
         Assertions.assertEquals(1.2, d.getLocation());

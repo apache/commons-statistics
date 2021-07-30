@@ -94,6 +94,13 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
+    void testDensityAtSupportBounds() {
+        final GammaDistribution distribution = makeDistribution();
+        Assertions.assertEquals(0.0, distribution.density(0));
+        Assertions.assertEquals(0.0, distribution.density(Double.POSITIVE_INFINITY));
+    }
+
+    @Test
     void testParameterAccessors() {
         final GammaDistribution distribution = makeDistribution();
         Assertions.assertEquals(4d, distribution.getShape());
