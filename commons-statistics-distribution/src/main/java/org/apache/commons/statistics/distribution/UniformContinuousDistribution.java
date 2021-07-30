@@ -28,6 +28,8 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     private final double lower;
     /** Upper bound of this distribution (exclusive). */
     private final double upper;
+    /** Range between the upper and lower bound of this distribution (cached for computaions). */
+    private final double upperMinusLower;
 
     /**
      * Creates a uniform distribution.
@@ -45,6 +47,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
 
         this.lower = lower;
         this.upper = upper;
+        upperMinusLower = upper - lower;
     }
 
     /** {@inheritDoc} */
@@ -54,7 +57,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
             x > upper) {
             return 0;
         }
-        return 1 / (upper - lower);
+        return 1.0 / upperMinusLower;
     }
 
     /** {@inheritDoc} */
@@ -66,7 +69,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
         if (x >= upper) {
             return 1;
         }
-        return (x - lower) / (upper - lower);
+        return (x - lower) / upperMinusLower;
     }
 
     /** {@inheritDoc} */
@@ -76,7 +79,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
             p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
-        return p * (upper - lower) + lower;
+        return p * upperMinusLower + lower;
     }
 
     /**
@@ -98,8 +101,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
      */
     @Override
     public double getVariance() {
-        final double ul = upper - lower;
-        return ul * ul / 12;
+        return upperMinusLower * upperMinusLower / 12;
     }
 
     /**
