@@ -27,6 +27,10 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     private final int populationSize;
     /** The sample size. */
     private final int sampleSize;
+    /** The lower bound of the support (inclusive). */
+    private final int lowerBound;
+    /** The upper bound of the support (inclusive). */
+    private final int upperBound;
 
     /**
      * Creates a new hypergeometric distribution.
@@ -66,6 +70,8 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         this.numberOfSuccesses = numberOfSuccesses;
         this.populationSize = populationSize;
         this.sampleSize = sampleSize;
+        lowerBound = getLowerDomain(populationSize, numberOfSuccesses, sampleSize);
+        upperBound = getUpperDomain(numberOfSuccesses, sampleSize);
     }
 
     /** {@inheritDoc} */
@@ -73,13 +79,12 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     public double cumulativeProbability(int x) {
         double ret;
 
-        final int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
-        if (x < domain[0]) {
+        if (x < lowerBound) {
             ret = 0.0;
-        } else if (x >= domain[1]) {
+        } else if (x >= upperBound) {
             ret = 1.0;
         } else {
-            ret = innerCumulativeProbability(domain[0], x);
+            ret = innerCumulativeProbability(lowerBound, x);
         }
 
         return ret;
@@ -90,29 +95,15 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     public double survivalProbability(int x) {
         double ret;
 
-        final int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
-        if (x < domain[0]) {
+        if (x < lowerBound) {
             ret = 1.0;
-        } else if (x >= domain[1]) {
+        } else if (x >= upperBound) {
             ret = 0.0;
         } else {
-            ret = innerCumulativeProbability(domain[1], x + 1);
+            ret = innerCumulativeProbability(upperBound, x + 1);
         }
 
         return ret;
-    }
-
-    /**
-     * Return the domain for the given hypergeometric distribution parameters.
-     *
-     * @param n Population size.
-     * @param m Number of successes in the population.
-     * @param k Sample size.
-     * @return a two element array containing the lower and upper bounds of the
-     * hypergeometric distribution.
-     */
-    private static int[] getDomain(int n, int m, int k) {
-        return new int[] {getLowerDomain(n, m, k), getUpperDomain(m, k)};
     }
 
     /**
@@ -179,8 +170,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     public double logProbability(int x) {
         double ret;
 
-        final int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
-        if (x < domain[0] || x > domain[1]) {
+        if (x < lowerBound || x > upperBound) {
             ret = Double.NEGATIVE_INFINITY;
         } else {
             final double p = (double) sampleSize / (double) populationSize;
@@ -221,13 +211,12 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     public double upperCumulativeProbability(int x) {
         double ret;
 
-        final int[] domain = getDomain(populationSize, numberOfSuccesses, sampleSize);
-        if (x <= domain[0]) {
+        if (x <= lowerBound) {
             ret = 1.0;
-        } else if (x > domain[1]) {
+        } else if (x > upperBound) {
             ret = 0.0;
         } else {
-            ret = innerCumulativeProbability(domain[1], x);
+            ret = innerCumulativeProbability(upperBound, x);
         }
 
         return ret;
@@ -304,8 +293,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public int getSupportLowerBound() {
-        return Math.max(0,
-                        getSampleSize() + getNumberOfSuccesses() - getPopulationSize());
+        return lowerBound;
     }
 
     /**
@@ -318,7 +306,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public int getSupportUpperBound() {
-        return Math.min(getNumberOfSuccesses(), getSampleSize());
+        return upperBound;
     }
 
     /**
