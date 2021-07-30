@@ -25,19 +25,6 @@ public interface DiscreteDistribution {
 
     /**
      * For a random variable {@code X} whose values are distributed according
-     * to this distribution, this method returns {@code log(P(X = x))}, where
-     * {@code log} is the natural logarithm.
-     *
-     * @param x Point at which the PMF is evaluated.
-     * @return the logarithm of the value of the probability mass function at
-     * {@code x}.
-     */
-    default double logProbability(int x) {
-        return Math.log(probability(x));
-    }
-
-    /**
-     * For a random variable {@code X} whose values are distributed according
      * to this distribution, this method returns {@code P(X = x)}.
      * In other words, this method represents the probability mass function (PMF)
      * for the distribution.
@@ -59,6 +46,19 @@ public interface DiscreteDistribution {
      * @throws IllegalArgumentException if {@code x0 > x1}.
      */
     double probability(int x0, int x1);
+
+    /**
+     * For a random variable {@code X} whose values are distributed according
+     * to this distribution, this method returns {@code log(P(X = x))}, where
+     * {@code log} is the natural logarithm.
+     *
+     * @param x Point at which the PMF is evaluated.
+     * @return the logarithm of the value of the probability mass function at
+     * {@code x}.
+     */
+    default double logProbability(int x) {
+        return Math.log(probability(x));
+    }
 
     /**
      * For a random variable {@code X} whose values are distributed according
