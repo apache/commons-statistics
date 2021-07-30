@@ -25,8 +25,6 @@ import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
  * uniform integer distribution</a>.
  */
 public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
-    /** 1 / 12. **/
-    private static final double ONE_TWELFTH = 1 / 12d;
     /** Lower bound (inclusive) of this distribution. */
     private final int lower;
     /** Upper bound (inclusive) of this distribution. */
@@ -94,7 +92,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public double getVariance() {
-        return ONE_TWELFTH * (upperMinusLowerPlus1 * upperMinusLowerPlus1 - 1);
+        return (upperMinusLowerPlus1 * upperMinusLowerPlus1 - 1) / 12;
     }
 
     /**
