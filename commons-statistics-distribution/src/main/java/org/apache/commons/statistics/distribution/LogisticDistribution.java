@@ -104,9 +104,9 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
             p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         } else if (p == 0) {
-            return 0;
+            return SUPPORT_LO;
         } else if (p == 1) {
-            return Double.POSITIVE_INFINITY;
+            return SUPPORT_HI;
         } else {
             return scale * Math.log(p / (1 - p)) + mu;
         }

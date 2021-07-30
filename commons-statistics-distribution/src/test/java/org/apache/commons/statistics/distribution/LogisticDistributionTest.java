@@ -81,7 +81,7 @@ class LogisticDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     void testInverseCumulativeProbabilityExtremes() {
         setInverseCumulativeTestPoints(new double[] {0, 1});
-        setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
+        setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
     }
 
