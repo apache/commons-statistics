@@ -186,23 +186,6 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * For this distribution, {@code X}, this method returns {@code P(X >= x)}.
-     *
-     * <p>Note: This is not equal to {@link #survivalProbability(int)} which computes {@code P(X > x)}.
-     *
-     * @param x Value at which the CDF is evaluated.
-     * @return the upper tail CDF for this distribution.
-     */
-    public double upperCumulativeProbability(int x) {
-        if (x <= lowerBound) {
-            return 1.0;
-        } else if (x > upperBound) {
-            return 0.0;
-        }
-        return innerCumulativeProbability(upperBound, x);
-    }
-
-    /**
      * For this distribution, {@code X}, this method returns
      * {@code P(x0 <= X <= x1)}.
      * This probability is computed by summing the point probabilities for the

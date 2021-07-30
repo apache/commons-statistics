@@ -200,6 +200,8 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         final int populationSize = 3456;
         final int sampleSize = 789;
         final int numberOfSucceses = 101;
+        // data[i][3] contains P(x >= x).
+        // It is tested using survivalProbability(x - 1)
         final double[][] data = {
             {0.0, 2.75646034603961e-12, 2.75646034603961e-12, 1.0},
             {1.0, 8.55705370142386e-11, 8.83269973602783e-11, 0.999999999997244},
@@ -226,7 +228,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         testHypergeometricDistributionProbabilities(populationSize, sampleSize, numberOfSucceses, data);
     }
 
-    private void testHypergeometricDistributionProbabilities(int populationSize, int sampleSize,
+    private static void testHypergeometricDistributionProbabilities(int populationSize, int sampleSize,
         int numberOfSucceses, double[][] data) {
         final HypergeometricDistribution dist = new HypergeometricDistribution(populationSize, numberOfSucceses, sampleSize);
         for (int i = 0; i < data.length; ++i) {
@@ -240,7 +242,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
             TestUtils.assertRelativelyEquals(() -> "Expected equals for <" + x + "> cdf", cdf, actualCdf, 1.0e-9);
 
             final double cdf1 = data[i][3];
-            final double actualCdf1 = dist.upperCumulativeProbability(x);
+            final double actualCdf1 = dist.survivalProbability(x - 1);
             TestUtils.assertRelativelyEquals(() -> "Expected equals for <" + x + "> cdf1", cdf1, actualCdf1, 1.0e-9);
         }
     }
@@ -273,6 +275,12 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         testHypergeometricDistributionProbabilities(populationSize, sampleSize, numberOfSucceses, data);
     }
 
+    /**
+     * Test Math-644 is ported from Commons Math 3 where the distribution had the function
+     * upperCumulativeProbability(x) to compute P(X >= x). This has been replaced
+     * in Commons Statistics with survivalProbability(x) which computes P(X > x). To
+     * create the equivalent use survivalProbability(x - 1).
+     */
     @Test
     void testMath644() {
         final int N = 14761461;  // population
@@ -282,7 +290,8 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         final int k = 0;
         final HypergeometricDistribution dist = new HypergeometricDistribution(N, m, n);
 
-        Assertions.assertEquals(0, Precision.compareTo(1.0, dist.upperCumulativeProbability(k), 1));
+        // Compute upper cumulative probability using the survival probability
+        Assertions.assertEquals(0, Precision.compareTo(1.0, dist.survivalProbability(k - 1), 1));
         Assertions.assertTrue(Precision.compareTo(dist.cumulativeProbability(k), 0.0, 1) > 0);
 
         // another way to calculate the upper cumulative probability
