@@ -31,10 +31,10 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     private final int lower;
     /** Upper bound (inclusive) of this distribution. */
     private final int upper;
-    /** "upper" + "lower" (to avoid overflow). */
+    /** "upper" + "lower" (as a double to avoid overflow). */
     private final double upperPlusLower;
-    /** "upper" - "lower" (to avoid overflow). */
-    private final double upperMinusLower;
+    /** "upper" - "lower" + 1 (as a double to avoid overflow). */
+    private final double upperMinusLowerPlus1;
 
     /**
      * Creates a new uniform integer distribution using the given lower and
@@ -53,7 +53,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         this.lower = lower;
         this.upper = upper;
         upperPlusLower = (double) upper + (double) lower;
-        upperMinusLower = (double) upper - (double) lower;
+        upperMinusLowerPlus1 = (double) upper - (double) lower + 1;
     }
 
     /** {@inheritDoc} */
@@ -62,7 +62,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         if (x < lower || x > upper) {
             return 0;
         }
-        return 1 / (upperMinusLower + 1);
+        return 1.0 / upperMinusLowerPlus1;
     }
 
     /** {@inheritDoc} */
@@ -74,7 +74,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         if (x > upper) {
             return 1;
         }
-        return (x - lower + 1) / (upperMinusLower + 1);
+        return (x - lower + 1) / upperMinusLowerPlus1;
     }
 
     /**
@@ -96,8 +96,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public double getVariance() {
-        final double n = upperMinusLower + 1;
-        return ONE_TWELFTH * (n * n - 1);
+        return ONE_TWELFTH * (upperMinusLowerPlus1 * upperMinusLowerPlus1 - 1);
     }
 
     /**
