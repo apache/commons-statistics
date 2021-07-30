@@ -62,7 +62,7 @@ public interface ContinuousDistribution {
      * In general, the PDF is the derivative of the {@link #cumulativeProbability(double) CDF}.
      * If the derivative does not exist at {@code x}, then an appropriate
      * replacement should be returned, e.g. {@code Double.POSITIVE_INFINITY},
-     * {@code Double.NaN}, or  the limit inferior or limit superior of the
+     * {@code Double.NaN}, or the limit inferior or limit superior of the
      * difference quotient.
      *
      * @param x Point at which the PDF is evaluated.
