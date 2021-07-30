@@ -555,7 +555,7 @@ abstract class DiscreteDistributionAbstractTest {
     }
 
     /**
-     * Set the density test values.
+     * Set the probability test values.
      * For convenience this recomputes the log density test values using {@link Math#log(double)}.
      *
      * @param probabilityTestValues The probabilityTestValues to set.
