@@ -440,6 +440,12 @@ abstract class DiscreteDistributionAbstractTest {
             Assertions.assertEquals(1.0, distribution.cumulativeProbability(above));
             Assertions.assertEquals(0.0, distribution.survivalProbability(above));
         }
+
+        // Test the logProbability at the support bound. This hits edge case coverage for logProbability.
+        // It is assumed the log probability may support a value when the plain probability will be zero.
+        // So do not test Math.log(distribution.probability(x)) == distribution.logProbability(x)
+        Assertions.assertEquals(distribution.probability(lo), Math.exp(distribution.logProbability(lo)), getTolerance());
+        Assertions.assertEquals(distribution.probability(hi), Math.exp(distribution.logProbability(hi)), getTolerance());
     }
 
     @Test
