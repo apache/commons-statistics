@@ -74,38 +74,6 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         upperBound = getUpperDomain(numberOfSuccesses, sampleSize);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public double cumulativeProbability(int x) {
-        double ret;
-
-        if (x < lowerBound) {
-            ret = 0.0;
-        } else if (x >= upperBound) {
-            ret = 1.0;
-        } else {
-            ret = innerCumulativeProbability(lowerBound, x);
-        }
-
-        return ret;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public double survivalProbability(int x) {
-        double ret;
-
-        if (x < lowerBound) {
-            ret = 1.0;
-        } else if (x >= upperBound) {
-            ret = 0.0;
-        } else {
-            ret = innerCumulativeProbability(upperBound, x + 1);
-        }
-
-        return ret;
-    }
-
     /**
      * Return the lowest domain value for the given hypergeometric distribution
      * parameters.
@@ -117,6 +85,18 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      */
     private static int getLowerDomain(int n, int m, int k) {
         return Math.max(0, m - (n - k));
+    }
+
+    /**
+     * Return the highest domain value for the given hypergeometric distribution
+     * parameters.
+     *
+     * @param m Number of successes in the population.
+     * @param k Sample size.
+     * @return the highest domain value of the hypergeometric distribution.
+     */
+    private static int getUpperDomain(int m, int k) {
+        return Math.min(k, m);
     }
 
     /**
@@ -144,18 +124,6 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
      */
     public int getSampleSize() {
         return sampleSize;
-    }
-
-    /**
-     * Return the highest domain value for the given hypergeometric distribution
-     * parameters.
-     *
-     * @param m Number of successes in the population.
-     * @param k Sample size.
-     * @return the highest domain value of the hypergeometric distribution.
-     */
-    private static int getUpperDomain(int m, int k) {
-        return Math.min(k, m);
     }
 
     /** {@inheritDoc} */
@@ -200,10 +168,42 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         return p1 + p2 - p3;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double cumulativeProbability(int x) {
+        double ret;
+
+        if (x < lowerBound) {
+            ret = 0.0;
+        } else if (x >= upperBound) {
+            ret = 1.0;
+        } else {
+            ret = innerCumulativeProbability(lowerBound, x);
+        }
+
+        return ret;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(int x) {
+        double ret;
+
+        if (x < lowerBound) {
+            ret = 1.0;
+        } else if (x >= upperBound) {
+            ret = 0.0;
+        } else {
+            ret = innerCumulativeProbability(upperBound, x + 1);
+        }
+
+        return ret;
+    }
+
     /**
      * For this distribution, {@code X}, this method returns {@code P(X >= x)}.
      *
-     * <p>Note: This is not equals to {@link #survivalProbability(int)} which computes {@code P(X > x)}.
+     * <p>Note: This is not equal to {@link #survivalProbability(int)} which computes {@code P(X > x)}.
      *
      * @param x Value at which the CDF is evaluated.
      * @return the upper tail CDF for this distribution.
