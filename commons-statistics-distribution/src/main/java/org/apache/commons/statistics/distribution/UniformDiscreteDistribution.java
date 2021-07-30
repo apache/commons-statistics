@@ -31,8 +31,6 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     private final int lower;
     /** Upper bound (inclusive) of this distribution. */
     private final int upper;
-    /** "upper" + "lower" (as a double to avoid overflow). */
-    private final double upperPlusLower;
     /** "upper" - "lower" + 1 (as a double to avoid overflow). */
     private final double upperMinusLowerPlus1;
 
@@ -52,7 +50,6 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         }
         this.lower = lower;
         this.upper = upper;
-        upperPlusLower = (double) upper + (double) lower;
         upperMinusLowerPlus1 = (double) upper - (double) lower + 1;
     }
 
@@ -85,7 +82,8 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public double getMean() {
-        return 0.5 * upperPlusLower;
+        // Avoid overflow
+        return 0.5 * ((double) upper + (double) lower);
     }
 
     /**
