@@ -137,7 +137,18 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
         if (p < 0 || p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
-        return standardNormal.inverseCumulativeProbability(cdfAlpha + p * cdfDelta) * parentSd + parentMean;
+        // Exact bound
+        if (p == 0) {
+            return lower;
+        } else if (p == 1) {
+            return upper;
+        }
+        final double x = standardNormal.inverseCumulativeProbability(cdfAlpha + p * cdfDelta) * parentSd + parentMean;
+        // Clip to support to handle floating-point error at the support bound
+        if (x <= lower) {
+            return lower;
+        }
+        return x < upper ? x : upper;
     }
 
     /**

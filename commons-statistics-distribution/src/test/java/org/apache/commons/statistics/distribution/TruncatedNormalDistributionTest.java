@@ -110,6 +110,11 @@ class TruncatedNormalDistributionTest extends ContinuousDistributionAbstractTest
         testPrecondition1();
         testPrecondition2();
         testPrecondition3();
+
+        // Bound test
+        Assertions.assertTrue(distribution.getSupportLowerBound() <= distribution.inverseCumulativeProbability(Double.MIN_VALUE));
+        Assertions.assertTrue(distribution.getSupportLowerBound() <= distribution.inverseCumulativeProbability(Double.MIN_NORMAL));
+        Assertions.assertTrue(distribution.getSupportUpperBound() >= distribution.inverseCumulativeProbability(Math.nextDown(1.0)));
     }
 
     /** Test a one-sided truncation with a lower tail. */
