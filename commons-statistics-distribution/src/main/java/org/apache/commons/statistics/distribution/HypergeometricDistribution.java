@@ -129,8 +129,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double probability(int x) {
-        final double logProbability = logProbability(x);
-        return logProbability == Double.NEGATIVE_INFINITY ? 0 : Math.exp(logProbability);
+        return Math.exp(logProbability(x));
     }
 
     /** {@inheritDoc} */
