@@ -122,6 +122,15 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
 
     /** {@inheritDoc} */
     @Override
+    public double logDensity(double x) {
+        if (x < lower || x > upper) {
+            return Double.NEGATIVE_INFINITY;
+        }
+        return standardNormal.logDensity((x - parentMean) / parentSd) - Math.log(parentSd * cdfDelta);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double cumulativeProbability(double x) {
         if (x <= lower) {
             return 0;

@@ -70,6 +70,12 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double logDensity(double x) {
+        return -Math.abs(x - mu) / beta - Math.log(2.0 * beta);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double cumulativeProbability(double x) {
         if (x <= mu) {
             return Math.exp((x - mu) / beta) / 2.0;

@@ -85,6 +85,18 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double logDensity(double x) {
+        if (x <= SUPPORT_LO) {
+            return Double.NEGATIVE_INFINITY;
+        }
+
+        final double z = (x - mu) / beta;
+        final double t = Math.exp(-z);
+        return -z - t - Math.log(beta);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double cumulativeProbability(double x) {
         final double z = (x - mu) / beta;
         return Math.exp(-Math.exp(-z));
@@ -139,5 +151,4 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
     public boolean isSupportConnected() {
         return true;
     }
-
 }

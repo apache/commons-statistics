@@ -62,6 +62,16 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
 
     /** {@inheritDoc} */
     @Override
+    public double logDensity(double x) {
+        if (x < lower ||
+            x > upper) {
+            return Double.NEGATIVE_INFINITY;
+        }
+        return -Math.log(upperMinusLower);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double cumulativeProbability(double x)  {
         if (x <= lower) {
             return 0;
