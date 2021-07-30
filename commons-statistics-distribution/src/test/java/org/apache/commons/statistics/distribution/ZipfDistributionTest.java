@@ -44,19 +44,19 @@ class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Override
-    public int[] makeDensityTestPoints() {
+    public int[] makeProbabilityTestPoints() {
         return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
     }
 
     @Override
-    public double[] makeDensityTestValues() {
+    public double[] makeProbabilityTestValues() {
         // Reference values are from R, version 2.15.3 (VGAM package 0.9-0).
         return new double[] {0d, 0d, 0.341417152147, 0.170708576074, 0.113805717382, 0.0853542880369, 0.0682834304295,
                              0.0569028586912, 0.0487738788782, 0.0426771440184, 0.0379352391275, 0.0341417152147, 0};
     }
 
     @Override
-    public double[] makeLogDensityTestValues() {
+    public double[] makeLogProbabilityTestValues() {
         // Reference values are from R, version 2.14.1.
         return new double[] {Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
                              -1.07465022926458, -1.76779740982453, -2.17326251793269, -2.46094459038447,
@@ -66,7 +66,7 @@ class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Override
     public int[] makeCumulativeTestPoints() {
-        return makeDensityTestPoints();
+        return makeProbabilityTestPoints();
     }
 
     @Override

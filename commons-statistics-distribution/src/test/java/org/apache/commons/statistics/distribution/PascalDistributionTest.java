@@ -44,12 +44,12 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Override
-    public int[] makeDensityTestPoints() {
+    public int[] makeProbabilityTestPoints() {
         return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
     }
 
     @Override
-    public double[] makeDensityTestValues() {
+    public double[] makeProbabilityTestValues() {
         return new double[] {0, 0.0282475249, 0.0847425747, 0.139825248255, 0.167790297906, 0.163595540458,
                              0.137420253985, 0.103065190489, 0.070673273478, 0.0450542118422, 0.0270325271053,
                              0.0154085404500, 0.0084046584273};
@@ -57,7 +57,7 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Override
     public int[] makeCumulativeTestPoints() {
-        return makeDensityTestPoints();
+        return makeProbabilityTestPoints();
     }
 
     @Override
@@ -97,12 +97,12 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         setDistribution(new PascalDistribution(5, 0.0d));
         setCumulativeTestPoints(new int[] {-1, 0, 1, 5, 10 });
         setCumulativeTestValues(new double[] {0d, 0d, 0d, 0d, 0d});
-        setDensityTestPoints(new int[] {-1, 0, 1, 10, 11});
-        setDensityTestValues(new double[] {0d, 0d, 0d, 0d, 0d});
+        setProbabilityTestPoints(new int[] {-1, 0, 1, 10, 11});
+        setProbabilityTestValues(new double[] {0d, 0d, 0d, 0d, 0d});
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {Integer.MAX_VALUE, Integer.MAX_VALUE});
-        verifyDensities();
-        verifyLogDensities();
+        verifyProbabilities();
+        verifyLogProbabilities();
         verifyCumulativeProbabilities();
         verifySurvivalProbability();
         verifySurvivalAndCumulativeProbabilityComplement();
@@ -115,12 +115,12 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         setDistribution(new PascalDistribution(5, 1.0d));
         setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10 });
         setCumulativeTestValues(new double[] {0d, 1d, 1d, 1d, 1d, 1d});
-        setDensityTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
-        setDensityTestValues(new double[] {0d, 1d, 0d, 0d, 0d, 0d});
+        setProbabilityTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
+        setProbabilityTestValues(new double[] {0d, 1d, 0d, 0d, 0d, 0d});
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {0, 0});
-        verifyDensities();
-        verifyLogDensities();
+        verifyProbabilities();
+        verifyLogProbabilities();
         verifyCumulativeProbabilities();
         verifySurvivalProbability();
         verifySurvivalAndCumulativeProbabilityComplement();

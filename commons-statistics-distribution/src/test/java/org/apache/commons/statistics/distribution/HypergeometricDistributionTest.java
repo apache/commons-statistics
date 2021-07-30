@@ -45,19 +45,19 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Override
-    public int[] makeDensityTestPoints() {
+    public int[] makeProbabilityTestPoints() {
         return new int[] {-1, 0, 1, 2, 3, 4, 5, 10};
     }
 
     @Override
-    public double[] makeDensityTestValues() {
+    public double[] makeProbabilityTestValues() {
         // Reference values are from R, version 2.15.3.
         return new double[] {0d, 0.00396825396825, 0.0992063492063, 0.396825396825, 0.396825396825,
                              0.0992063492063, 0.00396825396825, 0d};
     }
 
     @Override
-    public double[] makeLogDensityTestValues() {
+    public double[] makeLogProbabilityTestValues() {
         // Reference values are from R, version 2.14.1.
         //-Inf  -Inf
         return new double[] {Double.NEGATIVE_INFINITY, -5.52942908751142, -2.31055326264322, -0.924258901523332,
@@ -66,7 +66,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Override
     public int[] makeCumulativeTestPoints() {
-        return makeDensityTestPoints();
+        return makeProbabilityTestPoints();
     }
 
     @Override
@@ -96,12 +96,12 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
         setCumulativeTestValues(new double[] {0d, 0d, 0d, 1d, 1d});
-        setDensityTestPoints(new int[] {-1, 0, 1, 3, 10});
-        setDensityTestValues(new double[] {0d, 0d, 0d, 1d, 0d});
+        setProbabilityTestPoints(new int[] {-1, 0, 1, 3, 10});
+        setProbabilityTestValues(new double[] {0d, 0d, 0d, 1d, 0d});
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {3, 3});
-        verifyDensities();
-        verifyLogDensities();
+        verifyProbabilities();
+        verifyLogProbabilities();
         verifyCumulativeProbabilities();
         verifySurvivalProbability();
         verifySurvivalAndCumulativeProbabilityComplement();
@@ -117,12 +117,12 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
         setCumulativeTestValues(new double[] {0d, 1d, 1d, 1d, 1d});
-        setDensityTestPoints(new int[] {-1, 0, 1, 3, 10});
-        setDensityTestValues(new double[] {0d, 1d, 0d, 0d, 0d});
+        setProbabilityTestPoints(new int[] {-1, 0, 1, 3, 10});
+        setProbabilityTestValues(new double[] {0d, 1d, 0d, 0d, 0d});
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {0, 0});
-        verifyDensities();
-        verifyLogDensities();
+        verifyProbabilities();
+        verifyLogProbabilities();
         verifyCumulativeProbabilities();
         verifySurvivalProbability();
         verifySurvivalAndCumulativeProbabilityComplement();
@@ -138,12 +138,12 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         setDistribution(dist);
         setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
         setCumulativeTestValues(new double[] {0d, 0d, 0d, 1d, 1d});
-        setDensityTestPoints(new int[] {-1, 0, 1, 3, 10});
-        setDensityTestValues(new double[] {0d, 0d, 0d, 1d, 0d});
+        setProbabilityTestPoints(new int[] {-1, 0, 1, 3, 10});
+        setProbabilityTestValues(new double[] {0d, 0d, 0d, 1d, 0d});
         setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
         setInverseCumulativeTestValues(new int[] {3, 3});
-        verifyDensities();
-        verifyLogDensities();
+        verifyProbabilities();
+        verifyLogProbabilities();
         verifyCumulativeProbabilities();
         verifySurvivalProbability();
         verifySurvivalAndCumulativeProbabilityComplement();

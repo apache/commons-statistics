@@ -35,8 +35,8 @@ import org.junit.jupiter.api.Test;
  * are provided for the makeInverseXxx methods that just invert the mapping
  * defined by the arrays returned by the makeCumulativeXxx methods.
  * <ul>
- *  <li>makeDensityTestPoints() -- arguments used to test probability density calculation
- *  <li>makeDensityTestValues() -- expected probability densities
+ *  <li>makeProbabilityTestPoints() -- arguments used to test probability density calculation
+ *  <li>makeProbabilityTestValues() -- expected probability densities
  *  <li>makeCumulativeTestPoints() -- arguments used to test cumulative probabilities
  *  <li>makeCumulativeTestValues() -- expected cumulative probabilities
  *  <li>makeInverseCumulativeTestPoints() -- arguments used to test inverse cdf evaluation
@@ -84,14 +84,14 @@ abstract class DiscreteDistributionAbstractTest {
     /** Tolerance used in high precision tests. */
     private double highPrecisionTolerance = 1e-22;
 
-    /** Arguments used to test probability density calculations. */
-    private int[] densityTestPoints;
+    /** Arguments used to test probability calculations. */
+    private int[] probabilityTestPoints;
 
-    /** Values used to test probability density calculations. */
-    private double[] densityTestValues;
+    /** Values used to test probability calculations. */
+    private double[] probabilityTestValues;
 
     /** Values used to test logarithmic probability density calculations. */
-    private double[] logDensityTestValues;
+    private double[] logProbabilityTestValues;
 
     /** Arguments used to test cumulative probability density calculations. */
     private int[] cumulativeTestPoints;
@@ -122,21 +122,21 @@ abstract class DiscreteDistributionAbstractTest {
     /** Creates the default discrete distribution instance to use in tests. */
     public abstract DiscreteDistribution makeDistribution();
 
-    /** Creates the default probability density test input values. */
-    public abstract int[] makeDensityTestPoints();
+    /** Creates the default probability test input values. */
+    public abstract int[] makeProbabilityTestPoints();
 
-    /** Creates the default probability density test expected values. */
-    public abstract double[] makeDensityTestValues();
+    /** Creates the default probability test expected values. */
+    public abstract double[] makeProbabilityTestValues();
 
     /** Creates the default logarithmic probability density test expected values.
      *
      * <p>The default implementation simply computes the logarithm of all the values in
-     * {@link #makeDensityTestValues()}.
+     * {@link #makeProbabilityTestValues()}.
      *
      * @return the default logarithmic probability density test expected values.
      */
-    public double[] makeLogDensityTestValues() {
-        return Arrays.stream(makeDensityTestValues()).map(Math::log).toArray();
+    public double[] makeLogProbabilityTestValues() {
+        return Arrays.stream(makeProbabilityTestValues()).map(Math::log).toArray();
     }
 
     /** Creates the default cumulative probability test input values. */
@@ -189,9 +189,9 @@ abstract class DiscreteDistributionAbstractTest {
     @BeforeEach
     void setUp() {
         distribution = makeDistribution();
-        densityTestPoints = makeDensityTestPoints();
-        densityTestValues = makeDensityTestValues();
-        logDensityTestValues = makeLogDensityTestValues();
+        probabilityTestPoints = makeProbabilityTestPoints();
+        probabilityTestValues = makeProbabilityTestValues();
+        logProbabilityTestValues = makeLogProbabilityTestValues();
         cumulativeTestPoints = makeCumulativeTestPoints();
         cumulativeTestValues = makeCumulativeTestValues();
         cumulativePrecisionTestPoints = makeCumulativePrecisionTestPoints();
@@ -208,9 +208,9 @@ abstract class DiscreteDistributionAbstractTest {
     @AfterEach
     void tearDown() {
         distribution = null;
-        densityTestPoints = null;
-        densityTestValues = null;
-        logDensityTestValues = null;
+        probabilityTestPoints = null;
+        probabilityTestValues = null;
+        logProbabilityTestValues = null;
         cumulativeTestPoints = null;
         cumulativeTestValues = null;
         cumulativePrecisionTestPoints = null;
@@ -224,26 +224,26 @@ abstract class DiscreteDistributionAbstractTest {
     //-------------------- Verification methods -------------------------------
 
     /**
-     * Verifies that probability density calculations match expected values
+     * Verifies that probability calculations match expected values
      * using current test instance data.
      */
-    protected void verifyDensities() {
-        for (int i = 0; i < densityTestPoints.length; i++) {
-            final int x = densityTestPoints[i];
-            Assertions.assertEquals(densityTestValues[i],
+    protected void verifyProbabilities() {
+        for (int i = 0; i < probabilityTestPoints.length; i++) {
+            final int x = probabilityTestPoints[i];
+            Assertions.assertEquals(probabilityTestValues[i],
                 distribution.probability(x), getTolerance(),
                 () -> "Incorrect probability value returned for " + x);
         }
     }
 
     /**
-     * Verifies that logarithmic probability density calculations match expected values
+     * Verifies that logarithmic probability calculations match expected values
      * using current test instance data.
      */
-    protected void verifyLogDensities() {
-        for (int i = 0; i < densityTestPoints.length; i++) {
-            final int x = densityTestPoints[i];
-            Assertions.assertEquals(logDensityTestValues[i],
+    protected void verifyLogProbabilities() {
+        for (int i = 0; i < probabilityTestPoints.length; i++) {
+            final int x = probabilityTestPoints[i];
+            Assertions.assertEquals(logProbabilityTestValues[i],
                 distribution.logProbability(x), getTolerance(),
                 () -> "Incorrect log probability value returned for " + x);
         }
@@ -347,13 +347,13 @@ abstract class DiscreteDistributionAbstractTest {
     //------------------------ Default test cases -----------------------------
 
     @Test
-    void testDensities() {
-        verifyDensities();
+    void testProbabilities() {
+        verifyProbabilities();
     }
 
     @Test
-    void testLogDensities() {
-        verifyLogDensities();
+    void testLogProbabilities() {
+        verifyLogProbabilities();
     }
 
     @Test
@@ -461,8 +461,8 @@ abstract class DiscreteDistributionAbstractTest {
             getDistribution().createSampler(RandomSource.create(RandomSource.WELL_512_A, 1000));
         final int[] sample = TestUtils.sample(sampleSize, sampler);
 
-        final int[] densityPoints = makeDensityTestPoints();
-        final double[] densityValues = makeDensityTestValues();
+        final int[] densityPoints = makeProbabilityTestPoints();
+        final double[] densityValues = makeProbabilityTestValues();
         final int length = TestUtils.eliminateZeroMassPoints(densityPoints, densityValues);
         final double[] expected = Arrays.copyOf(densityValues, length);
 
@@ -534,49 +534,49 @@ abstract class DiscreteDistributionAbstractTest {
     }
 
     /**
-     * @return Returns the densityTestPoints.
+     * @return Returns the probabilityTestPoints.
      */
-    protected int[] getDensityTestPoints() {
-        return densityTestPoints;
+    protected int[] getProbabilityTestPoints() {
+        return probabilityTestPoints;
     }
 
     /**
-     * @param densityTestPoints The densityTestPoints to set.
+     * @param probabilityTestPoints The probabilityTestPoints to set.
      */
-    protected void setDensityTestPoints(int[] densityTestPoints) {
-        this.densityTestPoints = densityTestPoints;
+    protected void setProbabilityTestPoints(int[] probabilityTestPoints) {
+        this.probabilityTestPoints = probabilityTestPoints;
     }
 
     /**
-     * @return Returns the densityTestValues.
+     * @return Returns the probabilityTestValues.
      */
-    protected double[] getDensityTestValues() {
-        return densityTestValues;
+    protected double[] getProbabilityTestValues() {
+        return probabilityTestValues;
     }
 
     /**
      * Set the density test values.
      * For convenience this recomputes the log density test values using {@link Math#log(double)}.
      *
-     * @param densityTestValues The densityTestValues to set.
+     * @param probabilityTestValues The probabilityTestValues to set.
      */
-    protected void setDensityTestValues(double[] densityTestValues) {
-        this.densityTestValues = densityTestValues;
-        logDensityTestValues = Arrays.stream(densityTestValues).map(Math::log).toArray();
+    protected void setProbabilityTestValues(double[] probabilityTestValues) {
+        this.probabilityTestValues = probabilityTestValues;
+        logProbabilityTestValues = Arrays.stream(probabilityTestValues).map(Math::log).toArray();
     }
 
     /**
-     * @return Returns the logDensityTestValues.
+     * @return Returns the logProbabilityTestValues.
      */
-    protected double[] getLogDensityTestValues() {
-        return logDensityTestValues;
+    protected double[] getLogProbabilityTestValues() {
+        return logProbabilityTestValues;
     }
 
     /**
-     * @param logDensityTestValues The logDensityTestValues to set.
+     * @param logProbabilityTestValues The logProbabilityTestValues to set.
      */
-    protected void setLogDensityTestValues(double[] logDensityTestValues) {
-        this.logDensityTestValues = logDensityTestValues;
+    protected void setLogProbabilityTestValues(double[] logProbabilityTestValues) {
+        this.logProbabilityTestValues = logProbabilityTestValues;
     }
 
     /**

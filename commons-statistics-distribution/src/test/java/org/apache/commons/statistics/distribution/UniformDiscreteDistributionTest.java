@@ -43,19 +43,19 @@ class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Override
-    public int[] makeDensityTestPoints() {
+    public int[] makeProbabilityTestPoints() {
         return new int[] {-4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6};
     }
 
     @Override
-    public double[] makeDensityTestValues() {
+    public double[] makeProbabilityTestValues() {
         final double d = 1.0 / (5 - -3 + 1);
         return new double[] {0, d, d, d, d, d, d, d, d, d, 0};
     }
 
     @Override
     public int[] makeCumulativeTestPoints() {
-        return makeDensityTestPoints();
+        return makeProbabilityTestPoints();
     }
 
     @Override

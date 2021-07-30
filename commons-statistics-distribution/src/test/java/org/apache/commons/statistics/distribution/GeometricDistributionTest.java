@@ -41,14 +41,14 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Override
-    public int[] makeDensityTestPoints() {
-        return new int[] {-1,  0,  1,  2,  3,  4,  5,  6,  7,  8,
+    public int[] makeProbabilityTestPoints() {
+        return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8,
                           9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
                           19, 20, 21, 22, 23, 24, 25, 26, 27, 28};
     }
 
     @Override
-    public double[] makeDensityTestValues() {
+    public double[] makeProbabilityTestValues() {
         // Reference values are from R, version version 2.15.3.
         return new double[] {
             0d, 0.4, 0.24, 0.144, 0.0864, 0.05184, 0.031104, 0.0186624,
@@ -62,7 +62,7 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     @Override
-    public double[] makeLogDensityTestValues() {
+    public double[] makeLogProbabilityTestValues() {
         // Reference values are from R, version version 2.14.1.
         return new double[] {
             Double.NEGATIVE_INFINITY, -0.916290731874155, -1.42711635564015, -1.93794197940614,
@@ -78,12 +78,12 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
     @Override
     public int[] makeCumulativeTestPoints() {
-        return makeDensityTestPoints();
+        return makeProbabilityTestPoints();
     }
 
     @Override
     public double[] makeCumulativeTestValues() {
-        final double[] densities = makeDensityTestValues();
+        final double[] densities = makeProbabilityTestValues();
         final int n = densities.length;
         final double[] ret = new double[n];
         ret[0] = densities[0];
