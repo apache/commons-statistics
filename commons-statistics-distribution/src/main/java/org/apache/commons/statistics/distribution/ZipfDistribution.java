@@ -41,7 +41,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     private final int numberOfElements;
     /** Exponent parameter of the distribution. */
     private final double exponent;
-    /** Cached values of the nth generalized harmonic. */
+    /** Cached value of the nth generalized harmonic. */
     private final double nthHarmonic;
 
     /**

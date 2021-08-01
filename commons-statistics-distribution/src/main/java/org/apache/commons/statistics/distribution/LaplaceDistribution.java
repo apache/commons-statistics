@@ -26,6 +26,8 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
     private final double mu;
     /** The scale parameter. */
     private final double beta;
+    /** log(2 * beta). */
+    private final double log2beta;
 
     /**
      * Creates a distribution.
@@ -42,6 +44,7 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
 
         this.mu = mu;
         this.beta = beta;
+        log2beta = Math.log(2.0 * beta);
     }
 
     /**
@@ -71,7 +74,7 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double logDensity(double x) {
-        return -Math.abs(x - mu) / beta - Math.log(2.0 * beta);
+        return -Math.abs(x - mu) / beta - log2beta;
     }
 
     /** {@inheritDoc} */

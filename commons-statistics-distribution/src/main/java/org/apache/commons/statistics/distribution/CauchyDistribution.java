@@ -24,6 +24,10 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     private final double median;
     /** The scale of this distribution. */
     private final double scale;
+    /** Density factor (scale / pi). */
+    private final double scaleOverPi;
+    /** Density factor (scale^2). */
+    private final double scale2;
 
     /**
      * Creates a distribution.
@@ -39,6 +43,8 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
         }
         this.scale = scale;
         this.median = median;
+        scaleOverPi = scale / Math.PI;
+        scale2 = scale * scale;
     }
 
     /** {@inheritDoc} */
@@ -84,7 +90,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     @Override
     public double density(double x) {
         final double dev = x - median;
-        return (1 / Math.PI) * (scale / (dev * dev + scale * scale));
+        return scaleOverPi / (dev * dev + scale2);
     }
 
     /**

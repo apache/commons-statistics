@@ -24,8 +24,8 @@ import org.apache.commons.rng.sampling.distribution.PoissonSampler;
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>.
  */
 public class PoissonDistribution extends AbstractDiscreteDistribution {
-    /** ln(2 &pi;). */
-    private static final double LOG_TWO_PI = Math.log(2 * Math.PI);
+    /** 0.5 * ln(2 &pi;). */
+    private static final double HALF_LOG_TWO_PI = 0.5 * Math.log(2 * Math.PI);
     /** Default maximum number of iterations. */
     private static final int DEFAULT_MAX_ITERATIONS = 10000000;
     /** Default convergence criterion. */
@@ -88,7 +88,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         }
         return -SaddlePointExpansionUtils.getStirlingError(x) -
               SaddlePointExpansionUtils.getDeviancePart(x, mean) -
-              0.5 * LOG_TWO_PI - 0.5 * Math.log(x);
+              HALF_LOG_TWO_PI - 0.5 * Math.log(x);
     }
 
     /** {@inheritDoc} */

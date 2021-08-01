@@ -37,6 +37,10 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     private final double shape;
     /** The scale parameter. */
     private final double scale;
+    /** shape / scale. */
+    private final double shapeOverScale;
+    /** log(shape / scale). */
+    private final double logShapeOverScale;
 
     /**
      * Creates a distribution.
@@ -57,6 +61,8 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
         }
         scale = beta;
         shape = alpha;
+        shapeOverScale = shape / scale;
+        logShapeOverScale = Math.log(shapeOverScale);
     }
 
     /**
@@ -95,7 +101,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
          */
         final double xscalepowshape = xscalepow * xscale;
 
-        return (shape / scale) * xscalepow * Math.exp(-xscalepowshape);
+        return shapeOverScale * xscalepow * Math.exp(-xscalepowshape);
     }
 
     /** {@inheritDoc} */
@@ -116,7 +122,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
          */
         final double xscalepowshape = Math.exp(logxscalepow) * xscale;
 
-        return Math.log(shape / scale) + logxscalepow - xscalepowshape;
+        return logShapeOverScale + logxscalepow - xscalepowshape;
     }
 
     /** {@inheritDoc} */
@@ -226,4 +232,3 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
         return true;
     }
 }
-

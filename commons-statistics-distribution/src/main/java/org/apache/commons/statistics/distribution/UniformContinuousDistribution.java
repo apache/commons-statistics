@@ -30,6 +30,10 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     private final double upper;
     /** Range between the upper and lower bound of this distribution (cached for computaions). */
     private final double upperMinusLower;
+    /** Cache of the density. */
+    private final double pdf;
+    /** Cache of the log density. */
+    private final double logPdf;
 
     /**
      * Creates a uniform distribution.
@@ -48,6 +52,8 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
         this.lower = lower;
         this.upper = upper;
         upperMinusLower = upper - lower;
+        pdf = 1.0 / upperMinusLower;
+        logPdf = -Math.log(upperMinusLower);
     }
 
     /** {@inheritDoc} */
@@ -57,7 +63,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
             x > upper) {
             return 0;
         }
-        return 1.0 / upperMinusLower;
+        return pdf;
     }
 
     /** {@inheritDoc} */
@@ -67,7 +73,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
             x > upper) {
             return Double.NEGATIVE_INFINITY;
         }
-        return -Math.log(upperMinusLower);
+        return logPdf;
     }
 
     /** {@inheritDoc} */

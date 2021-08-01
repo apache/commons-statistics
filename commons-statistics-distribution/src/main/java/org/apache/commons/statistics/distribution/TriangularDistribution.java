@@ -30,6 +30,12 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     private final double b;
     /** Mode of this distribution. */
     private final double c;
+    /** Cached value ((b - a) * (c - a). */
+    private final double divisor1;
+    /** Cached value ((b - a) * (b - c)). */
+    private final double divisor2;
+    /** Cumulative probability at the mode. */
+    private final double cdfMode;
 
     /**
      * Creates a distribution.
@@ -59,6 +65,9 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
         this.a = a;
         this.c = c;
         this.b = b;
+        divisor1 = (b - a) * (c - a);
+        divisor2 = (b - a) * (b - c);
+        cdfMode = (c - a) / (b - a);
     }
 
     /**
@@ -89,16 +98,14 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
         }
         if (x < c) {
             final double divident = 2 * (x - a);
-            final double divisor = (b - a) * (c - a);
-            return divident / divisor;
+            return divident / divisor1;
         }
         if (x == c) {
             return 2 / (b - a);
         }
         if (x <= b) {
             final double divident = 2 * (b - x);
-            final double divisor = (b - a) * (b - c);
-            return divident / divisor;
+            return divident / divisor2;
         }
         return 0;
     }
@@ -123,16 +130,14 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
         }
         if (x < c) {
             final double divident = (x - a) * (x - a);
-            final double divisor = (b - a) * (c - a);
-            return divident / divisor;
+            return divident / divisor1;
         }
         if (x == c) {
-            return (c - a) / (b - a);
+            return cdfMode;
         }
         if (x <= b) {
             final double divident = (b - x) * (b - x);
-            final double divisor = (b - a) * (b - c);
-            return 1 - (divident / divisor);
+            return 1 - (divident / divisor2);
         }
         return 1;
     }
@@ -210,9 +215,9 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
         if (p == 1) {
             return b;
         }
-        if (p < (c - a) / (b - a)) {
-            return a + Math.sqrt(p * (b - a) * (c - a));
+        if (p < cdfMode) {
+            return a + Math.sqrt(p * divisor1);
         }
-        return b - Math.sqrt((1 - p) * (b - a) * (b - c));
+        return b - Math.sqrt((1 - p) * divisor2);
     }
 }

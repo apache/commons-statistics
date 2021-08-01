@@ -42,6 +42,10 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     private final double scale;
     /** The shape parameter of this distribution. */
     private final double shape;
+    /** shape * scale^shape. */
+    private final double shapeByScalePowShape;
+    /** log(shape) + shape * log(scale). */
+    private final double logShapePlusShapeByLogScale;
 
     /**
      * Creates a Pareto distribution.
@@ -62,6 +66,8 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
 
         this.scale = scale;
         this.shape = shape;
+        shapeByScalePowShape = shape * Math.pow(scale, shape);
+        logShapePlusShapeByLogScale = Math.log(shape) + Math.log(scale) * shape;
     }
 
     /**
@@ -97,7 +103,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
         if (x < scale) {
             return 0;
         }
-        return Math.pow(scale, shape) / Math.pow(x, shape + 1) * shape;
+        return shapeByScalePowShape / Math.pow(x, shape + 1);
     }
 
     /** {@inheritDoc}
@@ -109,7 +115,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
         if (x < scale) {
             return Double.NEGATIVE_INFINITY;
         }
-        return Math.log(scale) * shape - Math.log(x) * (shape + 1) + Math.log(shape);
+        return logShapePlusShapeByLogScale - Math.log(x) * (shape + 1);
     }
 
     /**

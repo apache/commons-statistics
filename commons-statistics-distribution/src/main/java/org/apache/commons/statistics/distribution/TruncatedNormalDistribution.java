@@ -46,6 +46,10 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
      * for faster computations.
      */
     private final double cdfDelta;
+    /** parentSd * cdfDelta. */
+    private final double parentSdByCdfDelta;
+    /** log(parentSd * cdfDelta). */
+    private final double logParentSdByCdfDelta;
 
     /**
      * Creates a truncated normal distribution.
@@ -79,6 +83,9 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
         final double cdfBeta = standardNormal.cumulativeProbability(beta);
         cdfAlpha = standardNormal.cumulativeProbability(alpha);
         cdfDelta = cdfBeta - cdfAlpha;
+
+        parentSdByCdfDelta = parentSd * cdfDelta;
+        logParentSdByCdfDelta = Math.log(parentSdByCdfDelta);
 
         // Calculation of variance and mean.
         final double pdfAlpha = standardNormal.density(alpha);
@@ -117,7 +124,7 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
         if (x < lower || x > upper) {
             return 0;
         }
-        return standardNormal.density((x - parentMean) / parentSd) / (parentSd * cdfDelta);
+        return standardNormal.density((x - parentMean) / parentSd) / parentSdByCdfDelta;
     }
 
     /** {@inheritDoc} */
@@ -126,7 +133,7 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
         if (x < lower || x > upper) {
             return Double.NEGATIVE_INFINITY;
         }
-        return standardNormal.logDensity((x - parentMean) / parentSd) - Math.log(parentSd * cdfDelta);
+        return standardNormal.logDensity((x - parentMean) / parentSd) - logParentSdByCdfDelta;
     }
 
     /** {@inheritDoc} */

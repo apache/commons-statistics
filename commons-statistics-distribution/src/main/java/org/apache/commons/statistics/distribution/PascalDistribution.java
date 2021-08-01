@@ -51,12 +51,15 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     private final int numberOfSuccesses;
     /** The probability of success. */
     private final double probabilityOfSuccess;
-    /** The value of {@code log(p)}, where {@code p} is the probability of success,
-     * stored for faster computation. */
-    private final double logProbabilityOfSuccess;
+    /** The value of {@code log(p) * n}, where {@code p} is the probability of success
+     * and {@code n} is the number of successes, stored for faster computation. */
+    private final double logProbabilityOfSuccessByNumOfSuccesses;
     /** The value of {@code log(1-p)}, where {@code p} is the probability of success,
      * stored for faster computation. */
     private final double log1mProbabilityOfSuccess;
+    /** The value of {@code p^n}, where {@code p} is the probability of success
+     * and {@code n} is the number of successes, stored for faster computation. */
+    private final double probabilityOfSuccessPowNumOfSuccesses;
 
     /**
      * Create a Pascal distribution with the given number of successes and
@@ -70,8 +73,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     public PascalDistribution(int r,
                               double p) {
         if (r <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
-                                            r);
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, r);
         }
         if (p < 0 ||
             p > 1) {
@@ -80,8 +82,9 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
 
         numberOfSuccesses = r;
         probabilityOfSuccess = p;
-        logProbabilityOfSuccess = Math.log(p);
+        logProbabilityOfSuccessByNumOfSuccesses = Math.log(p) * numberOfSuccesses;
         log1mProbabilityOfSuccess = Math.log1p(-p);
+        probabilityOfSuccessPowNumOfSuccesses = Math.pow(probabilityOfSuccess, numberOfSuccesses);
     }
 
     /**
@@ -109,16 +112,15 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
             return 0.0;
         } else if (x == 0) {
             // Special case exploiting cancellation.
-            return Math.pow(probabilityOfSuccess, numberOfSuccesses);
+            return probabilityOfSuccessPowNumOfSuccesses;
         }
         final int n = x + numberOfSuccesses - 1;
         if (n < 0) {
             // overflow
-            // The binomial coefficient -> inf when n -> inf
             return 0.0;
         }
         return BinomialCoefficientDouble.value(n, numberOfSuccesses - 1) *
-              Math.pow(probabilityOfSuccess, numberOfSuccesses) *
+              probabilityOfSuccessPowNumOfSuccesses *
               Math.pow(1.0 - probabilityOfSuccess, x);
     }
 
@@ -129,17 +131,16 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
             return Double.NEGATIVE_INFINITY;
         } else if (x == 0) {
             // Special case exploiting cancellation.
-            return logProbabilityOfSuccess * numberOfSuccesses;
+            return logProbabilityOfSuccessByNumOfSuccesses;
         }
         final int n = x + numberOfSuccesses - 1;
         if (n < 0) {
             // overflow
-            // The binomial coefficient -> inf when n -> inf
             return Double.NEGATIVE_INFINITY;
         }
         return LogBinomialCoefficient.value(x +
               numberOfSuccesses - 1, numberOfSuccesses - 1) +
-              logProbabilityOfSuccess * numberOfSuccesses +
+              logProbabilityOfSuccessByNumOfSuccesses +
               log1mProbabilityOfSuccess * x;
     }
 

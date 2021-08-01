@@ -31,6 +31,10 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     private final int upper;
     /** "upper" - "lower" + 1 (as a double to avoid overflow). */
     private final double upperMinusLowerPlus1;
+    /** Cache of the probability. */
+    private final double pmf;
+    /** Cache of the log probability. */
+    private final double logPmf;
 
     /**
      * Creates a new uniform integer distribution using the given lower and
@@ -49,6 +53,8 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         this.lower = lower;
         this.upper = upper;
         upperMinusLowerPlus1 = (double) upper - (double) lower + 1;
+        pmf = 1.0 / upperMinusLowerPlus1;
+        logPmf = -Math.log(upperMinusLowerPlus1);
     }
 
     /** {@inheritDoc} */
@@ -57,7 +63,16 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         if (x < lower || x > upper) {
             return 0;
         }
-        return 1.0 / upperMinusLowerPlus1;
+        return pmf;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double logProbability(int x) {
+        if (x < lower || x > upper) {
+            return Double.NEGATIVE_INFINITY;
+        }
+        return logPmf;
     }
 
     /** {@inheritDoc} */

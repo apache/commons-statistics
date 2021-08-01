@@ -37,6 +37,10 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     private final double mu;
     /** The scale parameter. */
     private final double omega;
+    /** Density prefactor. */
+    private final double densityPrefactor;
+    /** Log density prefactor. */
+    private final double logDensityPrefactor;
 
     /**
      * Creates a distribution.
@@ -57,6 +61,8 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
 
         this.mu = mu;
         this.omega = omega;
+        densityPrefactor = 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu));
+        logDensityPrefactor = LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu;
     }
 
     /**
@@ -85,8 +91,7 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
             return 0;
         }
 
-        return 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu)) *
-                     Math.pow(x, 2 * mu - 1) * Math.exp(-mu * x * x / omega);
+        return densityPrefactor * Math.pow(x, 2 * mu - 1) * Math.exp(-mu * x * x / omega);
     }
 
     /** {@inheritDoc} */
@@ -97,8 +102,7 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
             return Double.NEGATIVE_INFINITY;
         }
 
-        return LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu +
-                      Math.log(x) * (2 * mu - 1) - (mu * x * x / omega);
+        return logDensityPrefactor + Math.log(x) * (2 * mu - 1) - (mu * x * x / omega);
     }
 
     /** {@inheritDoc} */
@@ -155,5 +159,4 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     public boolean isSupportConnected() {
         return true;
     }
-
 }

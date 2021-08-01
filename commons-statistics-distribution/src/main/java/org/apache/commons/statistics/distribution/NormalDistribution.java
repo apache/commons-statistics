@@ -36,6 +36,8 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     private final double standardDeviation;
     /** The value of {@code log(sd) + 0.5*log(2*pi)} stored for faster computation. */
     private final double logStandardDeviationPlusHalfLog2Pi;
+    /** Standard deviation multiplied by sqrt(2). */
+    private final double sdSqrt2;
 
     /**
      * Creates a distribution.
@@ -53,6 +55,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
         this.mean = mean;
         standardDeviation = sd;
         logStandardDeviationPlusHalfLog2Pi = Math.log(sd) + 0.5 * Math.log(2 * Math.PI);
+        sdSqrt2 = sd * SQRT2;
     }
 
     /**
@@ -91,7 +94,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
         if (Math.abs(dev) > 40 * standardDeviation) {
             return dev < 0 ? 0.0d : 1.0d;
         }
-        return 0.5 * Erfc.value(-dev / (standardDeviation * SQRT2));
+        return 0.5 * Erfc.value(-dev / sdSqrt2);
     }
 
     /** {@inheritDoc} */
@@ -101,7 +104,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
         if (Math.abs(dev) > 40 * standardDeviation) {
             return dev > 0 ? 0.0d : 1.0d;
         }
-        return 0.5 * Erfc.value(dev / (standardDeviation * SQRT2));
+        return 0.5 * Erfc.value(dev / sdSqrt2);
     }
 
     /** {@inheritDoc} */
@@ -111,7 +114,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
             p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
-        return mean + standardDeviation * SQRT2 * InverseErf.value(2 * p - 1);
+        return mean + sdSqrt2 * InverseErf.value(2 * p - 1);
     }
 
     /** {@inheritDoc} */
@@ -122,9 +125,8 @@ public class NormalDistribution extends AbstractContinuousDistribution {
             throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
                                             x0, x1);
         }
-        final double denom = standardDeviation * SQRT2;
-        final double v0 = (x0 - mean) / denom;
-        final double v1 = (x1 - mean) / denom;
+        final double v0 = (x0 - mean) / sdSqrt2;
+        final double v1 = (x1 - mean) / sdSqrt2;
         return 0.5 * ErfDifference.value(v0, v1);
     }
 

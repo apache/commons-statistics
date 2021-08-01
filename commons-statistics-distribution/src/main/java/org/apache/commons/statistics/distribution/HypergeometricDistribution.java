@@ -31,6 +31,10 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     private final int lowerBound;
     /** The upper bound of the support (inclusive). */
     private final int upperBound;
+    /** Binomial probability of success (sampleSize / populationSize). */
+    private final double p;
+    /** Binomial probability of failure ((populationSize - sampleSize) / populationSize). */
+    private final double q;
 
     /**
      * Creates a new hypergeometric distribution.
@@ -72,6 +76,8 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         this.sampleSize = sampleSize;
         lowerBound = getLowerDomain(populationSize, numberOfSuccesses, sampleSize);
         upperBound = getUpperDomain(numberOfSuccesses, sampleSize);
+        p = (double) sampleSize / (double) populationSize;
+        q = (double) (populationSize - sampleSize) / (double) populationSize;
     }
 
     /**
@@ -138,20 +144,16 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
         if (x < lowerBound || x > upperBound) {
             return Double.NEGATIVE_INFINITY;
         }
-        final double p = (double) sampleSize / (double) populationSize;
-        final double q = (double) (populationSize - sampleSize) / (double) populationSize;
-        return logProbability(x, p, q);
+        return computeLogProbability(x);
     }
 
     /**
      * Compute the log probability.
      *
      * @param x Value.
-     * @param p sample size / population size.
-     * @param q (population size - sample size) / population size
      * @return log(P(X = x))
      */
-    private double logProbability(int x, double p, double q) {
+    private double computeLogProbability(int x) {
         final double p1 =
                 SaddlePointExpansionUtils.logBinomialProbability(x, numberOfSuccesses, p, q);
         final double p2 =
@@ -200,19 +202,17 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     private double innerCumulativeProbability(int x0, int x1) {
         // Assume the range is within the domain.
         // Reuse the computation for probability(x) but avoid checking the domain for each call.
-        final double p = (double) sampleSize / (double) populationSize;
-        final double q = (double) (populationSize - sampleSize) / (double) populationSize;
         int x = x0;
-        double ret = Math.exp(logProbability(x, p, q));
+        double ret = Math.exp(computeLogProbability(x));
         if (x0 < x1) {
             while (x != x1) {
                 x++;
-                ret += Math.exp(logProbability(x, p, q));
+                ret += Math.exp(computeLogProbability(x));
             }
         } else {
             while (x != x1) {
                 x--;
-                ret += Math.exp(logProbability(x, p, q));
+                ret += Math.exp(computeLogProbability(x));
             }
         }
         return ret;

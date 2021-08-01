@@ -38,8 +38,14 @@ public class FDistribution extends AbstractContinuousDistribution {
 
     /** The numerator degrees of freedom. */
     private final double numeratorDegreesOfFreedom;
-    /** The numerator degrees of freedom. */
+    /** The denominator degrees of freedom. */
     private final double denominatorDegreesOfFreedom;
+    /** n/2 * log(n) with n = numerator DF. */
+    private final double nhalfLogn;
+    /** m/2 * log(m) with m = denominator DF. */
+    private final double mhalfLogm;
+    /** LogBeta(n/2, n/2) with n = numerator DF. */
+    private final double logBetaNhalfNhalf;
 
     /**
      * Creates a distribution.
@@ -61,6 +67,11 @@ public class FDistribution extends AbstractContinuousDistribution {
         }
         this.numeratorDegreesOfFreedom = numeratorDegreesOfFreedom;
         this.denominatorDegreesOfFreedom = denominatorDegreesOfFreedom;
+        final double nhalf = numeratorDegreesOfFreedom / 2;
+        final double mhalf = denominatorDegreesOfFreedom / 2;
+        nhalfLogn = nhalf * Math.log(numeratorDegreesOfFreedom);
+        mhalfLogm = mhalf * Math.log(denominatorDegreesOfFreedom);
+        logBetaNhalfNhalf = LogBeta.value(nhalf, mhalf);
     }
 
     /**
@@ -82,13 +93,11 @@ public class FDistribution extends AbstractContinuousDistribution {
         final double nhalf = numeratorDegreesOfFreedom / 2;
         final double mhalf = denominatorDegreesOfFreedom / 2;
         final double logx = Math.log(x);
-        final double logn = Math.log(numeratorDegreesOfFreedom);
-        final double logm = Math.log(denominatorDegreesOfFreedom);
         final double lognxm = Math.log(numeratorDegreesOfFreedom * x +
                 denominatorDegreesOfFreedom);
-        return nhalf * logn + nhalf * logx - logx +
-               mhalf * logm - nhalf * lognxm - mhalf * lognxm -
-               LogBeta.value(nhalf, mhalf);
+        return nhalfLogn + nhalf * logx - logx +
+               mhalfLogm - nhalf * lognxm - mhalf * lognxm -
+               logBetaNhalfNhalf;
     }
 
     /**
