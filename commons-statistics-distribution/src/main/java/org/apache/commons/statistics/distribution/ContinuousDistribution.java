@@ -24,19 +24,6 @@ import org.apache.commons.rng.UniformRandomProvider;
 public interface ContinuousDistribution {
     /**
      * For a random variable {@code X} whose values are distributed according
-     * to this distribution, this method returns {@code P(X = x)}.
-     * In other words, this method represents the probability mass function
-     * (PMF) for the distribution.
-     *
-     * @param x Point at which the PMF is evaluated.
-     * @return the value of the probability mass function at point {@code x}.
-     */
-    default double probability(double x) {
-        return 0;
-    }
-
-    /**
-     * For a random variable {@code X} whose values are distributed according
      * to this distribution, this method returns {@code P(x0 < X <= x1)}.
      * The default implementation uses the identity
      * {@code P(x0 < X <= x1) = P(X <= x1) - P(X <= x0)}

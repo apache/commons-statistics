@@ -75,9 +75,6 @@ class ContinuousDistributionTest {
 
         for (final double x : new double[] {Double.NaN, Double.POSITIVE_INFINITY,
             Double.NEGATIVE_INFINITY, 0, 1, 0.123}) {
-            // Always zero
-            Assertions.assertEquals(0, dist.probability(x));
-
             // Return the log of the density
             Assertions.assertEquals(Math.log(x), dist.logDensity(x));
         }

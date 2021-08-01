@@ -91,14 +91,6 @@ abstract class ContinuousDistributionAbstractTest {
     /** Tolerance used in high precision tests. */
     private double highPrecisionTolerance = 1e-22;
 
-    /** Arguments used to test probability calculations. */
-    private double[] probabilityTestPoints;
-
-    /** Values used to test probability calculations. */
-    private double[] probabilityTestValues;
-
-    // No log probability in the ContinuousDistribution interface
-
     /** Values used to test density calculations.
      *
      * <p>Note: The ContinuousDistribution interface defines the density as the gradient
@@ -137,32 +129,6 @@ abstract class ContinuousDistributionAbstractTest {
 
     /** Creates the default continuous distribution instance to use in tests. */
     public abstract ContinuousDistribution makeDistribution();
-
-    /** Creates the default probability test input values.
-     *
-     * <p>Distributions that evaluate a non-zero probability (i.e. override the
-     * interface default method {@link ContinuousDistribution#probability(double)} should
-     * define points to test.
-     */
-    public double[] makeProbabilityTestPoints() {
-        return EMPTY_DOUBLE_ARRAY;
-    }
-
-    /** Creates the default probability test expected values. */
-    public double[] makeProbabilityTestValues() {
-        return EMPTY_DOUBLE_ARRAY;
-    }
-
-    /** Creates the default logarithmic probability density test expected values.
-     *
-     * <p>The default implementation simply computes the logarithm of all the values in
-     * {@link #makeProbabilityTestValues()}.
-     *
-     * @return the default logarithmic probability density test expected values.
-     */
-    public double[] makeLogProbabilityTestValues() {
-        return Arrays.stream(makeProbabilityTestValues()).map(Math::log).toArray();
-    }
 
     /** Creates the default density test expected values. */
     public abstract double[] makeDensityTestValues();
@@ -235,8 +201,6 @@ abstract class ContinuousDistributionAbstractTest {
     @BeforeEach
     void setUp() {
         distribution = makeDistribution();
-        probabilityTestPoints = makeProbabilityTestPoints();
-        probabilityTestValues = makeProbabilityTestValues();
         densityTestValues = makeDensityTestValues();
         logDensityTestValues = makeLogDensityTestValues();
         cumulativeTestPoints = makeCumulativeTestPoints();
@@ -255,8 +219,6 @@ abstract class ContinuousDistributionAbstractTest {
     @AfterEach
     void tearDown() {
         distribution = null;
-        probabilityTestPoints = null;
-        probabilityTestValues = null;
         densityTestValues = null;
         logDensityTestValues = null;
         cumulativeTestPoints = null;
@@ -270,19 +232,6 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     //-------------------- Verification methods -------------------------------
-
-    /**
-     * Verifies that probability calculations match expected values
-     * using current test instance data.
-     */
-    protected void verifyProbabilities() {
-        for (int i = 0; i < probabilityTestPoints.length; i++) {
-            final double x = probabilityTestPoints[i];
-            Assertions.assertEquals(probabilityTestValues[i],
-                distribution.probability(x), getTolerance(),
-                () -> "Incorrect probability value returned for " + x);
-        }
-    }
 
     /**
      * Verifies that density calculations match expected values
@@ -410,11 +359,6 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     //------------------------ Default test cases -----------------------------
-
-    @Test
-    void testProbabilities() {
-        verifyProbabilities();
-    }
 
     @Test
     void testDensities() {
@@ -631,34 +575,6 @@ abstract class ContinuousDistributionAbstractTest {
      */
     protected void setHighPrecisionTolerance(double highPrecisionTolerance) {
         this.highPrecisionTolerance = highPrecisionTolerance;
-    }
-
-    /**
-     * @return Returns the probabilityTestPoints.
-     */
-    protected double[] getProbabilityTestPoints() {
-        return probabilityTestPoints;
-    }
-
-    /**
-     * @param probabilityTestPoints The probabilityTestPoints to set.
-     */
-    protected void setProbabilityTestPoints(double[] probabilityTestPoints) {
-        this.probabilityTestPoints = probabilityTestPoints;
-    }
-
-    /**
-     * @return Returns the probabilityTestValues.
-     */
-    protected double[] getProbabilityTestValues() {
-        return probabilityTestValues;
-    }
-
-    /**
-     * @param probabilityTestValues The probabilityTestValues to set.
-     */
-    protected void setProbabilityTestValues(double[] probabilityTestValues) {
-        this.probabilityTestValues = probabilityTestValues;
     }
 
     /**
