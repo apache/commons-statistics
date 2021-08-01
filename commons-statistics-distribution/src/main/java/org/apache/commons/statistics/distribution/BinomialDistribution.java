@@ -78,7 +78,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
     @Override
     public double logProbability(int x) {
         if (numberOfTrials == 0) {
-            return (x == 0) ? 0. : Double.NEGATIVE_INFINITY;
+            return (x == 0) ? 0.0 : Double.NEGATIVE_INFINITY;
         } else if (x < 0 || x > numberOfTrials) {
             return Double.NEGATIVE_INFINITY;
         }
@@ -97,7 +97,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
         }
         // Use a helper function to compute the complement of the survival probability
         return RegularizedBetaUtils.complement(probabilityOfSuccess,
-                                              x + 1.0, (double) numberOfTrials - x);
+                                               x + 1.0, (double) numberOfTrials - x);
     }
 
     /** {@inheritDoc} */
