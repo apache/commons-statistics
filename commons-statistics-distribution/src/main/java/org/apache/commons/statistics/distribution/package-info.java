@@ -14,7 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
- * Implementations of common discrete and continuous distributions.
+ * Implementations of common discrete and continuous probability distributions.
  */
 package org.apache.commons.statistics.distribution;
