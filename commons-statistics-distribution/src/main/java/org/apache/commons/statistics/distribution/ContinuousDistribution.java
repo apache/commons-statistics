@@ -23,6 +23,20 @@ import org.apache.commons.rng.UniformRandomProvider;
  */
 public interface ContinuousDistribution {
     /**
+     * Returns the probability density function (PDF) of this distribution
+     * evaluated at the specified point {@code x}.
+     * In general, the PDF is the derivative of the {@link #cumulativeProbability(double) CDF}.
+     * If the derivative does not exist at {@code x}, then an appropriate
+     * replacement should be returned, e.g. {@code Double.POSITIVE_INFINITY},
+     * {@code Double.NaN}, or the limit inferior or limit superior of the
+     * difference quotient.
+     *
+     * @param x Point at which the PDF is evaluated.
+     * @return the value of the probability density function at {@code x}.
+     */
+    double density(double x);
+
+    /**
      * For a random variable {@code X} whose values are distributed according
      * to this distribution, this method returns {@code P(x0 < X <= x1)}.
      * The default implementation uses the identity
@@ -42,20 +56,6 @@ public interface ContinuousDistribution {
         }
         return cumulativeProbability(x1) - cumulativeProbability(x0);
     }
-
-    /**
-     * Returns the probability density function (PDF) of this distribution
-     * evaluated at the specified point {@code x}.
-     * In general, the PDF is the derivative of the {@link #cumulativeProbability(double) CDF}.
-     * If the derivative does not exist at {@code x}, then an appropriate
-     * replacement should be returned, e.g. {@code Double.POSITIVE_INFINITY},
-     * {@code Double.NaN}, or the limit inferior or limit superior of the
-     * difference quotient.
-     *
-     * @param x Point at which the PDF is evaluated.
-     * @return the value of the probability density function at {@code x}.
-     */
-    double density(double x);
 
     /**
      * Returns the natural logarithm of the probability density function
