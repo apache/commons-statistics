@@ -116,8 +116,8 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     private void verifyQuantiles() {
         final LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
-        final double mu = distribution.getScale();
-        final double sigma = distribution.getShape();
+        final double mu = distribution.getMu();
+        final double sigma = distribution.getSigma();
         setCumulativeTestPoints(new double[] {mu - 2 * sigma, mu - sigma,
                                               mu,             mu + sigma,
                                               mu + 2 * sigma, mu + 3 * sigma,
@@ -190,8 +190,8 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
     @Test
     void testParameterAccessors() {
         final LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
-        Assertions.assertEquals(2.1, distribution.getScale());
-        Assertions.assertEquals(1.4, distribution.getShape());
+        Assertions.assertEquals(2.1, distribution.getMu());
+        Assertions.assertEquals(1.4, distribution.getSigma());
     }
 
     @Test
