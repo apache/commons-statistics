@@ -161,6 +161,6 @@ abstract class AbstractContinuousDistribution
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Inversion method distribution sampler.
-        return new InverseTransformContinuousSampler(rng, this::inverseCumulativeProbability)::sample;
+        return InverseTransformContinuousSampler.of(rng, this::inverseCumulativeProbability)::sample;
     }
 }

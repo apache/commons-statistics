@@ -191,7 +191,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Gaussian distribution sampler.
-        return new GaussianSampler(new ZigguratNormalizedGaussianSampler(rng),
-                                   mean, standardDeviation)::sample;
+        return GaussianSampler.of(ZigguratNormalizedGaussianSampler.of(rng),
+                                  mean, standardDeviation)::sample;
     }
 }

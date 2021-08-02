@@ -162,6 +162,6 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Uniform distribution sampler.
-        return new ContinuousUniformSampler(rng, lower, upper)::sample;
+        return ContinuousUniformSampler.of(rng, lower, upper)::sample;
     }
 }

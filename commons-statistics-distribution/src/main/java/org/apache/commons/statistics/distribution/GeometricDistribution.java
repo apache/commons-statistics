@@ -16,6 +16,9 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.GeometricSampler;
+
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a>.
  */
@@ -162,5 +165,11 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     @Override
     public boolean isSupportConnected() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Sampler createSampler(UniformRandomProvider rng) {
+        return GeometricSampler.of(rng, probabilityOfSuccess)::sample;
     }
 }

@@ -152,6 +152,6 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Discrete uniform distribution sampler.
-        return new DiscreteUniformSampler(rng, lower, upper)::sample;
+        return DiscreteUniformSampler.of(rng, lower, upper)::sample;
     }
 }

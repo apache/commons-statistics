@@ -196,6 +196,6 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Beta distribution sampler.
-        return new ChengBetaSampler(rng, alpha, beta)::sample;
+        return ChengBetaSampler.of(rng, alpha, beta)::sample;
     }
 }

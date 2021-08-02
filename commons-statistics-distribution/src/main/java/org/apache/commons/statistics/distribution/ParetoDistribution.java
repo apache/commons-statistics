@@ -220,6 +220,6 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Pareto distribution sampler.
-        return new InverseTransformParetoSampler(rng, scale, shape)::sample;
+        return InverseTransformParetoSampler.of(rng, scale, shape)::sample;
     }
 }

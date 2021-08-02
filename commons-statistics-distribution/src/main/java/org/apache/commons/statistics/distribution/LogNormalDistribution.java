@@ -254,6 +254,6 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Log normal distribution sampler.
-        return new LogNormalSampler(new ZigguratNormalizedGaussianSampler(rng), mu, sigma)::sample;
+        return LogNormalSampler.of(ZigguratNormalizedGaussianSampler.of(rng), mu, sigma)::sample;
     }
 }
