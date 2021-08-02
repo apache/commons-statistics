@@ -207,7 +207,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     public double getVariance() {
         final double s = shape;
         final double ss = s * s;
-        return (Math.expm1(ss)) * Math.exp(2 * scale + ss);
+        return Math.expm1(ss) * Math.exp(2 * scale + ss);
     }
 
     /**
