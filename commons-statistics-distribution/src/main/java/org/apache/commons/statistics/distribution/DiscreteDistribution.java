@@ -37,15 +37,23 @@ public interface DiscreteDistribution {
     /**
      * For a random variable {@code X} whose values are distributed according
      * to this distribution, this method returns {@code P(x0 < X <= x1)}.
+     * The default implementation uses the identity
+     * {@code P(x0 < X <= x1) = P(X <= x1) - P(X <= x0)}
      *
      * @param x0 Lower bound (exclusive).
      * @param x1 Upper bound (inclusive).
      * @return the probability that a random variable with this distribution
-     * will take a value between {@code x0} and {@code x1}, excluding the lower
+     * takes a value between {@code x0} and {@code x1},  excluding the lower
      * and including the upper endpoint.
      * @throws IllegalArgumentException if {@code x0 > x1}.
      */
-    double probability(int x0, int x1);
+    default double probability(int x0,
+                               int x1) {
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH, x0, x1);
+        }
+        return cumulativeProbability(x1) - cumulativeProbability(x0);
+    }
 
     /**
      * For a random variable {@code X} whose values are distributed according

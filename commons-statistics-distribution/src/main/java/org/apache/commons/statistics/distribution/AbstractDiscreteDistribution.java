@@ -26,21 +26,6 @@ import org.apache.commons.rng.sampling.distribution.InverseTransformDiscreteSamp
  */
 abstract class AbstractDiscreteDistribution
     implements DiscreteDistribution {
-    /**
-     * {@inheritDoc}
-     *
-     * The default implementation uses the identity
-     * {@code P(x0 < X <= x1) = P(X <= x1) - P(X <= x0)}
-     */
-    @Override
-    public double probability(int x0,
-                              int x1) {
-        if (x0 > x1) {
-            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
-                                            x0, x1);
-        }
-        return cumulativeProbability(x1) - cumulativeProbability(x0);
-    }
 
     /**
      * {@inheritDoc}
