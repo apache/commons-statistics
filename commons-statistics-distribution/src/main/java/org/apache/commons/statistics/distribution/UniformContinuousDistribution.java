@@ -101,7 +101,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     /**
      * {@inheritDoc}
      *
-     * For lower bound {@code lower} and upper bound {@code upper}, the mean is
+     * <p>For lower bound {@code lower} and upper bound {@code upper}, the mean is
      * {@code 0.5 * (lower + upper)}.
      */
     @Override
@@ -112,7 +112,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     /**
      * {@inheritDoc}
      *
-     * For lower bound {@code lower} and upper bound {@code upper}, the
+     * <p>For lower bound {@code lower} and upper bound {@code upper}, the
      * variance is {@code (upper - lower)^2 / 12}.
      */
     @Override
@@ -123,7 +123,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is equal to the lower bound parameter
+     * <p>The lower bound of the support is equal to the lower bound parameter
      * of the distribution.
      *
      * @return lower bound of the support
@@ -136,7 +136,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is equal to the upper bound parameter
+     * <p>The upper bound of the support is equal to the upper bound parameter
      * of the distribution.
      *
      * @return upper bound of the support
@@ -149,7 +149,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

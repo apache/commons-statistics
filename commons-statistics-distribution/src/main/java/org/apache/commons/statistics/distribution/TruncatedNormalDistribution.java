@@ -170,7 +170,7 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
     /**
      * {@inheritDoc}
      *
-     * Represents the true mean of the truncated normal distribution rather
+     * <p>Represents the true mean of the truncated normal distribution rather
      * than the parent normal distribution mean.
      */
     @Override
@@ -181,7 +181,7 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
     /**
      * {@inheritDoc}
      *
-     * Represents the true variance of the truncated normal distribution rather
+     * <p>Represents the true variance of the truncated normal distribution rather
      * than the parent normal distribution variance.
      */
     @Override

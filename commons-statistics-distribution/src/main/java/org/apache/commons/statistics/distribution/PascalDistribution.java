@@ -168,7 +168,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For number of successes {@code r} and probability of success {@code p},
+     * <p>For number of successes {@code r} and probability of success {@code p},
      * the mean is {@code r * (1 - p) / p}.
      */
     @Override
@@ -181,7 +181,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For number of successes {@code r} and probability of success {@code p},
+     * <p>For number of successes {@code r} and probability of success {@code p},
      * the variance is {@code r * (1 - p) / p^2}.
      */
     @Override
@@ -194,7 +194,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the parameters.
+     * <p>The lower bound of the support is always 0 no matter the parameters.
      *
      * @return lower bound of the support (always 0)
      */
@@ -206,7 +206,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity no matter the
+     * <p>The upper bound of the support is always positive infinity no matter the
      * parameters. Positive infinity is symbolized by {@code Integer.MAX_VALUE}.
      *
      * @return upper bound of the support (always {@code Integer.MAX_VALUE}
@@ -220,7 +220,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

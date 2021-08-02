@@ -46,10 +46,13 @@ abstract class AbstractContinuousDistribution
     /**
      * {@inheritDoc}
      *
-     * The default implementation returns
+     * <p>The default implementation returns:
      * <ul>
      * <li>{@link #getSupportLowerBound()} for {@code p = 0},</li>
-     * <li>{@link #getSupportUpperBound()} for {@code p = 1}.</li>
+     * <li>{@link #getSupportUpperBound()} for {@code p = 1}, or</li>
+     * <li>the result of a search for a root between the lower and upper bound using
+     *     {@link #cumulativeProbability(double) cdf(x) - p}. The bounds may be bracketed for
+     *     efficiency.</li>
      * </ul>
      */
     @Override

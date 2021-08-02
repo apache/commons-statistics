@@ -70,7 +70,7 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For {@code k} degrees of freedom, the mean is {@code k}.
+     * <p>For {@code k} degrees of freedom, the mean is {@code k}.
      */
     @Override
     public double getMean() {
@@ -90,7 +90,7 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the
+     * <p>The lower bound of the support is always 0 no matter the
      * degrees of freedom.
      *
      * @return zero.
@@ -103,7 +103,7 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity no matter the
+     * <p>The upper bound of the support is always positive infinity no matter the
      * degrees of freedom.
      *
      * @return {@code Double.POSITIVE_INFINITY}.
@@ -116,7 +116,7 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

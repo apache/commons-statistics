@@ -142,7 +142,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The variance is equal to the {@link #getMean() mean}.
+     * <p>The variance is equal to the {@link #getMean() mean}.
      */
     @Override
     public double getVariance() {
@@ -152,7 +152,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the mean parameter.
+     * <p>The lower bound of the support is always 0 no matter the mean parameter.
      *
      * @return lower bound of the support (always 0)
      */
@@ -164,7 +164,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is positive infinity,
+     * <p>The upper bound of the support is positive infinity,
      * regardless of the parameter values. There is no integer infinity,
      * so this method returns {@code Integer.MAX_VALUE}.
      *
@@ -179,7 +179,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

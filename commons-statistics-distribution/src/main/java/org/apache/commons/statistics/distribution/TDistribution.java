@@ -119,7 +119,7 @@ public class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For degrees of freedom parameter {@code df}, the mean is
+     * <p>For degrees of freedom parameter {@code df}, the mean is
      * <ul>
      *  <li>zero if {@code df > 1}, and</li>
      *  <li>undefined ({@code Double.NaN}) otherwise.</li>
@@ -133,7 +133,7 @@ public class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For degrees of freedom parameter {@code df}, the variance is
+     * <p>For degrees of freedom parameter {@code df}, the variance is
      * <ul>
      *  <li>{@code df / (df - 2)} if {@code df > 2},</li>
      *  <li>infinite ({@code Double.POSITIVE_INFINITY}) if {@code 1 < df <= 2}, and</li>
@@ -148,7 +148,7 @@ public class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always negative infinity..
+     * <p>The lower bound of the support is always negative infinity..
      *
      * @return lower bound of the support (always
      * {@code Double.NEGATIVE_INFINITY})
@@ -161,7 +161,7 @@ public class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity.
+     * <p>The upper bound of the support is always positive infinity.
      *
      * @return upper bound of the support (always
      * {@code Double.POSITIVE_INFINITY})
@@ -174,7 +174,7 @@ public class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

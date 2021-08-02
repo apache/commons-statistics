@@ -82,7 +82,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For lower limit {@code a}, upper limit {@code b} and mode {@code c}, the
+     * <p>For lower limit {@code a}, upper limit {@code b} and mode {@code c}, the
      * PDF is given by
      * <ul>
      * <li>{@code 2 * (x - a) / [(b - a) * (c - a)]} if {@code a <= x < c},</li>
@@ -113,7 +113,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For lower limit {@code a}, upper limit {@code b} and mode {@code c}, the
+     * <p>For lower limit {@code a}, upper limit {@code b} and mode {@code c}, the
      * CDF is given by
      * <ul>
      * <li>{@code 0} if {@code x < a},</li>
@@ -164,7 +164,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For lower limit {@code a}, upper limit {@code b}, and mode {@code c},
+     * <p>For lower limit {@code a}, upper limit {@code b}, and mode {@code c},
      * the mean is {@code (a + b + c) / 3}.
      */
     @Override
@@ -175,7 +175,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For lower limit {@code a}, upper limit {@code b}, and mode {@code c},
+     * <p>For lower limit {@code a}, upper limit {@code b}, and mode {@code c},
      * the variance is {@code (a^2 + b^2 + c^2 - a * b - a * c - b * c) / 18}.
      */
     @Override
@@ -186,7 +186,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is equal to the lower limit parameter
+     * <p>The lower bound of the support is equal to the lower limit parameter
      * {@code a} of the distribution.
      *
      * @return lower bound of the support
@@ -199,7 +199,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is equal to the upper limit parameter
+     * <p>The upper bound of the support is equal to the upper limit parameter
      * {@code b} of the distribution.
      *
      * @return upper bound of the support
@@ -212,7 +212,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

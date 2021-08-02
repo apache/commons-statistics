@@ -148,7 +148,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * Returns {@code 0} when {@code p == 0} and
+     * <p>Returns {@code 0} when {@code p == 0} and
      * {@code Double.POSITIVE_INFINITY} when {@code p == 1}.
      */
     @Override
@@ -167,7 +167,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The mean is {@code scale * Gamma(1 + (1 / shape))}, where {@code Gamma()}
+     * <p>The mean is {@code scale * Gamma(1 + (1 / shape))}, where {@code Gamma()}
      * is the Gamma-function.
      */
     @Override
@@ -181,7 +181,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The variance is {@code scale^2 * Gamma(1 + (2 / shape)) - mean^2}
+     * <p>The variance is {@code scale^2 * Gamma(1 + (2 / shape)) - mean^2}
      * where {@code Gamma()} is the Gamma-function.
      */
     @Override
@@ -197,7 +197,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the parameters.
+     * <p>The lower bound of the support is always 0 no matter the parameters.
      *
      * @return lower bound of the support (always 0)
      */
@@ -209,7 +209,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity
+     * <p>The upper bound of the support is always positive infinity
      * no matter the parameters.
      *
      * @return upper bound of the support (always
@@ -223,7 +223,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

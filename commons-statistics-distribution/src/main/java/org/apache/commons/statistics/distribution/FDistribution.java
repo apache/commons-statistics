@@ -121,7 +121,7 @@ public class FDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The implementation of this method is based on
+     * <p>The implementation of this method is based on
      * <ul>
      *  <li>
      *   <a href="http://mathworld.wolfram.com/F-Distribution.html">
@@ -165,7 +165,7 @@ public class FDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For denominator degrees of freedom parameter {@code b}, the mean is
+     * <p>For denominator degrees of freedom parameter {@code b}, the mean is
      * <ul>
      *  <li>if {@code b > 2} then {@code b / (b - 2)},</li>
      *  <li>else undefined ({@code Double.NaN}).
@@ -185,7 +185,7 @@ public class FDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For numerator degrees of freedom parameter {@code a} and denominator
+     * <p>For numerator degrees of freedom parameter {@code a} and denominator
      * degrees of freedom parameter {@code b}, the variance is
      * <ul>
      *  <li>
@@ -213,7 +213,7 @@ public class FDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the parameters.
+     * <p>The lower bound of the support is always 0 no matter the parameters.
      *
      * @return lower bound of the support (always 0)
      */
@@ -225,7 +225,7 @@ public class FDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity
+     * <p>The upper bound of the support is always positive infinity
      * no matter the parameters.
      *
      * @return upper bound of the support (always Double.POSITIVE_INFINITY)
@@ -238,7 +238,7 @@ public class FDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

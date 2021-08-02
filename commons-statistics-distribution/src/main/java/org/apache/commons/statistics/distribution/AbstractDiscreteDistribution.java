@@ -30,7 +30,7 @@ abstract class AbstractDiscreteDistribution
     /**
      * {@inheritDoc}
      *
-     * The default implementation returns
+     * <p>The default implementation returns:
      * <ul>
      * <li>{@link #getSupportLowerBound()} for {@code p = 0},</li>
      * <li>{@link #getSupportUpperBound()} for {@code p = 1}, or</li>

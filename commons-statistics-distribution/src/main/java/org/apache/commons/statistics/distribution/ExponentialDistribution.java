@@ -66,7 +66,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The implementation of this method is based on:
+     * <p>The implementation of this method is based on:
      * <ul>
      * <li>
      * <a href="http://mathworld.wolfram.com/ExponentialDistribution.html">
@@ -95,7 +95,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * Returns {@code 0} when {@code p= = 0} and
+     * <p>Returns {@code 0} when {@code p= = 0} and
      * {@code Double.POSITIVE_INFINITY} when {@code p == 1}.
      */
     @Override
@@ -118,7 +118,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For mean parameter {@code k}, the variance is {@code k^2}.
+     * <p>For mean parameter {@code k}, the variance is {@code k^2}.
      */
     @Override
     public double getVariance() {
@@ -128,7 +128,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the mean parameter.
+     * <p>The lower bound of the support is always 0 no matter the mean parameter.
      *
      * @return lower bound of the support (always 0)
      */
@@ -140,7 +140,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity
+     * <p>The upper bound of the support is always positive infinity
      * no matter the mean parameter.
      *
      * @return upper bound of the support (always Double.POSITIVE_INFINITY)
@@ -153,7 +153,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

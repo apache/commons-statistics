@@ -233,7 +233,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The implementation of this method is based on:
+     * <p>The implementation of this method is based on:
      * <ul>
      *  <li>
      *   <a href="http://mathworld.wolfram.com/Chi-SquaredDistribution.html">
@@ -269,7 +269,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For shape parameter {@code alpha} and scale parameter {@code beta}, the
+     * <p>For shape parameter {@code alpha} and scale parameter {@code beta}, the
      * mean is {@code alpha * beta}.
      */
     @Override
@@ -280,7 +280,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For shape parameter {@code alpha} and scale parameter {@code beta}, the
+     * <p>For shape parameter {@code alpha} and scale parameter {@code beta}, the
      * variance is {@code alpha * beta^2}.
      *
      * @return {@inheritDoc}
@@ -293,7 +293,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the parameters.
+     * <p>The lower bound of the support is always 0 no matter the parameters.
      *
      * @return lower bound of the support (always 0)
      */
@@ -305,7 +305,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity
+     * <p>The upper bound of the support is always positive infinity
      * no matter the parameters.
      *
      * @return upper bound of the support (always Double.POSITIVE_INFINITY)
@@ -318,7 +318,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

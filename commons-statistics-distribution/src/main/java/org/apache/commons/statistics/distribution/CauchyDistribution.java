@@ -96,7 +96,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * Returns {@code Double.NEGATIVE_INFINITY} when {@code p == 0}
+     * <p>Returns {@code Double.NEGATIVE_INFINITY} when {@code p == 0}
      * and {@code Double.POSITIVE_INFINITY} when {@code p == 1}.
      */
     @Override
@@ -115,7 +115,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The mean is always undefined no matter the parameters.
+     * <p>The mean is always undefined no matter the parameters.
      *
      * @return mean (always Double.NaN)
      */
@@ -127,7 +127,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The variance is always undefined no matter the parameters.
+     * <p>The variance is always undefined no matter the parameters.
      *
      * @return variance (always Double.NaN)
      */
@@ -139,7 +139,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always negative infinity no matter
+     * <p>The lower bound of the support is always negative infinity no matter
      * the parameters.
      *
      * @return lower bound of the support (always Double.NEGATIVE_INFINITY)
@@ -152,7 +152,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity no matter
+     * <p>The upper bound of the support is always positive infinity no matter
      * the parameters.
      *
      * @return upper bound of the support (always Double.POSITIVE_INFINITY)
@@ -165,7 +165,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

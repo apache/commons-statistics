@@ -94,7 +94,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For scale {@code m}, and shape {@code s} of this distribution, the PDF
+     * <p>For scale {@code m}, and shape {@code s} of this distribution, the PDF
      * is given by
      * <ul>
      * <li>{@code 0} if {@code x <= 0},</li>
@@ -132,7 +132,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc}
      *
-     * See documentation of {@link #density(double)} for computation details.
+     * <p>See documentation of {@link #density(double)} for computation details.
      */
     @Override
     public double logDensity(double x) {
@@ -148,7 +148,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For scale {@code m}, and shape {@code s} of this distribution, the CDF
+     * <p>For scale {@code m}, and shape {@code s} of this distribution, the CDF
      * is given by
      * <ul>
      * <li>{@code 0} if {@code x <= 0},</li>
@@ -188,7 +188,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For scale {@code m} and shape {@code s}, the mean is
+     * <p>For scale {@code m} and shape {@code s}, the mean is
      * {@code exp(m + s^2 / 2)}.
      */
     @Override
@@ -200,7 +200,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For scale {@code m} and shape {@code s}, the variance is
+     * <p>For scale {@code m} and shape {@code s}, the variance is
      * {@code (exp(s^2) - 1) * exp(2 * m + s^2)}.
      */
     @Override
@@ -213,7 +213,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the parameters.
+     * <p>The lower bound of the support is always 0 no matter the parameters.
      *
      * @return lower bound of the support (always 0)
      */
@@ -225,7 +225,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity
+     * <p>The upper bound of the support is always positive infinity
      * no matter the parameters.
      *
      * @return upper bound of the support (always
@@ -239,7 +239,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

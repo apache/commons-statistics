@@ -221,7 +221,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For population size {@code N}, number of successes {@code m}, and sample
+     * <p>For population size {@code N}, number of successes {@code m}, and sample
      * size {@code n}, the mean is {@code n * m / N}.
      */
     @Override
@@ -232,7 +232,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For population size {@code N}, number of successes {@code m}, and sample
+     * <p>For population size {@code N}, number of successes {@code m}, and sample
      * size {@code n}, the variance is
      * {@code (n * m * (N - n) * (N - m)) / (N^2 * (N - 1))}.
      */
@@ -247,7 +247,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For population size {@code N}, number of successes {@code m}, and sample
+     * <p>For population size {@code N}, number of successes {@code m}, and sample
      * size {@code n}, the lower bound of the support is
      * {@code max(0, n + m - N)}.
      *
@@ -261,7 +261,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For number of successes {@code m} and sample size {@code n}, the upper
+     * <p>For number of successes {@code m} and sample size {@code n}, the upper
      * bound of the support is {@code min(m, n)}.
      *
      * @return upper bound of the support
@@ -274,7 +274,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

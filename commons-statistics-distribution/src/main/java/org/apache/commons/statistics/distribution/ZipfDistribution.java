@@ -121,7 +121,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For number of elements {@code N} and exponent {@code s}, the mean is
+     * <p>For number of elements {@code N} and exponent {@code s}, the mean is
      * {@code Hs1 / Hs}, where
      * <ul>
      *  <li>{@code Hs1 = generalizedHarmonic(N, s - 1)},</li>
@@ -142,7 +142,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For number of elements {@code N} and exponent {@code s}, the mean is
+     * <p>For number of elements {@code N} and exponent {@code s}, the mean is
      * {@code (Hs2 / Hs) - (Hs1^2 / Hs^2)}, where
      * <ul>
      *  <li>{@code Hs2 = generalizedHarmonic(N, s - 2)},</li>
@@ -182,7 +182,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 1 no matter the parameters.
+     * <p>The lower bound of the support is always 1 no matter the parameters.
      *
      * @return lower bound of the support (always 1)
      */
@@ -194,7 +194,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is the number of elements.
+     * <p>The upper bound of the support is the number of elements.
      *
      * @return upper bound of the support
      */
@@ -206,7 +206,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

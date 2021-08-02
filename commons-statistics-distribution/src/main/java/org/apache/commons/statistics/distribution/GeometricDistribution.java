@@ -109,7 +109,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For probability parameter {@code p}, the mean is {@code (1 - p) / p}.
+     * <p>For probability parameter {@code p}, the mean is {@code (1 - p) / p}.
      */
     @Override
     public double getMean() {
@@ -119,7 +119,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For probability parameter {@code p}, the variance is
+     * <p>For probability parameter {@code p}, the variance is
      * {@code (1 - p) / (p * p)}.
      */
     @Override
@@ -130,7 +130,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0.
+     * <p>The lower bound of the support is always 0.
      *
      * @return lower bound of the support (always 0)
      */
@@ -142,7 +142,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is infinite (which we approximate as
+     * <p>The upper bound of the support is infinite (which we approximate as
      * {@code Integer.MAX_VALUE}).
      *
      * @return upper bound of the support (always Integer.MAX_VALUE)
@@ -155,7 +155,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

@@ -97,7 +97,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * If {@code x} is more than 40 standard deviations from the mean, 0 or 1
+     * <p>If {@code x} is more than 40 standard deviations from the mean, 0 or 1
      * is returned, as in these cases the actual value is within
      * {@code Double.MIN_VALUE} of 0 or 1.
      */
@@ -139,7 +139,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For standard deviation parameter {@code s}, the variance is {@code s^2}.
+     * <p>For standard deviation parameter {@code s}, the variance is {@code s^2}.
      */
     @Override
     public double getVariance() {
@@ -150,7 +150,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always negative infinity
+     * <p>The lower bound of the support is always negative infinity
      * no matter the parameters.
      *
      * @return lower bound of the support (always
@@ -164,7 +164,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always positive infinity
+     * <p>The upper bound of the support is always positive infinity
      * no matter the parameters.
      *
      * @return upper bound of the support (always
@@ -178,7 +178,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

@@ -90,7 +90,7 @@ public class LevyDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc}
      *
-     * See documentation of {@link #density(double)} for computation details.
+     * <p>See documentation of {@link #density(double)} for computation details.
      */
     @Override
     public double logDensity(double x) {

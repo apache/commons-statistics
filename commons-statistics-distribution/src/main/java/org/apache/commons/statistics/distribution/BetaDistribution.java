@@ -121,7 +121,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For first shape parameter {@code alpha} and second shape parameter
+     * <p>For first shape parameter {@code alpha} and second shape parameter
      * {@code beta}, the mean is {@code alpha / (alpha + beta)}.
      */
     @Override
@@ -133,7 +133,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * For first shape parameter {@code alpha} and second shape parameter
+     * <p>For first shape parameter {@code alpha} and second shape parameter
      * {@code beta}, the variance is
      * {@code (alpha * beta) / [(alpha + beta)^2 * (alpha + beta + 1)]}.
      */
@@ -148,7 +148,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 no matter the parameters.
+     * <p>The lower bound of the support is always 0 no matter the parameters.
      *
      * @return lower bound of the support (always 0)
      */
@@ -160,7 +160,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is always 1 no matter the parameters.
+     * <p>The upper bound of the support is always 1 no matter the parameters.
      *
      * @return upper bound of the support (always 1)
      */
@@ -172,7 +172,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */
@@ -184,7 +184,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * Sampling is performed using Cheng's algorithm:
+     * <p>Sampling is performed using Cheng's algorithm:
      * <blockquote>
      * <pre>
      * R. C. H. Cheng,

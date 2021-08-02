@@ -115,7 +115,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For {@code n} trials and probability parameter {@code p}, the mean is
+     * <p>For {@code n} trials and probability parameter {@code p}, the mean is
      * {@code n * p}.
      */
     @Override
@@ -126,7 +126,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For {@code n} trials and probability parameter {@code p}, the variance is
+     * <p>For {@code n} trials and probability parameter {@code p}, the variance is
      * {@code n * p * (1 - p)}.
      */
     @Override
@@ -138,7 +138,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is always 0 except for the probability
+     * <p>The lower bound of the support is always 0 except for the probability
      * parameter {@code p = 1}.
      *
      * @return lower bound of the support (0 or the number of trials)
@@ -151,7 +151,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is the number of trials except for the
+     * <p>The upper bound of the support is the number of trials except for the
      * probability parameter {@code p = 0}.
      *
      * @return upper bound of the support (number of trials or 0)
@@ -164,7 +164,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

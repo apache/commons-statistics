@@ -90,7 +90,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For lower bound {@code lower} and upper bound {@code upper}, the mean is
+     * <p>For lower bound {@code lower} and upper bound {@code upper}, the mean is
      * {@code 0.5 * (lower + upper)}.
      */
     @Override
@@ -102,7 +102,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * For lower bound {@code lower} and upper bound {@code upper}, and
+     * <p>For lower bound {@code lower} and upper bound {@code upper}, and
      * {@code n = upper - lower + 1}, the variance is {@code (n^2 - 1) / 12}.
      */
     @Override
@@ -113,7 +113,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The lower bound of the support is equal to the lower bound parameter
+     * <p>The lower bound of the support is equal to the lower bound parameter
      * of the distribution.
      *
      * @return lower bound of the support
@@ -126,7 +126,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The upper bound of the support is equal to the upper bound parameter
+     * <p>The upper bound of the support is equal to the upper bound parameter
      * of the distribution.
      *
      * @return upper bound of the support
@@ -139,7 +139,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */

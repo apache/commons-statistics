@@ -108,7 +108,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc}
      *
-     * See documentation of {@link #density(double)} for computation details.
+     * <p>See documentation of {@link #density(double)} for computation details.
      */
     @Override
     public double logDensity(double x) {
@@ -207,7 +207,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      * <p>
-     * The support of this distribution is connected.
+     * <p>The support of this distribution is connected.
      *
      * @return {@code true}
      */
