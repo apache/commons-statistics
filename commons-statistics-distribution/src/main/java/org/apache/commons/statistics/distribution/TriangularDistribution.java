@@ -142,6 +142,25 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
         return 1;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double inverseCumulativeProbability(double p) {
+        if (p < 0 ||
+            p > 1) {
+            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
+        }
+        if (p == 0) {
+            return a;
+        }
+        if (p == 1) {
+            return b;
+        }
+        if (p < cdfMode) {
+            return a + Math.sqrt(p * divisor1);
+        }
+        return b - Math.sqrt((1 - p) * divisor2);
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -200,24 +219,5 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     @Override
     public boolean isSupportConnected() {
         return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public double inverseCumulativeProbability(double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
-        if (p == 0) {
-            return a;
-        }
-        if (p == 1) {
-            return b;
-        }
-        if (p < cdfMode) {
-            return a + Math.sqrt(p * divisor1);
-        }
-        return b - Math.sqrt((1 - p) * divisor2);
     }
 }

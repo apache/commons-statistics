@@ -45,6 +45,24 @@ public class LevyDistribution extends AbstractContinuousDistribution {
         this.halfC = 0.5 * c;
     }
 
+    /**
+     * Gets the location parameter of the distribution.
+     *
+     * @return location parameter of the distribution
+     */
+    public double getLocation() {
+        return mu;
+    }
+
+    /**
+     * Gets the scale parameter of the distribution.
+     *
+     * @return scale parameter of the distribution
+     */
+    public double getScale() {
+        return c;
+    }
+
     /** {@inheritDoc}
     * <p>
     * From Wikipedia: The probability density function of the L&eacute;vy distribution
@@ -119,24 +137,6 @@ public class LevyDistribution extends AbstractContinuousDistribution {
         }
         final double t = InverseErfc.value(p);
         return mu + halfC / (t * t);
-    }
-
-    /**
-     * Gets the scale parameter of the distribution.
-     *
-     * @return scale parameter of the distribution
-     */
-    public double getScale() {
-        return c;
-    }
-
-    /**
-     * Gets the location parameter of the distribution.
-     *
-     * @return location parameter of the distribution
-     */
-    public double getLocation() {
-        return mu;
     }
 
     /** {@inheritDoc} */

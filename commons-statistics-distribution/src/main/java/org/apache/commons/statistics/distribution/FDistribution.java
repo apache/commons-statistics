@@ -75,6 +75,24 @@ public class FDistribution extends AbstractContinuousDistribution {
     }
 
     /**
+     * Access the numerator degrees of freedom.
+     *
+     * @return the numerator degrees of freedom.
+     */
+    public double getNumeratorDegreesOfFreedom() {
+        return numeratorDegreesOfFreedom;
+    }
+
+    /**
+     * Access the denominator degrees of freedom.
+     *
+     * @return the denominator degrees of freedom.
+     */
+    public double getDenominatorDegreesOfFreedom() {
+        return denominatorDegreesOfFreedom;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -142,24 +160,6 @@ public class FDistribution extends AbstractContinuousDistribution {
         return RegularizedBeta.value(m / (m + n * x),
                 0.5 * m,
                 0.5 * n);
-    }
-
-    /**
-     * Access the numerator degrees of freedom.
-     *
-     * @return the numerator degrees of freedom.
-     */
-    public double getNumeratorDegreesOfFreedom() {
-        return numeratorDegreesOfFreedom;
-    }
-
-    /**
-     * Access the denominator degrees of freedom.
-     *
-     * @return the denominator degrees of freedom.
-     */
-    public double getDenominatorDegreesOfFreedom() {
-        return denominatorDegreesOfFreedom;
     }
 
     /**

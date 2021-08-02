@@ -106,21 +106,21 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Access the number of successes.
-     *
-     * @return the number of successes.
-     */
-    public int getNumberOfSuccesses() {
-        return numberOfSuccesses;
-    }
-
-    /**
      * Access the population size.
      *
      * @return the population size.
      */
     public int getPopulationSize() {
         return populationSize;
+    }
+
+    /**
+     * Access the number of successes.
+     *
+     * @return the number of successes.
+     */
+    public int getNumberOfSuccesses() {
+        return numberOfSuccesses;
     }
 
     /**

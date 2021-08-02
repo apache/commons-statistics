@@ -90,6 +90,22 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
         return Math.exp(log1mProbabilityOfSuccess * (x + 1));
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public int inverseCumulativeProbability(double p) {
+        if (p < 0 ||
+            p > 1) {
+            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
+        }
+        if (p == 1) {
+            return Integer.MAX_VALUE;
+        }
+        if (p == 0) {
+            return 0;
+        }
+        return Math.max(0, (int) Math.ceil(Math.log1p(-p) / log1mProbabilityOfSuccess - 1));
+    }
+
     /**
      * {@inheritDoc}
      *
@@ -146,23 +162,5 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     @Override
     public boolean isSupportConnected() {
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int inverseCumulativeProbability(double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
-        if (p == 1) {
-            return Integer.MAX_VALUE;
-        }
-        if (p == 0) {
-            return 0;
-        }
-        return Math.max(0, (int) Math.ceil(Math.log1p(-p) / log1mProbabilityOfSuccess - 1));
     }
 }

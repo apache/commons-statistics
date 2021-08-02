@@ -112,6 +112,24 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
         return Math.exp(-0.5 * x1 * x1) / (shape * SQRT2PI * x);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double probability(double x0,
+                              double x1) {
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
+                                            x0, x1);
+        }
+        if (x0 <= 0) {
+            return super.probability(x0, x1);
+        }
+        // Assumes x1 >= x0 && x0 > 0
+        final double denom = shape * SQRT2;
+        final double v0 = (Math.log(x0) - scale) / denom;
+        final double v1 = (Math.log(x1) - scale) / denom;
+        return 0.5 * ErfDifference.value(v0, v1);
+    }
+
     /** {@inheritDoc}
      *
      * See documentation of {@link #density(double)} for computation details.
@@ -165,24 +183,6 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
             return dev > 0 ? 0.0d : 1.0d;
         }
         return 0.5 * Erfc.value(dev / (shape * SQRT2));
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public double probability(double x0,
-                              double x1) {
-        if (x0 > x1) {
-            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
-                                            x0, x1);
-        }
-        if (x0 <= 0) {
-            return super.probability(x0, x1);
-        }
-        // Assumes x1 >= x0 && x0 > 0
-        final double denom = shape * SQRT2;
-        final double v0 = (Math.log(x0) - scale) / denom;
-        final double v1 = (Math.log(x1) - scale) / denom;
-        return 0.5 * ErfDifference.value(v0, v1);
     }
 
     /**

@@ -75,6 +75,19 @@ public class NormalDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double probability(double x0,
+                              double x1) {
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
+                                            x0, x1);
+        }
+        final double v0 = (x0 - mean) / sdSqrt2;
+        final double v1 = (x1 - mean) / sdSqrt2;
+        return 0.5 * ErfDifference.value(v0, v1);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double logDensity(double x) {
         final double x0 = x - mean;
         final double x1 = x0 / standardDeviation;
@@ -115,19 +128,6 @@ public class NormalDistribution extends AbstractContinuousDistribution {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
         return mean + sdSqrt2 * InverseErf.value(2 * p - 1);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public double probability(double x0,
-                              double x1) {
-        if (x0 > x1) {
-            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
-                                            x0, x1);
-        }
-        final double v0 = (x0 - mean) / sdSqrt2;
-        final double v1 = (x1 - mean) / sdSqrt2;
-        return 0.5 * ErfDifference.value(v0, v1);
     }
 
     /** {@inheritDoc} */
