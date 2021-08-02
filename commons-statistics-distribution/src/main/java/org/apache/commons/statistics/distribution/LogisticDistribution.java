@@ -125,13 +125,21 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The mean is equal to the {@link #getLocation() location}.
+     */
     @Override
     public double getMean() {
         return getLocation();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For scale parameter {@code s}, the variance is {@code s^2 * pi^2 / 3}.
+     */
     @Override
     public double getVariance() {
         return scale * scale * PI_SQUARED_OVER_THREE;

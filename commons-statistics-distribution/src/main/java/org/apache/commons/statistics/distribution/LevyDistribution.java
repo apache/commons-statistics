@@ -139,13 +139,21 @@ public class LevyDistribution extends AbstractContinuousDistribution {
         return mu + halfC / (t * t);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The mean is equal to positive infinity.
+     */
     @Override
     public double getMean() {
         return Double.POSITIVE_INFINITY;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The variance is equal to positive infinity.
+     */
     @Override
     public double getVariance() {
         return Double.POSITIVE_INFINITY;

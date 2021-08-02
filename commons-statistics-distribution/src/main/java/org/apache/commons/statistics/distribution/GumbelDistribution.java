@@ -122,13 +122,23 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
         return mu - Math.log(-Math.log(p)) * beta;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The mean is {@code mu + gamma * beta}, where {@code gamma} is
+     * <a href="http://mathworld.wolfram.com/Euler-MascheroniConstantApproximations.html">
+     * Euler's constant</a>
+     */
     @Override
     public double getMean() {
         return mu + EULER * beta;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The variance is {@code pi^2 * beta^2 / 6}.
+     */
     @Override
     public double getVariance() {
         return PI_SQUARED_OVER_SIX * beta * beta;

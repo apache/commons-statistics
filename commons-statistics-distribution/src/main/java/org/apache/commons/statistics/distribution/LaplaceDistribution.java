@@ -110,13 +110,21 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
         return mu + beta * x;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The mean is equal to the {@link #getLocation() location}.
+     */
     @Override
     public double getMean() {
         return getLocation();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The variance is {@code 2 * beta^2}.
+     */
     @Override
     public double getVariance() {
         return 2.0 * beta * beta;
