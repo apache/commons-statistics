@@ -109,24 +109,6 @@ class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     /**
-     * Test the normal approximation of the Poisson distribution by
-     * calculating P(90 &le; X &le; 110) for X = Po(100) and
-     * P(9900 &le; X &le; 10200) for X  = Po(10000)
-     */
-    @Test
-    void testNormalApproximateProbability() {
-        PoissonDistribution dist = new PoissonDistribution(100);
-        double result = dist.normalApproximateProbability(110) -
-            dist.normalApproximateProbability(89);
-        Assertions.assertEquals(0.706281887248, result, 1e-10);
-
-        dist = new PoissonDistribution(10000);
-        result = dist.normalApproximateProbability(10200) -
-            dist.normalApproximateProbability(9899);
-        Assertions.assertEquals(0.820070051552, result, 1E-10);
-    }
-
-    /**
      * Test the degenerate cases of a 0.0 and 1.0 inverse cumulative probability.
      */
     @Test

@@ -30,8 +30,6 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     private static final int DEFAULT_MAX_ITERATIONS = 10000000;
     /** Default convergence criterion. */
     private static final double DEFAULT_EPSILON = 1e-12;
-    /** Distribution used to compute normal approximation. */
-    private final NormalDistribution normal;
     /** Mean of the distribution. */
     private final double mean;
     /** Maximum number of iterations for cumulative probability. */
@@ -68,8 +66,6 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         mean = p;
         this.epsilon = epsilon;
         this.maxIterations = maxIterations;
-
-        normal = new NormalDistribution(p, Math.sqrt(p));
     }
 
     /** {@inheritDoc} */
@@ -115,22 +111,6 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         }
         return RegularizedGamma.P.value((double) x + 1, mean, epsilon,
                                         maxIterations);
-    }
-
-    /**
-     * Calculates the Poisson distribution function using a normal
-     * approximation. The {@code N(mean, sqrt(mean))} distribution is used
-     * to approximate the Poisson distribution. The computation uses
-     * "half-correction" (evaluating the normal distribution function at
-     * {@code x + 0.5}).
-     *
-     * @param x Upper bound, inclusive.
-     * @return the distribution function value calculated using a normal
-     * approximation.
-     */
-    public double normalApproximateProbability(int x)  {
-        // Calculate the probability using half-correction.
-        return normal.cumulativeProbability(x + 0.5);
     }
 
     /** {@inheritDoc} */
