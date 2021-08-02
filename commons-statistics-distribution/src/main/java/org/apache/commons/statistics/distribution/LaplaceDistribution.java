@@ -122,19 +122,41 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
         return 2.0 * beta * beta;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The lower bound of the support is always negative infinity
+     * no matter the parameters.
+     *
+     * @return lower bound of the support (always
+     * {@code Double.NEGATIVE_INFINITY})
+     */
     @Override
     public double getSupportLowerBound() {
         return Double.NEGATIVE_INFINITY;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The upper bound of the support is always positive infinity
+     * no matter the parameters.
+     *
+     * @return upper bound of the support (always
+     * {@code Double.POSITIVE_INFINITY})
+     */
     @Override
     public double getSupportUpperBound() {
         return Double.POSITIVE_INFINITY;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The support of this distribution is connected.
+     *
+     * @return {@code true}
+     */
     @Override
     public boolean isSupportConnected() {
         return true;

@@ -206,7 +206,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
 
     /**
      * {@inheritDoc}
-     * <p>
+     *
      * <p>The support of this distribution is connected.
      *
      * @return {@code true}

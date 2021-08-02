@@ -151,19 +151,39 @@ public class LevyDistribution extends AbstractContinuousDistribution {
         return Double.POSITIVE_INFINITY;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The lower bound of the support is the {@link #getLocation() location}.
+     *
+     * @return lower bound of the support
+     */
     @Override
     public double getSupportLowerBound() {
         return getLocation();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The upper bound of the support is always positive infinity
+     * no matter the parameters.
+     *
+     * @return upper bound of the support (always
+     * {@code Double.POSITIVE_INFINITY})
+     */
     @Override
     public double getSupportUpperBound() {
         return Double.POSITIVE_INFINITY;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The support of this distribution is connected.
+     *
+     * @return {@code true}
+     */
     @Override
     public boolean isSupportConnected() {
         return true;

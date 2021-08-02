@@ -137,19 +137,41 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
         return scale * scale * PI_SQUARED_OVER_THREE;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The lower bound of the support is always negative infinity
+     * no matter the parameters.
+     *
+     * @return lower bound of the support (always
+     * {@code Double.NEGATIVE_INFINITY})
+     */
     @Override
     public double getSupportLowerBound() {
         return SUPPORT_LO;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The upper bound of the support is always positive infinity
+     * no matter the parameters.
+     *
+     * @return upper bound of the support (always
+     * {@code Double.POSITIVE_INFINITY})
+     */
     @Override
     public double getSupportUpperBound() {
         return SUPPORT_HI;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The support of this distribution is connected.
+     *
+     * @return {@code true}
+     */
     @Override
     public boolean isSupportConnected() {
         return true;

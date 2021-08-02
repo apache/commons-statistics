@@ -142,19 +142,39 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
         return omega * (1 - 1 / mu * v * v);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The lower bound of the support is always 0 no matter parameters.
+     *
+     * @return lower bound of the support (always 0)
+     */
     @Override
     public double getSupportLowerBound() {
         return SUPPORT_LO;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The upper bound of the support is always positive infinity
+     * no matter the parameters.
+     *
+     * @return upper bound of the support (always
+     * {@code Double.POSITIVE_INFINITY})
+     */
     @Override
     public double getSupportUpperBound() {
         return SUPPORT_HI;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The support of this distribution is connected.
+     *
+     * @return {@code true}
+     */
     @Override
     public boolean isSupportConnected() {
         return true;

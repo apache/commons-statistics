@@ -201,7 +201,13 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
         return upper;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The support of this distribution is connected.
+     *
+     * @return {@code true}
+     */
     @Override
     public boolean isSupportConnected() {
         return true;
