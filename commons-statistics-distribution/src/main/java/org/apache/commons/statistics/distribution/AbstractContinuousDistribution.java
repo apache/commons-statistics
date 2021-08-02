@@ -157,7 +157,7 @@ abstract class AbstractContinuousDistribution
         return x;
     }
 
-    /**{@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Inversion method distribution sampler.

@@ -168,7 +168,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         return true;
     }
 
-    /**{@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Poisson distribution sampler.

@@ -148,7 +148,7 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         return true;
     }
 
-    /**{@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Discrete uniform distribution sampler.
