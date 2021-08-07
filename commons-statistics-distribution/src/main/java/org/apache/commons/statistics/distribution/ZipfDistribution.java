@@ -134,9 +134,8 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
         final double s = getExponent();
 
         final double Hs1 = generalizedHarmonic(N, s - 1);
-        final double Hs = nthHarmonic;
 
-        return Hs1 / Hs;
+        return Hs1 / nthHarmonic;
     }
 
     /**

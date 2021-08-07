@@ -494,12 +494,7 @@ abstract class ContinuousDistributionAbstractTest {
         final double tol = 1e-9;
         final BaseAbstractUnivariateIntegrator integrator =
             new IterativeLegendreGaussIntegrator(5, 1e-12, 1e-10);
-        final UnivariateFunction d = new UnivariateFunction() {
-                @Override
-                public double value(double x) {
-                    return distribution.density(x);
-                }
-            };
+        final UnivariateFunction d = distribution::density;
         final ArrayList<Double> integrationTestPoints = new ArrayList<>();
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
             if (Double.isNaN(cumulativeTestValues[i]) ||
