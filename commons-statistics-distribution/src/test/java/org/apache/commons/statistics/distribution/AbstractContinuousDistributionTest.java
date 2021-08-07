@@ -147,13 +147,7 @@ class AbstractContinuousDistributionTest {
 
             @Override
             public double getMean() {
-                final UnivariateFunction f = new UnivariateFunction() {
-
-                    @Override
-                    public double value(final double x) {
-                        return x * density(x);
-                    }
-                };
+                final UnivariateFunction f = x -> x * density(x);
                 final UnivariateIntegrator integrator = new RombergIntegrator();
                 return integrator.integrate(Integer.MAX_VALUE, f, x0, x4);
             }
@@ -161,13 +155,7 @@ class AbstractContinuousDistributionTest {
             @Override
             public double getVariance() {
                 final double meanX = getMean();
-                final UnivariateFunction f = new UnivariateFunction() {
-
-                    @Override
-                    public double value(final double x) {
-                        return x * x * density(x);
-                    }
-                };
+                final UnivariateFunction f = x -> x * x * density(x);
                 final UnivariateIntegrator integrator = new RombergIntegrator();
                 final double meanX2 = integrator.integrate(Integer.MAX_VALUE,
                                                            f, x0, x4);
