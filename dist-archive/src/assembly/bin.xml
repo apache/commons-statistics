@@ -45,11 +45,5 @@ limitations under the License.
         <include>commons-statistics*.jar</include>
       </includes>
     </fileSet>
-    <fileSet>
-      <directory>${project.basedir}/../target/site</directory>
-      <outputDirectory>docs</outputDirectory>
-      <excludes>
-      </excludes>
-    </fileSet>
   </fileSets>
 </assembly>
