@@ -27,6 +27,7 @@ limitations under the License.
       <excludes>
         <exclude>**/.git/**</exclude>
         <exclude>**/site-content/**</exclude>
+        <exclude>site-content.README</exclude>
         <exclude>**/target/**</exclude>
       </excludes>
     </fileSet>
