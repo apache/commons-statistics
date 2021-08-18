@@ -264,6 +264,24 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${statistics.spotbugs.version}</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
         <version>${statistics.pmd.version}</version>
         <dependencies>
@@ -285,24 +303,6 @@
           <rulesets>
             <ruleset>${statistics.parent.dir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
           </rulesets>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>verify</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>${statistics.spotbugs.version}</version>
-        <configuration>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
         </configuration>
         <executions>
           <execution>
@@ -426,6 +426,16 @@
         </reportSets>
       </plugin>
       <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${statistics.spotbugs.version}</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
         <version>${statistics.pmd.version}</version>
         <configuration>
@@ -444,16 +454,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>${statistics.spotbugs.version}</version>
-        <configuration>
-          <threshold>Normal</threshold>
-          <effort>Default</effort>
-          <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
