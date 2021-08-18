@@ -193,7 +193,8 @@
   </dependencies>
 
   <build>
-    <defaultGoal>clean verify apache-rat:check clirr:check checkstyle:check pmd:check spotbugs:check javadoc:javadoc</defaultGoal>
+    <!--  TODO: Add binary compatibility check when released. -->
+    <defaultGoal>clean verify javadoc:javadoc</defaultGoal>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -296,6 +297,14 @@
             <ruleset>${statistics.parent.dir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
           </rulesets>
         </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
@@ -306,10 +315,19 @@
           <effort>Default</effort>
           <excludeFilterFile>${statistics.parent.dir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
         </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.rat</groupId>
         <artifactId>apache-rat-plugin</artifactId>
+        <!-- Note: commons-parent binds the check goal to the validate phase -->
         <configuration>
           <!--  Should agree with apache-rat-plugin config under <build> -->
           <excludes combine.children="append">
