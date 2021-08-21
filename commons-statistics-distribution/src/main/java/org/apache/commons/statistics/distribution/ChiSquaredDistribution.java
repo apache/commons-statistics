@@ -29,6 +29,7 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
      * Creates a distribution.
      *
      * @param degreesOfFreedom Degrees of freedom.
+     * @throws IllegalArgumentException if {@code degreesOfFreedom <= 0}.
      */
     public ChiSquaredDistribution(double degreesOfFreedom) {
         gamma = new GammaDistribution(degreesOfFreedom / 2, 2);
