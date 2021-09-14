@@ -23,6 +23,7 @@ import java.util.Collections;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.BaseAbstractUnivariateIntegrator;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
+import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
@@ -467,8 +468,10 @@ abstract class ContinuousDistributionAbstractTest {
         final double[] quartiles = TestUtils.getDistributionQuartiles(getDistribution());
         final double[] expected = {0.25, 0.25, 0.25, 0.25};
 
-        // Use fixed seed.
         final int sampleSize = 1000;
+        MathArrays.scaleInPlace(sampleSize, expected);
+
+        // Use fixed seed.
         final ContinuousDistribution.Sampler sampler =
             getDistribution().createSampler(RandomSource.create(RandomSource.WELL_19937_C, 123456789L));
         final double[] sample = TestUtils.sample(sampleSize, sampler);

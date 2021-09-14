@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.Arrays;
+import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -484,8 +485,10 @@ abstract class DiscreteDistributionAbstractTest {
             Assertions.fail("Not enough of the PMF is tested during sampling: " + sum);
         }
 
-        // Use fixed seed.
         final int sampleSize = 1000;
+        MathArrays.scaleInPlace(sampleSize, expected);
+
+        // Use fixed seed.
         final DiscreteDistribution.Sampler sampler =
             getDistribution().createSampler(RandomSource.create(RandomSource.WELL_512_A, 1000));
         final int[] sample = TestUtils.sample(sampleSize, sampler);
