@@ -490,7 +490,7 @@ abstract class DiscreteDistributionAbstractTest {
 
         // Use fixed seed.
         final DiscreteDistribution.Sampler sampler =
-            getDistribution().createSampler(RandomSource.create(RandomSource.WELL_512_A, 1000));
+            getDistribution().createSampler(RandomSource.WELL_512_A.create(1000));
         final int[] sample = TestUtils.sample(sampleSize, sampler);
 
         final long[] counts = new long[length];

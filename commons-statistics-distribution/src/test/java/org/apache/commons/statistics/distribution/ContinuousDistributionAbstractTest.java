@@ -473,7 +473,7 @@ abstract class ContinuousDistributionAbstractTest {
 
         // Use fixed seed.
         final ContinuousDistribution.Sampler sampler =
-            getDistribution().createSampler(RandomSource.create(RandomSource.WELL_19937_C, 123456789L));
+            getDistribution().createSampler(RandomSource.WELL_19937_C.create(123456789L));
         final double[] sample = TestUtils.sample(sampleSize, sampler);
 
         final long[] counts = new long[4];

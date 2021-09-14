@@ -145,7 +145,7 @@ class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
                 // that all test cases do not fail is 0.999^(32*22) = 0.49442874426
                 final DiscreteDistribution.Sampler distribution =
                     new ZipfDistribution(numPoints, exponent).createSampler(
-                        RandomSource.create(RandomSource.WELL_19937_C, 6));
+                        RandomSource.WELL_19937_C.create(6));
 
                 final double[] expectedCounts = new double[numPoints];
                 final long[] observedCounts = new long[numPoints];
