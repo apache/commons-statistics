@@ -16,6 +16,9 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.StableSampler;
+
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy distribution</a>.
  */
@@ -172,5 +175,13 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     @Override
     public boolean isSupportConnected() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
+        // Cauchy distribution =
+        // Stable distribution with alpha=1, beta=0, gamma=scale, delta=location (median)
+        return StableSampler.of(rng, 1, 0, getScale(), getMedian())::sample;
     }
 }
