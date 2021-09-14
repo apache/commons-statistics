@@ -331,7 +331,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         final int m = 42976365;
         final int n = 50;
         final DiscreteDistribution.Sampler dist =
-            new HypergeometricDistribution(N, m, n).createSampler(RandomSource.WELL_512_A.create());
+            new HypergeometricDistribution(N, m, n).createSampler(RandomSource.XO_SHI_RO_256_PP.create());
 
         for (int i = 0; i < 100; i++) {
             final int sample = dist.sample();

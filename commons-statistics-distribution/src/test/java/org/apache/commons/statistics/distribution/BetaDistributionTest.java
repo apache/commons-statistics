@@ -444,7 +444,7 @@ class BetaDistributionTest {
 
     @Test
     void testMomentsSampling() {
-        final UniformRandomProvider rng = RandomSource.WELL_1024_A.create(123456789L);
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_256_PP.create(123456789L);
         final int numSamples = 1000;
         for (final double alpha : ALPHA_BETAS) {
             for (final double beta : ALPHA_BETAS) {
@@ -463,7 +463,7 @@ class BetaDistributionTest {
 
     @Test
     void testGoodnessOfFit() {
-        final UniformRandomProvider rng = RandomSource.WELL_19937_A.create(123456789L);
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_256_PP.create(123456789L);
 
         final int numSamples = 1000;
         final double level = 0.01;
