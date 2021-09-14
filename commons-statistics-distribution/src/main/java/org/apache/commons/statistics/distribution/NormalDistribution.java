@@ -22,7 +22,7 @@ import org.apache.commons.numbers.gamma.InverseErf;
 import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.GaussianSampler;
-import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSampler;
+import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal (Gaussian) distribution</a>.
@@ -191,7 +191,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Gaussian distribution sampler.
-        return GaussianSampler.of(ZigguratNormalizedGaussianSampler.of(rng),
+        return GaussianSampler.of(ZigguratSampler.NormalizedGaussian.of(rng),
                                   mean, standardDeviation)::sample;
     }
 }
