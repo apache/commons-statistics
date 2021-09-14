@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.AhrensDieterExponentialSampler;
+import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.
@@ -162,18 +162,10 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Sampling algorithm uses the
-     *  <a href="http://www.jesus.ox.ac.uk/~clifford/a5/chap1/node5.html">
-     *   inversion method</a> to generate exponentially distributed
-     *  random values from uniform deviates.
-     * </p>
-     */
+    /** {@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Exponential distribution sampler.
-        return AhrensDieterExponentialSampler.of(rng, mean)::sample;
+        return ZigguratSampler.Exponential.of(rng, mean)::sample;
     }
 }
