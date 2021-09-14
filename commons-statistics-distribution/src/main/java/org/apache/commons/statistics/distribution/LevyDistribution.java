@@ -19,6 +19,8 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.Erfc;
 import org.apache.commons.numbers.gamma.InverseErfc;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.LevySampler;
 
 /**
  * This class implements the <a href="http://en.wikipedia.org/wiki/L%C3%A9vy_distribution">
@@ -195,5 +197,12 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     @Override
     public boolean isSupportConnected() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
+        // Levy distribution sampler.
+        return LevySampler.of(rng, getLocation(), getScale())::sample;
     }
 }
