@@ -259,30 +259,35 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                Math.exp(-x / scale) / Math.exp(logGamma(shape));
     }
 
-    /*
+    /**
      * MATH-753: large values of x or shape parameter cause density(double) to
      * overflow. Reference data is generated with the Maxima script
      * gamma-distribution.mac, which can be found in
-     * src/test/resources/org/apache/commons/math3/distribution.
+     * src/test/resources/org/apache/commons/statistics/distribution.
+     *
+     * @param shape Shape of gamma distribution (scale is assumed to be 1)
+     * @param meanNoOF Allowed mean ULP error when the computed value does not overflow using the old method
+     * @param sdNoOF Allowed SD ULP error when the computed value does not overflow using the old method
+     * @param meanOF Allowed mean ULP error when the computed value overflows using the old method
+     * @param sdOF Allowed SD ULP error when the computed value overflows using the old method
+     * @param resourceName Resource name containing a pair of comma separated values for the
+     * random variable x and the expected value of the gamma distribution: x, gamma(x; shape, scale=1)
      */
-
     private void doTestMath753(final double shape,
                                final double meanNoOF, final double sdNoOF,
                                final double meanOF, final double sdOF,
-                               final String resourceName)
-        throws IOException {
+                               final String resourceName) {
         final GammaDistribution distribution = new GammaDistribution(shape, 1.0);
         final SummaryStatistics statOld = new SummaryStatistics();
+        // statNewNoOF = No overflow of old function
+        // statNewOF   = Overflow of old function
         final SummaryStatistics statNewNoOF = new SummaryStatistics();
         final SummaryStatistics statNewOF = new SummaryStatistics();
 
-        final InputStream resourceAsStream;
-        resourceAsStream = this.getClass().getResourceAsStream(resourceName);
+        final InputStream resourceAsStream = this.getClass().getResourceAsStream(resourceName);
         Assertions.assertNotNull(resourceAsStream, () -> "Could not find resource " + resourceName);
-        final BufferedReader in;
-        in = new BufferedReader(new InputStreamReader(resourceAsStream));
 
-        try {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(resourceAsStream))) {
             for (String line = in.readLine(); line != null; line = in.readLine()) {
                 if (line.startsWith("#")) {
                     continue;
@@ -365,40 +370,38 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
             }
         } catch (final IOException e) {
             Assertions.fail(e.getMessage());
-        } finally {
-            in.close();
         }
     }
 
     @Test
-    void testMath753Shape1() throws IOException {
+    void testMath753Shape1() {
         doTestMath753(1.0, 1.5, 0.5, 0.0, 0.0, "gamma-distribution-shape-1.csv");
     }
 
     @Test
-    void testMath753Shape8() throws IOException {
+    void testMath753Shape8() {
         doTestMath753(8.0, 1.5, 1.0, 0.0, 0.0, "gamma-distribution-shape-8.csv");
     }
 
     @Test
-    void testMath753Shape10() throws IOException {
+    void testMath753Shape10() {
         doTestMath753(10.0, 1.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-10.csv");
     }
 
     @Test
-    void testMath753Shape100() throws IOException {
+    void testMath753Shape100() {
         // XXX Increased tolerance ("1.5" -> "2.0") to make test pass with JDK "Math"
         // where CM used "FastMath" (cf. "XXX" comment in main source code).
         doTestMath753(100.0, 2.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-100.csv");
     }
 
     @Test
-    void testMath753Shape142() throws IOException {
+    void testMath753Shape142() {
         doTestMath753(142.0, 3.3, 1.6, 40.0, 40.0, "gamma-distribution-shape-142.csv");
     }
 
     @Test
-    void testMath753Shape1000() throws IOException {
+    void testMath753Shape1000() {
         // XXX Increased tolerance ("220.0" -> "230.0") to make test pass with JDK "Math"
         // where CM used "FastMath" (cf. "XXX" comment in main source code).
         doTestMath753(1000.0, 1.0, 1.0, 160.0, 230.0, "gamma-distribution-shape-1000.csv");
