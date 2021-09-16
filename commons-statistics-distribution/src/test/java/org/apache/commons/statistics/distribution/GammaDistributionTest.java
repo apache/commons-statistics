@@ -390,8 +390,6 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testMath753Shape100() {
-        // XXX Increased tolerance ("1.5" -> "2.0") to make test pass with JDK "Math"
-        // where CM used "FastMath" (cf. "XXX" comment in main source code).
         doTestMath753(100.0, 2.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-100.csv");
     }
 
@@ -402,8 +400,6 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testMath753Shape1000() {
-        // XXX Increased tolerance ("220.0" -> "230.0") to make test pass with JDK "Math"
-        // where CM used "FastMath" (cf. "XXX" comment in main source code).
         doTestMath753(1000.0, 1.0, 1.0, 160.0, 230.0, "gamma-distribution-shape-1000.csv");
     }
 }

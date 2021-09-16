@@ -114,7 +114,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
         this.logDensityPrefactor2 = Math.log(shape) + 0.5 * Math.log(aux) -
             Math.log(LanczosApproximation.value(shape));
         this.densityPrefactor1 = this.densityPrefactor2 / scale *
-            Math.pow(shiftedShape, -shape) *  // XXX FastMath vs Math
+            Math.pow(shiftedShape, -shape) *
             Math.exp(shape + LANCZOS_G);
         this.logDensityPrefactor1 = this.logDensityPrefactor2 - Math.log(scale) -
             Math.log(shiftedShape) * shape +
@@ -193,7 +193,7 @@ public class GammaDistribution extends AbstractContinuousDistribution {
              * Overflow.
              */
             final double aux1 = (y - shiftedShape) / shiftedShape;
-            final double aux2 = shape * (Math.log1p(aux1) - aux1); // XXX FastMath vs Math
+            final double aux2 = shape * (Math.log1p(aux1) - aux1);
             final double aux3 = -y * (LANCZOS_G + 0.5) / shiftedShape + LANCZOS_G + aux2;
             return densityPrefactor2 / x * Math.exp(aux3);
         }
