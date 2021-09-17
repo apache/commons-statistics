@@ -21,7 +21,7 @@ import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.numbers.gamma.Erfc;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.LogNormalSampler;
-import org.apache.commons.rng.sampling.distribution.ZigguratNormalizedGaussianSampler;
+import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Log-normal_distribution">log-normal distribution</a>.
@@ -254,6 +254,6 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Log normal distribution sampler.
-        return LogNormalSampler.of(ZigguratNormalizedGaussianSampler.of(rng), mu, sigma)::sample;
+        return LogNormalSampler.of(ZigguratSampler.NormalizedGaussian.of(rng), mu, sigma)::sample;
     }
 }
