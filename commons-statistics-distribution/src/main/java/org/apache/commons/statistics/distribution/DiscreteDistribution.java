@@ -145,7 +145,7 @@ public interface DiscreteDistribution {
      * Gets the upper bound of the support.
      * This method must return the same value as
      * {@code inverseCumulativeProbability(1)}, i.e.
-     * {@code inf {x in R | P(X <= x) = 1}}.
+     * {@code inf {x in Z | P(X <= x) = 1}}.
      * By convention, {@code Integer.MAX_VALUE} should be substituted
      * for positive infinity.
      *
