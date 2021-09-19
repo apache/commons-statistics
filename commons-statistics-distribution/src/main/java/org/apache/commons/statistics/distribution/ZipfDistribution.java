@@ -93,7 +93,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
             return 0;
         }
 
-        return (1 / Math.pow(x, exponent)) / nthHarmonic;
+        return Math.pow(x, -exponent) / nthHarmonic;
     }
 
     /** {@inheritDoc} */
