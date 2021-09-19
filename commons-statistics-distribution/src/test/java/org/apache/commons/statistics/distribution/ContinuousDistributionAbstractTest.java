@@ -509,12 +509,12 @@ abstract class ContinuousDistributionAbstractTest {
         }
         Collections.sort(integrationTestPoints);
         for (int i = 1; i < integrationTestPoints.size(); i++) {
+            final double x0 = integrationTestPoints.get(i - 1);
+            final double x1 = integrationTestPoints.get(i);
             Assertions.assertEquals(
-                distribution.probability(integrationTestPoints.get(0),
-                integrationTestPoints.get(i)),
+                distribution.probability(x0, x1),
                 integrator.integrate(1000000, // Triangle integrals are very slow to converge
-                                     d, integrationTestPoints.get(0),
-                                     integrationTestPoints.get(i)), tol);
+                                     d, x0, x1), tol);
         }
     }
 
