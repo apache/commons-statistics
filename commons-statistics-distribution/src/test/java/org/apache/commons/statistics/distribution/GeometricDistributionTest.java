@@ -16,8 +16,10 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -150,6 +152,39 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     //-------------------- Additional test cases -------------------------------
+
+    @Test
+    @Disabled("Requires special handling at x=0 when p=1.0")
+    void testProbabilityOfSuccessOne() {
+        final GeometricDistribution dist = new GeometricDistribution(1.0);
+        Assertions.assertEquals(1.0, dist.getProbabilityOfSuccess());
+        Assertions.assertEquals(0.0, dist.getMean());
+        Assertions.assertEquals(0.0, dist.getVariance());
+        // XXX: Fails (returns NaN)
+        Assertions.assertEquals(1.0, dist.probability(0));
+        Assertions.assertEquals(0.0, dist.probability(1));
+        Assertions.assertEquals(0.0, dist.probability(2));
+        // XXX: Fails (returns NaN)
+        Assertions.assertEquals(0.0, dist.logProbability(0));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logProbability(1));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logProbability(2));
+        Assertions.assertEquals(1.0, dist.cumulativeProbability(0));
+        Assertions.assertEquals(1.0, dist.cumulativeProbability(1));
+        Assertions.assertEquals(0.0, dist.survivalProbability(0));
+        Assertions.assertEquals(0.0, dist.survivalProbability(1));
+        Assertions.assertEquals(0, dist.inverseCumulativeProbability(0.0));
+        Assertions.assertEquals(0, dist.inverseCumulativeProbability(0.5));
+        // XXX: Fails (returns Integer.MAX_VALUE)
+        Assertions.assertEquals(0, dist.inverseCumulativeProbability(1.0));
+        Assertions.assertEquals(0, dist.getSupportLowerBound());
+        // XXX: Fails (returns Integer.MAX_VALUE)
+        Assertions.assertEquals(0, dist.getSupportUpperBound());
+
+        final DiscreteDistribution.Sampler s = dist.createSampler(RandomSource.SPLIT_MIX_64.create());
+        for (int i = 0; i < 5; i++) {
+            Assertions.assertEquals(0, s.sample());
+        }
+    }
 
     @Test
     void testParameterAccessors() {
