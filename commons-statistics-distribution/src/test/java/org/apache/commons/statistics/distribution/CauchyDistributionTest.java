@@ -112,7 +112,7 @@ class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
     @ParameterizedTest
     @CsvSource({
         "0, 0",
-        "0, -1",
+        "0, -0.1",
     })
     void testConstructorPreconditions(double location, double scale) {
         Assertions.assertThrows(DistributionException.class, () -> new CauchyDistribution(location, scale));

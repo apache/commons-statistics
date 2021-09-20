@@ -20,6 +20,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.apache.commons.numbers.core.Precision;
 
 /**
@@ -91,15 +93,19 @@ class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
         Assertions.assertEquals(3 / 12.0, dist.getVariance());
     }
 
-    // MATH-1141
-    @Test
-    void testPreconditionUpperBoundInclusive1() {
-        Assertions.assertThrows(DistributionException.class, () -> new UniformDiscreteDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+         // MATH-1141
+        "1, 0",
+        "3, 2",
+    })
+    void testConstructorPreconditions(int lower, int upper) {
+        Assertions.assertThrows(DistributionException.class, () -> new UniformDiscreteDistribution(lower, upper));
     }
 
     // MATH-1141
     @Test
-    void testPreconditionUpperBoundInclusive2() {
+    void testPreconditionUpperBoundInclusive() {
         // Degenerate case is allowed.
         Assertions.assertDoesNotThrow(() -> new UniformDiscreteDistribution(0, 0));
     }

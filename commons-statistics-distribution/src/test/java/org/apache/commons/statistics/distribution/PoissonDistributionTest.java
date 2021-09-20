@@ -19,6 +19,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * <code>PoissonDistributionTest</code>
@@ -118,29 +120,18 @@ class PoissonDistributionTest extends DiscreteDistributionAbstractTest {
         Assertions.assertEquals(0, dist.inverseCumulativeProbability(0d));
     }
 
-    @Test
-    void testParameterAccessors() {
-        final PoissonDistribution dist = new PoissonDistribution(10.0);
-        Assertions.assertEquals(10.0, dist.getMean());
+    @ParameterizedTest
+    @ValueSource(doubles = {0, -0.1})
+    void testConstructorPrecondition(double mean) {
+        Assertions.assertThrows(DistributionException.class, () -> new PoissonDistribution(mean));
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new PoissonDistribution(-1));
-    }
-
-    @Test
-    void testMoments() {
-        final double tol = 1e-9;
-        PoissonDistribution dist;
-
-        dist = new PoissonDistribution(1);
-        Assertions.assertEquals(1, dist.getMean(), tol);
-        Assertions.assertEquals(1, dist.getVariance(), tol);
-
-        dist = new PoissonDistribution(11.23);
-        Assertions.assertEquals(11.23, dist.getMean(), tol);
-        Assertions.assertEquals(11.23, dist.getVariance(), tol);
+    @ParameterizedTest
+    @ValueSource(doubles = {1.2, 15})
+    void testMoments(double mean) {
+        PoissonDistribution dist = new PoissonDistribution(mean);
+        Assertions.assertEquals(mean, dist.getMean());
+        Assertions.assertEquals(mean, dist.getVariance());
     }
 
     @Test

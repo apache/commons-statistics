@@ -20,6 +20,8 @@ import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test cases for ExponentialDistribution.
@@ -126,28 +128,17 @@ class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(0.1711390397, d2.density(2.0), 1e-8);
     }
 
-    @Test
-    void testMeanAccessors() {
-        final ExponentialDistribution dist = makeDistribution();
-        Assertions.assertEquals(5d, dist.getMean());
+    @ParameterizedTest
+    @ValueSource(doubles = {0, -0.1})
+    void testConstructorPrecondition(double mean) {
+        Assertions.assertThrows(DistributionException.class, () -> new ExponentialDistribution(mean));
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new ExponentialDistribution(0));
-    }
-
-    @Test
-    void testMoments() {
-        final double tol = 1e-9;
-        ExponentialDistribution dist;
-
-        dist = new ExponentialDistribution(11d);
-        Assertions.assertEquals(11d, dist.getMean(), tol);
-        Assertions.assertEquals(11d * 11d, dist.getVariance(), tol);
-
-        dist = new ExponentialDistribution(10.5d);
-        Assertions.assertEquals(10.5d, dist.getMean(), tol);
-        Assertions.assertEquals(10.5d * 10.5d, dist.getVariance(), tol);
+    @ParameterizedTest
+    @ValueSource(doubles = {11, 10.5})
+    void testMoments(double mean) {
+        final ExponentialDistribution dist = new ExponentialDistribution(mean);
+        Assertions.assertEquals(mean, dist.getMean());
+        Assertions.assertEquals(mean * mean, dist.getVariance());
     }
 }

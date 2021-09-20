@@ -20,6 +20,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link ParetoDistribution}.
@@ -144,21 +146,27 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
         verifyInverseCumulativeProbabilities();
     }
 
-    @Test
-    void testParameterAccessors() {
-        final ParetoDistribution distribution = makeDistribution();
-        Assertions.assertEquals(2.1, distribution.getScale());
-        Assertions.assertEquals(1.4, distribution.getShape());
+    @ParameterizedTest
+    @CsvSource({
+        "1.2, 2.1",
+        "10, 1",
+        "3, 2",
+    })
+    void testParameterAccessors(double scale, double shape) {
+        final ParetoDistribution dist = new ParetoDistribution(scale, shape);
+        Assertions.assertEquals(scale, dist.getScale());
+        Assertions.assertEquals(shape, dist.getShape());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new ParetoDistribution(1, 0));
-    }
-
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new ParetoDistribution(0, 1));
+    @ParameterizedTest
+    @CsvSource({
+        "1, 0",
+        "1, -0.1",
+        "0, 1",
+        "-0.1, 1",
+    })
+    void testConstructorPreconditions(double scale, double shape) {
+        Assertions.assertThrows(DistributionException.class, () -> new ParetoDistribution(scale, shape));
     }
 
     @Test

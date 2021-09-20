@@ -18,6 +18,8 @@ package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for GumbelDistribution.
@@ -86,16 +88,24 @@ class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
         verifyInverseCumulativeProbabilities();
     }
 
-    @Test
-    void testParameterAccessors() {
-        final GumbelDistribution dist = makeDistribution();
-        Assertions.assertEquals(0.5, dist.getLocation());
-        Assertions.assertEquals(2, dist.getScale());
+    @ParameterizedTest
+    @CsvSource({
+        "0.5, 2",
+        "1.3, 0.1",
+    })
+    void testParameterAccessors(double location, double scale) {
+        final GumbelDistribution dist = new GumbelDistribution(location, scale);
+        Assertions.assertEquals(location, dist.getLocation());
+        Assertions.assertEquals(scale, dist.getScale());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new GumbelDistribution(10, -0.1));
+    @ParameterizedTest
+    @CsvSource({
+        "10, 0.0",
+        "10, -0.1",
+    })
+    void testConstructorPreconditions(double location, double scale) {
+        Assertions.assertThrows(DistributionException.class, () -> new GumbelDistribution(location, scale));
     }
 
     @Test

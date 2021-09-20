@@ -19,6 +19,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for BinomialDistribution. Extends DiscreteDistributionAbstractTest.
@@ -167,30 +169,26 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
         Assertions.assertEquals(0, dist.getSupportUpperBound());
     }
 
-    @Test
-    void testParameterAccessors() {
-        for (final int n : new int[] {11, 42, 999}) {
-            for (final double p : new double[] {0.1, 0.456, 0.999}) {
-                final BinomialDistribution dist = new BinomialDistribution(n, p);
-                Assertions.assertEquals(n, dist.getNumberOfTrials());
-                Assertions.assertEquals(p, dist.getProbabilityOfSuccess());
-            }
-        }
+    @ParameterizedTest
+    @CsvSource({
+        "11, 0.1",
+        "42, 0.456",
+        "999, 0.999",
+    })
+    void testParameterAccessors(int trials, double p) {
+        final BinomialDistribution dist = new BinomialDistribution(trials, p);
+        Assertions.assertEquals(trials, dist.getNumberOfTrials());
+        Assertions.assertEquals(p, dist.getProbabilityOfSuccess());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(-1, 0.1));
-    }
-
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(10, -0.1));
-    }
-
-    @Test
-    void testConstructorPrecondition3() {
-        Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(10, 1.1));
+    @ParameterizedTest
+    @CsvSource({
+        "-1, 0.1",
+        "10, -0.1",
+        "10, 1.1",
+    })
+    void testConstructorPreconditions(int trials, double p) {
+        Assertions.assertThrows(DistributionException.class, () -> new BinomialDistribution(trials, p));
     }
 
     @Test

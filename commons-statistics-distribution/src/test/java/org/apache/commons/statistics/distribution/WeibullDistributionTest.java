@@ -21,6 +21,8 @@ import org.apache.commons.numbers.gamma.LogGamma;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for WeibullDistribution.
@@ -108,21 +110,26 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
         verifyInverseCumulativeProbabilities();
     }
 
-    @Test
-    void testParameterAccessors() {
-        final WeibullDistribution dist = new WeibullDistribution(1, 2);
-        Assertions.assertEquals(1, dist.getShape());
-        Assertions.assertEquals(2, dist.getScale());
+    @ParameterizedTest
+    @CsvSource({
+        "1, 2",
+        "0.1, 2.34",
+    })
+    void testParameterAccessors(double shape, double scale) {
+        final WeibullDistribution dist = new WeibullDistribution(shape, scale);
+        Assertions.assertEquals(shape, dist.getShape());
+        Assertions.assertEquals(scale, dist.getScale());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new WeibullDistribution(0, 2));
-    }
-
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new WeibullDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 2",
+        "-0.1, 2",
+        "1, 0",
+        "1, -0.1",
+    })
+    void testConstructorPreconditions(double shape, double scale) {
+        Assertions.assertThrows(DistributionException.class, () -> new WeibullDistribution(shape, scale));
     }
 
     @Test

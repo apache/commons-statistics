@@ -19,6 +19,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for PascalDistribution.
@@ -127,26 +129,26 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         verifyInverseCumulativeProbabilities();
     }
 
-    @Test
-    void testParameterAccessors() {
-        final PascalDistribution dist = makeDistribution();
-        Assertions.assertEquals(10, dist.getNumberOfSuccesses());
-        Assertions.assertEquals(0.7, dist.getProbabilityOfSuccess());
+    @ParameterizedTest
+    @CsvSource({
+        "10, 0.7",
+        "12, 0.5",
+    })
+    void testParameterAccessors(int r, double p) {
+        final PascalDistribution dist = new PascalDistribution(r, p);
+        Assertions.assertEquals(r, dist.getNumberOfSuccesses());
+        Assertions.assertEquals(p, dist.getProbabilityOfSuccess());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new PascalDistribution(0, 0.5));
-    }
-
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new PascalDistribution(3, -0.1));
-    }
-
-    @Test
-    void testConstructorPrecondition3() {
-        Assertions.assertThrows(DistributionException.class, () -> new PascalDistribution(3, 1.1));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 0.5",
+        "-1, 0.5",
+        "3, -0.1",
+        "3, 1.1",
+    })
+    void testConstructorPreconditions(int r, double p) {
+        Assertions.assertThrows(DistributionException.class, () -> new PascalDistribution(r, p));
     }
 
     @Test

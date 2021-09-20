@@ -20,6 +20,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for UniformContinuousDistribution. See class javadoc for
@@ -76,16 +78,13 @@ class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTe
         Assertions.assertEquals(1.25, dist.getSupportUpperBound());
     }
 
-    /** Test pre-condition for equal lower/upper bound. */
-    @Test
-    void testConstructorPreconditions1() {
-        Assertions.assertThrows(DistributionException.class, () -> new UniformContinuousDistribution(0, 0));
-    }
-
-    /** Test pre-condition for lower bound larger than upper bound. */
-    @Test
-    void testConstructorPreconditions2() {
-        Assertions.assertThrows(DistributionException.class, () -> new UniformContinuousDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 0",
+        "1, 0",
+    })
+    void testConstructorPreconditions(double lower, double upper) {
+        Assertions.assertThrows(DistributionException.class, () -> new UniformContinuousDistribution(lower, upper));
     }
 
     @Test

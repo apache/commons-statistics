@@ -19,6 +19,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for FDistribution.
@@ -99,20 +101,24 @@ class FDistributionTest extends ContinuousDistributionAbstractTest {
         verifyInverseCumulativeProbabilities();
     }
 
-    @Test
-    void testParameterAccessors() {
-        final FDistribution dist = makeDistribution();
-        Assertions.assertEquals(5d, dist.getNumeratorDegreesOfFreedom());
-        Assertions.assertEquals(6d, dist.getDenominatorDegreesOfFreedom());
+    @ParameterizedTest
+    @CsvSource({
+        "11, 12",
+        "101, 400",
+    })
+    void testParameterAccessors(double df1, double df2) {
+        final FDistribution dist = new FDistribution(df1, df2);
+        Assertions.assertEquals(df1, dist.getNumeratorDegreesOfFreedom());
+        Assertions.assertEquals(df2, dist.getDenominatorDegreesOfFreedom());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new FDistribution(0, 1));
-    }
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new FDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 1",
+        "1, 0",
+    })
+    void testConstructorPreconditions(double df1, double df2) {
+        Assertions.assertThrows(DistributionException.class, () -> new FDistribution(df1, df2));
     }
 
     @Test

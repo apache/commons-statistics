@@ -27,6 +27,8 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for GammaDistribution.
@@ -100,20 +102,24 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(0.0, dist.density(Double.POSITIVE_INFINITY));
     }
 
-    @Test
-    void testParameterAccessors() {
-        final GammaDistribution dist = makeDistribution();
-        Assertions.assertEquals(4d, dist.getShape());
-        Assertions.assertEquals(2d, dist.getScale());
+    @ParameterizedTest
+    @CsvSource({
+        "4, 2",
+        "3.4, 1.2",
+    })
+    void testParameterAccessors(double shape, double scale) {
+        final GammaDistribution dist = new GammaDistribution(shape, scale);
+        Assertions.assertEquals(shape, dist.getShape());
+        Assertions.assertEquals(scale, dist.getScale());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new GammaDistribution(0, 1));
-    }
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new GammaDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 1",
+        "1, 0",
+    })
+    void testConstructorPreconditions(double shape, double scale) {
+        Assertions.assertThrows(DistributionException.class, () -> new GammaDistribution(shape, scale));
     }
 
     @Test

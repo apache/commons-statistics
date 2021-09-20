@@ -20,6 +20,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test cases for {@link ChiSquaredDistribution}.
@@ -112,20 +114,17 @@ class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTest {
         verifyInverseCumulativeProbabilities();
     }
 
-    @Test
-    void testParameterAccessors() {
-        final ChiSquaredDistribution dist = makeDistribution();
-        Assertions.assertEquals(5d, dist.getDegreesOfFreedom());
+    @ParameterizedTest
+    @ValueSource(doubles = {0.5, 1, 2})
+    void testParameterAccessors(double df) {
+        final ChiSquaredDistribution dist = new ChiSquaredDistribution(df);
+        Assertions.assertEquals(df, dist.getDegreesOfFreedom());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new ChiSquaredDistribution(0));
-    }
-
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new ChiSquaredDistribution(-1));
+    @ParameterizedTest
+    @ValueSource(doubles = {0, -0.1})
+    void testConstructorPrecondition(double df) {
+        Assertions.assertThrows(DistributionException.class, () -> new ChiSquaredDistribution(df));
     }
 
     @Test

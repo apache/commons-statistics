@@ -21,6 +21,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test cases for GeometricDistribution.
@@ -188,22 +190,17 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         }
     }
 
-    @Test
-    void testParameterAccessors() {
-        for (final double x : new double[] {0.1, 0.456, 0.999}) {
-            final GeometricDistribution dist = new GeometricDistribution(x);
-            Assertions.assertEquals(x, dist.getProbabilityOfSuccess());
-        }
+    @ParameterizedTest
+    @ValueSource(doubles = {0.1, 0.456, 0.999})
+    void testParameterAccessors(double p) {
+        final GeometricDistribution dist = new GeometricDistribution(p);
+        Assertions.assertEquals(p, dist.getProbabilityOfSuccess());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new GeometricDistribution(-0.1));
-    }
-
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new GeometricDistribution(1.1));
+    @ParameterizedTest
+    @ValueSource(doubles = {-0.1, 0.0, 1.1})
+    void testConstructorPrecondition(double p) {
+        Assertions.assertThrows(DistributionException.class, () -> new GeometricDistribution(p));
     }
 
     @Test

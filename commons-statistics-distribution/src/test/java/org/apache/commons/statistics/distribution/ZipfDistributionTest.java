@@ -21,6 +21,8 @@ import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link ZipfDistribution}.
@@ -88,21 +90,26 @@ class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    @Test
-    void testParameterAccessors() {
-        final ZipfDistribution dist = makeDistribution();
-        Assertions.assertEquals(10, dist.getNumberOfElements());
-        Assertions.assertEquals(1.0, dist.getExponent());
+    @ParameterizedTest
+    @CsvSource({
+        "10, 1",
+        "3, 0.5",
+    })
+    void testParameterAccessors(int n, double e) {
+        final ZipfDistribution dist = new ZipfDistribution(n, e);
+        Assertions.assertEquals(n, dist.getNumberOfElements());
+        Assertions.assertEquals(e, dist.getExponent());
     }
 
-    @Test
-    void testConstructorPreconditions1() {
-        Assertions.assertThrows(DistributionException.class, () -> new ZipfDistribution(0, 1));
-    }
-
-    @Test
-    void testConstructorPreconditions2() {
-        Assertions.assertThrows(DistributionException.class, () -> new ZipfDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 1",
+        "-1, 1",
+        "1, 0",
+        "1, -0.1",
+    })
+    void testConstructorPreconditions(int n, double e) {
+        Assertions.assertThrows(DistributionException.class, () -> new ZipfDistribution(n, e));
     }
 
     @Test

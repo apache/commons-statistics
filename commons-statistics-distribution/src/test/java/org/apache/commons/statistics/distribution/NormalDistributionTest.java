@@ -20,6 +20,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link NormalDistribution}. Extends
@@ -142,16 +144,25 @@ class NormalDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(1, v / expected, 1e-5);
     }
 
-    @Test
-    void testParameterAccessors() {
-        final NormalDistribution distribution = makeDistribution();
-        Assertions.assertEquals(2.1, distribution.getMean());
-        Assertions.assertEquals(1.4, distribution.getStandardDeviation());
+    @ParameterizedTest
+    @CsvSource({
+        "1.2, 2.1",
+        "0, 1",
+        "-3, 2",
+    })
+    void testParameterAccessors(double mu, double sigma) {
+        final NormalDistribution dist = new NormalDistribution(mu, sigma);
+        Assertions.assertEquals(mu, dist.getMean());
+        Assertions.assertEquals(sigma, dist.getStandardDeviation());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new NormalDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 0",
+        "0, -0.1",
+    })
+    void testConstructorPreconditions(double mu, double sigma) {
+        Assertions.assertThrows(DistributionException.class, () -> new NormalDistribution(mu, sigma));
     }
 
     @Test

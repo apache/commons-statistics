@@ -20,6 +20,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link LogNormalDistribution}. Extends
@@ -189,16 +191,25 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
         verifySurvivalProbability();
     }
 
-    @Test
-    void testParameterAccessors() {
-        final LogNormalDistribution distribution = makeDistribution();
-        Assertions.assertEquals(2.1, distribution.getMu());
-        Assertions.assertEquals(1.4, distribution.getSigma());
+    @ParameterizedTest
+    @CsvSource({
+        "1.2, 2.1",
+        "0, 1",
+        "-3, 2",
+    })
+    void testParameterAccessors(double mu, double sigma) {
+        final LogNormalDistribution dist = new LogNormalDistribution(mu, sigma);
+        Assertions.assertEquals(mu, dist.getMu());
+        Assertions.assertEquals(sigma, dist.getSigma());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new LogNormalDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 0",
+        "0, -0.1",
+    })
+    void testConstructorPreconditions(double mu, double sigma) {
+        Assertions.assertThrows(DistributionException.class, () -> new LogNormalDistribution(mu, sigma));
     }
 
     @Test

@@ -20,6 +20,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link TriangularDistribution}. See class javadoc for
@@ -113,50 +115,32 @@ class TriangularDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    /** Test lower bound getter. */
-    @Test
-    void testGetLowerBound() {
-        final TriangularDistribution dist = makeDistribution();
-        Assertions.assertEquals(-3.0, dist.getSupportLowerBound());
+    @ParameterizedTest
+    @CsvSource({
+        "1, 2, 3",
+        "0.12, 3.45, 12.56",
+    })
+    void testParameterAccessors(double lower, double mode, double upper) {
+        final TriangularDistribution dist = new TriangularDistribution(lower, mode, upper);
+        Assertions.assertEquals(lower, dist.getSupportLowerBound());
+        Assertions.assertEquals(mode, dist.getMode());
+        Assertions.assertEquals(upper, dist.getSupportUpperBound());
     }
 
-    /** Test upper bound getter. */
-    @Test
-    void testGetUpperBound() {
-        final TriangularDistribution dist = makeDistribution();
-        Assertions.assertEquals(12.0, dist.getSupportUpperBound());
-    }
-
-    @Test
-    void testParameterAccessors() {
-        for (final double x : new double[] {0.1, 0.2, 0.45}) {
-            final TriangularDistribution dist = new TriangularDistribution(0, x, 1.0);
-            Assertions.assertEquals(x, dist.getMode());
-        }
-    }
-
-    /** Test pre-condition for equal lower/upper limit. */
-    @Test
-    void testConstructorPreconditions1() {
-        Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(0, 0, 0));
-    }
-
-    /** Test pre-condition for lower limit larger than upper limit. */
-    @Test
-    void testConstructorPreconditions2() {
-        Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(1, 1, 0));
-    }
-
-    /** Test pre-condition for mode larger than upper limit. */
-    @Test
-    void testConstructorPreconditions3() {
-        Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(0, 2, 1));
-    }
-
-    /** Test pre-condition for mode smaller than lower limit. */
-    @Test
-    void testConstructorPreconditions4() {
-        Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(2, 1, 3));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 0, 0",
+        // 1, 2, 3 is OK - move points to incorrect locations
+        "4, 2, 3",
+        "3, 2, 3",
+        "2.5, 2, 3",
+        "1, 0, 3",
+        "1, 4, 3",
+        "1, 2, -1",
+        "1, 2, 1.5",
+    })
+    void testConstructorPreconditions(double lower, double mode, double upper) {
+        Assertions.assertThrows(DistributionException.class, () -> new TriangularDistribution(lower, mode, upper));
     }
 
     @Test

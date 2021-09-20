@@ -18,6 +18,8 @@ package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for LogisticsDistribution.
@@ -103,9 +105,13 @@ class LogisticDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(5, dist.getScale());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new LogisticDistribution(1, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "1, 0",
+        "1, -0.1",
+    })
+    void testConstructorPreconditions(double location, double scale) {
+        Assertions.assertThrows(DistributionException.class, () -> new LogisticDistribution(location, scale));
     }
 
     @Test

@@ -18,6 +18,8 @@ package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for NakagamiDistribution.
@@ -87,21 +89,31 @@ class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(-1250.22579, dist.logDensity(x), 1e-4);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "1.2, 2.1",
+        "0.5, 1",
+    })
+    void testParameterAccessors(double shape, double scale) {
+        final NakagamiDistribution dist = new NakagamiDistribution(shape, scale);
+        Assertions.assertEquals(shape, dist.getShape());
+        Assertions.assertEquals(scale, dist.getScale());
+    }
+
     @Test
     void testParameterAccessors() {
         final NakagamiDistribution dist = makeDistribution();
-        Assertions.assertEquals(0.5, dist.getShape());
         Assertions.assertEquals(1, dist.getScale());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new NakagamiDistribution(0.4999, 1.0));
-    }
-
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new NakagamiDistribution(0.5, 0.0));
+    @ParameterizedTest
+    @CsvSource({
+        "0.4999, 1.0",
+        "0.5, 0.0",
+        "0.5, -0.1",
+    })
+    void testConstructorPreconditions(double shape, double scale) {
+        Assertions.assertThrows(DistributionException.class, () -> new NakagamiDistribution(shape, scale));
     }
 
     @Test

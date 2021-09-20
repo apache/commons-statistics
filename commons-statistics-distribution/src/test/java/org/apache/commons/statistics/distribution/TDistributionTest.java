@@ -19,6 +19,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 /**
  * Test cases for TDistribution.
  * Extends ContinuousDistributionAbstractTest.  See class javadoc for
@@ -136,15 +138,17 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
         }
     }
 
-    @Test
-    void testParameterAccessors() {
-        final TDistribution dist = makeDistribution();
-        Assertions.assertEquals(5d, dist.getDegreesOfFreedom());
+    @ParameterizedTest
+    @ValueSource(doubles = {1, 12.3})
+    void testParameterAccessors(double df) {
+        final TDistribution dist = new TDistribution(df);
+        Assertions.assertEquals(df, dist.getDegreesOfFreedom());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new TDistribution(0));
+    @ParameterizedTest
+    @ValueSource(doubles = {0, -0.1})
+    void testConstructorPrecondition(double df) {
+        Assertions.assertThrows(DistributionException.class, () -> new TDistribution(df));
     }
 
     @Test

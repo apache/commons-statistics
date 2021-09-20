@@ -22,6 +22,8 @@ import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for HyperGeometriclDistribution.
@@ -152,33 +154,30 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         Assertions.assertEquals(3, dist.getSupportUpperBound());
     }
 
-    @Test
-    void testParameterAccessors() {
-        final HypergeometricDistribution dist = new HypergeometricDistribution(5, 3, 4);
-        Assertions.assertEquals(5, dist.getPopulationSize());
-        Assertions.assertEquals(3, dist.getNumberOfSuccesses());
-        Assertions.assertEquals(4, dist.getSampleSize());
+    @ParameterizedTest
+    @CsvSource({
+        "5, 3, 4",
+        "10, 9, 1",
+    })
+    void testParameterAccessors(int populationSize, int numberOfSuccesses, int sampleSize) {
+        final HypergeometricDistribution dist = new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize);
+        Assertions.assertEquals(populationSize, dist.getPopulationSize());
+        Assertions.assertEquals(numberOfSuccesses, dist.getNumberOfSuccesses());
+        Assertions.assertEquals(sampleSize, dist.getSampleSize());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(0, 3, 5));
-    }
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, -1, 5));
-    }
-    @Test
-    void testConstructorPrecondition3() {
-        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 3, -1));
-    }
-    @Test
-    void testConstructorPrecondition4() {
-        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 6, 5));
-    }
-    @Test
-    void testConstructorPrecondition5() {
-        Assertions.assertThrows(DistributionException.class, () -> new HypergeometricDistribution(5, 3, 6));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 3, 5",
+        "-1, 3, 5",
+        "5, -1, 5",
+        "5, 3, -1",
+        "5, 6, 5",
+        "5, 3, 6",
+    })
+    void testConstructorPreconditions(int populationSize, int numberOfSuccesses, int sampleSize) {
+        Assertions.assertThrows(DistributionException.class,
+            () -> new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize));
     }
 
     @Test
