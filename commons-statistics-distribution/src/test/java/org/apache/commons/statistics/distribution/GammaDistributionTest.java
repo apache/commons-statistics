@@ -224,6 +224,7 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();

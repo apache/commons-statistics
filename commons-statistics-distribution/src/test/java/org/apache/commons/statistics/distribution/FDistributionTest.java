@@ -85,6 +85,7 @@ class FDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setCumulativeTestPoints(new double[] {-2, 0});
         setCumulativeTestValues(new double[] {0, 0});
         verifyCumulativeProbabilities();
@@ -92,6 +93,7 @@ class FDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();

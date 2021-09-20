@@ -26,9 +26,7 @@ import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussInteg
 import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Abstract base class for {@link ContinuousDistribution} tests.
@@ -189,47 +187,6 @@ abstract class ContinuousDistributionAbstractTest {
     /** Creates the default inverse cumulative probability density test expected values. */
     public double[] makeInverseCumulativeTestValues() {
         return makeCumulativeTestPoints();
-    }
-
-    //-------------------- Setup / tear down ----------------------------------
-
-    /**
-     * Setup sets all test instance data to default values.
-     * <p>
-     * This method is @BeforeEach (created for each test) as certain test methods may wish
-     * to alter the defaults.
-     */
-    @BeforeEach
-    void setUp() {
-        distribution = makeDistribution();
-        densityTestValues = makeDensityTestValues();
-        logDensityTestValues = makeLogDensityTestValues();
-        cumulativeTestPoints = makeCumulativeTestPoints();
-        cumulativeTestValues = makeCumulativeTestValues();
-        cumulativePrecisionTestPoints = makeCumulativePrecisionTestPoints();
-        cumulativePrecisionTestValues = makeCumulativePrecisionTestValues();
-        survivalPrecisionTestPoints = makeSurvivalPrecisionTestPoints();
-        survivalPrecisionTestValues = makeSurvivalPrecisionTestValues();
-        inverseCumulativeTestPoints = makeInverseCumulativeTestPoints();
-        inverseCumulativeTestValues = makeInverseCumulativeTestValues();
-    }
-
-    /**
-     * Cleans up test instance data.
-     */
-    @AfterEach
-    void tearDown() {
-        distribution = null;
-        densityTestValues = null;
-        logDensityTestValues = null;
-        cumulativeTestPoints = null;
-        cumulativeTestValues = null;
-        cumulativePrecisionTestPoints = null;
-        cumulativePrecisionTestValues = null;
-        survivalPrecisionTestPoints = null;
-        survivalPrecisionTestValues = null;
-        inverseCumulativeTestPoints = null;
-        inverseCumulativeTestValues = null;
     }
 
     //-------------------- Verification methods -------------------------------
@@ -436,41 +393,64 @@ abstract class ContinuousDistributionAbstractTest {
 
     @Test
     void testDensities() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
+        densityTestValues = makeDensityTestValues();
         verifyDensities();
     }
 
     @Test
     void testLogDensities() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
+        logDensityTestValues = makeLogDensityTestValues();
         verifyLogDensities();
     }
 
     @Test
     void testCumulativeProbabilities() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
+        cumulativeTestValues = makeCumulativeTestValues();
         verifyCumulativeProbabilities();
     }
 
     @Test
     void testSurvivalProbability() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
+        cumulativeTestValues = makeCumulativeTestValues();
         verifySurvivalProbability();
     }
 
     @Test
     void testSurvivalAndCumulativeProbabilitiesAreComplementary() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
         verifySurvivalAndCumulativeProbabilityComplement();
     }
 
     @Test
     void testCumulativeProbabilityPrecision() {
+        distribution = makeDistribution();
+        cumulativePrecisionTestPoints = makeCumulativePrecisionTestPoints();
+        cumulativePrecisionTestValues = makeCumulativePrecisionTestValues();
         verifyCumulativeProbabilityPrecision();
     }
 
     @Test
     void testSurvivalProbabilityPrecision() {
+        distribution = makeDistribution();
+        survivalPrecisionTestPoints = makeSurvivalPrecisionTestPoints();
+        survivalPrecisionTestValues = makeSurvivalPrecisionTestValues();
         verifySurvivalProbabilityPrecision();
     }
 
     @Test
     void testInverseCumulativeProbabilities() {
+        distribution = makeDistribution();
+        inverseCumulativeTestPoints = makeInverseCumulativeTestPoints();
+        inverseCumulativeTestValues = makeInverseCumulativeTestValues();
         verifyInverseCumulativeProbabilities();
     }
 
@@ -479,6 +459,8 @@ abstract class ContinuousDistributionAbstractTest {
      */
     @Test
     void testConsistency() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
         for (int i = 1; i < cumulativeTestPoints.length; i++) {
 
             // check that cdf(x, x) = 0
@@ -500,6 +482,8 @@ abstract class ContinuousDistributionAbstractTest {
 
     @Test
     void testOutsideSupport() {
+        distribution = makeDistribution();
+
         // Test various quantities when the variable is outside the support.
         final double lo = distribution.getSupportLowerBound();
         Assertions.assertEquals(lo, distribution.inverseCumulativeProbability(0.0));
@@ -523,21 +507,25 @@ abstract class ContinuousDistributionAbstractTest {
 
     @Test
     void testProbabilityWithLowerBoundAboveUpperBound() {
+        distribution = makeDistribution();
         Assertions.assertThrows(DistributionException.class, () -> distribution.probability(1, 0));
     }
 
     @Test
     void testInverseCumulativeProbabilityWithProbabilityBelowZero() {
+        distribution = makeDistribution();
         Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
 
     @Test
     void testInverseCumulativeProbabilityWithProbabilityAboveOne() {
+        distribution = makeDistribution();
         Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     @Test
     void testSampling() {
+        distribution = makeDistribution();
         final double[] quartiles = TestUtils.getDistributionQuartiles(getDistribution());
         final double[] expected = {0.25, 0.25, 0.25, 0.25};
 
@@ -567,6 +555,10 @@ abstract class ContinuousDistributionAbstractTest {
      */
     @Test
     void testDensityIntegrals() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
+        cumulativeTestValues = makeCumulativeTestValues();
+
         final double tol = 1e-9;
         final BaseAbstractUnivariateIntegrator integrator =
             new IterativeLegendreGaussIntegrator(5, 1e-12, 1e-10);
@@ -601,6 +593,7 @@ abstract class ContinuousDistributionAbstractTest {
      */
     @Test
     void testIsSupportConnected() {
+        distribution = makeDistribution();
         Assertions.assertEquals(isSupportConnected(), distribution.isSupportConnected());
     }
 

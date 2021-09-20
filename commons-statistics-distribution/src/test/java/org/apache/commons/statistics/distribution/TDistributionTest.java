@@ -104,10 +104,12 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
                                               -6.31375151468, -3.07768353718, 318.308838986,
                                               31.8205159538, 12.7062047362, 6.31375151468,
                                               3.07768353718});
+        setCumulativeTestValues(makeCumulativeTestValues());
         setDensityTestValues(new double[] {3.14158231817e-06, 0.000314055924703, 0.00195946145194,
                                            0.00778959736375, 0.0303958893917, 3.14158231817e-06,
                                            0.000314055924703, 0.00195946145194, 0.00778959736375,
                                            0.0303958893917});
+        setInverseCumulativeTestPoints(getCumulativeTestValues());
         setInverseCumulativeTestValues(getCumulativeTestPoints());
         verifyCumulativeProbabilities();
         verifyInverseCumulativeProbabilities();
@@ -116,6 +118,7 @@ class TDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();

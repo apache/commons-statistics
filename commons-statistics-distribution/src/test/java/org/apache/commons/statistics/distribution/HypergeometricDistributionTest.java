@@ -346,7 +346,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         setDistribution(new HypergeometricDistribution(500, 70, 300));
         setCumulativePrecisionTestPoints(new int[] {10, 8});
         setCumulativePrecisionTestValues(new double[] {2.4055720603264525e-17, 1.2848174992266236e-19});
-        verifySurvivalProbabilityPrecision();
+        verifyCumulativeProbabilityPrecision();
     }
 
     @Test

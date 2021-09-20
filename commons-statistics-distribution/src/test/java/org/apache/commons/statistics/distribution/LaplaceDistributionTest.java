@@ -82,6 +82,7 @@ class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
         setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();

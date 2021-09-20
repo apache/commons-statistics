@@ -102,6 +102,7 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
         setInverseCumulativeTestValues(new double[] {0.0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();

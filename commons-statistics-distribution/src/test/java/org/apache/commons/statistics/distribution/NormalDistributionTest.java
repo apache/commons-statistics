@@ -104,6 +104,7 @@ class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testQuantiles() {
+        setDistribution(makeDistribution());
         setDensityTestValues(new double[] {0.0385649760808, 0.172836231799, 0.284958771715, 0.172836231799, 0.0385649760808,
                                            0.00316560600853, 9.55930184035e-05, 1.06194251052e-06});
         verifyQuantiles();
@@ -124,6 +125,7 @@ class NormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();

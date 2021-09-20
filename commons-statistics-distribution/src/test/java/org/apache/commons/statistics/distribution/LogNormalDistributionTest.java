@@ -127,6 +127,7 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testQuantiles() {
+        setDistribution(makeDistribution());
         setCumulativeTestValues(new double[] {0, 0.0396495152787,
                                               0.16601209243, 0.272533253269,
                                               0.357618409638, 0.426488363093,
@@ -164,6 +165,7 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
@@ -189,7 +191,7 @@ class LogNormalDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testParameterAccessors() {
-        final LogNormalDistribution distribution = (LogNormalDistribution)getDistribution();
+        final LogNormalDistribution distribution = makeDistribution();
         Assertions.assertEquals(2.1, distribution.getMu());
         Assertions.assertEquals(1.4, distribution.getSigma());
     }

@@ -83,15 +83,18 @@ class BinomialDistributionTest extends DiscreteDistributionAbstractTest {
     void testSmallPValue() {
         final BinomialDistribution dist = new BinomialDistribution(10, 0.3);
         setDistribution(dist);
+        setCumulativeTestPoints(makeCumulativeTestPoints());
         // computed using R version 3.4.4
         setCumulativeTestValues(new double[] {0.00000000000000000000, 0.02824752489999998728, 0.14930834590000002793,
             0.38278278639999974153, 0.64961071840000017552, 0.84973166740000016794, 0.95265101260000006889,
             0.98940792160000001765, 0.99840961360000002323, 0.99985631409999997654, 0.99999409509999992451,
             1.00000000000000000000, 1.00000000000000000000});
+        setProbabilityTestPoints(makeProbabilityTestPoints());
         setProbabilityTestValues(new double[] {0.0000000000000000000e+00, 2.8247524899999980341e-02,
             1.2106082099999991575e-01, 2.3347444049999999116e-01, 2.6682793199999993439e-01, 2.0012094900000007569e-01,
             1.0291934520000002584e-01, 3.6756909000000004273e-02, 9.0016919999999864960e-03, 1.4467005000000008035e-03,
             1.3778099999999990615e-04, 5.9048999999999949131e-06, 0.0000000000000000000e+00});
+        setInverseCumulativeTestPoints(makeInverseCumulativeTestPoints());
         setInverseCumulativeTestValues(new int[] {0, 0, 0, 0, 1, 1, 8, 7, 6, 5, 5, 10});
         verifyProbabilities();
         verifyLogProbabilities();

@@ -88,6 +88,7 @@ class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setCumulativeTestPoints(new double[] {-2, 0});
         setCumulativeTestValues(new double[] {0, 0});
         verifyCumulativeProbabilities();
@@ -95,6 +96,7 @@ class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
@@ -102,7 +104,7 @@ class ExponentialDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testCumulativeProbability2() {
-        final double actual = getDistribution().probability(0.25, 0.75);
+        final double actual = makeDistribution().probability(0.25, 0.75);
         Assertions.assertEquals(0.0905214, actual, 10e-4);
     }
 

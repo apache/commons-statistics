@@ -117,6 +117,7 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testQuantiles() {
+        setDistribution(makeDistribution());
         setCumulativeTestValues(new double[] {0, 0, 0, 0.510884134236, 0.694625688662, 0.785201995008, 0.837811522357, 0.871634279326});
         setDensityTestValues(new double[] {0, 0, 0.666666666, 0.195646346305, 0.0872498032394, 0.0477328899983, 0.0294888141169, 0.0197485724114});
         verifyQuantiles();
@@ -137,6 +138,7 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testInverseCumulativeProbabilityExtremes() {
+        setDistribution(makeDistribution());
         setInverseCumulativeTestPoints(new double[] {0, 1});
         setInverseCumulativeTestValues(new double[] {2.1, Double.POSITIVE_INFINITY});
         verifyInverseCumulativeProbabilities();
@@ -144,7 +146,7 @@ class ParetoDistributionTest extends ContinuousDistributionAbstractTest {
 
     @Test
     void testParameterAccessors() {
-        final ParetoDistribution distribution = (ParetoDistribution)getDistribution();
+        final ParetoDistribution distribution = makeDistribution();
         Assertions.assertEquals(2.1, distribution.getScale());
         Assertions.assertEquals(1.4, distribution.getShape());
     }

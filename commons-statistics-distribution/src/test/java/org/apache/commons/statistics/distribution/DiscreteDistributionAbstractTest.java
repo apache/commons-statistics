@@ -19,9 +19,7 @@ package org.apache.commons.statistics.distribution;
 import java.util.Arrays;
 import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -185,46 +183,6 @@ abstract class DiscreteDistributionAbstractTest {
 
     /** Creates the default inverse cumulative probability density test expected values. */
     public abstract int[] makeInverseCumulativeTestValues();
-
-    //-------------------- Setup / tear down ----------------------------------
-
-    /**
-     * Setup sets all test instance data to default values.
-     */
-    @BeforeEach
-    void setUp() {
-        distribution = makeDistribution();
-        probabilityTestPoints = makeProbabilityTestPoints();
-        probabilityTestValues = makeProbabilityTestValues();
-        logProbabilityTestValues = makeLogProbabilityTestValues();
-        cumulativeTestPoints = makeCumulativeTestPoints();
-        cumulativeTestValues = makeCumulativeTestValues();
-        cumulativePrecisionTestPoints = makeCumulativePrecisionTestPoints();
-        cumulativePrecisionTestValues = makeCumulativePrecisionTestValues();
-        survivalPrecisionTestPoints = makeSurvivalPrecisionTestPoints();
-        survivalPrecisionTestValues = makeSurvivalPrecisionTestValues();
-        inverseCumulativeTestPoints = makeInverseCumulativeTestPoints();
-        inverseCumulativeTestValues = makeInverseCumulativeTestValues();
-    }
-
-    /**
-     * Cleans up test instance data
-     */
-    @AfterEach
-    void tearDown() {
-        distribution = null;
-        probabilityTestPoints = null;
-        probabilityTestValues = null;
-        logProbabilityTestValues = null;
-        cumulativeTestPoints = null;
-        cumulativeTestValues = null;
-        cumulativePrecisionTestPoints = null;
-        cumulativePrecisionTestValues = null;
-        survivalPrecisionTestPoints = null;
-        survivalPrecisionTestValues = null;
-        inverseCumulativeTestPoints = null;
-        inverseCumulativeTestValues = null;
-    }
 
     //-------------------- Verification methods -------------------------------
 
@@ -426,41 +384,64 @@ abstract class DiscreteDistributionAbstractTest {
 
     @Test
     void testProbabilities() {
+        distribution = makeDistribution();
+        probabilityTestPoints = makeProbabilityTestPoints();
+        probabilityTestValues = makeProbabilityTestValues();
         verifyProbabilities();
     }
 
     @Test
     void testLogProbabilities() {
+        distribution = makeDistribution();
+        probabilityTestPoints = makeProbabilityTestPoints();
+        logProbabilityTestValues = makeLogProbabilityTestValues();
         verifyLogProbabilities();
     }
 
     @Test
     void testCumulativeProbabilities() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
+        cumulativeTestValues = makeCumulativeTestValues();
         verifyCumulativeProbabilities();
     }
 
     @Test
     void testSurvivalProbability() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
+        cumulativeTestValues = makeCumulativeTestValues();
         verifySurvivalProbability();
     }
 
     @Test
     void testSurvivalAndCumulativeProbabilitiesAreComplementary() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
         verifySurvivalAndCumulativeProbabilityComplement();
     }
 
     @Test
     void testCumulativeProbabilityPrecision() {
+        distribution = makeDistribution();
+        cumulativePrecisionTestPoints = makeCumulativePrecisionTestPoints();
+        cumulativePrecisionTestValues = makeCumulativePrecisionTestValues();
         verifyCumulativeProbabilityPrecision();
     }
 
     @Test
     void testSurvivalProbabilityPrecision() {
+        distribution = makeDistribution();
+        survivalPrecisionTestPoints = makeSurvivalPrecisionTestPoints();
+        survivalPrecisionTestValues = makeSurvivalPrecisionTestValues();
         verifySurvivalProbabilityPrecision();
     }
 
     @Test
     void testInverseCumulativeProbabilities() {
+        distribution = makeDistribution();
+        inverseCumulativeTestPoints = makeInverseCumulativeTestPoints();
+        inverseCumulativeTestValues = makeInverseCumulativeTestValues();
         verifyInverseCumulativeProbabilities();
     }
 
@@ -469,6 +450,8 @@ abstract class DiscreteDistributionAbstractTest {
      */
     @Test
     void testConsistency() {
+        distribution = makeDistribution();
+        cumulativeTestPoints = makeCumulativeTestPoints();
         for (int i = 1; i < cumulativeTestPoints.length; i++) {
 
             // check that cdf(x, x) = 0
@@ -490,6 +473,8 @@ abstract class DiscreteDistributionAbstractTest {
 
     @Test
     void testOutsideSupport() {
+        distribution = makeDistribution();
+
         // Test various quantities when the variable is outside the support.
         final int lo = distribution.getSupportLowerBound();
         Assertions.assertEquals(distribution.probability(lo), distribution.cumulativeProbability(lo), getTolerance());
@@ -524,21 +509,25 @@ abstract class DiscreteDistributionAbstractTest {
 
     @Test
     void testProbabilityWithLowerBoundAboveUpperBound() {
+        distribution = makeDistribution();
         Assertions.assertThrows(DistributionException.class, () -> distribution.probability(1, 0));
     }
 
     @Test
     void testInverseCumulativeProbabilityWithProbabilityBelowZero() {
+        distribution = makeDistribution();
         Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(-1));
     }
 
     @Test
     void testInverseCumulativeProbabilityWithProbabilityAboveOne() {
+        distribution = makeDistribution();
         Assertions.assertThrows(DistributionException.class, () -> distribution.inverseCumulativeProbability(2));
     }
 
     @Test
     void testSampling() {
+        distribution = makeDistribution();
         // This test uses the points that are used to test the distribution PMF.
         // The sum of the probability values does not have to be 1 (or very close to 1).
         // Any value generated by the sampler that is not an expected point will
@@ -586,6 +575,7 @@ abstract class DiscreteDistributionAbstractTest {
      */
     @Test
     void testIsSupportConnected() {
+        distribution = makeDistribution();
         Assertions.assertEquals(isSupportConnected(), distribution.isSupportConnected());
     }
 

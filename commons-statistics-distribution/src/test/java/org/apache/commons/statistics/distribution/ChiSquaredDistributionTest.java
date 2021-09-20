@@ -105,6 +105,7 @@ class ChiSquaredDistributionTest extends ContinuousDistributionAbstractTest {
         setCumulativeTestPoints(new double[] {1.168926E-60, 1.168926E-40, 1.063132E-32,
                                               1.144775E-26, 1.168926E-20, 5.472917, 2.175255, 1.13438,
                                               0.5318646, 0.1526342});
+        setCumulativeTestValues(makeCumulativeTestValues());
         setInverseCumulativeTestValues(getCumulativeTestPoints());
         setInverseCumulativeTestPoints(getCumulativeTestValues());
         verifyCumulativeProbabilities();
