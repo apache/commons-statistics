@@ -20,6 +20,8 @@ package org.apache.commons.statistics.distribution;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for CauchyDistribution.
@@ -94,32 +96,34 @@ class CauchyDistributionTest extends ContinuousDistributionAbstractTest {
         verifyInverseCumulativeProbabilities();
     }
 
-    @Test
-    void testParameterAccessors() {
-        final CauchyDistribution dist = makeDistribution();
-        Assertions.assertEquals(1.2, dist.getLocation());
-        Assertions.assertEquals(2.1, dist.getScale());
+    @ParameterizedTest
+    @CsvSource({
+        "1.2, 2.1",
+        "0, 1",
+        "-3, 2",
+    })
+    void testParameterAccessors(double location, double scale) {
+        final CauchyDistribution dist = new CauchyDistribution(location, scale);
+        Assertions.assertEquals(location, dist.getLocation());
+        Assertions.assertEquals(scale, dist.getScale());
     }
 
-    @Test
-    void testConstructorPrecondition1() {
-        Assertions.assertThrows(DistributionException.class, () -> new CauchyDistribution(0, 0));
+    @ParameterizedTest
+    @CsvSource({
+        "0, 0",
+        "0, -1",
+    })
+    void testConstructorPreconditions(double location, double scale) {
+        Assertions.assertThrows(DistributionException.class, () -> new CauchyDistribution(location, scale));
     }
 
-    @Test
-    void testConstructorPrecondition2() {
-        Assertions.assertThrows(DistributionException.class, () -> new CauchyDistribution(0, -1));
-    }
-
-    @Test
-    void testMoments() {
-        CauchyDistribution dist;
-
-        dist = new CauchyDistribution(10.2, 0.15);
-        Assertions.assertTrue(Double.isNaN(dist.getMean()));
-        Assertions.assertTrue(Double.isNaN(dist.getVariance()));
-
-        dist = new CauchyDistribution(23.12, 2.12);
+    @ParameterizedTest
+    @CsvSource({
+        "10.2, 0.15",
+        "23.12, 2.12",
+    })
+    void testMoments(double location, double scale) {
+        final CauchyDistribution dist = new CauchyDistribution(location, scale);
         Assertions.assertTrue(Double.isNaN(dist.getMean()));
         Assertions.assertTrue(Double.isNaN(dist.getVariance()));
     }
