@@ -235,8 +235,16 @@ abstract class ContinuousDistributionAbstractTest {
     //-------------------- Verification methods -------------------------------
 
     /**
-     * Verifies that density calculations match expected values
-     * using current test instance data.
+     * Verifies that density calculations match expected values.
+     * Uses current test instance data.
+     *
+     * @see #makeDistribution()
+     * @see #makeCumulativeTestPoints()
+     * @see #makeDensityTestValues()
+     * @see #setDistribution(ContinuousDistribution)
+     * @see #setCumulativeTestPoints(double[])
+     * @see #setDensityTestValues(double[])
+     * @see #setTolerance(double)
      */
     protected void verifyDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
@@ -248,8 +256,16 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Verifies that logarithmic density calculations match expected values
-     * using current test instance data.
+     * Verifies that logarithmic density calculations match expected values.
+     * Uses current test instance data.
+     *
+     * @see #makeDistribution()
+     * @see #makeCumulativeTestPoints()
+     * @see #makeLogDensityTestValues()
+     * @see #setDistribution(ContinuousDistribution)
+     * @see #setCumulativeTestPoints(double[])
+     * @see #setLogDensityTestValues(double[])
+     * @see #setTolerance(double)
      */
     protected void verifyLogDensities() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
@@ -261,8 +277,16 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Verifies that cumulative probability density calculations match expected values
-     * using current test instance data.
+     * Verifies that cumulative probability density calculations match expected values.
+     * Uses current test instance data.
+     *
+     * @see #makeDistribution()
+     * @see #makeCumulativeTestPoints()
+     * @see #makeCumulativeTestValues()
+     * @see #setDistribution(ContinuousDistribution)
+     * @see #setCumulativeTestPoints(double[])
+     * @see #setCumulativeTestValues(double[])
+     * @see #setTolerance(double)
      */
     protected void verifyCumulativeProbabilities() {
         // verify cumulativeProbability(double)
@@ -292,6 +316,19 @@ abstract class ContinuousDistributionAbstractTest {
         }
     }
 
+    /**
+     * Verifies that survival probability density calculations match expected values.
+     * The expected values are computed using 1 - CDF(x) from the cumulative test values.
+     * Uses current test instance data.
+     *
+     * @see #makeDistribution()
+     * @see #makeCumulativeTestPoints()
+     * @see #makeCumulativeTestValues()
+     * @see #setDistribution(ContinuousDistribution)
+     * @see #setCumulativeTestPoints(double[])
+     * @see #setCumulativeTestValues(double[])
+     * @see #setTolerance(double)
+     */
     protected void verifySurvivalProbability() {
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
             final double x = cumulativeTestPoints[i];
@@ -303,6 +340,17 @@ abstract class ContinuousDistributionAbstractTest {
         }
     }
 
+    /**
+     * Verifies that cumulative probability density and survival probability calculations
+     * sum to approximately 1.0.
+     * Uses current test instance data.
+     *
+     * @see #makeDistribution()
+     * @see #makeCumulativeTestPoints()
+     * @see #setDistribution(ContinuousDistribution)
+     * @see #setCumulativeTestPoints(double[])
+     * @see #setTolerance(double)
+     */
     protected void verifySurvivalAndCumulativeProbabilityComplement() {
         for (final double x : cumulativeTestPoints) {
             Assertions.assertEquals(
@@ -314,8 +362,17 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Verifies that survival is simply not 1-cdf by testing calculations that would underflow that calculation and
-     * result in an inaccurate answer.
+     * Verifies that survival is simply not 1-cdf by testing calculations that would underflow
+     * that calculation and result in an inaccurate answer.
+     * Uses current test instance data.
+     *
+     * @see #makeDistribution()
+     * @see #makeSurvivalPrecisionTestPoints()
+     * @see #makeSurvivalPrecisionTestValues()
+     * @see #setDistribution(ContinuousDistribution)
+     * @see #setSurvivalPrecisionTestPoints(double[])
+     * @see #setSurvivalPrecisionTestValues(double[])
+     * @see #setHighPrecisionTolerance(double)
      */
     protected void verifySurvivalProbabilityPrecision() {
         for (int i = 0; i < survivalPrecisionTestPoints.length; i++) {
@@ -329,8 +386,17 @@ abstract class ContinuousDistributionAbstractTest {
     }
 
     /**
-     * Verifies that CDF is simply not 1-survival function by testing values that would result with inaccurate results
-     * if simply calculating 1-survival function.
+     * Verifies that CDF is simply not 1-survival function by testing values that would result
+     * with inaccurate results if simply calculating 1-survival function.
+     * Uses current test instance data.
+     *
+     * @see #makeDistribution()
+     * @see #makeCumulativePrecisionTestPoints()
+     * @see #makeCumulativePrecisionTestValues()
+     * @see #setDistribution(ContinuousDistribution)
+     * @see #setCumulativePrecisionTestPoints(double[])
+     * @set #setCumulativePrecisionTestValues(double[])
+     * @see #setHighPrecisionTolerance(double)
      */
     protected void verifyCumulativeProbabilityPrecision() {
         for (int i = 0; i < cumulativePrecisionTestPoints.length; i++) {
@@ -345,7 +411,15 @@ abstract class ContinuousDistributionAbstractTest {
 
     /**
      * Verifies that inverse cumulative probability density calculations match expected values
-     * using current test instance data.
+     * Uses current test instance data.
+     *
+     * @see #makeDistribution()
+     * @see #makeInverseCumulativeTestPoints()
+     * @see #makeInverseCumulativeTestValues()
+     * @see #setDistribution(ContinuousDistribution)
+     * @see #setInverseCumulativeTestPoints(double[])
+     * @see #setInverseCumulativeTestValues(double[])
+     * @see #setTolerance(double)
      */
     protected void verifyInverseCumulativeProbabilities() {
         for (int i = 0; i < inverseCumulativeTestPoints.length; i++) {
