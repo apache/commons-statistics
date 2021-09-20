@@ -16,10 +16,22 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test cases for LevyDistribution.
+ */
 class LevyDistributionTest extends ContinuousDistributionAbstractTest {
+
+    //---------------------- Override tolerance --------------------------------
+
+    @BeforeEach
+    void customSetUp() {
+        setTolerance(1e-6);
+    }
 
     //-------------- Implementations for abstract methods ----------------------
 
@@ -31,35 +43,49 @@ class LevyDistributionTest extends ContinuousDistributionAbstractTest {
     @Override
     public double[] makeCumulativeTestPoints() {
         return new double[] {
-            1.2001, 1.21, 1.225, 1.25, 1.3, 1.9, 3.4, 5.6
+            1.2, 1.2001, 1.21, 1.225, 1.25, 1.3, 1.9, 3.4, 5.6
         };
     }
 
     @Override
     public double[] makeCumulativeTestValues() {
         // values computed with R and function plevy from rmutil package
+        // 0 has been supplemented as R raises an error for x=mu;
+        // 'scipy.stats import levy' returns 0.
+        // Mathematica returns 0.
         return new double[] {
-            0, 2.53962850749e-10, 6.33424836662e-05, 0.00467773498105,
-            0.0455002638964, 0.449691797969, 0.669815357599, 0.763024600553
+            0, 0,
+            2.5396285074918978353e-10, 6.3342483666239957074e-05,
+            4.6777349810471768876e-03, 4.5500263896358417171e-02,
+            4.4969179796889102718e-01, 6.6981535759941657204e-01,
+            7.6302460055299503594e-01,
         };
     }
 
     @Override
     public double[] makeDensityTestValues() {
-        // values computed with R and function dlevy from rmutil package
+        // values computed with R and function plevy from rmutil package
+        // 0 has been supplemented for x=mu.
         return new double[] {
-            0, 5.20056373765e-07, 0.0214128361224, 0.413339707082, 1.07981933026,
-            0.323749319161, 0.0706032550094, 0.026122839884
+            0, 0,
+            5.2005637376544783034e-07, 2.1412836122382383069e-02,
+            4.1333970708184164522e-01, 1.0798193302637617563e+00,
+            3.2374931916108729002e-01, 7.0603255009363707906e-02,
+            2.6122839883975741693e-02,
         };
     }
 
     @Override
     public double[] makeLogDensityTestValues() {
         // Reference values are from R, version 2.14.1.
+        // -infinity has been supplemented for x=mu.
         return new double[] {
-            -1987.561573341398d, -14.469328620160d, -3.843764717971d,
-            -0.883485488811d, 0.076793740349d, -1.127785768948d,
-            -2.650679030597d, -3.644945255983d};
+            Double.NEGATIVE_INFINITY,   -1.9875615733413976614e+03,
+            -1.4469328620159595644e+01, -3.8437647179708118728e+00,
+            -8.8348548881076238715e-01,  7.6793740349318850846e-02,
+            -1.1277857689479373615e+00, -2.6506790305972467436e+00,
+            -3.6449452559826185372e+00
+        };
     }
 
     @Override
@@ -82,6 +108,23 @@ class LevyDistributionTest extends ContinuousDistributionAbstractTest {
     public double[] makeSurvivalPrecisionTestValues() {
         // These were created using WolframAlpha
         return new double[] {1.5957691216057308e-20, 2.4623252122982907e-20};
+    }
+
+    @Override
+    public double[] makeInverseCumulativeTestPoints() {
+        // Eliminate redundancy as two cdf values are zero.
+        final double[] x = makeCumulativeTestValues();
+        return Arrays.copyOfRange(x, 1, x.length);
+    }
+
+    @Override
+    public double[] makeInverseCumulativeTestValues() {
+        // Remove the second test point which evaluates cdf(x) == 0.
+        double[] x = makeCumulativeTestPoints();
+        final double[] y = Arrays.copyOfRange(x, 1, x.length);
+        // Copy back the lowest value of x (this is the support lower bound)
+        y[0] = x[0];
+        return y;
     }
 
     //-------------------- Additional test cases -------------------------------
