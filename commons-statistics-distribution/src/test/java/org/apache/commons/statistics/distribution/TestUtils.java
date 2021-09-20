@@ -159,15 +159,15 @@ final class TestUtils {
             msgBuffer.append("value\texpected\tobserved\n");
             for (int i = 0; i < expected.length; i++) {
                 msgBuffer.append(valueLabels[i]);
-                msgBuffer.append("\t");
+                msgBuffer.append('\t');
                 msgBuffer.append(df.format(expected[i]));
                 msgBuffer.append("\t\t");
                 msgBuffer.append(observed[i]);
-                msgBuffer.append("\n");
+                msgBuffer.append('\n');
             }
             msgBuffer.append("This test can fail randomly due to sampling error with probability ");
             msgBuffer.append(alpha);
-            msgBuffer.append(".");
+            msgBuffer.append('.');
             Assertions.fail(msgBuffer.toString());
         }
     }
