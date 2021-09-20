@@ -17,9 +17,12 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for LevyDistribution.
@@ -129,41 +132,35 @@ class LevyDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    @Test
-    void testDensityAtSupportBounds() {
-        final LevyDistribution distribution = makeDistribution();
-        // Below the location
-        Assertions.assertEquals(0.0, distribution.density(distribution.getLocation() - 1));
+    static Stream<Arguments> distributionParameters() {
+        return Stream.of(
+            Arguments.arguments(0, 0.5),
+            Arguments.arguments(0, 1),
+            Arguments.arguments(-3, 2)
+        );
     }
 
-    @Test
-    void testParameterAccessors() {
-        final LevyDistribution dist = makeDistribution();
-        Assertions.assertEquals(1.2, dist.getLocation());
-        Assertions.assertEquals(0.4, dist.getScale());
+    @ParameterizedTest
+    @MethodSource("distributionParameters")
+    void testParameterAccessors(double location, double scale) {
+        final LevyDistribution dist = new LevyDistribution(location, scale);
+        Assertions.assertEquals(location, dist.getLocation());
+        Assertions.assertEquals(scale, dist.getScale());
     }
 
-    @Test
-    void testMoments() {
-        LevyDistribution dist;
-
-        dist = new LevyDistribution(0, 0.5);
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
-
-        dist = new LevyDistribution(0, 1);
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
-
-        dist = new LevyDistribution(-3, 2);
+    @ParameterizedTest
+    @MethodSource("distributionParameters")
+    void testMoments(double location, double scale) {
+        final LevyDistribution dist = new LevyDistribution(location, scale);
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
     }
 
-    @Test
-    void testSupport() {
-        final LevyDistribution dist = makeDistribution();
-        Assertions.assertEquals(dist.getLocation(), dist.getSupportLowerBound());
+    @ParameterizedTest
+    @MethodSource("distributionParameters")
+    void testSupport(double location, double scale) {
+        final LevyDistribution dist = new LevyDistribution(location, scale);
+        Assertions.assertEquals(location, dist.getSupportLowerBound());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getSupportUpperBound());
         Assertions.assertTrue(dist.isSupportConnected());
     }
