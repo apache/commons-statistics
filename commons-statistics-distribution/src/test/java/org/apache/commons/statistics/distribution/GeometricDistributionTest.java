@@ -19,7 +19,6 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -156,7 +155,6 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    @Disabled("Requires special handling at x=0 when p=1.0")
     void testProbabilityOfSuccessOne() {
         final GeometricDistribution dist = new GeometricDistribution(1.0);
         Assertions.assertEquals(1.0, dist.getProbabilityOfSuccess());
@@ -170,18 +168,14 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         setCumulativeTestValues(new double[] {1.0, 1.0, 1.0});
         setInverseCumulativeTestPoints(new double[] {0, 0.5, 1.0});
         setInverseCumulativeTestValues(new int[] {0, 0, 0});
-        // XXX: Fails (pmf(x=0) returns NaN)
         verifyProbabilities();
-        // XXX: Fails (logpmf(x=0) returns NaN)
         verifyLogProbabilities();
         verifyCumulativeProbabilities();
         verifySurvivalProbability();
         verifySurvivalAndCumulativeProbabilityComplement();
-        // XXX: Fails (icdf(p=1) returns Integer.MAX_VALUE)
         verifyInverseCumulativeProbabilities();
 
         Assertions.assertEquals(0, dist.getSupportLowerBound());
-        // XXX: Fails (returns Integer.MAX_VALUE)
         Assertions.assertEquals(0, dist.getSupportUpperBound());
 
         final DiscreteDistribution.Sampler s = dist.createSampler(RandomSource.SPLIT_MIX_64.create());

@@ -58,8 +58,8 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double probability(int x) {
-        if (x < 0) {
-            return 0.0;
+        if (x <= 0) {
+            return x < 0 ? 0.0 : probabilityOfSuccess;
         }
         return Math.exp(log1mProbabilityOfSuccess * x) * probabilityOfSuccess;
     }
@@ -67,8 +67,8 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double logProbability(int x) {
-        if (x < 0) {
-            return Double.NEGATIVE_INFINITY;
+        if (x <= 0) {
+            return x < 0 ? Double.NEGATIVE_INFINITY : logProbabilityOfSuccess;
         }
         return x * log1mProbabilityOfSuccess + logProbabilityOfSuccess;
     }
@@ -101,7 +101,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
         if (p == 1) {
-            return Integer.MAX_VALUE;
+            return getSupportUpperBound();
         }
         if (p == 0) {
             return 0;
@@ -145,14 +145,14 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is infinite (which we approximate as
-     * {@code Integer.MAX_VALUE}).
+     * <p>The upper bound of the support is positive infinity except for the
+     * probability parameter {@code p = 1.0}.
      *
-     * @return upper bound of the support (always Integer.MAX_VALUE)
+     * @return upper bound of the support ({@code Integer.MAX_VALUE} or 0)
      */
     @Override
     public int getSupportUpperBound() {
-        return Integer.MAX_VALUE;
+        return probabilityOfSuccess < 1 ? Integer.MAX_VALUE : 0;
     }
 
     /**
