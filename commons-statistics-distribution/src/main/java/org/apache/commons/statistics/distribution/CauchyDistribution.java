@@ -23,8 +23,8 @@ import org.apache.commons.rng.sampling.distribution.StableSampler;
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy distribution</a>.
  */
 public class CauchyDistribution extends AbstractContinuousDistribution {
-    /** The median of this distribution. */
-    private final double median;
+    /** The location of this distribution. */
+    private final double location;
     /** The scale of this distribution. */
     private final double scale;
     /** Density factor (scale / pi). */
@@ -35,28 +35,28 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a distribution.
      *
-     * @param median Median for this distribution.
+     * @param location Location for this distribution.
      * @param scale Scale parameter for this distribution.
      * @throws IllegalArgumentException if {@code scale <= 0}.
      */
-    public CauchyDistribution(double median,
+    public CauchyDistribution(double location,
                               double scale) {
         if (scale <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
         }
         this.scale = scale;
-        this.median = median;
+        this.location = location;
         scaleOverPi = scale / Math.PI;
         scale2 = scale * scale;
     }
 
     /**
-     * Access the median.
+     * Access the location.
      *
-     * @return the median for this distribution.
+     * @return the location for this distribution.
      */
-    public double getMedian() {
-        return median;
+    public double getLocation() {
+        return location;
     }
 
     /**
@@ -71,20 +71,20 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
-        final double dev = x - median;
+        final double dev = x - location;
         return scaleOverPi / (dev * dev + scale2);
     }
 
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x) {
-        return cdf((x - median) / scale);
+        return cdf((x - location) / scale);
     }
 
     /** {@inheritDoc} */
     @Override
     public double survivalProbability(double x) {
-        return cdf(-(x - median) / scale);
+        return cdf(-(x - location) / scale);
     }
 
     /**
@@ -112,7 +112,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
         } else  if (p == 1) {
             return Double.POSITIVE_INFINITY;
         }
-        return median + scale * Math.tan(Math.PI * (p - .5));
+        return location + scale * Math.tan(Math.PI * (p - .5));
     }
 
     /**
@@ -181,7 +181,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Cauchy distribution =
-        // Stable distribution with alpha=1, beta=0, gamma=scale, delta=location (median)
-        return StableSampler.of(rng, 1, 0, getScale(), getMedian())::sample;
+        // Stable distribution with alpha=1, beta=0, gamma=scale, delta=location
+        return StableSampler.of(rng, 1, 0, getScale(), getLocation())::sample;
     }
 }
