@@ -40,30 +40,30 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     /**
      * Creates a new Poisson distribution with specified mean.
      *
-     * @param p the Poisson mean
+     * @param mean the Poisson mean
      * @throws IllegalArgumentException if {@code p <= 0}.
      */
-    public PoissonDistribution(double p) {
-        this(p, DEFAULT_EPSILON, DEFAULT_MAX_ITERATIONS);
+    public PoissonDistribution(double mean) {
+        this(mean, DEFAULT_EPSILON, DEFAULT_MAX_ITERATIONS);
     }
 
     /**
      * Creates a new Poisson distribution with specified mean, convergence
      * criterion and maximum number of iterations.
      *
-     * @param p Poisson mean.
+     * @param mean Poisson mean.
      * @param epsilon Convergence criterion for cumulative probabilities.
      * @param maxIterations Maximum number of iterations for cumulative
      * probabilities.
      * @throws IllegalArgumentException if {@code p <= 0}.
      */
-    private PoissonDistribution(double p,
+    private PoissonDistribution(double mean,
                                 double epsilon,
                                 int maxIterations) {
-        if (p <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, p);
+        if (mean <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, mean);
         }
-        mean = p;
+        this.mean = mean;
         this.epsilon = epsilon;
         this.maxIterations = maxIterations;
     }
