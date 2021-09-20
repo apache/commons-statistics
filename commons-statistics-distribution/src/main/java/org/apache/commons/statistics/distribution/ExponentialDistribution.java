@@ -21,6 +21,10 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.
+ *
+ * <p>This implementation uses the scale parameter {@code μ} which is the mean of the distribution.
+ * A common alternative parameterization uses the rate parameter {@code λ} which is the reciprocal
+ * of the mean.
  */
 public class ExponentialDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
@@ -35,7 +39,7 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a distribution.
      *
-     * @param mean Mean of this distribution.
+     * @param mean Mean of this distribution. This is a scale parameter.
      * @throws IllegalArgumentException if {@code mean <= 0}.
      */
     public ExponentialDistribution(double mean) {
@@ -109,7 +113,11 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
         return -mean * Math.log1p(-p);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * @return the mean
+     */
     @Override
     public double getMean() {
         return mean;
@@ -118,7 +126,8 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For mean parameter {@code k}, the variance is {@code k^2}.
+     * <p>For mean {@code k}, the variance is {@code k^2}.
+     * @return the variance
      */
     @Override
     public double getVariance() {
@@ -166,6 +175,6 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Exponential distribution sampler.
-        return ZigguratSampler.Exponential.of(rng, mean)::sample;
+        return ZigguratSampler.Exponential.of(rng, getMean())::sample;
     }
 }
