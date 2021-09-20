@@ -160,22 +160,24 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         Assertions.assertEquals(1.0, dist.getProbabilityOfSuccess());
         Assertions.assertEquals(0.0, dist.getMean());
         Assertions.assertEquals(0.0, dist.getVariance());
-        // XXX: Fails (returns NaN)
-        Assertions.assertEquals(1.0, dist.probability(0));
-        Assertions.assertEquals(0.0, dist.probability(1));
-        Assertions.assertEquals(0.0, dist.probability(2));
-        // XXX: Fails (returns NaN)
-        Assertions.assertEquals(0.0, dist.logProbability(0));
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logProbability(1));
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logProbability(2));
-        Assertions.assertEquals(1.0, dist.cumulativeProbability(0));
-        Assertions.assertEquals(1.0, dist.cumulativeProbability(1));
-        Assertions.assertEquals(0.0, dist.survivalProbability(0));
-        Assertions.assertEquals(0.0, dist.survivalProbability(1));
-        Assertions.assertEquals(0, dist.inverseCumulativeProbability(0.0));
-        Assertions.assertEquals(0, dist.inverseCumulativeProbability(0.5));
-        // XXX: Fails (returns Integer.MAX_VALUE)
-        Assertions.assertEquals(0, dist.inverseCumulativeProbability(1.0));
+
+        setDistribution(dist);
+        setProbabilityTestPoints(new int[] {0, 1, 2});
+        setProbabilityTestValues(new double[] {1.0, 0.0, 0.0});
+        setCumulativeTestPoints(new int[] {0, 1, 2});
+        setCumulativeTestValues(new double[] {1.0, 1.0, 1.0});
+        setInverseCumulativeTestPoints(new double[] {0, 0.5, 1.0});
+        setInverseCumulativeTestValues(new int[] {0, 0, 0});
+        // XXX: Fails (pmf(x=0) returns NaN)
+        verifyProbabilities();
+        // XXX: Fails (logpmf(x=0) returns NaN)
+        verifyLogProbabilities();
+        verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
+        // XXX: Fails (icdf(p=1) returns Integer.MAX_VALUE)
+        verifyInverseCumulativeProbabilities();
+
         Assertions.assertEquals(0, dist.getSupportLowerBound());
         // XXX: Fails (returns Integer.MAX_VALUE)
         Assertions.assertEquals(0, dist.getSupportUpperBound());
