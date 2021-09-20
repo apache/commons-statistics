@@ -38,7 +38,7 @@ final class RegularizedBetaUtils {
      * @return the complement of the regularized beta function 1 - I(x, a, b).
      */
     static double complement(double x, double a, double b) {
-        // Identity of the regularized beta function: 1 - I_z(a, b) = I_{1-x}(b, a)
+        // Identity of the regularized beta function: 1 - I_x(a, b) = I_{1-x}(b, a)
         // Ideally call RegularizedBeta.value(1 - x, b, a) to maximise precision.
         //
         // The implementation of the beta function will use the complement based on a condition.
