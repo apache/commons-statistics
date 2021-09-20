@@ -267,19 +267,18 @@ abstract class DiscreteDistributionAbstractTest {
         }
         // verify probability(double, double)
         for (int i = 0; i < cumulativeTestPoints.length; i++) {
+            final int x0 = cumulativeTestPoints[i];
             for (int j = 0; j < cumulativeTestPoints.length; j++) {
-                if (cumulativeTestPoints[i] <= cumulativeTestPoints[j]) {
+                final int x1 = cumulativeTestPoints[j];
+                if (x0 <= x1) {
                     Assertions.assertEquals(
                         cumulativeTestValues[j] - cumulativeTestValues[i],
-                        distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[j]),
+                        distribution.probability(x0, x1),
                         getTolerance());
                 } else {
-                    try {
-                        distribution.probability(cumulativeTestPoints[i], cumulativeTestPoints[j]);
-                    } catch (final IllegalArgumentException e) {
-                        continue;
-                    }
-                    Assertions.fail("distribution.probability(double, double) should have thrown an exception that second argument is too large");
+                    Assertions.assertThrows(IllegalArgumentException.class,
+                        () -> distribution.probability(x0, x1),
+                        "distribution.probability(int, int) should have thrown an exception that first argument is too large");
                 }
             }
         }
