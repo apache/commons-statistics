@@ -187,6 +187,35 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
     }
 
     /**
+     * Test the PMF is computed using the power function when p is above 0.5.
+     * <p>Note: The geometric distribution PMF is defined as:
+     * <pre>
+     *   pmf(x) = (1-p)^x * p
+     * </pre>
+     * <p>As {@code p -> 0} use of the power function should be avoided as it will
+     * propagate the inexact computation of {@code 1 - p}. The implementation can
+     * switch to using a rearrangement with the exponential function which avoid
+     * computing {@code 1 - p}.
+     * <p>See STATISTICS-34.
+     *
+     * @param p Probability of success
+     */
+    @ParameterizedTest
+    @ValueSource(doubles = {0.5, 0.6658665, 0.75, 0.8125347, 0.9, 0.95, 0.99})
+    void testPMF(double p) {
+        final GeometricDistribution dist = new GeometricDistribution(p);
+        setDistribution(dist);
+
+        // The PMF should be an exact match to the direct implementation with Math.pow.
+        setTolerance(0);
+        final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40};
+        final double[] values = Arrays.stream(x).mapToDouble(k -> p * Math.pow(1 - p, k)).toArray();
+        setProbabilityTestPoints(x);
+        setProbabilityTestValues(values);
+        verifyProbabilities();
+    }
+
+    /**
      * Test the inverse CDF returns the correct x from the CDF result.
      * This case was identified using various probabilities to discover a mismatch
      * of x != icdf(cdf(x)). This occurs due to rounding errors on the inversion.
