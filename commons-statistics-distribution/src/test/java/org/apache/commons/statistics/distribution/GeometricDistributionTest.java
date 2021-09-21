@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.Arrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -183,6 +184,25 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
         for (int i = 0; i < 5; i++) {
             Assertions.assertEquals(0, s.sample());
         }
+    }
+
+    /**
+     * Test the inverse CDF returns the correct x from the CDF result.
+     * This case was identified using various probabilities to discover a mismatch
+     * of x != icdf(cdf(x)). This occurs due to rounding errors on the inversion.
+     *
+     * @param p Probability of success
+     */
+    @ParameterizedTest
+    @ValueSource(doubles = {0.2, 0.8})
+    void testInverseCDF(double p) {
+        final GeometricDistribution dist = new GeometricDistribution(p);
+        final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        final double[] values = Arrays.stream(x).mapToDouble(dist::cumulativeProbability).toArray();
+        setDistribution(dist);
+        setInverseCumulativeTestPoints(values);
+        setInverseCumulativeTestValues(x);
+        verifyInverseCumulativeProbabilities();
     }
 
     @ParameterizedTest

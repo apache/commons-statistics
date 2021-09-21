@@ -108,7 +108,14 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
         if (p == 0) {
             return 0;
         }
-        return Math.max(0, (int) Math.ceil(Math.log1p(-p) / log1mProbabilityOfSuccess - 1));
+        final int x = (int) Math.ceil(Math.log1p(-p) / log1mProbabilityOfSuccess - 1);
+        // Note: x may be too high due to floating-point error and rounding up with ceil.
+        // Return the next value down if that is also above the input cumulative probability.
+        // This ensures x == icdf(cdf(x))
+        if (x <= 0) {
+            return 0;
+        }
+        return cumulativeProbability(x - 1) >= p ? x - 1 : x;
     }
 
     /**
