@@ -34,6 +34,8 @@ class DistributionException extends IllegalArgumentException {
     static final String INVALID_RANGE_LOW_GT_HIGH = "Lower bound %s > upper bound %s";
     /** Error message for "invalid probability" condition when "x not in [0, 1]". */
     static final String INVALID_PROBABILITY = "Not a probability: %s is out of range [0, 1]";
+    /** Error message for "invalid non-zero probability" condition when "x not in (0, 1]". */
+    static final String INVALID_NON_ZERO_PROBABILITY = "Not a non-zero probability: %s is out of range (0, 1]";
     /** Error message for "negative" condition when "x < 0". */
     static final String NEGATIVE = "Number %s is negative";
     /** Error message for "not strictly positive" condition when "x <= 0". */

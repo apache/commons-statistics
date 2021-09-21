@@ -44,7 +44,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
      */
     public GeometricDistribution(double p) {
         if (p <= 0 || p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
+            throw new DistributionException(DistributionException.INVALID_NON_ZERO_PROBABILITY, p);
         }
 
         probabilityOfSuccess = p;
