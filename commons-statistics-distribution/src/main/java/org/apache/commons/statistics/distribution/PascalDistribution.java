@@ -108,11 +108,9 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double probability(int x) {
-        if (x < 0) {
-            return 0.0;
-        } else if (x == 0) {
-            // Special case exploiting cancellation.
-            return probabilityOfSuccessPowNumOfSuccesses;
+        if (x <= 0) {
+            // Special case of x=0 exploiting cancellation.
+            return x == 0 ? probabilityOfSuccessPowNumOfSuccesses : 0.0;
         }
         final int n = x + numberOfSuccesses - 1;
         if (n < 0) {
@@ -127,11 +125,9 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double logProbability(int x) {
-        if (x < 0) {
-            return Double.NEGATIVE_INFINITY;
-        } else if (x == 0) {
-            // Special case exploiting cancellation.
-            return logProbabilityOfSuccessByNumOfSuccesses;
+        if (x <= 0) {
+            // Special case of x=0 exploiting cancellation.
+            return x == 0 ? logProbabilityOfSuccessByNumOfSuccesses : Double.NEGATIVE_INFINITY;
         }
         final int n = x + numberOfSuccesses - 1;
         if (n < 0) {
@@ -206,15 +202,14 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is always positive infinity no matter the
-     * parameters. Positive infinity is symbolized by {@code Integer.MAX_VALUE}.
+     * <p>The upper bound of the support is positive infinity except for the
+     * probability parameter {@code p = 1.0}.
      *
-     * @return upper bound of the support (always {@code Integer.MAX_VALUE}
-     * for positive infinity)
+     * @return upper bound of the support ({@code Integer.MAX_VALUE} or 0)
      */
     @Override
     public int getSupportUpperBound() {
-        return Integer.MAX_VALUE;
+        return probabilityOfSuccess < 1 ? Integer.MAX_VALUE : 0;
     }
 
     /**

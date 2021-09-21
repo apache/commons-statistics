@@ -59,7 +59,8 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     @Override
     public double probability(int x) {
         if (x <= 0) {
-            return x < 0 ? 0.0 : probabilityOfSuccess;
+            // Special case of x=0 exploiting cancellation.
+            return x == 0 ? probabilityOfSuccess : 0.0;
         }
         return Math.exp(log1mProbabilityOfSuccess * x) * probabilityOfSuccess;
     }
@@ -68,7 +69,8 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     @Override
     public double logProbability(int x) {
         if (x <= 0) {
-            return x < 0 ? Double.NEGATIVE_INFINITY : logProbabilityOfSuccess;
+            // Special case of x=0 exploiting cancellation.
+            return x == 0 ? logProbabilityOfSuccess : Double.NEGATIVE_INFINITY;
         }
         return x * log1mProbabilityOfSuccess + logProbabilityOfSuccess;
     }

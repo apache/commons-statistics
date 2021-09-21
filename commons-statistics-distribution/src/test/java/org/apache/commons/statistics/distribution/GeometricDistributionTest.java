@@ -154,19 +154,20 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------------- Additional test cases -------------------------------
 
+    /** Test degenerate case p = 1. */
     @Test
-    void testProbabilityOfSuccessOne() {
+    void testDegenerate1() {
         final GeometricDistribution dist = new GeometricDistribution(1.0);
         Assertions.assertEquals(1.0, dist.getProbabilityOfSuccess());
         Assertions.assertEquals(0.0, dist.getMean());
         Assertions.assertEquals(0.0, dist.getVariance());
 
         setDistribution(dist);
-        setProbabilityTestPoints(new int[] {0, 1, 2});
-        setProbabilityTestValues(new double[] {1.0, 0.0, 0.0});
-        setCumulativeTestPoints(new int[] {0, 1, 2});
-        setCumulativeTestValues(new double[] {1.0, 1.0, 1.0});
-        setInverseCumulativeTestPoints(new double[] {0, 0.5, 1.0});
+        setProbabilityTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
+        setProbabilityTestValues(new double[] {0.0, 1.0, 0.0, 0.0, 0.0, 0.0});
+        setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10 });
+        setCumulativeTestValues(new double[] {0.0, 1.0, 1.0, 1.0, 1.0, 1.0});
+        setInverseCumulativeTestPoints(new double[] {0.1, 0.5, 1.0});
         setInverseCumulativeTestValues(new int[] {0, 0, 0});
         verifyProbabilities();
         verifyLogProbabilities();
