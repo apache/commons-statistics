@@ -17,6 +17,7 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.function.Supplier;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
@@ -303,5 +304,36 @@ final class TestUtils {
             samples[i] = sampler.sample();
         }
         return samples;
+    }
+
+    /**
+     * Gets the length of the array.
+     *
+     * @param array Array
+     * @return the length (or 0 for null array)
+     */
+    static int getLength(double[] array) {
+        return array == null ? 0 : array.length;
+    }
+
+    /**
+     * Gets the length of the array.
+     *
+     * @param array Array
+     * @return the length (or 0 for null array)
+     */
+    static int getLength(int[] array) {
+        return array == null ? 0 : array.length;
+    }
+
+    /**
+     * Gets the length of the array.
+     *
+     * @param array Array
+     * @return the length (or 0 for null array)
+     * @throws IllegalArgumentException if the object is not an array
+     */
+    static int getLength(Object array) {
+        return array == null ? 0 : Array.getLength(array);
     }
 }
