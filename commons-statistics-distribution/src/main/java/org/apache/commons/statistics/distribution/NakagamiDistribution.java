@@ -45,8 +45,8 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a distribution.
      *
-     * @param mu shape parameter
-     * @param omega scale parameter (must be positive)
+     * @param mu Shape parameter.
+     * @param omega Scale parameter (must be positive). Controls the spread of the distribution.
      * @throws IllegalArgumentException  if {@code mu < 0.5} or if
      * {@code omega <= 0}.
      */
