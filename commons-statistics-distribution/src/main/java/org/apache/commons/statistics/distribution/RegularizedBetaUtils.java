@@ -32,7 +32,7 @@ final class RegularizedBetaUtils {
      * 1 - I(x, a, b) = I(1 - x, b, a)
      * </pre>
      *
-     * @param x the value.
+     * @param x Value at which the function is evaluated.
      * @param a Parameter {@code a}.
      * @param b Parameter {@code b}.
      * @return the complement of the regularized beta function 1 - I(x, a, b).

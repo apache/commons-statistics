@@ -32,8 +32,8 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a distribution.
      *
-     * @param mu location parameter
-     * @param beta scale parameter (must be positive)
+     * @param mu Location parameter.
+     * @param beta Scale parameter (must be positive).
      * @throws IllegalArgumentException if {@code beta <= 0}
      */
     public LaplaceDistribution(double mu,

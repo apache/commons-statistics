@@ -50,8 +50,8 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a Pareto distribution.
      *
-     * @param scale Scale parameter of this distribution.
-     * @param shape Shape parameter of this distribution.
+     * @param scale Scale parameter.
+     * @param shape Shape parameter.
      * @throws IllegalArgumentException if {@code scale <= 0} or {@code shape <= 0}.
      */
     public ParetoDistribution(double scale,

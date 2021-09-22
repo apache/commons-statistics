@@ -35,8 +35,8 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a distribution.
      *
-     * @param location Location for this distribution.
-     * @param scale Scale parameter for this distribution.
+     * @param location Location parameter.
+     * @param scale Scale parameter.
      * @throws IllegalArgumentException if {@code scale <= 0}.
      */
     public CauchyDistribution(double location,

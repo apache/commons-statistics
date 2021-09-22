@@ -86,7 +86,7 @@ final class SaddlePointExpansionUtils {
      *
      * <p>Note: This function has been modified for integer {@code z}.</p>
      *
-     * @param z the value.
+     * @param z Value at which the function is evaluated.
      * @return the Striling's series error.
      */
     static double getStirlingError(int z) {
@@ -116,8 +116,8 @@ final class SaddlePointExpansionUtils {
      *
      * <p>Note: This function has been modified for integer {@code x}.</p>
      *
-     * @param x the x value.
-     * @param mu the average.
+     * @param x Value at which the function is evaluated.
+     * @param mu Average.
      * @return a part of the deviance.
      */
     static double getDeviancePart(int x, double mu) {
@@ -146,10 +146,10 @@ final class SaddlePointExpansionUtils {
      * Compute the logarithm of the PMF for a binomial distribution
      * using the saddle point expansion.
      *
-     * @param x the value at which the probability is evaluated.
-     * @param n the number of trials.
-     * @param p the probability of success.
-     * @param q the probability of failure (1 - p).
+     * @param x Value at which the probability is evaluated.
+     * @param n Number of trials.
+     * @param p Probability of success.
+     * @param q Probability of failure (1 - p).
      * @return log(p(x)).
      */
     static double logBinomialProbability(int x, int n, double p, double q) {

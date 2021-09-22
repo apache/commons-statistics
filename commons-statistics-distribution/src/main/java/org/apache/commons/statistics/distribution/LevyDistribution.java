@@ -37,8 +37,8 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a distribution.
      *
-     * @param mu location
-     * @param c scale parameter
+     * @param mu Location parameter.
+     * @param c Scale parameter.
      */
     public LevyDistribution(final double mu,
                             final double c) {

@@ -92,8 +92,8 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a distribution.
      *
-     * @param shape the shape parameter
-     * @param scale the scale parameter
+     * @param shape Shape parameter.
+     * @param scale Scale parameter.
      * @throws IllegalArgumentException if {@code shape <= 0} or
      * {@code scale <= 0}.
      */

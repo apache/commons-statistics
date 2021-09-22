@@ -58,10 +58,10 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
      * Note that the {@code mean} and {@code sd} is of the parent normal distribution,
      * and not the true mean and standard deviation of the truncated normal distribution.
      *
-     * @param mean mean for this distribution.
-     * @param sd standard deviation for this distribution.
-     * @param lower lower bound (inclusive) of the distribution, can be {@link Double#NEGATIVE_INFINITY}.
-     * @param upper upper bound (inclusive) of the distribution, can be {@link Double#POSITIVE_INFINITY}.
+     * @param mean Mean for this distribution.
+     * @param sd Standard deviation for this distribution.
+     * @param lower Lower bound (inclusive) of the distribution, can be {@link Double#NEGATIVE_INFINITY}.
+     * @param upper Upper bound (inclusive) of the distribution, can be {@link Double#POSITIVE_INFINITY}.
      * @throws IllegalArgumentException if {@code sd <= 0} or if {@code upper <= lower}.
      */
     public TruncatedNormalDistribution(double mean, double sd, double lower, double upper) {

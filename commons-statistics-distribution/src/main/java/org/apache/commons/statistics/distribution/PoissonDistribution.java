@@ -38,9 +38,9 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     private final double epsilon;
 
     /**
-     * Creates a new Poisson distribution with specified mean.
+     * Creates a new Poisson distribution with the specified mean.
      *
-     * @param mean the Poisson mean
+     * @param mean Poisson mean.
      * @throws IllegalArgumentException if {@code p <= 0}.
      */
     public PoissonDistribution(double mean) {
@@ -48,7 +48,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Creates a new Poisson distribution with specified mean, convergence
+     * Creates a new Poisson distribution with the specified mean, convergence
      * criterion and maximum number of iterations.
      *
      * @param mean Poisson mean.
