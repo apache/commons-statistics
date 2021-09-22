@@ -28,8 +28,6 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     private static final double SUPPORT_LO = 0;
     /** Support upper bound. */
     private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
-    /** The minimum allowed for the shape parameter. */
-    private static final double MIN_SHAPE = 0.5;
     /** Natural logarithm of 2. */
     private static final double LN_2 = 0.6931471805599453094172321;
 
@@ -52,8 +50,8 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
      */
     public NakagamiDistribution(double mu,
                                 double omega) {
-        if (mu < MIN_SHAPE) {
-            throw new DistributionException(DistributionException.TOO_SMALL, mu, MIN_SHAPE);
+        if (mu <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, mu);
         }
         if (omega <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, omega);

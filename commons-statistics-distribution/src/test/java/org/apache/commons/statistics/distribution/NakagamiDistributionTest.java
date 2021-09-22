@@ -28,6 +28,11 @@ class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
 
     //-------------- Implementations for abstract methods ----------------------
 
+    // Test values created using scipy.stats nakagami
+    // The distribution is not defined for x=0.
+    // Some implementations compute the formula and return the natural limit as x -> 0.
+    // This implementation returns zero for any x outside the domain.
+
     @Override
     public NakagamiDistribution makeDistribution() {
         return new NakagamiDistribution(0.5, 1);
@@ -36,23 +41,29 @@ class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
     @Override
     public double[] makeCumulativeTestPoints() {
         return new double[] {
-            0, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2
+            0, 1e-3, 0.2, 0.4, 0.6, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2
         };
     }
 
     @Override
     public double[] makeDensityTestValues() {
         return new double[] {
-            0.0000000, 0.7820854, 0.7365403, 0.6664492, 0.5793831, 0.4839414,
-            0.3883721, 0.2994549, 0.2218417, 0.1579003, 0.1079819
+            0.0,                 0.79788416186068489, 0.78208538795091187,
+            0.73654028060664678, 0.66644920578359934, 0.57938310552296557,
+            0.48394144903828679, 0.38837210996642596, 0.29945493127148981,
+            0.22184166935891111, 0.15790031660178833, 0.10798193302637614,
         };
     }
 
     @Override
     public double[] makeCumulativeTestValues() {
         return new double[] {
-            0.0000000, 0.1585194, 0.3108435, 0.4514938, 0.5762892, 0.6826895,
-            0.7698607, 0.8384867, 0.8904014, 0.9281394, 0.9544997
+            0.0,                     7.97884427822125389e-04,
+            1.58519418878206031e-01, 3.10843483220648364e-01,
+            4.51493764499852956e-01, 5.76289202833206615e-01,
+            6.82689492137085852e-01, 7.69860659556583560e-01,
+            8.38486681532458089e-01, 8.90401416600884343e-01,
+            9.28139361774148575e-01, 9.54499736103641472e-01,
         };
     }
 
@@ -81,6 +92,66 @@ class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
     //-------------------- Additional test cases -------------------------------
 
     @Test
+    void testAdditionalDistribution1() {
+        final NakagamiDistribution dist = new NakagamiDistribution(1.0 / 3, 1);
+        setDistribution(dist);
+        setCumulativeTestPoints(makeCumulativeTestPoints());
+        // Computed using scipy.stats nakagami
+        setCumulativeTestValues(new double[] {
+            0.,                  0.00776458146673576, 0.26466318463713673,
+            0.41599060641445568, 0.53633771818837206, 0.63551561797542433,
+            0.71746556659624028, 0.7845448997061909,  0.83861986211366601,
+            0.88141004735798412, 0.91458032800205946, 0.93973541101651015
+        });
+        setDensityTestValues(new double[] {
+            0,                   5.17638635039373352, 0.8734262427029803,
+            0.66605658341650675, 0.54432849968092045, 0.45048535438453824,
+            0.3709044132031733,  0.30141976583757241, 0.24075672187548078,
+            0.18853365020699897, 0.14451001716499515, 0.10829893529327907
+        });
+        setInverseCumulativeTestPoints(getCumulativeTestValues());
+        setInverseCumulativeTestValues(getCumulativeTestPoints());
+        verifyDensities();
+        verifyLogDensities();
+        verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
+        verifyInverseCumulativeProbabilities();
+    }
+
+    @Test
+    void testAdditionalDistribution2() {
+        final NakagamiDistribution dist = new NakagamiDistribution(1.5, 2);
+        setDistribution(dist);
+        setCumulativeTestPoints(makeCumulativeTestPoints());
+        // Computed using matlab (scipy.stats does not support the omega parameter)
+        setCumulativeTestValues(new double[] {
+            0,                 0.000000000488602,
+            0.003839209349952, 0.029112642643164,
+            0.089980307387723, 0.189070530913232,
+            0.317729669663787, 0.460129965238200,
+            0.599031192110653, 0.720732382881390,
+            0.817659600745483, 0.888389774905287,
+        });
+        setDensityTestValues(new double[] {
+            0,                 0.000001465806436,
+            0.056899455042812, 0.208008745554258,
+            0.402828269545621, 0.580491109555755,
+            0.692398452624549, 0.716805620039994,
+            0.660571957322857, 0.550137830087772,
+            0.418105970486118, 0.291913039977849,
+        });
+        setInverseCumulativeTestPoints(getCumulativeTestValues());
+        setInverseCumulativeTestValues(getCumulativeTestPoints());
+        verifyDensities();
+        verifyLogDensities();
+        verifyCumulativeProbabilities();
+        verifySurvivalProbability();
+        verifySurvivalAndCumulativeProbabilityComplement();
+        verifyInverseCumulativeProbabilities();
+    }
+
+    @Test
     void testExtremeLogDensity() {
         // XXX: Verify with more test data from a reference distribution
         final NakagamiDistribution dist = new NakagamiDistribution(0.5, 1);
@@ -100,15 +171,10 @@ class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(scale, dist.getScale());
     }
 
-    @Test
-    void testParameterAccessors() {
-        final NakagamiDistribution dist = makeDistribution();
-        Assertions.assertEquals(1, dist.getScale());
-    }
-
     @ParameterizedTest
     @CsvSource({
-        "0.4999, 1.0",
+        "0.0, 1.0",
+        "-0.1, 1.0",
         "0.5, 0.0",
         "0.5, -0.1",
     })
@@ -132,6 +198,10 @@ class NakagamiDistributionTest extends ContinuousDistributionAbstractTest {
         dist = new NakagamiDistribution(1.23, 2.5);
         Assertions.assertEquals(1.431786259006201, dist.getMean(), eps);
         Assertions.assertEquals(0.449988108521028, dist.getVariance(), eps);
+
+        dist = new NakagamiDistribution(1.0 / 3, 2.0);
+        Assertions.assertEquals(1.032107387207478, dist.getMean(), eps);
+        Assertions.assertEquals(0.934754341271753, dist.getVariance(), eps);
     }
 
     @Test
