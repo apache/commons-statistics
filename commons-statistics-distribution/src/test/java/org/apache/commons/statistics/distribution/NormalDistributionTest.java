@@ -18,185 +18,49 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test cases for {@link NormalDistribution}. Extends
- * {@link ContinuousDistributionAbstractTest}. See class javadoc of that class
- * for details.
+ * Test cases for {@link NormalDistribution}.
+ * Extends {@link BaseContinuousDistributionTest}. See javadoc of that class for details.
  */
-class NormalDistributionTest extends ContinuousDistributionAbstractTest {
-
-    private static final double DEFAULT_TOLERANCE = 1e-10;
-
-    //---------------------- Override tolerance --------------------------------
-
-    @BeforeEach
-    void customSetUp() {
-        setTolerance(DEFAULT_TOLERANCE);
-    }
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class NormalDistributionTest extends BaseContinuousDistributionTest {
     @Override
-    public NormalDistribution makeDistribution() {
-        return new NormalDistribution(2.1, 1.4);
+    ContinuousDistribution makeDistribution(Object... parameters) {
+        final double mean = (Double) parameters[0];
+        final double sd = (Double) parameters[1];
+        return new NormalDistribution(mean, sd);
     }
 
     @Override
-    public double[] makeCumulativeTestPoints() {
-        // quantiles computed using R
-        return new double[] {-2.226325228634938d, -1.156887023657177d, -0.643949578356075d, -0.2027950777320613d, 0.305827808237559d,
-                             6.42632522863494d, 5.35688702365718d, 4.843949578356074d, 4.40279507773206d, 3.89417219176244d};
+    protected double getTolerance() {
+        return 1e-10;
     }
 
     @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {0.001d, 0.01d, 0.025d, 0.05d, 0.1d, 0.999d,
-                             0.990d, 0.975d, 0.950d, 0.900d};
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {0.0, 0.0},
+            {0.0, -0.1}
+        };
     }
 
     @Override
-    public double[] makeDensityTestValues() {
-        return new double[] {0.00240506434076, 0.0190372444310, 0.0417464784322, 0.0736683145538, 0.125355951380,
-                             0.00240506434076, 0.0190372444310, 0.0417464784322, 0.0736683145538, 0.125355951380};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestPoints() {
-        return new double[] {-10, -10.3};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {2.741222634611109e-18, 4.1045652533919113e-19};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestPoints() {
-        return new double[] {14.5, 13.9};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {4.1045652533919576e-19, 1.749552800697539e-17};
+    String[] getParameterNames() {
+        return new String[] {"Mean", "StandardDeviation"};
     }
 
     //-------------------- Additional test cases -------------------------------
 
-    private void verifyQuantiles() {
-        // Requires the current instance set by setDistribution(...)
-        final NormalDistribution distribution = (NormalDistribution) getDistribution();
-        final double mu = distribution.getMean();
-        final double sigma = distribution.getStandardDeviation();
-        setCumulativeTestPoints(new double[] {mu - 2 * sigma, mu - sigma,
-                                              mu,             mu + sigma,
-                                              mu + 2 * sigma, mu + 3 * sigma,
-                                              mu + 4 * sigma, mu + 5 * sigma});
-        // Quantiles computed using R (same as Mathematica)
-        setCumulativeTestValues(new double[] {0.02275013194817921, 0.158655253931457, 0.5, 0.841344746068543,
-                                              0.977249868051821, 0.99865010196837, 0.999968328758167,  0.999999713348428});
-        verifyCumulativeProbabilities();
-    }
-
     @Test
-    void testQuantiles() {
-        setDistribution(makeDistribution());
-        setDensityTestValues(new double[] {0.0385649760808, 0.172836231799, 0.284958771715, 0.172836231799, 0.0385649760808,
-                                           0.00316560600853, 9.55930184035e-05, 1.06194251052e-06});
-        verifyQuantiles();
-        verifyDensities();
-
-        setDistribution(new NormalDistribution(0, 1));
-        setDensityTestValues(new double[] {0.0539909665132, 0.241970724519, 0.398942280401, 0.241970724519, 0.0539909665132,
-                                           0.00443184841194, 0.000133830225765, 1.48671951473e-06});
-        verifyQuantiles();
-        verifyDensities();
-
-        setDistribution(new NormalDistribution(0, 0.1));
-        setDensityTestValues(new double[] {0.539909665132, 2.41970724519, 3.98942280401, 2.41970724519,
-                                           0.539909665132, 0.0443184841194, 0.00133830225765, 1.48671951473e-05});
-        verifyQuantiles();
-        verifyDensities();
-    }
-
-    @Test
-    void testInverseCumulativeProbabilityExtremes() {
-        setDistribution(makeDistribution());
-        setInverseCumulativeTestPoints(new double[] {0, 1});
-        setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
-        verifyInverseCumulativeProbabilities();
-    }
-
-    // MATH-1257
-    @Test
-    void testCumulativeProbability() {
-        final ContinuousDistribution dist = new NormalDistribution(0, 1);
-        final double x = -10;
-        final double expected = 7.61985e-24;
-        final double v = dist.cumulativeProbability(x);
-        final double tol = 1e-5;
-        Assertions.assertEquals(1, v / expected, 1e-5);
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "1.2, 2.1",
-        "0, 1",
-        "-3, 2",
-    })
-    void testParameterAccessors(double mu, double sigma) {
-        final NormalDistribution dist = new NormalDistribution(mu, sigma);
-        Assertions.assertEquals(mu, dist.getMean());
-        Assertions.assertEquals(sigma, dist.getStandardDeviation());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "0, 0",
-        "0, -0.1",
-    })
-    void testConstructorPreconditions(double mu, double sigma) {
-        Assertions.assertThrows(DistributionException.class, () -> new NormalDistribution(mu, sigma));
-    }
-
-    @Test
-    void testMoments() {
-        final double tol = 1e-9;
-        NormalDistribution dist;
-
-        dist = new NormalDistribution(0, 1);
-        Assertions.assertEquals(0, dist.getMean(), tol);
-        Assertions.assertEquals(1, dist.getVariance(), tol);
-
-        dist = new NormalDistribution(2.2, 1.4);
-        Assertions.assertEquals(2.2, dist.getMean(), tol);
-        Assertions.assertEquals(1.4 * 1.4, dist.getVariance(), tol);
-
-        dist = new NormalDistribution(-2000.9, 10.4);
-        Assertions.assertEquals(-2000.9, dist.getMean(), tol);
-        Assertions.assertEquals(10.4 * 10.4, dist.getVariance(), tol);
-    }
-
-    @Test
-    void testDensity() {
-        final double[] x = new double[] {-2, -1, 0, 1, 2};
-        // R 2.5: print(dnorm(c(-2,-1,0,1,2)), digits=10)
-        checkDensity(0, 1, x, new double[] {0.05399096651, 0.24197072452, 0.39894228040, 0.24197072452, 0.05399096651});
-        // R 2.5: print(dnorm(c(-2,-1,0,1,2), mean=1.1), digits=10)
-        checkDensity(1.1,  1,  x,  new double[] {0.003266819056, 0.043983595980, 0.217852177033, 0.396952547477, 0.266085249899});
-    }
-
-    private void checkDensity(double mean, double sd, double[] x, double[] expected) {
-        final NormalDistribution dist = new NormalDistribution(mean, sd);
-        for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], dist.density(x[i]), 1e-9);
-        }
+    void testCumulativeProbabilityExtremes() {
+        final NormalDistribution dist = new NormalDistribution(0, 1);
+        testCumulativeProbability(dist,
+                                  new double[] {-Double.MAX_VALUE, Double.MAX_VALUE,
+                                                Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY},
+                                  new double[] {0, 1, 0, 1},
+                                  0.0);
     }
 
     /**
@@ -205,13 +69,19 @@ class NormalDistributionTest extends ContinuousDistributionAbstractTest {
      */
     @Test
     void testLowerTail() {
-        final NormalDistribution distribution = new NormalDistribution(0, 1);
+        final NormalDistribution dist = new NormalDistribution(0, 1);
         for (int i = 0; i < 100; i++) { // make sure no convergence exception
-            final double lowerTail = distribution.cumulativeProbability(-i);
+            final double cdf = dist.cumulativeProbability(-i);
             if (i < 39) { // make sure not top-coded
-                Assertions.assertTrue(lowerTail > 0);
+                Assertions.assertTrue(cdf > 0);
             } else { // make sure top coding not reversed
-                Assertions.assertEquals(0, lowerTail);
+                Assertions.assertEquals(0, cdf);
+            }
+            final double sf = dist.survivalProbability(-i);
+            if (i < 9) { // make sure not top-coded
+                Assertions.assertTrue(sf < 1);
+            } else { // make sure top coding not reversed
+                Assertions.assertEquals(1, sf);
             }
         }
     }
@@ -222,37 +92,67 @@ class NormalDistributionTest extends ContinuousDistributionAbstractTest {
      */
     @Test
     void testUpperTail() {
-        final NormalDistribution distribution = new NormalDistribution(0, 1);
+        final NormalDistribution dist = new NormalDistribution(0, 1);
         for (int i = 0; i < 100; i++) { // make sure no convergence exception
-            final double upperTail = distribution.cumulativeProbability(i);
+            final double cdf = dist.cumulativeProbability(i);
             if (i < 9) { // make sure not top-coded
-                Assertions.assertTrue(upperTail < 1);
+                Assertions.assertTrue(cdf < 1);
             } else { // make sure top coding not reversed
-                Assertions.assertEquals(1, upperTail);
+                Assertions.assertEquals(1, cdf);
+            }
+            // Test survival probability
+            final double sf = dist.survivalProbability(i);
+            if (i < 39) { // make sure not top-coded
+                Assertions.assertTrue(sf > 0);
+            } else { // make sure top coding not reversed
+                Assertions.assertEquals(0, sf);
             }
         }
     }
 
     @Test
-    void testExtremeValues() {
-        final NormalDistribution distribution = new NormalDistribution(0, 1);
-
-        Assertions.assertEquals(1, distribution.cumulativeProbability(Double.MAX_VALUE));
-        Assertions.assertEquals(0, distribution.cumulativeProbability(-Double.MAX_VALUE));
-        Assertions.assertEquals(1, distribution.cumulativeProbability(Double.POSITIVE_INFINITY));
-        Assertions.assertEquals(0, distribution.cumulativeProbability(Double.NEGATIVE_INFINITY));
+    void testMath1257() {
+        final ContinuousDistribution dist = new NormalDistribution(0, 1);
+        final double x = -10;
+        final double expected = 7.61985e-24;
+        final double v = dist.cumulativeProbability(x);
+        Assertions.assertEquals(1.0, v / expected, 1e-5);
     }
 
     @Test
     void testMath280() {
-        final NormalDistribution normal = new NormalDistribution(0, 1);
-        double result = normal.inverseCumulativeProbability(0.9986501019683698);
-        Assertions.assertEquals(3.0, result, DEFAULT_TOLERANCE);
-        result = normal.inverseCumulativeProbability(0.841344746068543);
-        Assertions.assertEquals(1.0, result, DEFAULT_TOLERANCE);
-        result = normal.inverseCumulativeProbability(0.9999683287581673);
-        Assertions.assertEquals(4.0, result, DEFAULT_TOLERANCE);
-        result = normal.inverseCumulativeProbability(0.9772498680518209);
-        Assertions.assertEquals(2.0, result, DEFAULT_TOLERANCE);
+        final NormalDistribution dist = new NormalDistribution(0, 1);
+        double result = dist.inverseCumulativeProbability(0.9986501019683698);
+        Assertions.assertEquals(3.0, result, getTolerance());
+        result = dist.inverseCumulativeProbability(0.841344746068543);
+        Assertions.assertEquals(1.0, result, getTolerance());
+        result = dist.inverseCumulativeProbability(0.9999683287581673);
+        Assertions.assertEquals(4.0, result, getTolerance());
+        result = dist.inverseCumulativeProbability(0.9772498680518209);
+        Assertions.assertEquals(2.0, result, getTolerance());
+    }
+
+    /**
+     * Test the inverse CDF. This is currently limited by the accuracy
+     * of {@code InverseErfc}. Although the CDF can be computed
+     * to x down to -38 (CDF around 2.8854e-316) the inverse of the probability
+     * fails when x is around 9 and the CDF is approximately 1.12e-19.
+     */
+    @Test
+    @Disabled("Limited by accuracy of InverseErfc")
+    void testInverseCDF() {
+        final NormalDistribution dist = new NormalDistribution(0, 1);
+        // Get smaller and the CDF should reduce.
+        double x = 0;
+        for (;;) {
+            x -= 1;
+            final double cdf = dist.cumulativeProbability(x);
+            if (cdf == 0) {
+                break;
+            }
+            final double x0 = dist.inverseCumulativeProbability(cdf);
+            // Must be close
+            Assertions.assertEquals(x, x0, 1.0, () -> "CDF = " + cdf);
+        }
     }
 }
