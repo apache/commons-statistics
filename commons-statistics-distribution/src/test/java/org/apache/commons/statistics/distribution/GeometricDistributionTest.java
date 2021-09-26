@@ -17,174 +17,42 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.Arrays;
-import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
- * Test cases for GeometricDistribution.
- * See class javadoc for DiscreteDistributionAbstractTest for details.
+ * Test cases for {@link GeometricDistribution}.
+ * Extends {@link BaseDiscreteDistributionTest}. See javadoc of that class for details.
  */
-class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
-
-    //---------------------- Override tolerance --------------------------------
-
-    @BeforeEach
-    void customSetUp() {
-        setTolerance(1e-12);
-    }
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     @Override
-    public DiscreteDistribution makeDistribution() {
-        return new GeometricDistribution(0.40);
+    DiscreteDistribution makeDistribution(Object... parameters) {
+        final double p = (Double) parameters[0];
+        return new GeometricDistribution(p);
     }
 
     @Override
-    public int[] makeProbabilityTestPoints() {
-        return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8,
-                          9, 10, 11, 12, 13, 14, 15, 16, 17, 18,
-                          19, 20, 21, 22, 23, 24, 25, 26, 27, 28};
+    protected double getTolerance() {
+        return 1e-12;
     }
 
     @Override
-    public double[] makeProbabilityTestValues() {
-        // Reference values are from R, version version 2.15.3.
-        return new double[] {
-            0d, 0.4, 0.24, 0.144, 0.0864, 0.05184, 0.031104, 0.0186624,
-            0.01119744, 0.006718464, 0.0040310784, 0.00241864704,
-            0.001451188224, 0.0008707129344, 0.00052242776064, 0.000313456656384,
-            0.00018807399383, 0.000112844396298, 6.77066377789e-05, 4.06239826674e-05,
-            2.43743896004e-05, 1.46246337603e-05, 8.77478025615e-06, 5.26486815369e-06,
-            3.15892089221e-06, 1.89535253533e-06, 1.1372115212e-06, 6.82326912718e-07,
-            4.09396147631e-07, 2.45637688579e-07
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {-0.1},
+            {0.0},
+            {1.1},
         };
     }
 
     @Override
-    public double[] makeLogProbabilityTestValues() {
-        // Reference values are from R, version version 2.14.1.
-        return new double[] {
-            Double.NEGATIVE_INFINITY, -0.916290731874155, -1.42711635564015, -1.93794197940614,
-            -2.44876760317213, -2.95959322693812, -3.47041885070411, -3.9812444744701,
-            -4.49207009823609, -5.00289572200208, -5.51372134576807, -6.02454696953406,
-            -6.53537259330005, -7.04619821706604, -7.55702384083203, -8.06784946459802,
-            -8.57867508836402, -9.08950071213001, -9.600326335896, -10.111151959662,
-            -10.621977583428, -11.132803207194, -11.64362883096, -12.154454454726,
-            -12.6652800784919, -13.1761057022579, -13.6869313260239, -14.1977569497899,
-            -14.7085825735559, -15.2194081973219
-        };
-    }
-
-    @Override
-    public int[] makeCumulativeTestPoints() {
-        return makeProbabilityTestPoints();
-    }
-
-    @Override
-    public double[] makeCumulativeTestValues() {
-        final double[] densities = makeProbabilityTestValues();
-        final int n = densities.length;
-        final double[] ret = new double[n];
-        ret[0] = densities[0];
-        for (int i = 1; i < n; i++) {
-            ret[i] = ret[i - 1] + densities[i];
-        }
-        return ret;
-    }
-
-    @Override
-    public double[] makeInverseCumulativeTestPoints() {
-        return new double[] {
-            0.000, 0.005, 0.010, 0.015, 0.020, 0.025, 0.030, 0.035, 0.040,
-            0.045, 0.050, 0.055, 0.060, 0.065, 0.070, 0.075, 0.080, 0.085,
-            0.090, 0.095, 0.100, 0.105, 0.110, 0.115, 0.120, 0.125, 0.130,
-            0.135, 0.140, 0.145, 0.150, 0.155, 0.160, 0.165, 0.170, 0.175,
-            0.180, 0.185, 0.190, 0.195, 0.200, 0.205, 0.210, 0.215, 0.220,
-            0.225, 0.230, 0.235, 0.240, 0.245, 0.250, 0.255, 0.260, 0.265,
-            0.270, 0.275, 0.280, 0.285, 0.290, 0.295, 0.300, 0.305, 0.310,
-            0.315, 0.320, 0.325, 0.330, 0.335, 0.340, 0.345, 0.350, 0.355,
-            0.360, 0.365, 0.370, 0.375, 0.380, 0.385, 0.390, 0.395, 0.400,
-            0.405, 0.410, 0.415, 0.420, 0.425, 0.430, 0.435, 0.440, 0.445,
-            0.450, 0.455, 0.460, 0.465, 0.470, 0.475, 0.480, 0.485, 0.490,
-            0.495, 0.500, 0.505, 0.510, 0.515, 0.520, 0.525, 0.530, 0.535,
-            0.540, 0.545, 0.550, 0.555, 0.560, 0.565, 0.570, 0.575, 0.580,
-            0.585, 0.590, 0.595, 0.600, 0.605, 0.610, 0.615, 0.620, 0.625,
-            0.630, 0.635, 0.640, 0.645, 0.650, 0.655, 0.660, 0.665, 0.670,
-            0.675, 0.680, 0.685, 0.690, 0.695, 0.700, 0.705, 0.710, 0.715,
-            0.720, 0.725, 0.730, 0.735, 0.740, 0.745, 0.750, 0.755, 0.760,
-            0.765, 0.770, 0.775, 0.780, 0.785, 0.790, 0.795, 0.800, 0.805,
-            0.810, 0.815, 0.820, 0.825, 0.830, 0.835, 0.840, 0.845, 0.850,
-            0.855, 0.860, 0.865, 0.870, 0.875, 0.880, 0.885, 0.890, 0.895,
-            0.900, 0.905, 0.910, 0.915, 0.920, 0.925, 0.930, 0.935, 0.940,
-            0.945, 0.950, 0.955, 0.960, 0.965, 0.970, 0.975, 0.980, 0.985,
-            0.990, 0.995, 1.000
-        };
-    }
-
-    @Override
-    public int[] makeInverseCumulativeTestValues() {
-        return new int[] {
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-            1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
-            3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5,
-            5, 5, 6, 6, 6, 6, 7, 7, 8, 9, 10, Integer.MAX_VALUE
-        };
-    }
-
-    @Override
-    public int[] makeSurvivalPrecisionTestPoints() {
-        return new int[] {74, 81};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestValues() {
-        // computed using R version 3.4.4
-        return new double[] {2.2979669527522718895e-17, 6.4328367688565960968e-19};
+    String[] getParameterNames() {
+        return new String[] {"ProbabilityOfSuccess"};
     }
 
     //-------------------- Additional test cases -------------------------------
-
-    /** Test degenerate case p = 1. */
-    @Test
-    void testDegenerate1() {
-        final GeometricDistribution dist = new GeometricDistribution(1.0);
-        Assertions.assertEquals(1.0, dist.getProbabilityOfSuccess());
-        Assertions.assertEquals(0.0, dist.getMean());
-        Assertions.assertEquals(0.0, dist.getVariance());
-
-        setDistribution(dist);
-        setProbabilityTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
-        setProbabilityTestValues(new double[] {0.0, 1.0, 0.0, 0.0, 0.0, 0.0});
-        setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10 });
-        setCumulativeTestValues(new double[] {0.0, 1.0, 1.0, 1.0, 1.0, 1.0});
-        setInverseCumulativeTestPoints(new double[] {0.1, 0.5, 1.0});
-        setInverseCumulativeTestValues(new int[] {0, 0, 0});
-        verifyProbabilities();
-        verifyLogProbabilities();
-        verifyCumulativeProbabilities();
-        verifySurvivalProbability();
-        verifySurvivalAndCumulativeProbabilityComplement();
-        verifyInverseCumulativeProbabilities();
-
-        Assertions.assertEquals(0, dist.getSupportLowerBound());
-        Assertions.assertEquals(0, dist.getSupportUpperBound());
-
-        final DiscreteDistribution.Sampler s = dist.createSampler(RandomSource.SPLIT_MIX_64.create());
-        for (int i = 0; i < 5; i++) {
-            Assertions.assertEquals(0, s.sample());
-        }
-    }
 
     /**
      * Test the PMF is computed using the power function when p is above 0.5.
@@ -204,15 +72,10 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
     @ValueSource(doubles = {0.5, 0.6658665, 0.75, 0.8125347, 0.9, 0.95, 0.99})
     void testPMF(double p) {
         final GeometricDistribution dist = new GeometricDistribution(p);
-        setDistribution(dist);
-
-        // The PMF should be an exact match to the direct implementation with Math.pow.
-        setTolerance(0);
         final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40};
         final double[] values = Arrays.stream(x).mapToDouble(k -> p * Math.pow(1 - p, k)).toArray();
-        setProbabilityTestPoints(x);
-        setProbabilityTestValues(values);
-        verifyProbabilities();
+        // The PMF should be an exact match to the direct implementation with Math.pow.
+        testProbability(dist, x, values, 0.0);
     }
 
     /**
@@ -227,37 +90,19 @@ class GeometricDistributionTest extends DiscreteDistributionAbstractTest {
     void testInverseCDF(double p) {
         final GeometricDistribution dist = new GeometricDistribution(p);
         final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        final double[] values = Arrays.stream(x).mapToDouble(dist::cumulativeProbability).toArray();
-        setDistribution(dist);
-        setInverseCumulativeTestPoints(values);
-        setInverseCumulativeTestValues(x);
-        verifyInverseCumulativeProbabilities();
-    }
-
-    @ParameterizedTest
-    @ValueSource(doubles = {0.1, 0.456, 0.999})
-    void testParameterAccessors(double p) {
-        final GeometricDistribution dist = new GeometricDistribution(p);
-        Assertions.assertEquals(p, dist.getProbabilityOfSuccess());
-    }
-
-    @ParameterizedTest
-    @ValueSource(doubles = {-0.1, 0.0, 1.1})
-    void testConstructorPrecondition(double p) {
-        Assertions.assertThrows(DistributionException.class, () -> new GeometricDistribution(p));
+        testCumulativeProbabilityInverseMapping(dist, x);
     }
 
     @Test
-    void testMoments() {
-        final double tol = 1e-9;
+    void testAdditionalMoments() {
         GeometricDistribution dist;
 
         dist = new GeometricDistribution(0.5);
-        Assertions.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
-        Assertions.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
+        Assertions.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), getTolerance());
+        Assertions.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), getTolerance());
 
         dist = new GeometricDistribution(0.3);
-        Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
-        Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
+        Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), getTolerance());
+        Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), getTolerance());
     }
 }
