@@ -20,178 +20,60 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test cases for HyperGeometriclDistribution.
- * Extends DiscreteDistributionAbstractTest.  See class javadoc for
- * DiscreteDistributionAbstractTest for details.
+ * Test cases for {@link HypergeometricDistribution}.
+ * Extends {@link BaseDiscreteDistributionTest}. See javadoc of that class for details.
  */
-class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
-
-    //---------------------- Override tolerance --------------------------------
-
-    @BeforeEach
-    void customSetUp() {
-        setTolerance(1e-12);
-    }
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     @Override
-    public DiscreteDistribution makeDistribution() {
-        return new HypergeometricDistribution(10, 5, 5);
+    DiscreteDistribution makeDistribution(Object... parameters) {
+        final int populationSize = (Integer) parameters[0];
+        final int numberOfSuccesses = (Integer) parameters[1];
+        final int sampleSize = (Integer) parameters[2];
+        return new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize);
     }
 
     @Override
-    public int[] makeProbabilityTestPoints() {
-        return new int[] {-1, 0, 1, 2, 3, 4, 5, 10};
+    protected double getTolerance() {
+        return 1e-12;
     }
 
     @Override
-    public double[] makeProbabilityTestValues() {
-        // Reference values are from R, version 2.15.3.
-        return new double[] {0d, 0.00396825396825, 0.0992063492063, 0.396825396825, 0.396825396825,
-                             0.0992063492063, 0.00396825396825, 0d};
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {0, 3, 5},
+            {-1, 3, 5},
+            {5, -1, 5},
+            {5, 3, -1},
+            {5, 6, 5},
+            {5, 3, 6},
+        };
     }
 
     @Override
-    public double[] makeLogProbabilityTestValues() {
-        // Reference values are from R, version 2.14.1.
-        //-Inf  -Inf
-        return new double[] {Double.NEGATIVE_INFINITY, -5.52942908751142, -2.31055326264322, -0.924258901523332,
-                             -0.924258901523332, -2.31055326264322, -5.52942908751142, Double.NEGATIVE_INFINITY};
-    }
-
-    @Override
-    public int[] makeCumulativeTestPoints() {
-        return makeProbabilityTestPoints();
-    }
-
-    @Override
-    public double[] makeCumulativeTestValues() {
-        // Reference values are from R, version 2.15.3.
-        return new double[] {0d, 0.00396825396825, 0.103174603175, .5, 0.896825396825, 0.996031746032,
-                             1, 1};
-    }
-
-    @Override
-    public double[] makeInverseCumulativeTestPoints() {
-        return new double[] {0d, 0.001d, 0.010d, 0.025d, 0.050d, 0.100d, 0.999d,
-                             0.990d, 0.975d, 0.950d, 0.900d, 1d};
-    }
-
-    @Override
-    public int[] makeInverseCumulativeTestValues() {
-        return new int[] {0, 0, 1, 1, 1, 1, 5, 4, 4, 4, 4, 5};
+    String[] getParameterNames() {
+        return new String[] {"PopulationSize", "NumberOfSuccesses", "SampleSize"};
     }
 
     //-------------------- Additional test cases -------------------------------
 
-    /** Verify that if there are no failures, mass is concentrated on sampleSize. */
     @Test
-    void testDegenerateNoFailures() {
-        final HypergeometricDistribution dist = new HypergeometricDistribution(5, 5, 3);
-        setDistribution(dist);
-        setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
-        setCumulativeTestValues(new double[] {0d, 0d, 0d, 1d, 1d});
-        setProbabilityTestPoints(new int[] {-1, 0, 1, 3, 10});
-        setProbabilityTestValues(new double[] {0d, 0d, 0d, 1d, 0d});
-        setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
-        setInverseCumulativeTestValues(new int[] {3, 3});
-        verifyProbabilities();
-        verifyLogProbabilities();
-        verifyCumulativeProbabilities();
-        verifySurvivalProbability();
-        verifySurvivalAndCumulativeProbabilityComplement();
-        verifyInverseCumulativeProbabilities();
-        Assertions.assertEquals(3, dist.getSupportLowerBound());
-        Assertions.assertEquals(3, dist.getSupportUpperBound());
-    }
-
-    /** Verify that if there are no successes, mass is concentrated on 0 */
-    @Test
-    void testDegenerateNoSuccesses() {
-        final HypergeometricDistribution dist = new HypergeometricDistribution(5, 0, 3);
-        setDistribution(dist);
-        setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
-        setCumulativeTestValues(new double[] {0d, 1d, 1d, 1d, 1d});
-        setProbabilityTestPoints(new int[] {-1, 0, 1, 3, 10});
-        setProbabilityTestValues(new double[] {0d, 1d, 0d, 0d, 0d});
-        setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
-        setInverseCumulativeTestValues(new int[] {0, 0});
-        verifyProbabilities();
-        verifyLogProbabilities();
-        verifyCumulativeProbabilities();
-        verifySurvivalProbability();
-        verifySurvivalAndCumulativeProbabilityComplement();
-        verifyInverseCumulativeProbabilities();
-        Assertions.assertEquals(0, dist.getSupportLowerBound());
-        Assertions.assertEquals(0, dist.getSupportUpperBound());
-    }
-
-    /** Verify that if sampleSize = populationSize, mass is concentrated on numberOfSuccesses. */
-    @Test
-    void testDegenerateFullSample() {
-        final HypergeometricDistribution dist = new HypergeometricDistribution(5, 3, 5);
-        setDistribution(dist);
-        setCumulativeTestPoints(new int[] {-1, 0, 1, 3, 10 });
-        setCumulativeTestValues(new double[] {0d, 0d, 0d, 1d, 1d});
-        setProbabilityTestPoints(new int[] {-1, 0, 1, 3, 10});
-        setProbabilityTestValues(new double[] {0d, 0d, 0d, 1d, 0d});
-        setInverseCumulativeTestPoints(new double[] {0.1d, 0.5d});
-        setInverseCumulativeTestValues(new int[] {3, 3});
-        verifyProbabilities();
-        verifyLogProbabilities();
-        verifyCumulativeProbabilities();
-        verifySurvivalProbability();
-        verifySurvivalAndCumulativeProbabilityComplement();
-        verifyInverseCumulativeProbabilities();
-        Assertions.assertEquals(3, dist.getSupportLowerBound());
-        Assertions.assertEquals(3, dist.getSupportUpperBound());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "5, 3, 4",
-        "10, 9, 1",
-    })
-    void testParameterAccessors(int populationSize, int numberOfSuccesses, int sampleSize) {
-        final HypergeometricDistribution dist = new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize);
-        Assertions.assertEquals(populationSize, dist.getPopulationSize());
-        Assertions.assertEquals(numberOfSuccesses, dist.getNumberOfSuccesses());
-        Assertions.assertEquals(sampleSize, dist.getSampleSize());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "0, 3, 5",
-        "-1, 3, 5",
-        "5, -1, 5",
-        "5, 3, -1",
-        "5, 6, 5",
-        "5, 3, 6",
-    })
-    void testConstructorPreconditions(int populationSize, int numberOfSuccesses, int sampleSize) {
-        Assertions.assertThrows(DistributionException.class,
-            () -> new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize));
-    }
-
-    @Test
-    void testMoments() {
-        final double tol = 1e-9;
+    void testAdditionalMoments() {
         HypergeometricDistribution dist;
 
         dist = new HypergeometricDistribution(1500, 40, 100);
-        Assertions.assertEquals(40d * 100d / 1500d, dist.getMean(), tol);
-        Assertions.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)), dist.getVariance(), tol);
+        Assertions.assertEquals(40d * 100d / 1500d,
+            dist.getMean(), getTolerance());
+        Assertions.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)),
+            dist.getVariance(), getTolerance());
 
         dist = new HypergeometricDistribution(3000, 55, 200);
-        Assertions.assertEquals(55d * 200d / 3000d, dist.getMean(), tol);
-        Assertions.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)), dist.getVariance(), tol);
+        Assertions.assertEquals(55d * 200d / 3000d,
+            dist.getMean(), getTolerance());
+        Assertions.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)),
+            dist.getVariance(), getTolerance());
     }
 
     @Test
@@ -304,7 +186,7 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
         final int m = 4;  // successes in population
         final int s = 0;  // number of trials
 
-        final HypergeometricDistribution dist = new HypergeometricDistribution(n, m, 0);
+        final HypergeometricDistribution dist = new HypergeometricDistribution(n, m, s);
 
         for (int i = 1; i <= n; i++) {
             final double p = dist.probability(i);
@@ -342,18 +224,20 @@ class HypergeometricDistributionTest extends DiscreteDistributionAbstractTest {
     @Test
     void testHighPrecisionCumulativeProbabilities() {
         // computed using R version 3.4.4
-        setDistribution(new HypergeometricDistribution(500, 70, 300));
-        setCumulativePrecisionTestPoints(new int[] {10, 8});
-        setCumulativePrecisionTestValues(new double[] {2.4055720603264525e-17, 1.2848174992266236e-19});
-        verifyCumulativeProbabilityPrecision();
+        testCumulativeProbabilityHighPrecision(
+            new HypergeometricDistribution(500, 70, 300),
+            new int[] {10, 8},
+            new double[] {2.4055720603264525e-17, 1.2848174992266236e-19},
+            getHighPrecisionTolerance());
     }
 
     @Test
     void testHighPrecisionSurvivalProbabilities() {
         // computed using R version 3.4.4
-        setDistribution(new HypergeometricDistribution(500, 70, 300));
-        setSurvivalPrecisionTestPoints(new int[] {68, 69});
-        setSurvivalPrecisionTestValues(new double[] {4.570379934029859e-16, 7.4187180434325268e-18});
-        verifySurvivalProbabilityPrecision();
+        testSurvivalProbabilityHighPrecision(
+            new HypergeometricDistribution(500, 70, 300),
+            new int[] {68, 69},
+            new double[] {4.570379934029859e-16, 7.4187180434325268e-18},
+            getHighPrecisionTolerance());
     }
 }
