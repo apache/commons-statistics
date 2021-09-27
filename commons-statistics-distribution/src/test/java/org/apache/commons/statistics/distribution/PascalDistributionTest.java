@@ -94,37 +94,6 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    /** Test degenerate case p = 0. */
-    @Test
-    void testDegenerate0() {
-        final PascalDistribution dist = new PascalDistribution(5, 0.0d);
-        Assertions.assertEquals(0.0, dist.getProbabilityOfSuccess());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
-
-        setDistribution(dist);
-        setProbabilityTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
-        setProbabilityTestValues(new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
-        setCumulativeTestPoints(new int[] {-1, 0, 1, 2, 5, 10});
-        setCumulativeTestValues(new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
-        setInverseCumulativeTestPoints(new double[] {0.1, 0.5, 1.0});
-        setInverseCumulativeTestValues(new int[] {Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE});
-        verifyProbabilities();
-        verifyLogProbabilities();
-        verifyCumulativeProbabilities();
-        verifySurvivalProbability();
-        verifySurvivalAndCumulativeProbabilityComplement();
-        verifyInverseCumulativeProbabilities();
-
-        Assertions.assertEquals(0, dist.getSupportLowerBound());
-        Assertions.assertEquals(Integer.MAX_VALUE, dist.getSupportUpperBound());
-
-        final DiscreteDistribution.Sampler s = dist.createSampler(RandomSource.SPLIT_MIX_64.create());
-        for (int i = 0; i < 5; i++) {
-            Assertions.assertEquals(Integer.MAX_VALUE, s.sample());
-        }
-    }
-
     /** Test degenerate case p = 1. */
     @Test
     void testDegenerate1() {
@@ -172,6 +141,7 @@ class PascalDistributionTest extends DiscreteDistributionAbstractTest {
         "0, 0.5",
         "-1, 0.5",
         "3, -0.1",
+        "3, 0.0",
         "3, 1.1",
     })
     void testConstructorPreconditions(int r, double p) {

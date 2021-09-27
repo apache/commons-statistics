@@ -67,7 +67,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
      *
      * @param r Number of successes.
      * @param p Probability of success.
-     * @throws IllegalArgumentException if {@code r <= 0} or {@code p < 0}
+     * @throws IllegalArgumentException if {@code r <= 0} or {@code p <= 0}
      * or {@code p > 1}.
      */
     public PascalDistribution(int r,
@@ -75,9 +75,9 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
         if (r <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, r);
         }
-        if (p < 0 ||
+        if (p <= 0 ||
             p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
+            throw new DistributionException(DistributionException.INVALID_NON_ZERO_PROBABILITY, p);
         }
 
         numberOfSuccesses = r;
