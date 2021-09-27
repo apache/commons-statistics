@@ -124,9 +124,8 @@ abstract class AbstractDiscreteDistribution
 
     /**
      * Computes the cumulative probability function and checks for {@code NaN}
-     * values returned. Throws {@code MathInternalError} if the value is
-     * {@code NaN}. Rethrows any exception encountered evaluating the cumulative
-     * probability function. Throws {@code MathInternalError} if the cumulative
+     * values returned. Rethrows any exception encountered evaluating the cumulative
+     * probability function. Throws {@code IllegalStateException} if the cumulative
      * probability function returns {@code NaN}.
      *
      * @param argument Input value.
