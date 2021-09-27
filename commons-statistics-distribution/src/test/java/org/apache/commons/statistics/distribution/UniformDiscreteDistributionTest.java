@@ -18,70 +18,44 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.apache.commons.numbers.core.Precision;
 
 /**
- * Test cases for UniformDiscreteDistribution. See class javadoc for
- * {@link DiscreteDistributionAbstractTest} for further details.
+ * Test cases for {@link UniformDiscreteDistribution}.
+ * Extends {@link BaseDiscreteDistributionTest}. See javadoc of that class for details.
  */
-class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
-
-    //---------------------- Override tolerance --------------------------------
-
-    @BeforeEach
-    void customSetUp() {
-        setTolerance(1e-9);
-    }
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
     @Override
-    public DiscreteDistribution makeDistribution() {
-        return new UniformDiscreteDistribution(-3, 5);
+    DiscreteDistribution makeDistribution(Object... parameters) {
+        final int lower = (Integer) parameters[0];
+        final int upper = (Integer) parameters[1];
+        return new UniformDiscreteDistribution(lower, upper);
     }
 
     @Override
-    public int[] makeProbabilityTestPoints() {
-        return new int[] {-4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6};
+    protected double getTolerance() {
+        return 1e-12;
     }
 
     @Override
-    public double[] makeProbabilityTestValues() {
-        final double d = 1.0 / (5 - -3 + 1);
-        return new double[] {0, d, d, d, d, d, d, d, d, d, 0};
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            // MATH-1141
+            {1, 0},
+            {3, 2},
+        };
     }
 
     @Override
-    public int[] makeCumulativeTestPoints() {
-        return makeProbabilityTestPoints();
-    }
-
-    @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {0, 1 / 9.0, 2 / 9.0, 3 / 9.0, 4 / 9.0, 5 / 9.0,
-                             6 / 9.0, 7 / 9.0, 8 / 9.0, 1, 1};
-    }
-
-    @Override
-    public double[] makeInverseCumulativeTestPoints() {
-        return new double[] {0, 0.001, 0.010, 0.025, 0.050, 0.100, 0.200,
-                             0.5, 0.999, 0.990, 0.975, 0.950, 0.900, 1};
-    }
-
-    @Override
-    public int[] makeInverseCumulativeTestValues() {
-        return new int[] {-3, -3, -3, -3, -3, -3, -2, 1, 5, 5, 5, 5, 5, 5};
+    String[] getParameterNames() {
+        return new String[] {"SupportLowerBound", "SupportUpperBound"};
     }
 
     //-------------------- Additional test cases -------------------------------
 
     /** Test mean/variance. */
     @Test
-    void testMoments() {
+    void testAdditionalMoments() {
         UniformDiscreteDistribution dist;
 
         dist = new UniformDiscreteDistribution(0, 5);
@@ -93,46 +67,39 @@ class UniformDiscreteDistributionTest extends DiscreteDistributionAbstractTest {
         Assertions.assertEquals(3 / 12.0, dist.getVariance());
     }
 
-    @ParameterizedTest
-    @CsvSource({
-         // MATH-1141
-        "1, 0",
-        "3, 2",
-    })
-    void testConstructorPreconditions(int lower, int upper) {
-        Assertions.assertThrows(DistributionException.class, () -> new UniformDiscreteDistribution(lower, upper));
-    }
-
-    // MATH-1141
-    @Test
-    void testPreconditionUpperBoundInclusive() {
-        // Degenerate case is allowed.
-        Assertions.assertDoesNotThrow(() -> new UniformDiscreteDistribution(0, 0));
-    }
-
     // MATH-1396
     @Test
     void testLargeRangeSubtractionOverflow() {
         final int hi = Integer.MAX_VALUE / 2 + 10;
-        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(-hi, hi - 1);
+        final int lower = -hi;
+        final int upper = hi - 1;
 
-        final double tol = Math.ulp(1d);
-        Assertions.assertEquals(0.5 / hi, dist.probability(123456), tol);
-        Assertions.assertEquals(0.5, dist.cumulativeProbability(-1), tol);
+        // range = upper - lower + 1 would overflow
+        Assertions.assertTrue(upper - lower < 0);
 
-        Assertions.assertTrue(Precision.equals((Math.pow(2d * hi, 2) - 1) / 12, dist.getVariance(), 1));
+        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(lower, upper);
+
+        Assertions.assertEquals(0.5 / hi, dist.probability(123456));
+        Assertions.assertEquals(0.5, dist.cumulativeProbability(-1));
+
+        Assertions.assertEquals((Math.pow(2d * hi, 2) - 1) / 12, dist.getVariance());
     }
 
     // MATH-1396
     @Test
     void testLargeRangeAdditionOverflow() {
         final int hi = Integer.MAX_VALUE / 2 + 10;
-        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(hi - 1, hi + 1);
+        final int lower = hi - 1;
+        final int upper = hi + 1;
 
-        final double tol = Math.ulp(1d);
-        Assertions.assertEquals(1d / 3d, dist.probability(hi), tol);
-        Assertions.assertEquals(2d / 3d, dist.cumulativeProbability(hi), tol);
+        // mean = (lower + upper) / 2 would overflow
+        Assertions.assertTrue(lower + upper < 0);
 
-        Assertions.assertTrue(Precision.equals(hi, dist.getMean(), 1));
+        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(lower, upper);
+
+        Assertions.assertEquals(1d / 3d, dist.probability(hi));
+        Assertions.assertEquals(2d / 3d, dist.cumulativeProbability(hi));
+
+        Assertions.assertEquals(hi, dist.getMean());
     }
 }
