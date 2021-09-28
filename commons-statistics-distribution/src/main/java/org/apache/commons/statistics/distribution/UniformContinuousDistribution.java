@@ -28,7 +28,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     private final double lower;
     /** Upper bound of this distribution (exclusive). */
     private final double upper;
-    /** Range between the upper and lower bound of this distribution (cached for computaions). */
+    /** Range between the upper and lower bound of this distribution (cached for computations). */
     private final double upperMinusLower;
     /** Cache of the density. */
     private final double pdf;
@@ -39,7 +39,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
      * Creates a uniform distribution.
      *
      * @param lower Lower bound of this distribution (inclusive).
-     * @param upper Upper bound of this distribution (exclusive).
+     * @param upper Upper bound of this distribution (inclusive).
      * @throws IllegalArgumentException if {@code lower >= upper}.
      */
     public UniformContinuousDistribution(double lower,
@@ -95,7 +95,8 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
             p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
-        return p * upperMinusLower + lower;
+        // Avoid floating-point error for lower + p * (upper - lower) when p == 1.
+        return p == 1 ? upper : p * upperMinusLower + lower;
     }
 
     /**

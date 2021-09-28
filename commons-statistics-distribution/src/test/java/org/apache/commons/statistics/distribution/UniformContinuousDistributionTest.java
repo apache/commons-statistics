@@ -18,77 +18,42 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test cases for UniformContinuousDistribution. See class javadoc for
- * {@link ContinuousDistributionAbstractTest} for further details.
+ * Test cases for {@link UniformContinuousDistribution}.
+ * Extends {@link BaseContinuousDistributionTest}. See javadoc of that class for details.
  */
-class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTest {
-
-    //---------------------- Override tolerance --------------------------------
-
-    @BeforeEach
-    void customSetUp() {
-        setTolerance(1e-4);
-    }
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
     @Override
-    public UniformContinuousDistribution makeDistribution() {
-        return new UniformContinuousDistribution(-0.5, 1.25);
+    ContinuousDistribution makeDistribution(Object... parameters) {
+        final double lower = (Double) parameters[0];
+        final double upper = (Double) parameters[1];
+        return new UniformContinuousDistribution(lower, upper);
     }
 
     @Override
-    public double[] makeCumulativeTestPoints() {
-        return new double[] {-0.5001, -0.5, -0.4999, -0.25, -0.0001, 0.0,
-                             0.0001, 0.25, 1.0, 1.2499, 1.25, 1.2501};
+    protected double getTolerance() {
+        return 1e-12;
     }
 
     @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {0.0, 0.0, 0.0001, 0.25 / 1.75, 0.4999 / 1.75,
-                             0.5 / 1.75, 0.5001 / 1.75, 0.75 / 1.75, 1.5 / 1.75,
-                             1.7499 / 1.75, 1.0, 1.0};
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {0.0, 0.0},
+            {1.0, 0.0},
+        };
     }
 
     @Override
-    public double[] makeDensityTestValues() {
-        final double d = 1 / 1.75;
-        return new double[] {0, d, d, d, d, d, d, d, d, d, d, 0};
+    String[] getParameterNames() {
+        return new String[] {"SupportLowerBound", "SupportUpperBound"};
     }
 
     //-------------------- Additional test cases -------------------------------
 
-    /** Test lower bound getter. */
     @Test
-    void testGetLowerBound() {
-        final UniformContinuousDistribution dist = makeDistribution();
-        Assertions.assertEquals(-0.5, dist.getSupportLowerBound());
-    }
-
-    /** Test upper bound getter. */
-    @Test
-    void testGetUpperBound() {
-        final UniformContinuousDistribution dist = makeDistribution();
-        Assertions.assertEquals(1.25, dist.getSupportUpperBound());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "0, 0",
-        "1, 0",
-    })
-    void testConstructorPreconditions(double lower, double upper) {
-        Assertions.assertThrows(DistributionException.class, () -> new UniformContinuousDistribution(lower, upper));
-    }
-
-    @Test
-    void testMoments() {
+    void testAdditionalMoments() {
         UniformContinuousDistribution dist;
 
         dist = new UniformContinuousDistribution(0, 1);
@@ -98,10 +63,6 @@ class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTe
         dist = new UniformContinuousDistribution(-1.5, 0.6);
         Assertions.assertEquals(-0.45, dist.getMean());
         Assertions.assertEquals(0.3675, dist.getVariance());
-
-        dist = new UniformContinuousDistribution(-0.5, 1.25);
-        Assertions.assertEquals(0.375, dist.getMean());
-        Assertions.assertEquals(0.2552083333333333, dist.getVariance());
     }
 
     /**
@@ -110,8 +71,16 @@ class UniformContinuousDistributionTest extends ContinuousDistributionAbstractTe
      */
     @Test
     void testInverseCumulativeDistribution() {
-        final UniformContinuousDistribution dist = new UniformContinuousDistribution(0, 1e-9);
+        final double upper = 1e-9;
+        final double tiny = 0x1.0p-100;
 
+        final UniformContinuousDistribution dist = new UniformContinuousDistribution(0, upper);
         Assertions.assertEquals(2.5e-10, dist.inverseCumulativeProbability(0.25));
+        Assertions.assertEquals(tiny * upper, dist.inverseCumulativeProbability(tiny));
+
+        final UniformContinuousDistribution dist2 = new UniformContinuousDistribution(-upper, 0);
+        // This is inexact
+        Assertions.assertEquals(-7.5e-10, dist2.inverseCumulativeProbability(0.25), Math.ulp(-7.5e-10));
+        Assertions.assertEquals(-upper + tiny * upper, dist2.inverseCumulativeProbability(tiny));
     }
 }
