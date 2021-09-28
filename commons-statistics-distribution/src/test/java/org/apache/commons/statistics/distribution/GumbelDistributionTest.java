@@ -16,117 +16,38 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 /**
- * Test cases for GumbelDistribution.
+ * Test cases for {@link GumbelDistribution}.
+ * Extends {@link BaseContinuousDistributionTest}. See javadoc of that class for details.
  */
-class GumbelDistributionTest extends ContinuousDistributionAbstractTest {
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class GumbelDistributionTest extends BaseContinuousDistributionTest {
     @Override
-    public GumbelDistribution makeDistribution() {
-        return new GumbelDistribution(0.5, 2);
+    ContinuousDistribution makeDistribution(Object... parameters) {
+        final double location = (Double) parameters[0];
+        final double scale = (Double) parameters[1];
+        return new GumbelDistribution(location, scale);
     }
 
     @Override
-    public double[] makeCumulativeTestPoints() {
-        return new double[] {
-            -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5
+    protected double getTolerance() {
+        return 1e-12;
+    }
+
+    @Override
+    protected double getHighPrecisionTolerance() {
+        return 1e-25;
+    }
+
+    @Override
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {10.0, 0.0},
+            {10.0, -0.1}
         };
     }
 
     @Override
-    public double[] makeDensityTestValues() {
-        return new double[] {
-            1.258262e-06, 3.594689e-04, 9.115766e-03, 5.321100e-02, 1.274352e-01, 1.777864e-01,
-            1.787177e-01, 1.472662e-01, 1.075659e-01, 7.302736e-02, 4.742782e-02
-        };
-    }
-
-    @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {
-            1.608760e-07, 7.577548e-05, 3.168165e-03, 3.049041e-02, 1.203923e-01, 2.769203e-01,
-            4.589561e-01, 6.235249e-01, 7.508835e-01, 8.404869e-01, 8.999652e-01
-        };
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestPoints() {
-        return new double[] {-7.0, -7.1};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestValues() {
-        // These were created using WolframAlpha, specifically =CDF[ExtremeValueDistribution[0.5, 2], x]
-        return new double[] {3.414512624812977e-19, 3.859421750095851e-20};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestPoints() {
-        return new double[] {75};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestValues() {
-        // Not calculated via WolframAlpha, instead utilizing scipy gumbel_r, Wolframalpha could not get precise enough
-        return new double[] {6.64554417291507e-17};
-    }
-
-    //-------------------- Additional test cases -------------------------------
-
-    @Test
-    void testInverseCumulativeProbabilityExtremes() {
-        setDistribution(makeDistribution());
-        setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
-        setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
-        verifyInverseCumulativeProbabilities();
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "0.5, 2",
-        "1.3, 0.1",
-    })
-    void testParameterAccessors(double location, double scale) {
-        final GumbelDistribution dist = new GumbelDistribution(location, scale);
-        Assertions.assertEquals(location, dist.getLocation());
-        Assertions.assertEquals(scale, dist.getScale());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "10, 0.0",
-        "10, -0.1",
-    })
-    void testConstructorPreconditions(double location, double scale) {
-        Assertions.assertThrows(DistributionException.class, () -> new GumbelDistribution(location, scale));
-    }
-
-    @Test
-    void testMoments() {
-        final double tol = 1e-9;
-        GumbelDistribution dist;
-
-        dist = new GumbelDistribution(10, 0.5);
-        Assertions.assertEquals(10 + (Math.PI / (2 * Math.E)) * 0.5, dist.getMean(), tol);
-        Assertions.assertEquals((Math.PI * Math.PI / 6) * 0.5 * 0.5, dist.getVariance(), tol);
-
-        dist = new GumbelDistribution(30, 0.3);
-        Assertions.assertEquals(30 + (Math.PI / (2 * Math.E)) * 0.3, dist.getMean(), tol);
-        Assertions.assertEquals((Math.PI * Math.PI / 6) * 0.3 * 0.3, dist.getVariance(), tol);
-    }
-
-    @Test
-    void testSupport() {
-        final GumbelDistribution dist = makeDistribution();
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.getSupportLowerBound());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getSupportUpperBound());
-        Assertions.assertTrue(dist.isSupportConnected());
+    String[] getParameterNames() {
+        return new String[] {"Location", "Scale"};
     }
 }

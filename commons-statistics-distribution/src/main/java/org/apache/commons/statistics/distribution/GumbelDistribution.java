@@ -27,10 +27,10 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
     /** &pi;<sup>2</sup>/6. */
     private static final double PI_SQUARED_OVER_SIX = Math.PI * Math.PI / 6;
     /**
-     * <a href="http://mathworld.wolfram.com/Euler-MascheroniConstantApproximations.html">
+     * <a href="https://en.wikipedia.org/wiki/Euler%27s_constant">
      * Approximation of Euler's constant</a>.
      */
-    private static final double EULER = Math.PI / (2 * Math.E);
+    private static final double EULER = 0.57721566490153286060;
     /** Location parameter. */
     private final double mu;
     /** Scale parameter. */
