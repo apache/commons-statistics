@@ -112,7 +112,7 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
         } else  if (p == 1) {
             return Double.POSITIVE_INFINITY;
         }
-        return location + scale * Math.tan(Math.PI * (p - .5));
+        return location + scale * Math.tan(Math.PI * (p - 0.5));
     }
 
     /**
