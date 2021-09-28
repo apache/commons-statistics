@@ -18,117 +18,83 @@ package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test cases for LogisticsDistribution.
+ * Test cases for {@link LogisticDistribution}.
+ * Extends {@link BaseContinuousDistributionTest}. See javadoc of that class for details.
  */
-class LogisticDistributionTest extends ContinuousDistributionAbstractTest {
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class LogisticDistributionTest extends BaseContinuousDistributionTest {
     @Override
-    public LogisticDistribution makeDistribution() {
-        return new LogisticDistribution(2, 5);
+    ContinuousDistribution makeDistribution(Object... parameters) {
+        final double location = (Double) parameters[0];
+        final double scale = (Double) parameters[1];
+        return new LogisticDistribution(location, scale);
     }
 
     @Override
-    public double[] makeCumulativeTestPoints() {
-        return new double[] {
-            -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5
+    protected double getTolerance() {
+        // Limited by the CDF inverse mapping
+        return 1e-9;
+    }
+
+    @Override
+    protected double getHighPrecisionTolerance() {
+        return 1e-25;
+    }
+
+    @Override
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {0.0, 0.0},
+            {0.0, -0.1}
         };
     }
 
     @Override
-    public double[] makeDensityTestValues() {
-        return new double[] {
-            0.03173698, 0.03557889, 0.03932239, 0.04278194, 0.04575685, 0.04805215,
-            0.04950331, 0.05000000, 0.04950331, 0.04805215, 0.04575685
-        };
-    }
-
-    @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {
-            0.1978161, 0.2314752, 0.2689414, 0.3100255, 0.3543437, 0.4013123,
-            0.4501660, 0.5000000, 0.5498340, 0.5986877, 0.6456563
-        };
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestPoints() {
-        return new double[] {-197, -203};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {5.188951605054656e-18, 1.5628821893349888e-18};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestPoints() {
-        return new double[] {197, 203};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {1.1548224173015786e-17, 3.478258278776922e-18};
+    String[] getParameterNames() {
+        return new String[] {"Location", "Scale"};
     }
 
     //-------------------- Additional test cases -------------------------------
 
     @Test
+    void testExtremeDensity() {
+        final LogisticDistribution dist = new LogisticDistribution(0, 1.0);
+        // Direct density (with scale = 1):
+        // exp(-x) / (1 + exp(-x))^2
+        // As x -> large negative then exp(-x) will overflow and a simple
+        // computation will be incorrect
+        final double x0 = -710;
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, Math.exp(-x0));
+        Assertions.assertEquals(Double.NaN, Math.exp(-x0) / Math.pow(1 + Math.exp(-x0), 2.0));
+
+        // Computed using scipy.stats logistic
+        final double[] x = {710, 720, 730, 740, 750};
+        final double[] values = {4.47628622567513e-309,
+            2.03223080241836e-313, 9.22631526816382e-318,
+            4.19955798965060e-322, 0.00000000000000e+000};
+        for (int i = 0; i < x.length; i++) {
+            final double d = dist.density(x[i]);
+            Assertions.assertEquals(values[i], d, (values[i] - d) * 1e-16);
+            // Test symmetry. These values of x will create overflow.
+            Assertions.assertEquals(d, dist.density(-x[i]));
+        }
+    }
+
+    /**
+     * Test a value for log density when the density computation is zero.
+     */
+    @Test
     void testExtremeLogDensity() {
         final double scale = 2.5;
         final LogisticDistribution dist = new LogisticDistribution(0, scale);
+        // Direct density (with scale = s):
+        // exp(-x / s) / (1 + exp(-x / s))^2
         final double x = 1e160;
         Assertions.assertEquals(0.0, dist.density(x));
-        final double expected = -Math.log(scale) - x / scale;
-        Assertions.assertEquals(expected, dist.logDensity(x), Math.abs(expected) * 1e-14);
-    }
-
-    @Test
-    void testInverseCumulativeProbabilityExtremes() {
-        setDistribution(makeDistribution());
-        setInverseCumulativeTestPoints(new double[] {0, 1});
-        setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
-        verifyInverseCumulativeProbabilities();
-    }
-
-    @Test
-    void testParametersAccessors() {
-        final LogisticDistribution dist = makeDistribution();
-        Assertions.assertEquals(2, dist.getLocation());
-        Assertions.assertEquals(5, dist.getScale());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "1, 0",
-        "1, -0.1",
-    })
-    void testConstructorPreconditions(double location, double scale) {
-        Assertions.assertThrows(DistributionException.class, () -> new LogisticDistribution(location, scale));
-    }
-
-    @Test
-    void testMeanAndVariance() {
-        final LogisticDistribution dist = makeDistribution();
-        // Constructor 'location' parameter = mean
-        Assertions.assertEquals(2.0, dist.getMean());
-        // Variance = (s^2 * pi^2) / 3
-        // Constructor 'scale' parameter = s
-        Assertions.assertEquals(5 * 5 * Math.PI * Math.PI / 3, dist.getVariance());
-    }
-
-    @Test
-    void testSupport() {
-        final LogisticDistribution dist = makeDistribution();
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.getSupportLowerBound());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getSupportUpperBound());
-        Assertions.assertTrue(dist.isSupportConnected());
+        // Log computation
+        final double expected = -x / scale - 2 * Math.log1p(Math.exp(-x / scale));
+        Assertions.assertNotEquals(Double.NEGATIVE_INFINITY, expected, () -> "Density is zero but log density should not be -infinity");
+        Assertions.assertEquals(expected, dist.logDensity(x), Math.abs(expected) * 1e-15);
     }
 }

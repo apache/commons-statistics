@@ -30,8 +30,8 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     private final double mu;
     /** Scale parameter. */
     private final double scale;
-    /** Inverse of "scale". */
-    private final double oneOverScale;
+    /** Logarithm of "scale". */
+    private final double logScale;
 
     /**
      * Creates a distribution.
@@ -49,7 +49,7 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
 
         this.mu = mu;
         this.scale = scale;
-        this.oneOverScale = 1 / scale;
+        this.logScale = Math.log(scale);
     }
 
     /**
@@ -78,9 +78,16 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
             return 0;
         }
 
-        final double z = oneOverScale * (x - mu);
-        final double v = Math.exp(-z);
-        return oneOverScale * v / ((1 + v) * (1 + v));
+        // Ensure symmetry around location by using the absolute.
+        // This also ensures exp(z) is between 1 and 0 and avoids
+        // overflow for large negative values of (x - mu).
+        // Exploits the reciprocal relation: exp(-x) == 1 / exp(x)
+        //     exp(-z)                   1                     exp(z)
+        // --------------- = -------------------------- = --------------
+        // (1 + exp(-z))^2    exp(z) (1 + 1 / exp(z))^2   (1 + exp(z))^2
+        final double z = -Math.abs(x - mu) / scale;
+        final double v = Math.exp(z);
+        return v / ((1 + v) * (1 + v)) / scale;
     }
 
     /** {@inheritDoc} */
@@ -91,22 +98,23 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
             return Double.NEGATIVE_INFINITY;
         }
 
-        final double z = oneOverScale * (x - mu);
-        final double v = Math.exp(-z);
-        return -Math.log(scale) - z - 2 * Math.log(1 + v);
+        // Ensure symmetry around location by using the absolute
+        final double z = -Math.abs(x - mu) / scale;
+        final double v = Math.exp(z);
+        return z - 2 * Math.log1p(v) - logScale;
     }
 
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x) {
-        final double z = oneOverScale * (x - mu);
+        final double z = (x - mu) / scale;
         return 1 / (1 + Math.exp(-z));
     }
 
     /** {@inheritDoc} */
     @Override
     public double survivalProbability(double x) {
-        final double z = oneOverScale * (x - mu);
+        final double z = (x - mu) / scale;
         return 1 / (1 + Math.exp(z));
     }
 
