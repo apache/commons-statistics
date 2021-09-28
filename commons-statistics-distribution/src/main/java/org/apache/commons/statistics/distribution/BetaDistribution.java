@@ -40,6 +40,13 @@ public class BetaDistribution extends AbstractContinuousDistribution {
      */
     public BetaDistribution(double alpha,
                             double beta) {
+        if (alpha <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, alpha);
+        }
+        if (beta <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, beta);
+        }
+
         this.alpha = alpha;
         this.beta = beta;
         z = LogGamma.value(alpha) + LogGamma.value(beta) - LogGamma.value(alpha + beta);
@@ -63,13 +70,21 @@ public class BetaDistribution extends AbstractContinuousDistribution {
         return beta;
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * <p>The density is not defined when {@code x = 0, alpha < 1}, or {@code x = 1, beta < 1}.
+     * In this case the limit of infinity is returned.
+     */
     @Override
     public double density(double x) {
         return Math.exp(logDensity(x));
     }
 
-    /** {@inheritDoc} **/
+    /** {@inheritDoc}
+     *
+     * <p>The density is not defined when {@code x = 0, alpha < 1}, or {@code x = 1, beta < 1}.
+     * In this case the limit of infinity is returned.
+     */
     @Override
     public double logDensity(double x) {
         if (x < 0 ||
@@ -77,14 +92,26 @@ public class BetaDistribution extends AbstractContinuousDistribution {
             return Double.NEGATIVE_INFINITY;
         } else if (x == 0) {
             if (alpha < 1) {
-                throw new DistributionException(DistributionException.TOO_SMALL,
-                                                alpha, 1.0);
+                // Distribution is not valid when x=0, alpha<1
+                // due to a divide by zero error.
+                // Do not raise an exception and return the limit.
+                return Double.POSITIVE_INFINITY;
+            }
+            // Special case of cancellation: x^(a-1) (1-x)^(b-1) / B(a, b)
+            if (alpha == 1) {
+                return -z;
             }
             return Double.NEGATIVE_INFINITY;
         } else if (x == 1) {
             if (beta < 1) {
-                throw new DistributionException(DistributionException.TOO_SMALL,
-                                                beta, 1.0);
+                // Distribution is not valid when x=1, beta<1
+                // due to a divide by zero error.
+                // Do not raise an exception and return the limit.
+                return Double.POSITIVE_INFINITY;
+            }
+            // Special case of cancellation: x^(a-1) (1-x)^(b-1) / B(a, b)
+            if (beta == 1) {
+                return -z;
             }
             return Double.NEGATIVE_INFINITY;
         } else {
