@@ -81,18 +81,18 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
     @Override
     public double cumulativeProbability(double x) {
         if (x <= mu) {
-            return Math.exp((x - mu) / beta) / 2.0;
+            return 0.5 * Math.exp((x - mu) / beta);
         }
-        return 1.0 - Math.exp((mu - x) / beta) / 2.0;
+        return 1.0 - 0.5 * Math.exp((mu - x) / beta);
     }
 
     /** {@inheritDoc} */
     @Override
     public double survivalProbability(double x) {
         if (x <= mu) {
-            return 1.0 - Math.exp((x - mu) / beta) / 2.0;
+            return 1.0 - 0.5 * Math.exp((x - mu) / beta);
         }
-        return Math.exp((mu - x) / beta) / 2.0;
+        return 0.5 * Math.exp((mu - x) / beta);
     }
 
     /** {@inheritDoc} */
@@ -106,7 +106,7 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
         } else if (p == 1) {
             return Double.POSITIVE_INFINITY;
         }
-        final double x = (p > 0.5) ? -Math.log(2.0 - 2.0 * p) : Math.log(2.0 * p);
+        final double x = (p > 0.5) ? -Math.log(2.0 * (1.0 - p)) : Math.log(2.0 * p);
         return mu + beta * x;
     }
 

@@ -16,119 +16,33 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 /**
- * Test cases for LaplaceDistribution.
+ * Test cases for {@link LaplaceDistribution}.
+ * Extends {@link BaseContinuousDistributionTest}. See javadoc of that class for details.
  */
-class LaplaceDistributionTest extends ContinuousDistributionAbstractTest {
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class LaplaceDistributionTest extends BaseContinuousDistributionTest {
     @Override
-    public LaplaceDistribution makeDistribution() {
-        return new LaplaceDistribution(0, 1);
+    ContinuousDistribution makeDistribution(Object... parameters) {
+        final double location = (Double) parameters[0];
+        final double scale = (Double) parameters[1];
+        return new LaplaceDistribution(location, scale);
     }
 
     @Override
-    public double[] makeCumulativeTestPoints() {
-        return new double[] {
-            -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5
+    protected double getTolerance() {
+        return 1e-12;
+    }
+
+    @Override
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {0.0, 0.0},
+            {0.0, -0.1}
         };
     }
 
     @Override
-    public double[] makeDensityTestValues() {
-        return new double[] {
-            0.003368973, 0.009157819, 0.024893534, 0.067667642, 0.183939721,
-            0.500000000, 0.183939721, 0.067667642, 0.024893534, 0.009157819, 0.003368973
-        };
-    }
-
-    @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {
-            0.003368973, 0.009157819, 0.024893534, 0.067667642, 0.183939721,
-            0.500000000, 0.816060279, 0.932332358, 0.975106466, 0.990842181, 0.996631027
-        };
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestPoints() {
-        // Negative values only as anything > 0 falls into an imprecise calculation by being subtracted from 1
-        return new double[] {-42, -43};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {2.87476113214678e-19, 1.0575655187955402e-19};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestPoints() {
-        // Positive values only as anything < 0 falls into an imprecise calculation by being subtracted from 1
-        return new double[] {42, 43};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {2.87476113214678e-19, 1.0575655187955402e-19};
-    }
-
-    //-------------------- Additional test cases -------------------------------
-
-    @Test
-    void testInverseCumulativeProbabilityExtremes() {
-        setDistribution(makeDistribution());
-        setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
-        setInverseCumulativeTestValues(new double[] {Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY});
-        verifyInverseCumulativeProbabilities();
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "1.2, 2.1",
-        "0, 1",
-        "-3, 2",
-    })
-    void testParameterAccessors(double location, double scale) {
-        final LaplaceDistribution dist = new LaplaceDistribution(location, scale);
-        Assertions.assertEquals(location, dist.getLocation());
-        Assertions.assertEquals(scale, dist.getScale());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "0, 0",
-        "0, -0.1",
-    })
-    void testConstructorPreconditions(double location, double scale) {
-        Assertions.assertThrows(DistributionException.class, () -> new LaplaceDistribution(location, scale));
-    }
-
-    @Test
-    void testMoments() {
-        LaplaceDistribution dist;
-
-        dist = new LaplaceDistribution(0.5, 1.0);
-        Assertions.assertEquals(0.5, dist.getMean());
-        Assertions.assertEquals(2.0 * 1.0 * 1.0, dist.getVariance());
-
-        dist = new LaplaceDistribution(-0.3, 2.5);
-        Assertions.assertEquals(-0.3, dist.getMean());
-        Assertions.assertEquals(2.0 * 2.5 * 2.5, dist.getVariance());
-    }
-
-    @Test
-    void testSupport() {
-        final LaplaceDistribution dist = makeDistribution();
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.getSupportLowerBound());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getSupportUpperBound());
-        Assertions.assertTrue(dist.isSupportConnected());
+    String[] getParameterNames() {
+        return new String[] {"Location", "Scale"};
     }
 }
