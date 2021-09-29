@@ -39,9 +39,15 @@ public class LevyDistribution extends AbstractContinuousDistribution {
      *
      * @param mu Location parameter.
      * @param c Scale parameter.
+     * @throws IllegalArgumentException if {@code c <= 0}.
      */
     public LevyDistribution(final double mu,
                             final double c) {
+        if (c <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
+                                            c);
+        }
+
         this.mu = mu;
         this.c = c;
         this.halfC = 0.5 * c;
