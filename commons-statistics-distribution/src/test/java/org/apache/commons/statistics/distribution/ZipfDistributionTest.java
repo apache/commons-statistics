@@ -17,109 +17,75 @@
 
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link ZipfDistribution}.
- * Extends DiscreteDistributionAbstractTest.
- * See class javadoc for DiscreteDistributionAbstractTest for details.
+ * Extends {@link BaseDiscreteDistributionTest}. See javadoc of that class for details.
  */
-class ZipfDistributionTest extends DiscreteDistributionAbstractTest {
-
-    //---------------------- Override tolerance --------------------------------
-
-    @BeforeEach
-    void customSetUp() {
-        setTolerance(1e-12);
-    }
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
     @Override
-    public ZipfDistribution makeDistribution() {
-        return new ZipfDistribution(10, 1);
+    DiscreteDistribution makeDistribution(Object... parameters) {
+        final int n = (Integer) parameters[0];
+        final double e = (Double) parameters[1];
+        return new ZipfDistribution(n, e);
     }
 
     @Override
-    public int[] makeProbabilityTestPoints() {
-        return new int[] {-1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    protected double getTolerance() {
+        return 1e-12;
     }
 
     @Override
-    public double[] makeProbabilityTestValues() {
-        // Reference values are from R, version 2.15.3 (VGAM package 0.9-0).
-        return new double[] {0d, 0d, 0.341417152147, 0.170708576074, 0.113805717382, 0.0853542880369, 0.0682834304295,
-                             0.0569028586912, 0.0487738788782, 0.0426771440184, 0.0379352391275, 0.0341417152147, 0};
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {0, 1.0},
+            {-1, 1.0},
+            {1, -0.1},
+        };
     }
 
     @Override
-    public double[] makeLogProbabilityTestValues() {
-        // Reference values are from R, version 2.14.1.
-        return new double[] {Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
-                             -1.07465022926458, -1.76779740982453, -2.17326251793269, -2.46094459038447,
-                             -2.68408814169868, -2.86640969849264, -3.0205603783199, -3.15409177094442,
-                             -3.2718748066008, -3.37723532225863, Double.NEGATIVE_INFINITY};
-    }
-
-    @Override
-    public int[] makeCumulativeTestPoints() {
-        return makeProbabilityTestPoints();
-    }
-
-    @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {0, 0, 0.341417152147, 0.512125728221, 0.625931445604, 0.71128573364,
-                             0.77956916407, 0.836472022761, 0.885245901639, 0.927923045658, 0.965858284785, 1d, 1d};
-    }
-
-    @Override
-    public double[] makeInverseCumulativeTestPoints() {
-        return new double[] {0d, 0.001d, 0.010d, 0.025d, 0.050d, 0.3413d, 0.3415d, 0.999d,
-                             0.990d, 0.975d, 0.950d, 0.900d, 1d};
-    }
-
-    @Override
-    public int[] makeInverseCumulativeTestValues() {
-        return new int[] {1, 1, 1, 1, 1, 1, 2, 10, 10, 10, 9, 8, 10};
+    String[] getParameterNames() {
+        return new String[] {"NumberOfElements", "Exponent"};
     }
 
     //-------------------- Additional test cases -------------------------------
 
-    @ParameterizedTest
-    @CsvSource({
-        "10, 1",
-        "3, 0.5",
-    })
-    void testParameterAccessors(int n, double e) {
-        final ZipfDistribution dist = new ZipfDistribution(n, e);
-        Assertions.assertEquals(n, dist.getNumberOfElements());
-        Assertions.assertEquals(e, dist.getExponent());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "0, 1",
-        "-1, 1",
-        "1, 0",
-        "1, -0.1",
-    })
-    void testConstructorPreconditions(int n, double e) {
-        Assertions.assertThrows(DistributionException.class, () -> new ZipfDistribution(n, e));
-    }
-
     @Test
-    void testMoments() {
-        final double tol = 1e-9;
-        ZipfDistribution dist;
+    void testHighPrecisionSurvivalProbabilities() {
+        // computed using scipy.stats (1.7.1) zipfian
+        testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 10),
+            new int[] {57, 59},
+            new double[] {2.3189337454689757e-18, 1.6521739576668957e-18},
+            1e-25);
+        testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 50.5),
+            new int[] {57, 59},
+            new double[] {8.8488396450491320e-90, 1.5972093932264611e-90},
+            1e-95);
+        testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 100.5),
+            new int[] {57, 59},
+            new double[] {5.9632998443758656e-178, 1.9760564023408183e-179},
+            1e-185);
+    }
 
-        dist = new ZipfDistribution(2, 0.5);
-        Assertions.assertEquals(Math.sqrt(2), dist.getMean(), tol);
-        Assertions.assertEquals(0.24264068711928521, dist.getVariance(), tol);
+    /**
+     * Test the high precision survival probability computation when the exponent creates
+     * an overflow in the intermediate. The result should not be infinite or NaN and
+     * it should be a complement to the CDF value.
+     */
+    @Test
+    void testHighPrecisionSurvivalProbabilitiesWithOverflow() {
+        // Requires (x+1)^a to overflow
+        final int n = 60;
+        final double a = 200.5;
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, Math.pow(n, a));
+        ZipfDistribution dist = new ZipfDistribution(n, a);
+        final int[] points = MathArrays.natural(n);
+        testSurvivalAndCumulativeProbabilityComplement(dist, points, getTolerance());
     }
 
     /**
