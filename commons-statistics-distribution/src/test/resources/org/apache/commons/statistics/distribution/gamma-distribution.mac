@@ -17,8 +17,34 @@
 
 /*
  * This Maxima script allows the creation of reference data for the Gamma
- * distribution.
+ * distribution. Run with:
+ *
+ * $ maxima -b gamma-distribution.mac
+ *
+ * See: https://maxima.sourceforge.io/
  */
+
+/*
+ * Function to open a file and add the Apache license header.
+ */
+header(s) :=
+  block(out : openw(s),
+        printf(out, "#~%"),
+        printf(out, "# Licensed to the Apache Software Foundation (ASF) under one or more~%"),
+        printf(out, "# contributor license agreements.  See the NOTICE file distributed with~%"),
+        printf(out, "# this work for additional information regarding copyright ownership.~%"),
+        printf(out, "# The ASF licenses this file to You under the Apache License, Version 2.0~%"),
+        printf(out, "# (the \"License\"); you may not use this file except in compliance with~%"),
+        printf(out, "# the License.  You may obtain a copy of the License at~%"),
+        printf(out, "#~%"),
+        printf(out, "#     http://www.apache.org/licenses/LICENSE-2.0~%"),
+        printf(out, "#~%"),
+        printf(out, "# Unless required by applicable law or agreed to in writing, software~%"),
+        printf(out, "# distributed under the License is distributed on an \"AS IS\" BASIS,~%"),
+        printf(out, "# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.~%"),
+        printf(out, "# See the License for the specific language governing permissions and~%"),
+        printf(out, "# limitations under the License.~%"),
+        return (out) )$
 
 /*
  * Set floating-point accuracy to four times the double precision.
@@ -35,39 +61,48 @@ p(x, a, b) := (x / b)**a * exp(-x / b) / x / gamma(a);
  * Make sure x is a list of exactly representable doubles: use only power-of-two
  * fractions of unity.
  */
-out :  openw("gamma-distribution-shape-1.csv");
-x : float(makelist(i / 32, i, 1, 3200));
+
+/* 
+ * TODO: Add files for shape 0.25, 0.5, 0.75.
+ *
+ * With scale b=1 the mean = variance = shape a.
+ * The ranges chosen below are not consistent with respect to the spread of the distribution
+ * and the extent of the tail. The range may have been chosen to create overflow conditions
+ * for each shape parameter using the MATH-753 density computation.
+ */
+
+out :  header("gamma-distribution-shape-1.csv");
+x : float(makelist(i / 32, i, 1, 32 * 100));
 y : p(bfloat(x), 1, 1);
-printf(out, "~{~h, ~h~%~}", join(x, y));
+printf(out, "~{~f, ~h~%~}", join(x, y));
 close(out);
 
-out :  openw("gamma-distribution-shape-8.csv");
-x : float(makelist(i / 32, i, 1, 3200));
+out :  header("gamma-distribution-shape-8.csv");
+x : float(makelist(i / 32, i, 1, 32 * 100));
 y : p(bfloat(x), 8, 1);
 printf(out, "~{~h, ~h~%~}", join(x, y));
 close(out);
 
-out :  openw("gamma-distribution-shape-10.csv");
-x : float(makelist(i / 4, i, 1, 400));
+out :  header("gamma-distribution-shape-10.csv");
+x : float(makelist(i / 4, i, 1, 4 * 100));
 y : p(bfloat(x), 10, 1);
 printf(out, "~{~h, ~h~%~}", join(x, y));
 close(out);
 
-out :  openw("gamma-distribution-shape-100.csv");
+out :  header("gamma-distribution-shape-100.csv");
 x : float(append(makelist(i / 32, i, 1, 32 * 3), makelist(i + 3, i, 1, 297)));
 y : p(bfloat(x), 100, 1);
 printf(out, "~{~h, ~h~%~}", join(x, y));
 close(out);
 
-out :  openw("gamma-distribution-shape-142.csv");
+out :  header("gamma-distribution-shape-142.csv");
 x : float(append(makelist(i / 32, i, 1, 32 * 10), makelist(i + 10, i, 1, 440)));
 y : p(bfloat(x), 142, 1);
 printf(out, "~{~h, ~h~%~}", join(x, y));
 close(out);
 
-out :  openw("gamma-distribution-shape-1000.csv");
+out :  header("gamma-distribution-shape-1000.csv");
 x : float(append(makelist(i / 32, i, 1, 32 * 10), makelist(i + 10, i, 1, 2990)));
 y : p(bfloat(x), 1000, 1);
 printf(out, "~{~h, ~h~%~}", join(x, y));
 close(out);
-

@@ -21,152 +21,91 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import org.apache.commons.numbers.gamma.LanczosApproximation;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.apache.commons.numbers.gamma.LanczosApproximation;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test cases for GammaDistribution.
- * Extends ContinuousDistributionAbstractTest.  See class javadoc for
- * ContinuousDistributionAbstractTest for details.
+ * Test cases for {@link GammaDistribution}.
+ * Extends {@link BaseContinuousDistributionTest}. See javadoc of that class for details.
  */
-class GammaDistributionTest extends ContinuousDistributionAbstractTest {
-
+class GammaDistributionTest extends BaseContinuousDistributionTest {
     private static final double HALF_LOG_2_PI = 0.5 * Math.log(2.0 * Math.PI);
 
-    //---------------------- Override tolerance --------------------------------
-
-    @BeforeEach
-    void customSetUp() {
-        setTolerance(1e-9);
-    }
-
-    //-------------- Implementations for abstract methods ----------------------
-
     @Override
-    public GammaDistribution makeDistribution() {
-        return new GammaDistribution(4d, 2d);
+    ContinuousDistribution makeDistribution(Object... parameters) {
+        final double shape = (Double) parameters[0];
+        final double scale = (Double) parameters[1];
+        return new GammaDistribution(shape, scale);
     }
 
     @Override
-    public double[] makeCumulativeTestPoints() {
-        // quantiles computed using R version 2.9.2
-        return new double[] {0.857104827257, 1.64649737269, 2.17973074725, 2.7326367935, 3.48953912565,
-                             26.1244815584, 20.0902350297, 17.5345461395, 15.5073130559, 13.3615661365};
+    protected double getTolerance() {
+        return 1e-9;
     }
 
     @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {0.001, 0.01, 0.025, 0.05, 0.1, 0.999, 0.990, 0.975, 0.950, 0.900};
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {0.0, 1.0},
+            {-0.1, 1.0},
+            {1.0, 0.0},
+            {1.0, -0.1},
+        };
     }
 
     @Override
-    public double[] makeDensityTestValues() {
-        return new double[] {0.00427280075546, 0.0204117166709, 0.0362756163658, 0.0542113174239, 0.0773195272491,
-                             0.000394468852816, 0.00366559696761, 0.00874649473311, 0.0166712508128, 0.0311798227954};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestPoints() {
-        return new double[] {1e-4, 9e-5};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {2.6040625021701086e-19, 1.7085322417782863e-19};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestPoints() {
-        return new double[] {99, 103};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {6.833817088979342e-18, 1.0390567840208212e-18};
+    String[] getParameterNames() {
+        return new String[] {"Shape", "Scale"};
     }
 
     //-------------------- Additional test cases -------------------------------
 
     @Test
-    void testDensityAtSupportBounds() {
-        final GammaDistribution dist = makeDistribution();
-        Assertions.assertEquals(0.0, dist.density(0));
-        Assertions.assertEquals(0.0, dist.density(Double.POSITIVE_INFINITY));
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "4, 2",
-        "3.4, 1.2",
-    })
-    void testParameterAccessors(double shape, double scale) {
-        final GammaDistribution dist = new GammaDistribution(shape, scale);
-        Assertions.assertEquals(shape, dist.getShape());
-        Assertions.assertEquals(scale, dist.getScale());
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-        "0, 1",
-        "1, 0",
-    })
-    void testConstructorPreconditions(double shape, double scale) {
-        Assertions.assertThrows(DistributionException.class, () -> new GammaDistribution(shape, scale));
-    }
-
-    @Test
-    void testMoments() {
-        final double tol = 1e-9;
+    void testAdditionalMoments() {
         GammaDistribution dist;
 
         dist = new GammaDistribution(1, 2);
-        Assertions.assertEquals(2, dist.getMean(), tol);
-        Assertions.assertEquals(4, dist.getVariance(), tol);
+        Assertions.assertEquals(2, dist.getMean());
+        Assertions.assertEquals(4, dist.getVariance());
 
         dist = new GammaDistribution(1.1, 4.2);
-        Assertions.assertEquals(1.1d * 4.2d, dist.getMean(), tol);
-        Assertions.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance(), tol);
+        Assertions.assertEquals(1.1d * 4.2d, dist.getMean());
+        Assertions.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance());
     }
 
     @Test
-    void testProbabilities() {
-        testProbability(-1.000, 4.0, 2.0, .0000);
-        testProbability(15.501, 4.0, 2.0, .9499);
-        testProbability(0.504, 4.0, 1.0, .0018);
-        testProbability(10.011, 1.0, 2.0, .9933);
-        testProbability(5.000, 2.0, 2.0, .7127);
+    void testAdditionalCumulativeProbability() {
+        checkCumulativeProbability(-1.000, 4.0, 2.0, .0000);
+        checkCumulativeProbability(15.501, 4.0, 2.0, .9499);
+        checkCumulativeProbability(0.504, 4.0, 1.0, .0018);
+        checkCumulativeProbability(10.011, 1.0, 2.0, .9933);
+        checkCumulativeProbability(5.000, 2.0, 2.0, .7127);
     }
 
-    @Test
-    void testValues() {
-        testValue(15.501, 4.0, 2.0, .9499);
-        testValue(0.504, 4.0, 1.0, .0018);
-        testValue(10.011, 1.0, 2.0, .9933);
-        testValue(5.000, 2.0, 2.0, .7127);
-    }
-
-    private void testProbability(double x, double a, double b, double expected) {
+    private void checkCumulativeProbability(double x, double a, double b, double expected) {
         final GammaDistribution distribution = new GammaDistribution(a, b);
         final double actual = distribution.cumulativeProbability(x);
         Assertions.assertEquals(expected, actual, 10e-4, () -> "probability for " + x);
     }
 
-    private void testValue(double expected, double a, double b, double p) {
+    @Test
+    void testAdditionalInverseCumulativeProbability() {
+        checkInverseCumulativeProbability(15.501, 4.0, 2.0, .9499);
+        checkInverseCumulativeProbability(0.504, 4.0, 1.0, .0018);
+        checkInverseCumulativeProbability(10.011, 1.0, 2.0, .9933);
+        checkInverseCumulativeProbability(5.000, 2.0, 2.0, .7127);
+    }
+
+    private void checkInverseCumulativeProbability(double expected, double a, double b, double p) {
         final GammaDistribution distribution = new GammaDistribution(a, b);
         final double actual = distribution.inverseCumulativeProbability(p);
         Assertions.assertEquals(expected, actual, 10e-4, () -> "critical value for " + p);
     }
 
     @Test
-    void testDensity() {
+    void testAdditionalDensity() {
         final double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
         // R2.5: print(dgamma(x, shape=1, rate=1), digits=10)
         checkDensity(1, 1, x, new double[]{0.000000000000, 0.999999000001, 0.606530659713, 0.367879441171, 0.135335283237, 0.006737946999});
@@ -187,6 +126,9 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         // To force overflow condition
         // R2.5: print(dgamma(x, shape=1000, rate=100), digits=10)
         checkDensity(1000, 100, x, new double[]{0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 3.304830256e-84});
+
+        // TODO - This requires more test cases that evaluate points when the density
+        // switches the computation.
     }
 
     private void checkDensity(double alpha, double rate, double[] x, double[] expected) {
@@ -197,7 +139,7 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
     }
 
     @Test
-    void testLogDensity() {
+    void testAdditionalLogDensity() {
         final double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
         final double inf = Double.POSITIVE_INFINITY;
         // R2.5: print(dgamma(x, shape=1, rate=1, log=TRUE), digits=10)
@@ -228,15 +170,7 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         }
     }
 
-    @Test
-    void testInverseCumulativeProbabilityExtremes() {
-        setDistribution(makeDistribution());
-        setInverseCumulativeTestPoints(new double[] {0, 1});
-        setInverseCumulativeTestValues(new double[] {0, Double.POSITIVE_INFINITY});
-        verifyInverseCumulativeProbabilities();
-    }
-
-    public static double logGamma(double x) {
+    private static double logGamma(double x) {
         /*
          * This is a copy of
          * double Gamma.logGamma(double)
@@ -251,9 +185,9 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
             HALF_LOG_2_PI + Math.log(sum / x);
     }
 
-    public static double density(final double x,
-                                 final double shape,
-                                 final double scale) {
+    private static double density(final double x,
+                                  final double shape,
+                                  final double scale) {
         /*
          * This is a copy of
          * double GammaDistribution.density(double)
@@ -265,6 +199,15 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
         return Math.pow(x / scale, shape - 1) / scale *
                Math.exp(-x / scale) / Math.exp(logGamma(shape));
     }
+
+    // TODO
+    // Test against using Commons Numbers LogGamma.
+    // The implementation for LogGamma has improved since Math-849 due to the use
+    // of a LogGamma1P implementation when x < 8.
+    // Compute logpdf(x) =
+    //   (shape - 1) * Math.log(x) - x / scale - LogGamma.value(shape) - shape * Math.log(scale)
+    // This is the method used in scipy stats.
+    // The result is used with exp to compute the pdf.
 
     /**
      * MATH-753: large values of x or shape parameter cause density(double) to
@@ -311,9 +254,8 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                 final double errOld = Math.abs((actualOld - expected) / ulp);
                 final double errNew = Math.abs((actualNew - expected) / ulp);
 
-                if (Double.isNaN(actualOld) || Double.isInfinite(actualOld)) {
-                    Assertions.assertFalse(Double.isNaN(actualNew), msg);
-                    Assertions.assertFalse(Double.isInfinite(actualNew), msg);
+                if (!Double.isFinite(actualOld)) {
+                    Assertions.assertTrue(Double.isFinite(actualNew), msg);
                     statNewOF.addValue(errNew);
                 } else {
                     statOld.addValue(errOld);
@@ -376,7 +318,7 @@ class GammaDistributionTest extends ContinuousDistributionAbstractTest {
                 Assertions.assertTrue(newSd <= sdOF, msg);
             }
         } catch (final IOException e) {
-            Assertions.fail(e.getMessage());
+            Assertions.fail(e);
         }
     }
 

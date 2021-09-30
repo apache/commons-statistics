@@ -146,9 +146,9 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     public double density(double x) {
        /* The present method must return the value of
         *
-        *     1       x a     - x
-        * ---------- (-)  exp(---)
-        * x Gamma(a)  b        b
+        *     1          a-1     - x           1       x a     - x
+        * ------------  x    exp(---)  =   ---------- (-)  exp(---)
+        * Gamma(a) b^a            b        x Gamma(a)  b        b
         *
         * where a is the shape parameter, and b the scale parameter.
         * Substituting the Lanczos approximation of Gamma(a) leads to the
