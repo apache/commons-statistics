@@ -92,19 +92,42 @@ public class FDistribution extends AbstractContinuousDistribution {
         return denominatorDegreesOfFreedom;
     }
 
-    /**
-     * {@inheritDoc}
+    /** {@inheritDoc}
+     *
+     * <p>Returns the limit when {@code x = 0}:
+     * <ul>
+     * <li>{@code df1 < 2}: Infinity
+     * <li>{@code df1 == 2}: 1
+     * <li>{@code df1 > 2}: 0
+     * </ul>
+     * <p>Where {@code df1} is the numerator degrees of freedom.
      */
     @Override
     public double density(double x) {
         return Math.exp(logDensity(x));
     }
 
-    /** {@inheritDoc} **/
+    /** {@inheritDoc}
+     *
+     * <p>Returns the limit when {@code x = 0}:
+     * <ul>
+     * <li>{@code df1 < 2}: Infinity
+     * <li>{@code df1 == 2}: 0
+     * <li>{@code df1 > 2}: -Infinity
+     * </ul>
+     * <p>Where {@code df1} is the numerator degrees of freedom.
+     */
     @Override
     public double logDensity(double x) {
         if (x <= SUPPORT_LO ||
             x >= SUPPORT_HI) {
+            // Special case x=0:
+            // PDF reduces to the term x^(df1 / 2 - 1) multiplied by a scaling factor
+            if (x == SUPPORT_LO && numeratorDegreesOfFreedom <= 2) {
+                return numeratorDegreesOfFreedom == 2 ?
+                    0 :
+                    Double.POSITIVE_INFINITY;
+            }
             return Double.NEGATIVE_INFINITY;
         }
 
