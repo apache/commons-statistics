@@ -19,8 +19,8 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.numbers.gamma.Erfc;
+import org.apache.commons.numbers.gamma.InverseErf;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.LogNormalSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
@@ -51,7 +51,11 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /** The sigma parameter of this distribution. */
     private final double sigma;
     /** The value of {@code log(sigma) + 0.5 * log(2*PI)} stored for faster computation. */
-    private final double logShapePlusHalfLog2Pi;
+    private final double logSigmaPlusHalfLog2Pi;
+    /** Sigma multiplied by sqrt(2). */
+    private final double sigmaSqrt2;
+    /** Sigma multiplied by sqrt(2 * pi). */
+    private final double sigmaSqrt2Pi;
 
     /**
      * Creates a log-normal distribution.
@@ -68,7 +72,9 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
 
         this.mu = mu;
         this.sigma = sigma;
-        this.logShapePlusHalfLog2Pi = Math.log(sigma) + 0.5 * Math.log(2 * Math.PI);
+        logSigmaPlusHalfLog2Pi = Math.log(sigma) + 0.5 * Math.log(2 * Math.PI);
+        sigmaSqrt2 = sigma * SQRT2;
+        sigmaSqrt2Pi = sigma * SQRT2PI;
     }
 
     /**
@@ -111,7 +117,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
         }
         final double x0 = Math.log(x) - mu;
         final double x1 = x0 / sigma;
-        return Math.exp(-0.5 * x1 * x1) / (sigma * SQRT2PI * x);
+        return Math.exp(-0.5 * x1 * x1) / (sigmaSqrt2Pi * x);
     }
 
     /** {@inheritDoc} */
@@ -126,9 +132,8 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
             return super.probability(x0, x1);
         }
         // Assumes x1 >= x0 && x0 > 0
-        final double denom = sigma * SQRT2;
-        final double v0 = (Math.log(x0) - mu) / denom;
-        final double v1 = (Math.log(x1) - mu) / denom;
+        final double v0 = (Math.log(x0) - mu) / sigmaSqrt2;
+        final double v1 = (Math.log(x1) - mu) / sigmaSqrt2;
         return 0.5 * ErfDifference.value(v0, v1);
     }
 
@@ -144,7 +149,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
         final double logX = Math.log(x);
         final double x0 = logX - mu;
         final double x1 = x0 / sigma;
-        return -0.5 * x1 * x1 - (logShapePlusHalfLog2Pi + logX);
+        return -0.5 * x1 * x1 - (logSigmaPlusHalfLog2Pi + logX);
     }
 
     /**
@@ -171,7 +176,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
         if (Math.abs(dev) > 40 * sigma) {
             return dev < 0 ? 0.0d : 1.0d;
         }
-        return 0.5 * Erfc.value(-dev / (sigma * SQRT2));
+        return 0.5 * Erfc.value(-dev / sigmaSqrt2);
     }
 
     /** {@inheritDoc} */
@@ -184,7 +189,17 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
         if (Math.abs(dev) > 40 * sigma) {
             return dev > 0 ? 0.0d : 1.0d;
         }
-        return 0.5 * Erfc.value(dev / (sigma * SQRT2));
+        return 0.5 * Erfc.value(dev / sigmaSqrt2);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseCumulativeProbability(final double p) {
+        if (p < 0 ||
+            p > 1) {
+            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
+        }
+        return Math.exp(mu + sigmaSqrt2 * InverseErf.value(2 * p - 1));
     }
 
     /**
@@ -254,6 +269,9 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Log normal distribution sampler.
-        return LogNormalSampler.of(ZigguratSampler.NormalizedGaussian.of(rng), mu, sigma)::sample;
+        final ZigguratSampler.NormalizedGaussian gaussian = ZigguratSampler.NormalizedGaussian.of(rng);
+        // TODO: Replace with LogNormalSampler in Commons RNG when
+        // the version supporting negative mu has been released.
+        return () -> Math.exp(mu + sigma * gaussian.sample());
     }
 }
