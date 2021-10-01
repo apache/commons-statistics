@@ -17,6 +17,7 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.function.DoubleUnaryOperator;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.InverseTransformParetoSampler;
 
@@ -38,26 +39,28 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     /** The minimum value for the shape parameter when computing when computing the variance. */
     private static final double MIN_SHAPE_FOR_VARIANCE = 2.0;
 
-    /** The scale parameter of this distribution. */
+    /** The scale parameter of this distribution. Also known as {@code k};
+     * the minimum possible value for the random variable {@code X}. */
     private final double scale;
     /** The shape parameter of this distribution. */
     private final double shape;
-    /** shape * scale^shape. */
-    private final double shapeByScalePowShape;
-    /** log(shape) + shape * log(scale). */
-    private final double logShapePlusShapeByLogScale;
+    /** Implementation of PDF(x). Assumes that {@code x >= scale}. */
+    private final DoubleUnaryOperator pdf;
+    /** Implementation of log PDF(x). Assumes that {@code x >= scale}. */
+    private final DoubleUnaryOperator logpdf;
 
     /**
      * Creates a Pareto distribution.
      *
-     * @param scale Scale parameter.
-     * @param shape Shape parameter.
-     * @throws IllegalArgumentException if {@code scale <= 0} or {@code shape <= 0}.
+     * @param scale Scale parameter (minimum possible value of X).
+     * @param shape Shape parameter (Pareto index).
+     * @throws IllegalArgumentException if {@code scale <= 0}, {@code scale} is infinite,
+     * or {@code shape <= 0}.
      */
     public ParetoDistribution(double scale,
                               double shape) {
-        if (scale <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
+        if (scale <= 0 || scale == Double.POSITIVE_INFINITY) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE_FINITE, scale);
         }
 
         if (shape <= 0) {
@@ -66,12 +69,38 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
 
         this.scale = scale;
         this.shape = shape;
-        shapeByScalePowShape = shape * Math.pow(scale, shape);
-        logShapePlusShapeByLogScale = Math.log(shape) + Math.log(scale) * shape;
+
+        // The Pareto distribution approaches a Dirac delta function when shape -> inf.
+        // Parameterisations can also lead to underflow in the standard computation.
+        // Extract the PDF and CDF to specialized implementations to handle edge cases.
+
+        // Pre-compute factors for the standard computation
+        final double shapeByScalePowShape = shape * Math.pow(scale, shape);
+        final double logShapePlusShapeByLogScale = Math.log(shape) + Math.log(scale) * shape;
+
+        if (shapeByScalePowShape < Double.POSITIVE_INFINITY &&
+            shapeByScalePowShape >= Double.MIN_NORMAL) {
+            // Standard computation
+            pdf = x -> shapeByScalePowShape / Math.pow(x, shape + 1);
+            logpdf = x -> logShapePlusShapeByLogScale - Math.log(x) * (shape + 1);
+        } else {
+            // Standard computation overflow; underflow to sub-normal or zero; or nan (pow(1.0, inf))
+            if (Double.isFinite(logShapePlusShapeByLogScale)) {
+                // Log computation is valid
+                logpdf = x -> logShapePlusShapeByLogScale - Math.log(x) * (shape + 1);
+                pdf = x -> Math.exp(logpdf.applyAsDouble(x));
+            } else  {
+                // Assume Dirac function
+                logpdf = x -> x > scale ? -Double.POSITIVE_INFINITY : Double.POSITIVE_INFINITY;
+                // PDF has infinite value at lower bound
+                pdf = x -> x > scale ? 0 : Double.POSITIVE_INFINITY;
+            }
+        }
     }
 
     /**
      * Returns the scale parameter of this distribution.
+     * This is the minimum possible value of X.
      *
      * @return the scale parameter
      */
@@ -81,6 +110,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
 
     /**
      * Returns the shape parameter of this distribution.
+     * This is the Pareto index.
      *
      * @return the shape parameter
      */
@@ -103,7 +133,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
         if (x < scale) {
             return 0;
         }
-        return shapeByScalePowShape / Math.pow(x, shape + 1);
+        return pdf.applyAsDouble(x);
     }
 
     /** {@inheritDoc}
@@ -115,7 +145,7 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
         if (x < scale) {
             return Double.NEGATIVE_INFINITY;
         }
-        return logShapePlusShapeByLogScale - Math.log(x) * (shape + 1);
+        return logpdf.applyAsDouble(x);
     }
 
     /**
@@ -132,17 +162,42 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
         if (x <= scale) {
             return 0;
         }
-        // Can be improved by improving log calculation
+        // Increase accuracy for CDF close to 0 by using a log calculation:
+        // 1 - exp(α * ln(k / x)) == -(exp(α * ln(k / x)) - 1)
         return -Math.expm1(shape * Math.log(scale / x));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     * <p>
+     * For scale {@code k}, and shape {@code α} of this distribution, the survival function is given by
+     * <ul>
+     * <li>{@code 1} if {@code x < k},</li>
+     * <li>{@code (k / x)^α} otherwise.</li>
+     * </ul>
+     */
     @Override
     public double survivalProbability(double x)  {
         if (x <= scale) {
             return 1;
         }
         return Math.pow(scale / x, shape);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseCumulativeProbability(double p) {
+        if (p < 0 ||
+            p > 1) {
+            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
+        }
+        if (p == 0) {
+            return getSupportLowerBound();
+        }
+        if (p == 1) {
+            return getSupportUpperBound();
+        }
+        return scale / Math.exp(Math.log1p(-p) / shape);
     }
 
     /**
@@ -159,7 +214,10 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
         if (shape <= 1) {
             return Double.POSITIVE_INFINITY;
         }
-        return shape * scale / (shape - 1);
+        if (shape == Double.POSITIVE_INFINITY) {
+            return scale;
+        }
+        return scale * (shape / (shape - 1));
     }
 
     /**
@@ -176,8 +234,13 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
         if (shape <= MIN_SHAPE_FOR_VARIANCE) {
             return Double.POSITIVE_INFINITY;
         }
+        if (shape == Double.POSITIVE_INFINITY) {
+            return 0;
+        }
         final double s = shape - 1;
-        return scale * scale * shape / (s * s) / (shape - 2);
+        final double z = shape / s / s / (shape - 2);
+        // Avoid intermediate overflow of scale^2 if z is small
+        return z < 1 ? z * scale * scale : scale * scale * z;
     }
 
     /**
