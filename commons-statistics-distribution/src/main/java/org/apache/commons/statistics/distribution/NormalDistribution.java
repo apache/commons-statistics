@@ -18,7 +18,7 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.Erfc;
-import org.apache.commons.numbers.gamma.InverseErf;
+import org.apache.commons.numbers.gamma.InverseErfc;
 import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.GaussianSampler;
@@ -127,7 +127,7 @@ public class NormalDistribution extends AbstractContinuousDistribution {
             p > 1) {
             throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
         }
-        return mean + sdSqrt2 * InverseErf.value(2 * p - 1);
+        return mean - sdSqrt2 * InverseErfc.value(2 * p);
     }
 
     /** {@inheritDoc} */
