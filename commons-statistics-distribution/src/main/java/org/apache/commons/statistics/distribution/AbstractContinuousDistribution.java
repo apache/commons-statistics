@@ -36,6 +36,42 @@ abstract class AbstractContinuousDistribution
     // XXX Values copied from defaults in class
     // "o.a.c.math4.analysis.solvers.BaseAbstractUnivariateSolver"
 
+    // Note:
+    // Probability distributions may have very small CDF values.
+    // This creates issues when using the Brent solver.
+    //
+    // 1. It cannot identify bracketing if the multiplication of the two
+    // end points creates a signed zero since the condition uses:
+    //   lower * upper < 0
+    // It should be changed to Double.compare(lower * upper, 0.0) < 0.
+    //
+    // 2. Function value accuracy determines if the Brent solver performs a
+    // search. Ideally set to zero to force a search (unless one of the the
+    // initial bracket values is correct). This can result in functions
+    // that evaluate very small p to raise a no-bracket exception due to [1].
+    //
+    // 3. Solver absolute accuracy is the minimum absolute difference between
+    // bracketing points to continue the search. To invert very small probability
+    // values (which map to very small x values) requires a very small absolute
+    // accuracy otherwise the search stops too soon. Set to zero to force
+    // stopping criteria based only on the relative difference between points.
+    //
+    // Note:
+    // The Brent solver does not allow a stopping criteria for the proximity
+    // to the root. It is hard coded to 1 ULP (CDF(x) - p == 0). Thus we
+    // search until there is a small relative difference between the upper
+    // and lower bracket of the root.
+
+    // TODO:
+    // Extract the Brent solver code into this class and fix it for the known
+    // issues. These can be transferred back into the original class when the
+    // best solution is known.
+    //
+    // Changes to this class affect many samplers. Altering the accuracy
+    // thresholds can cause any test that uses the inverse CDF to fail. This
+    // includes sampling tests for distributions with use the inverse
+    // transform sampler which have been coded with fixed seeds that work.
+
     /** BrentSolver relative accuracy. */
     private static final double SOLVER_RELATIVE_ACCURACY = 1e-14;
     /** BrentSolver absolute accuracy. */
