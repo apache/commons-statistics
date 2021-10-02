@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.commons.numbers.gamma.LanczosApproximation;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -129,6 +130,23 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
 
         // TODO - This requires more test cases that evaluate points when the density
         // switches the computation.
+    }
+
+    /**
+     * Test a shape below 1. This captures a known failure condition.
+     * The conditions to detect overflow are incorrect and the computation
+     * switches to an inaccurate method that computes pdf == 0 when it should
+     * be very large.
+     */
+    @Test
+    @Disabled
+    void testShapeBelow1() {
+        // R2.5: print(dgamma(x, shape=0.05, rate=1), digits=20)
+        final double[] x = new double[]{1e-100, 1e-10, 1e-5, 0.1};
+        checkDensity(0.05, 1, x, new double[] {
+            5.1360843263583843333e+93, 1.6241724724359893799e+08,
+            2.8882035841935007738e+03, 4.1419294512123655538e-01
+        });
     }
 
     private void checkDensity(double alpha, double rate, double[] x, double[] expected) {
