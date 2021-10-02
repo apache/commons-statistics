@@ -44,13 +44,29 @@ public class ChiSquaredDistribution extends AbstractContinuousDistribution {
         return gamma.getShape() * 2;
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * <p>Returns the limit when {@code x = 0}:
+     * <ul>
+     * <li>{@code df < 2}: Infinity
+     * <li>{@code df == 2}: 1 / 2
+     * <li>{@code df > 2}: 0
+     * </ul>
+     */
     @Override
     public double density(double x) {
         return gamma.density(x);
     }
 
-    /** {@inheritDoc} **/
+    /** {@inheritDoc}
+     *
+     * <p>Returns the limit when {@code x = 0}:
+     * <ul>
+     * <li>{@code df < 2}: Infinity
+     * <li>{@code df == 2}: log(1 / 2)
+     * <li>{@code df > 2}: -Infinity
+     * </ul>
+     */
     @Override
     public double logDensity(double x) {
         return gamma.logDensity(x);

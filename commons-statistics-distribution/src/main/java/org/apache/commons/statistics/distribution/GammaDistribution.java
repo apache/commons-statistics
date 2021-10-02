@@ -141,7 +141,15 @@ public class GammaDistribution extends AbstractContinuousDistribution {
         return scale;
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * <p>Returns the limit when {@code x = 0}:
+     * <ul>
+     * <li>{@code shape < 1}: Infinity
+     * <li>{@code shape == 1}: 1 / scale
+     * <li>{@code shape > 1}: 0
+     * </ul>
+     */
     @Override
     public double density(double x) {
        /* The present method must return the value of
@@ -184,6 +192,12 @@ public class GammaDistribution extends AbstractContinuousDistribution {
         */
         if (x <= SUPPORT_LO ||
             x >= SUPPORT_HI) {
+            // Special case x=0
+            if (x == SUPPORT_LO && shape <= 1) {
+                return shape == 1 ?
+                    1 / scale :
+                    Double.POSITIVE_INFINITY;
+            }
             return 0;
         }
 
@@ -203,7 +217,15 @@ public class GammaDistribution extends AbstractContinuousDistribution {
         return densityPrefactor1 * Math.exp(-y) * Math.pow(y, shape - 1);
     }
 
-    /** {@inheritDoc} **/
+    /** {@inheritDoc}
+     *
+     * <p>Returns the limit when {@code x = 0}:
+     * <ul>
+     * <li>{@code shape < 1}: Infinity
+     * <li>{@code shape == 1}: -log(scale)
+     * <li>{@code shape > 1}: -Infinity
+     * </ul>
+     */
     @Override
     public double logDensity(double x) {
         /*
@@ -211,6 +233,12 @@ public class GammaDistribution extends AbstractContinuousDistribution {
          */
         if (x <= SUPPORT_LO ||
             x >= SUPPORT_HI) {
+            // Special case x=0
+            if (x == SUPPORT_LO && shape <= 1) {
+                return shape == 1 ?
+                    -Math.log(scale) :
+                    Double.POSITIVE_INFINITY;
+            }
             return Double.NEGATIVE_INFINITY;
         }
 
