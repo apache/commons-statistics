@@ -19,78 +19,43 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.LogGamma;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test cases for WeibullDistribution.
- * Extends ContinuousDistributionAbstractTest.  See class javadoc for
- * ContinuousDistributionAbstractTest for details.
+ * Test cases for {@link WeibullDistribution}.
+ * Extends {@link BaseContinuousDistributionTest}. See javadoc of that class for details.
  */
-class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
-
-    @BeforeEach
-    void customSetUp() {
-        setTolerance(1e-10);
-    }
-
-    //-------------- Implementations for abstract methods ----------------------
-
+class WeibullDistributionTest extends BaseContinuousDistributionTest {
     @Override
-    public WeibullDistribution makeDistribution() {
-        return new WeibullDistribution(1.2, 2.1);
+    ContinuousDistribution makeDistribution(Object... parameters) {
+        final double shape = (Double) parameters[0];
+        final double scale = (Double) parameters[1];
+        return new WeibullDistribution(shape, scale);
     }
 
     @Override
-    public double[] makeCumulativeTestPoints() {
-        // quantiles computed using R version 2.9.2
-        return new double[] {0.00664355180993, 0.0454328283309, 0.0981162737374, 0.176713524579, 0.321946865392,
-                             10.5115496887, 7.4976304671, 6.23205600701, 5.23968436955, 4.2079028257};
+    protected double getTolerance() {
+        return 1e-12;
     }
 
     @Override
-    public double[] makeCumulativeTestValues() {
-        return new double[] {0.001, 0.01, 0.025, 0.05, 0.1, 0.999, 0.990, 0.975, 0.950, 0.900};
+    Object[][] makeInvalidParameters() {
+        return new Object[][] {
+            {0.0, 2.0},
+            {-0.1, 2.0},
+            {1.0, 0.0},
+            {1.0, -0.1},
+        };
     }
 
     @Override
-    public double[] makeDensityTestValues() {
-        return new double[] {0.180535929306, 0.262801138133, 0.301905425199, 0.330899152971,
-                             0.353441418887, 0.000788590320203, 0.00737060094841, 0.0177576041516, 0.0343043442574, 0.065664589369};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestPoints() {
-        return new double[] {1e-14, 1e-15};
-    }
-
-    @Override
-    public double[] makeCumulativePrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {6.506341377907031e-18, 4.1052238780858223e-19};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestPoints() {
-        return new double[] {45, 47.2};
-    }
-
-    @Override
-    public double[] makeSurvivalPrecisionTestValues() {
-        // These were created using WolframAlpha
-        return new double[] {6.6352694710268576e-18, 6.444810903667567e-19};
+    String[] getParameterNames() {
+        return new String[] {"Shape", "Scale"};
     }
 
     //-------------------- Additional test cases -------------------------------
-
-    @Test
-    void testDensityAtSupportBounds() {
-        final WeibullDistribution dist = makeDistribution();
-        Assertions.assertEquals(0.0, dist.density(0));
-        Assertions.assertEquals(0.0, dist.density(Double.POSITIVE_INFINITY));
-    }
 
     @Test
     void testInverseCumulativeProbabilitySmallPAccuracy() {
@@ -100,14 +65,6 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
         // x = sqrt(-9*log(1-1e-17))
         // If we're not careful, answer will be 0. Answer below is computed with care in Octave:
         Assertions.assertEquals(9.48683298050514e-9, t, 1e-17);
-    }
-
-    @Test
-    void testInverseCumulativeProbabilityExtremes() {
-        setDistribution(makeDistribution());
-        setInverseCumulativeTestPoints(new double[] {0.0, 1.0});
-        setInverseCumulativeTestValues(new double[] {0.0, Double.POSITIVE_INFINITY});
-        verifyInverseCumulativeProbabilities();
     }
 
     @ParameterizedTest
@@ -121,19 +78,8 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
         Assertions.assertEquals(scale, dist.getScale());
     }
 
-    @ParameterizedTest
-    @CsvSource({
-        "0, 2",
-        "-0.1, 2",
-        "1, 0",
-        "1, -0.1",
-    })
-    void testConstructorPreconditions(double shape, double scale) {
-        Assertions.assertThrows(DistributionException.class, () -> new WeibullDistribution(shape, scale));
-    }
-
     @Test
-    void testMoments() {
+    void testAdditionalMoments() {
         final double tol = 1e-9;
         WeibullDistribution dist;
 
@@ -141,13 +87,13 @@ class WeibullDistributionTest extends ContinuousDistributionAbstractTest {
         // In R: 3.5*gamma(1+(1/2.5)) (or empirically: mean(rweibull(10000, 2.5, 3.5)))
         Assertions.assertEquals(3.5 * Math.exp(LogGamma.value(1 + (1 / 2.5))), dist.getMean(), tol);
         Assertions.assertEquals((3.5 * 3.5) *
-                            Math.exp(LogGamma.value(1 + (2 / 2.5))) -
-                            (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
+            Math.exp(LogGamma.value(1 + (2 / 2.5))) -
+            (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
 
         dist = new WeibullDistribution(10.4, 2.222);
         Assertions.assertEquals(2.222 * Math.exp(LogGamma.value(1 + (1 / 10.4))), dist.getMean(), tol);
         Assertions.assertEquals((2.222 * 2.222) *
-                            Math.exp(LogGamma.value(1 + (2 / 10.4))) -
-                            (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
+            Math.exp(LogGamma.value(1 + (2 / 10.4))) -
+            (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
     }
 }

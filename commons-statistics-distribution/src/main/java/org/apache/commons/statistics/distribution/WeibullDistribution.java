@@ -18,12 +18,20 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.LogGamma;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
  * Implementation of the Weibull distribution. This implementation uses the
  * two parameter form of the distribution defined by
  * <a href="http://mathworld.wolfram.com/WeibullDistribution.html">
  * Weibull Distribution</a>, equations (1) and (2).
+ *
+ * <p>Note the special cases:
+ * <ul>
+ * <li>{@code shape == 1} is the exponential distribution
+ * <li>{@code shape == 2} is the Rayleigh distribution
+ * </ul>
  *
  * @see <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution (Wikipedia)</a>
  * @see <a href="http://mathworld.wolfram.com/WeibullDistribution.html">Weibull distribution (MathWorld)</a>
@@ -83,11 +91,25 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
         return scale;
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * <p>Returns the limit when {@code x = 0}:
+     * <ul>
+     * <li>{@code shape < 1}: Infinity
+     * <li>{@code shape == 1}: 1 / scale
+     * <li>{@code shape > 1}: 0
+     * </ul>
+     */
     @Override
     public double density(double x) {
-        if (x <= SUPPORT_LO ||
-            x >= SUPPORT_HI) {
+        if (x <= SUPPORT_LO || x >= SUPPORT_HI) {
+            // Special case x=0
+            if (x == SUPPORT_LO && shape <= 1) {
+                return shape == 1 ?
+                    // Exponential distribution
+                    shapeOverScale :
+                    Double.POSITIVE_INFINITY;
+            }
             return 0;
         }
 
@@ -104,11 +126,25 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
         return shapeOverScale * xscalepow * Math.exp(-xscalepowshape);
     }
 
-    /** {@inheritDoc} */
+    /** {@inheritDoc}
+     *
+     * <p>Returns the limit when {@code x = 0}:
+     * <ul>
+     * <li>{@code shape < 1}: Infinity
+     * <li>{@code shape == 1}: log(1 / scale)
+     * <li>{@code shape > 1}: -Infinity
+     * </ul>
+     */
     @Override
     public double logDensity(double x) {
-        if (x <= SUPPORT_LO ||
-            x >= SUPPORT_HI) {
+        if (x <= SUPPORT_LO || x >= SUPPORT_HI) {
+            // Special case x=0
+            if (x == SUPPORT_LO && shape <= 1) {
+                return shape == 1 ?
+                    // Exponential distribution
+                    logShapeOverScale :
+                    Double.POSITIVE_INFINITY;
+            }
             return Double.NEGATIVE_INFINITY;
         }
 
@@ -119,6 +155,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
          * Math.pow(x / scale, shape) =
          * Math.pow(xscale, shape) =
          * Math.pow(xscale, shape - 1) * xscale
+         * Math.exp(log(xscale) * (shape - 1)) * xscale
          */
         final double xscalepowshape = Math.exp(logxscalepow) * xscale;
 
@@ -175,7 +212,8 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
         final double sh = getShape();
         final double sc = getScale();
 
-        return sc * Math.exp(LogGamma.value(1 + (1 / sh)));
+        // Special case of exponential when shape is 1
+        return sh == 1 ? sc : sc * Math.exp(LogGamma.value(1 + (1 / sh)));
     }
 
     /**
@@ -190,7 +228,10 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
         final double sc = getScale();
         final double mn = getMean();
 
-        return (sc * sc) * Math.exp(LogGamma.value(1 + (2 / sh))) -
+        // Special case of exponential when shape is 1
+        return sh == 1 ?
+               sc * sc :
+               (sc * sc) * Math.exp(LogGamma.value(1 + (2 / sh))) -
                (mn * mn);
     }
 
@@ -230,5 +271,16 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     @Override
     public boolean isSupportConnected() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
+        // Special case: shape=1 is the exponential distribution
+        if (shape == 1) {
+            // Exponential distribution sampler.
+            return ZigguratSampler.Exponential.of(rng, scale)::sample;
+        }
+        return super.createSampler(rng);
     }
 }
