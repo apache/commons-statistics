@@ -41,11 +41,7 @@ public class BinomialDistribution extends AbstractDiscreteDistribution {
             throw new DistributionException(DistributionException.NEGATIVE,
                                             trials);
         }
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
-
+        ArgumentUtils.checkProbability(p);
         probabilityOfSuccess = p;
         numberOfTrials = trials;
     }

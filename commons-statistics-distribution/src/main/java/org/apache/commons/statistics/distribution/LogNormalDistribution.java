@@ -195,10 +195,7 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double inverseCumulativeProbability(final double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
+        ArgumentUtils.checkProbability(p);
         return Math.exp(mu - sigmaSqrt2 * InverseErfc.value(2 * p));
     }
 

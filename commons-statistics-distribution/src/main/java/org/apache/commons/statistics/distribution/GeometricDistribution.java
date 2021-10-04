@@ -116,10 +116,7 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public int inverseCumulativeProbability(double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
+        ArgumentUtils.checkProbability(p);
         if (p == 1) {
             return getSupportUpperBound();
         }

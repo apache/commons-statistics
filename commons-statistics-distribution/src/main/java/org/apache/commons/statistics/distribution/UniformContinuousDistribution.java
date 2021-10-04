@@ -91,10 +91,7 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     /** {@inheritDoc} */
     @Override
     public double inverseCumulativeProbability(final double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
+        ArgumentUtils.checkProbability(p);
         // Avoid floating-point error for lower + p * (upper - lower) when p == 1.
         return p == 1 ? upper : p * upperMinusLower + lower;
     }

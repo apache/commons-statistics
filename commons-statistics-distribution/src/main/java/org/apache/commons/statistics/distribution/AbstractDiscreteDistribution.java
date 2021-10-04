@@ -38,13 +38,12 @@ abstract class AbstractDiscreteDistribution
      *     {@link #cumulativeProbability(int)}. The bounds may be bracketed for
      *     efficiency.</li>
      * </ul>
+     *
+     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
      */
     @Override
     public int inverseCumulativeProbability(final double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
+        ArgumentUtils.checkProbability(p);
 
         int lower = getSupportLowerBound();
         if (p == 0) {

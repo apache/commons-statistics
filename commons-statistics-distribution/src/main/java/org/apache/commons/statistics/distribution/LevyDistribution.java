@@ -143,10 +143,7 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double inverseCumulativeProbability(final double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
+        ArgumentUtils.checkProbability(p);
         final double t = InverseErfc.value(p);
         return mu + halfC / (t * t);
     }

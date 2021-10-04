@@ -90,6 +90,8 @@ abstract class AbstractContinuousDistribution
      *     {@link #cumulativeProbability(double) cdf(x) - p}. The bounds may be bracketed for
      *     efficiency.</li>
      * </ul>
+     *
+     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
      */
     @Override
     public double inverseCumulativeProbability(final double p) {
@@ -121,10 +123,7 @@ abstract class AbstractContinuousDistribution
          * progressions 1, 2, 4, ... and -1, -2, -4, ... are used to bracket
          * the root.
          */
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
+        ArgumentUtils.checkProbability(p);
 
         double lowerBound = getSupportLowerBound();
         if (p == 0) {

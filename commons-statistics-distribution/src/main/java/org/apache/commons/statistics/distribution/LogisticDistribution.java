@@ -121,10 +121,8 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double inverseCumulativeProbability(double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        } else if (p == 0) {
+        ArgumentUtils.checkProbability(p);
+        if (p == 0) {
             return SUPPORT_LO;
         } else if (p == 1) {
             return SUPPORT_HI;

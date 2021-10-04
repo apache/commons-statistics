@@ -145,10 +145,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double inverseCumulativeProbability(double p) {
-        if (p < 0 ||
-            p > 1) {
-            throw new DistributionException(DistributionException.INVALID_PROBABILITY, p);
-        }
+        ArgumentUtils.checkProbability(p);
         if (p == 0) {
             return a;
         }
