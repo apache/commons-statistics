@@ -96,6 +96,12 @@
       <property name="methodReportLevel" value="20"/>
     </properties>
   </rule>
+  <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts">
+    <properties>
+      <property name="violationSuppressXPath"
+        value="//ClassOrInterfaceDeclaration[@Image='AbstractContinuousDistribution']"/>
+    </properties>
+  </rule>
 
   <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
     <properties>
