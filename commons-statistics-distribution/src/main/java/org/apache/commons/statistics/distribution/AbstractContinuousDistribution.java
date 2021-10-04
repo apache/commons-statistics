@@ -95,8 +95,7 @@ abstract class AbstractContinuousDistribution
      */
     @Override
     public double inverseCumulativeProbability(final double p) {
-        /*
-         * IMPLEMENTATION NOTES
+        /* IMPLEMENTATION NOTES
          * --------------------
          * Where applicable, use is made of the one-sided Chebyshev inequality
          * to bracket the root. This inequality states that
@@ -138,13 +137,15 @@ abstract class AbstractContinuousDistribution
         final double mu = getMean();
         final double sig = Math.sqrt(getVariance());
         final boolean chebyshevApplies = Double.isFinite(mu) &&
-                                         Double.isFinite(sig);
+                                         ArgumentUtils.isFiniteStrictlyPositive(sig);
 
         if (lowerBound == Double.NEGATIVE_INFINITY) {
             if (chebyshevApplies) {
                 lowerBound = mu - sig * Math.sqrt((1 - p) / p);
-            } else {
-                lowerBound = -1;
+            }
+            // Bound may have been set as infinite
+            if (lowerBound == Double.NEGATIVE_INFINITY) {
+                lowerBound = Math.min(-1, upperBound);
                 while (cumulativeProbability(lowerBound) >= p) {
                     lowerBound *= 2;
                 }
@@ -154,8 +155,10 @@ abstract class AbstractContinuousDistribution
         if (upperBound == Double.POSITIVE_INFINITY) {
             if (chebyshevApplies) {
                 upperBound = mu + sig * Math.sqrt(p / (1 - p));
-            } else {
-                upperBound = 1;
+            }
+            // Bound may have been set as infinite
+            if (upperBound == Double.POSITIVE_INFINITY) {
+                upperBound = Math.max(1, lowerBound);
                 while (cumulativeProbability(upperBound) < p) {
                     upperBound *= 2;
                 }
@@ -173,7 +176,7 @@ abstract class AbstractContinuousDistribution
         if (!isSupportConnected()) {
             /* Test for plateau. */
             final double dx = SOLVER_ABSOLUTE_ACCURACY;
-            if (x - dx >= getSupportLowerBound()) {
+            if (x - dx >= lowerBound) {
                 final double px = cumulativeProbability(x);
                 if (cumulativeProbability(x - dx) == px) {
                     upperBound = x;

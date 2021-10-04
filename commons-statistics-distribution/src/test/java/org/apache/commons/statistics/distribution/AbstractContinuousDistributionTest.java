@@ -181,4 +181,66 @@ class AbstractContinuousDistributionTest {
         final double actual = distribution.inverseCumulativeProbability(p23);
         Assertions.assertEquals(expected, actual, 1e-8);
     }
+
+    /**
+     * Test zero variance. This invalidates the Chebyshev inequality. If the mean is at
+     * one bound and the other bound is infinite then the inequality sets the other bound
+     * to the mean. This results in no bracket for the solver.
+     *
+     * <p>If the distribution is reporting the variance incorrectly then options are
+     * to throw an exception, or safely fall back to manual bracketing. This test verifies
+     * the solver reverts to manual bracketing and raises no exception.
+     */
+    @Test
+    void testZeroVariance() {
+        // Distribution must have an infinite bound but no variance.
+        // This is an invalid case for the Chebyshev inequality.
+        // E.g. It may occur in the Pareto distribution as it approaches a Dirac function.
+
+        // Create a Dirac function at x=10
+        final double x0 = 10.0;
+        final AbstractContinuousDistribution distribution;
+        distribution = new AbstractContinuousDistribution() {
+            @Override
+            public double cumulativeProbability(final double x) {
+                return x <= x0 ? 0.0 : 1.0;
+            }
+
+            @Override
+            public double density(final double x) {
+                return x == x0 ? Double.POSITIVE_INFINITY : 0.0;
+            }
+
+            @Override
+            public double getMean() {
+                return x0;
+            }
+
+            @Override
+            public double getVariance() {
+                return 0.0;
+            }
+
+            @Override
+            public double getSupportLowerBound() {
+                return x0;
+            }
+
+            @Override
+            public double getSupportUpperBound() {
+                return Double.POSITIVE_INFINITY;
+            }
+
+            @Override
+            public boolean isSupportConnected() {
+                return true;
+            }
+        };
+        final double x = distribution.inverseCumulativeProbability(0.5);
+        // The value can be anything other than x0
+        Assertions.assertNotEquals(x0, x);
+        // Ideally it would be the next value after x0 but accuracy is dependent
+        // on the tolerance of the solver
+        Assertions.assertEquals(x0, x, 1e-8);
+    }
 }
