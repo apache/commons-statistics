@@ -23,6 +23,20 @@ import org.apache.commons.rng.sampling.distribution.ChengBetaSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Beta_distribution">Beta distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; \alpha, \beta) = \frac{1}{ B(\alpha, \beta)} x^{\alpha-1} (1-x)^{\beta-1} \]
+ *
+ * <p>for \( \alpha &gt; 0 \), \( \beta &gt; 0 \), \( x \in [0, 1] \) and
+ * the beta function, \( B \), is a normalization constant:
+ *
+ * <p>\[ B(\alpha, \beta) = \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha) \Gamma(\beta)} \]
+ *
+ * <p>where \( \Gamma \) is the gamma function.
+ *
+ * <p>
+ * \( \alpha \) and \( \beta \) are <em>shape</em> parameters.
  */
 public class BetaDistribution extends AbstractContinuousDistribution {
     /** First shape parameter. */
