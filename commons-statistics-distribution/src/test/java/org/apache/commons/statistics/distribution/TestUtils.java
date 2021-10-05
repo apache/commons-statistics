@@ -28,9 +28,133 @@ import org.junit.jupiter.api.Assertions;
  */
 final class TestUtils {
     /**
+     * The prefix for the formatted expected value.
+     *
+     * <p>This should be followed by the expected value then '>'.
+     */
+    private static final String EXPECTED_FORMAT = "expected: <";
+    /**
+     * The prefix for the formatted actual value.
+     *
+     * <p>It is assumed this will be following the expected value.
+     *
+     * <p>This should be followed by the actual value then '>'.
+     */
+    private static final String ACTUAL_FORMAT = ">, actual: <";
+
+    /**
      * Collection of static methods used in math unit tests.
      */
     private TestUtils() {}
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
+    // Custom assertions using a DoubleTolerance
+    ////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * <em>Asserts</em> {@code expected} and {@code actual} are considered equal with the
+     * provided tolerance.
+     *
+     * @param expected The expected value.
+     * @param actual The value to tolerance against {@code expected}.
+     * @param tolerance The tolerance.
+     * @throws AssertionError If the values are not considered equal
+     */
+    static void assertEquals(double expected, double actual, DoubleTolerance tolerance) {
+        assertEquals(expected, actual, tolerance, (String) null);
+    }
+
+    /**
+     * <em>Asserts</em> {@code expected} and {@code actual} are considered equal with the
+     * provided tolerance.
+     *
+     * <p>Fails with the supplied failure {@code message}.
+     *
+     * @param expected The expected value.
+     * @param actual The value to tolerance against {@code expected}.
+     * @param tolerance The tolerance.
+     * @param message The message.
+     * @throws AssertionError If the values are not considered equal
+     */
+    static void assertEquals(double expected, double actual, DoubleTolerance tolerance, String message) {
+        if (!tolerance.test(expected, actual)) {
+            throw new AssertionError(format(expected, actual, tolerance, message));
+        }
+    }
+
+    /**
+     * <em>Asserts</em> {@code expected} and {@code actual} are considered equal with the
+     * provided tolerance.
+     *
+     * <p>If necessary, the failure message will be retrieved lazily from the supplied
+     * {@code messageSupplier}.
+     *
+     * @param expected The expected value.
+     * @param actual The value to tolerance against {@code expected}.
+     * @param tolerance The tolerance.
+     * @param messageSupplier The message supplier.
+     * @throws AssertionError If the values are not considered equal
+     */
+    static void assertEquals(double expected, double actual, DoubleTolerance tolerance,
+        Supplier<String> messageSupplier) {
+        if (!tolerance.test(expected, actual)) {
+            throw new AssertionError(
+                format(expected, actual, tolerance, messageSupplier == null ? null : messageSupplier.get()));
+        }
+    }
+
+    /**
+     * Format the message.
+     *
+     * @param expected The expected value.
+     * @param actual The value to check against <code>expected</code>.
+     * @param test The test.
+     * @param message The message.
+     * @return the formatted message
+     */
+    private static String format(double expected, double actual, DoubleTolerance test, String message) {
+        return buildPrefix(message) + formatValues(expected, actual, test);
+    }
+
+    /**
+     * Builds the fail message prefix.
+     *
+     * @param message the message
+     * @return the prefix
+     */
+    private static String buildPrefix(String message) {
+        return StringUtils.isNotEmpty(message) ? message + " ==> " : "";
+    }
+
+    /**
+     * Format the values.
+     *
+     * @param expected The expected value.
+     * @param actual The value to check against <code>expected</code>.
+     * @param test The test.
+     * @return the formatted values
+     */
+    private static String formatValues(double expected, double actual, DoubleTolerance test) {
+        final StringBuilder msg = new StringBuilder(EXPECTED_FORMAT).append(expected).append(ACTUAL_FORMAT)
+            .append(actual).append('>');
+        appendTolerance(msg, test);
+        return msg.toString();
+    }
+
+    /**
+     * Append the tolerance to the message.
+     *
+     * @param msg The message
+     * @param tolerance the tolerance
+     */
+    private static void appendTolerance(final StringBuilder msg, final Object tolerance) {
+        final String description = StringUtils.toString(tolerance);
+        if (StringUtils.isNotEmpty(description)) {
+            msg.append(". Tol: <").append(description).append('>');
+        }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * Verifies that the relative error in actual vs. expected is less than or

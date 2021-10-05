@@ -69,6 +69,9 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 abstract class BaseDistributionTest<T, D extends DistributionTestData> {
+    /** A tolerance for numerical equality. */
+    private static final DoubleTolerance EQUAL = DoubleTolerances.equals(0);
+
     /** The test data. Protected to allow use in sub-classes. */
     protected final List<D> data = new ArrayList<>();
 
@@ -202,6 +205,102 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      */
     abstract String[] getParameterNames();
 
+
+    //------------------------ Helper Methods to create test tolerances---------------------------
+
+    /**
+     * Creates the tolerance using an absolute error.
+     *
+     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
+     * is used.
+     *
+     * @param testData Test data
+     * @param tolerance Function to create the absolute tolerance
+     * @return the tolerance
+     */
+    DoubleTolerance createTestAbsTolerance(
+            D testData, ToDoubleFunction<D> tolerance) {
+        final double eps = tolerance == null ? 0 : tolerance.applyAsDouble(testData);
+        return eps > 0 ? DoubleTolerances.absolute(eps) : EQUAL;
+    }
+
+    /**
+     * Creates the tolerance using a relative error.
+     *
+     * <p>If the relative tolerance is zero it is ignored and a tolerance of numerical equality
+     * is used.
+     *
+     * @param testData Test data
+     * @param tolerance Function to create the relative tolerance
+     * @return the tolerance
+     */
+    DoubleTolerance createTestRelTolerance(
+            D testData, ToDoubleFunction<D> tolerance) {
+        final double eps = tolerance == null ? 0 : tolerance.applyAsDouble(testData);
+        return eps > 0 ? DoubleTolerances.relative(eps) : EQUAL;
+    }
+
+    /**
+     * Creates the tolerance using an {@code Or} combination of absolute and relative error.
+     *
+     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
+     * is used.
+     *
+     * <p>If the relative tolerance is zero it is ignored.
+     *
+     * @param testData Test data
+     * @param absTolerance Function to create the absolute tolerance
+     * @param relTolerance Function to create the relative tolerance
+     * @return the tolerance
+     */
+    DoubleTolerance createTestAbsOrRelTolerance(
+            D testData, ToDoubleFunction<D> absTolerance, ToDoubleFunction<D> relTolerance) {
+        final DoubleTolerance tol = createTestAbsTolerance(testData, absTolerance);
+        final double eps = relTolerance == null ? 0 : relTolerance.applyAsDouble(testData);
+        return eps > 0 ? tol.or(DoubleTolerances.relative(eps)) : tol;
+    }
+
+    /**
+     * Creates the default tolerance for the test data.
+     *
+     * @param testData Test data
+     * @return the tolerance
+     */
+    DoubleTolerance createTestTolerance(D testData) {
+        // Current tests use only absolute error
+        return createTestAbsTolerance(testData, DistributionTestData::getTolerance);
+    }
+
+    /**
+     * Creates the default high-precision tolerance for the test data.
+     *
+     * @param testData Test data
+     * @return the tolerance
+     */
+    DoubleTolerance createTestHighPrecisionTolerance(D testData) {
+        // Current tests use only absolute error
+        return createTestAbsTolerance(testData, DistributionTestData::getHighPrecisionTolerance);
+    }
+
+    /**
+     * Creates the default tolerance.
+     *
+     * @return the tolerance
+     */
+    DoubleTolerance createTolerance() {
+        // Current tests use only absolute error
+        return DoubleTolerances.absolute(getTolerance());
+    }
+
+    /**
+     * Creates the default high-precision tolerance.
+     *
+     * @return the tolerance
+     */
+    DoubleTolerance createHighPrecisionTolerance() {
+        // Current tests use only absolute error
+        return DoubleTolerances.absolute(getHighPrecisionTolerance());
+    }
 
     //------------------------ Methods to stream the test data -----------------------------
 
@@ -395,6 +494,65 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
                      namedArray("points", p),
                      namedArray("values", v),
                      tolerance.applyAsDouble(d)));
+        });
+        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
+        return b.build();
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test, the test
+     * points, test values and the test tolerance. The points, values and tolerance
+     * are identified using functions on the test instance data.
+     *
+     * <p>If the length of the points or values is zero then a
+     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
+     *
+     * @param points Function to create the points
+     * @param values Function to create the values
+     * @param tolerance Function to create the tolerance
+     * @param name Name of the function under test
+     * @return the stream
+     */
+    <P, V> Stream<Arguments> stream(Function<D, P> points,
+                                    Function<D, V> values,
+                                    Function<D, DoubleTolerance> tolerance,
+                                    String name) {
+        return stream(doNotIgnore(), points, values, tolerance, name);
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test, the test
+     * points, test values and the test tolerance. The points, values and tolerance
+     * are identified using functions on the test instance data.
+     *
+     * <p>If the length of the points or values is zero then a
+     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
+     *
+     * @param filter Filter applied on the test data. If true the data is ignored.
+     * @param points Function to create the points
+     * @param values Function to create the values
+     * @param tolerance Function to create the tolerance
+     * @param name Name of the function under test
+     * @return the stream
+     */
+    <P, V> Stream<Arguments> stream(Predicate<D> filter,
+                                    Function<D, P> points,
+                                    Function<D, V> values,
+                                    Function<D, DoubleTolerance> tolerance,
+                                    String name) {
+        final Builder<Arguments> b = Stream.builder();
+        final int[] size = {0};
+        data.forEach(d -> {
+            final P p = points.apply(d);
+            final V v = values.apply(d);
+            if (filter.test(d) || TestUtils.getLength(p) == 0 || TestUtils.getLength(v) == 0) {
+                return;
+            }
+            size[0]++;
+            b.accept(Arguments.of(namedDistribution(d.getParameters()),
+                     namedArray("points", p),
+                     namedArray("values", v),
+                     tolerance.apply(d)));
         });
         Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
         return b.build();
