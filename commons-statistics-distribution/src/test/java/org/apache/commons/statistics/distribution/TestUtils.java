@@ -21,7 +21,6 @@ import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.function.Supplier;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
-import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
 
 /**
@@ -32,34 +31,6 @@ final class TestUtils {
      * Collection of static methods used in math unit tests.
      */
     private TestUtils() {}
-
-    /**
-     * Verifies that two double arrays have equal entries, up to tolerance.
-     *
-     * @param expected Expected values.
-     * @param observed Observed values.
-     * @param tolerance Amount of absolute error to allow.
-     */
-    static void assertEquals(double[] expected,
-                             double[] observed,
-                             double tolerance) {
-        assertEquals(() -> "Array comparison failure", expected, observed, tolerance);
-    }
-
-    /**
-     * Verifies that the relative error in actual vs. expected is less than or
-     * equal to relativeError.  If expected is infinite or NaN, actual must be
-     * the same (NaN or infinity of the same sign).
-     *
-     * @param expected expected value
-     * @param actual  observed value
-     * @param relativeError  maximum allowable relative error
-     */
-    static void assertRelativelyEquals(double expected,
-                                       double actual,
-                                       double relativeError) {
-        assertRelativelyEquals(null, expected, actual, relativeError);
-    }
 
     /**
      * Verifies that the relative error in actual vs. expected is less than or
@@ -86,49 +57,6 @@ final class TestUtils {
         } else {
             final double absError = Math.abs(expected) * relativeError;
             Assertions.assertEquals(expected, actual, absError, msg);
-        }
-    }
-
-    /**
-     * Verifies that two arrays are close (sup norm).
-     *
-     * @param msg Supplier of a failure message. This is prefixed to a detailed description of the failure.
-     * @param expected Expected values.
-     * @param observed Observed values.
-     * @param tolerance Amount of absolute error to allow.
-     */
-    static void assertEquals(Supplier<String> msg,
-                             double[] expected,
-                             double[] observed,
-                             double tolerance) {
-        if (expected.length != observed.length) {
-            final StringBuilder out = new StringBuilder(msg.get());
-            out.append("\n Arrays not same length. \n");
-            out.append("expected has length ");
-            out.append(expected.length);
-            out.append(" observed length = ");
-            out.append(observed.length);
-            Assertions.fail(out.toString());
-        }
-        boolean failure = false;
-        final StringBuilder out = new StringBuilder();
-        for (int i = 0; i < expected.length; i++) {
-            if (!Precision.equalsIncludingNaN(expected[i], observed[i], tolerance)) {
-                if (!failure) {
-                    out.append(msg.get());
-                    failure = true;
-                }
-                out.append("\n Elements at index ");
-                out.append(i);
-                out.append(" differ. ");
-                out.append(" expected = ");
-                out.append(expected[i]);
-                out.append(" observed = ");
-                out.append(observed[i]);
-            }
-        }
-        if (failure) {
-            Assertions.fail(out.toString());
         }
     }
 
