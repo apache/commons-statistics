@@ -59,7 +59,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
         testCumulativeProbability(new LogNormalDistribution(1, 0.0001),
                                   new double[] {0.5, 10},
                                   new double[] {0, 1.0},
-                                  0.0);
+                                  DoubleTolerances.equals());
     }
 
     @Test
@@ -68,7 +68,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
         testSurvivalProbability(new LogNormalDistribution(1, 0.0001),
                                 new double[] {0.5, 10},
                                 new double[] {1.0, 0.0},
-                                0.0);
+                                DoubleTolerances.equals());
     }
 
     /**

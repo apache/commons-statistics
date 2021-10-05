@@ -228,7 +228,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
             new HypergeometricDistribution(500, 70, 300),
             new int[] {10, 8},
             new double[] {2.4055720603264525e-17, 1.2848174992266236e-19},
-            getHighPrecisionTolerance());
+            createHighPrecisionTolerance());
     }
 
     @Test
@@ -238,6 +238,6 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
             new HypergeometricDistribution(500, 70, 300),
             new int[] {68, 69},
             new double[] {4.570379934029859e-16, 7.4187180434325268e-18},
-            getHighPrecisionTolerance());
+            createHighPrecisionTolerance());
     }
 }

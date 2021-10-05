@@ -129,6 +129,6 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
                 new PoissonDistribution(100),
                 new int[] {28, 25},
                 new double[] {1.6858675763053070496e-17, 3.184075559619425735e-19},
-                getHighPrecisionTolerance());
+                createHighPrecisionTolerance());
     }
 }

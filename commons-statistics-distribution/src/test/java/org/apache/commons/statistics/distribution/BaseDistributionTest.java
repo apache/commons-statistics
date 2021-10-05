@@ -69,9 +69,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 abstract class BaseDistributionTest<T, D extends DistributionTestData> {
-    /** A tolerance for numerical equality. */
-    private static final DoubleTolerance EQUAL = DoubleTolerances.equals(0);
-
     /** The test data. Protected to allow use in sub-classes. */
     protected final List<D> data = new ArrayList<>();
 
@@ -221,7 +218,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     DoubleTolerance createTestAbsTolerance(
             D testData, ToDoubleFunction<D> tolerance) {
         final double eps = tolerance == null ? 0 : tolerance.applyAsDouble(testData);
-        return eps > 0 ? DoubleTolerances.absolute(eps) : EQUAL;
+        return eps > 0 ? DoubleTolerances.absolute(eps) : DoubleTolerances.equals();
     }
 
     /**
@@ -237,7 +234,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     DoubleTolerance createTestRelTolerance(
             D testData, ToDoubleFunction<D> tolerance) {
         final double eps = tolerance == null ? 0 : tolerance.applyAsDouble(testData);
-        return eps > 0 ? DoubleTolerances.relative(eps) : EQUAL;
+        return eps > 0 ? DoubleTolerances.relative(eps) : DoubleTolerances.equals();
     }
 
     /**

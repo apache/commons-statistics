@@ -108,12 +108,12 @@ final class TestUtils {
      *
      * @param expected The expected value.
      * @param actual The value to check against <code>expected</code>.
-     * @param test The test.
+     * @param tolerance The tolerance.
      * @param message The message.
      * @return the formatted message
      */
-    private static String format(double expected, double actual, DoubleTolerance test, String message) {
-        return buildPrefix(message) + formatValues(expected, actual, test);
+    private static String format(double expected, double actual, DoubleTolerance tolerance, String message) {
+        return buildPrefix(message) + formatValues(expected, actual, tolerance);
     }
 
     /**
@@ -131,13 +131,13 @@ final class TestUtils {
      *
      * @param expected The expected value.
      * @param actual The value to check against <code>expected</code>.
-     * @param test The test.
+     * @param tolerance The tolerance.
      * @return the formatted values
      */
-    private static String formatValues(double expected, double actual, DoubleTolerance test) {
+    private static String formatValues(double expected, double actual, DoubleTolerance tolerance) {
         final StringBuilder msg = new StringBuilder(EXPECTED_FORMAT).append(expected).append(ACTUAL_FORMAT)
             .append(actual).append('>');
-        appendTolerance(msg, test);
+        appendTolerance(msg, tolerance);
         return msg.toString();
     }
 
@@ -150,7 +150,7 @@ final class TestUtils {
     private static void appendTolerance(final StringBuilder msg, final Object tolerance) {
         final String description = StringUtils.toString(tolerance);
         if (StringUtils.isNotEmpty(description)) {
-            msg.append(". Tol: <").append(description).append('>');
+            msg.append(", tolerance: ").append(description);
         }
     }
 

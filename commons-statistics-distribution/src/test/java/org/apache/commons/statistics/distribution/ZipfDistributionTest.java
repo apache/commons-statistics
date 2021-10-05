@@ -61,15 +61,15 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
         testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 10),
             new int[] {57, 59},
             new double[] {2.3189337454689757e-18, 1.6521739576668957e-18},
-            1e-25);
+            DoubleTolerances.absolute(1e-25));
         testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 50.5),
             new int[] {57, 59},
             new double[] {8.8488396450491320e-90, 1.5972093932264611e-90},
-            1e-95);
+            DoubleTolerances.absolute(1e-95));
         testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 100.5),
             new int[] {57, 59},
             new double[] {5.9632998443758656e-178, 1.9760564023408183e-179},
-            1e-185);
+            DoubleTolerances.absolute(1e-185));
     }
 
     /**
@@ -85,7 +85,7 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
         Assertions.assertEquals(Double.POSITIVE_INFINITY, Math.pow(n, a));
         ZipfDistribution dist = new ZipfDistribution(n, a);
         final int[] points = MathArrays.natural(n);
-        testSurvivalAndCumulativeProbabilityComplement(dist, points, getTolerance());
+        testSurvivalAndCumulativeProbabilityComplement(dist, points, createTolerance());
     }
 
     /**

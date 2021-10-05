@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.apache.commons.math3.analysis.UnivariateFunction;
@@ -224,7 +224,7 @@ abstract class BaseContinuousDistributionTest
             size[0]++;
             b.accept(Arguments.of(namedDistribution(d.getParameters()),
                      namedArray("points", p),
-                     d.getTolerance()));
+                     createTestTolerance(d)));
         });
         Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for cdf test points");
         return b.build();
@@ -240,7 +240,7 @@ abstract class BaseContinuousDistributionTest
         return stream(ContinuousDistributionTestData::isDisablePdf,
                       ContinuousDistributionTestData::getPdfPoints,
                       ContinuousDistributionTestData::getPdfValues,
-                      ContinuousDistributionTestData::getTolerance, "pdf");
+                      this::createTestTolerance, "pdf");
     }
 
     /**
@@ -253,7 +253,7 @@ abstract class BaseContinuousDistributionTest
         return stream(ContinuousDistributionTestData::isDisableLogPdf,
                       ContinuousDistributionTestData::getPdfPoints,
                       ContinuousDistributionTestData::getLogPdfValues,
-                      ContinuousDistributionTestData::getTolerance, "logpdf");
+                      this::createTestTolerance, "logpdf");
     }
 
     /**
@@ -266,7 +266,7 @@ abstract class BaseContinuousDistributionTest
         return stream(ContinuousDistributionTestData::isDisableCdf,
                       ContinuousDistributionTestData::getCdfPoints,
                       ContinuousDistributionTestData::getCdfValues,
-                      ContinuousDistributionTestData::getTolerance, "cdf");
+                      this::createTestTolerance, "cdf");
     }
 
     /**
@@ -281,7 +281,7 @@ abstract class BaseContinuousDistributionTest
         return stream(ContinuousDistributionTestData::isDisableSf,
                       ContinuousDistributionTestData::getSfPoints,
                       ContinuousDistributionTestData::getSfValues,
-                      ContinuousDistributionTestData::getTolerance, "sf");
+                      this::createTestTolerance, "sf");
     }
 
     /**
@@ -293,7 +293,7 @@ abstract class BaseContinuousDistributionTest
     Stream<Arguments> testCumulativeProbabilityHighPrecision() {
         return stream(ContinuousDistributionTestData::getCdfHpPoints,
                       ContinuousDistributionTestData::getCdfHpValues,
-                      ContinuousDistributionTestData::getHighPrecisionTolerance, "cdf.hp");
+                      this::createTestHighPrecisionTolerance, "cdf.hp");
     }
 
     /**
@@ -305,7 +305,7 @@ abstract class BaseContinuousDistributionTest
     Stream<Arguments> testSurvivalProbabilityHighPrecision() {
         return stream(ContinuousDistributionTestData::getSfHpPoints,
                       ContinuousDistributionTestData::getSfHpValues,
-                      ContinuousDistributionTestData::getHighPrecisionTolerance, "sf.hp");
+                      this::createTestHighPrecisionTolerance, "sf.hp");
     }
 
     /**
@@ -317,7 +317,7 @@ abstract class BaseContinuousDistributionTest
     Stream<Arguments> testInverseCumulativeProbability() {
         return stream(ContinuousDistributionTestData::getIcdfPoints,
                       ContinuousDistributionTestData::getIcdfValues,
-                      ContinuousDistributionTestData::getTolerance, "icdf");
+                      this::createTestTolerance, "icdf");
     }
 
     /**
@@ -378,8 +378,10 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testDensityIntegrals() {
-        // Use a higher tolerance than the default of 1e-4 for the integrals
-        final ToDoubleFunction<ContinuousDistributionTestData> tolerance = d -> 1e-9;
+        // TODO: Revise tolerance (e.g. using relative error)
+        // Use a higher tolerance than the default of 1e-4 for the sums
+        final Function<ContinuousDistributionTestData, DoubleTolerance> tolerance =
+            d -> DoubleTolerances.absolute(1e-9);
         return stream(ContinuousDistributionTestData::isDisablePdf,
                       ContinuousDistributionTestData::getCdfPoints,
                       ContinuousDistributionTestData::getCdfValues,
@@ -406,7 +408,7 @@ abstract class BaseContinuousDistributionTest
      */
     Stream<Arguments> testMoments() {
         return data.stream().map(d -> {
-            return Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(), d.getTolerance());
+            return Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(), createTestTolerance(d));
         });
     }
 
@@ -424,10 +426,10 @@ abstract class BaseContinuousDistributionTest
     final void testDensity(ContinuousDistribution dist,
                            double[] points,
                            double[] values,
-                           double tolerance) {
+                           DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final double x = points[i];
-            Assertions.assertEquals(values[i],
+            TestUtils.assertEquals(values[i],
                 dist.density(x), tolerance,
                 () -> "Incorrect probability density value returned for " + x);
         }
@@ -441,10 +443,10 @@ abstract class BaseContinuousDistributionTest
     final void testLogDensity(ContinuousDistribution dist,
                               double[] points,
                               double[] values,
-                              double tolerance) {
+                              DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final double x = points[i];
-            Assertions.assertEquals(values[i],
+            TestUtils.assertEquals(values[i],
                 dist.logDensity(x), tolerance,
                 () -> "Incorrect probability density value returned for " + x);
         }
@@ -458,11 +460,11 @@ abstract class BaseContinuousDistributionTest
     final void testCumulativeProbability(ContinuousDistribution dist,
                                          double[] points,
                                          double[] values,
-                                         double tolerance) {
+                                         DoubleTolerance tolerance) {
         // verify cumulativeProbability(double)
         for (int i = 0; i < points.length; i++) {
             final double x = points[i];
-            Assertions.assertEquals(values[i],
+            TestUtils.assertEquals(values[i],
                 dist.cumulativeProbability(x),
                 tolerance,
                 () -> "Incorrect cumulative probability value returned for " + x);
@@ -473,7 +475,7 @@ abstract class BaseContinuousDistributionTest
             for (int j = 0; j < points.length; j++) {
                 final double x1 = points[j];
                 if (x0 <= x1) {
-                    Assertions.assertEquals(
+                    TestUtils.assertEquals(
                         values[j] - values[i],
                         dist.probability(x0, x1),
                         tolerance);
@@ -494,10 +496,10 @@ abstract class BaseContinuousDistributionTest
     final void testSurvivalProbability(ContinuousDistribution dist,
                                        double[] points,
                                        double[] values,
-                                       double tolerance) {
+                                       DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final double x = points[i];
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 values[i],
                 dist.survivalProbability(points[i]),
                 tolerance,
@@ -514,10 +516,10 @@ abstract class BaseContinuousDistributionTest
     final void testCumulativeProbabilityHighPrecision(ContinuousDistribution dist,
                                                       double[] points,
                                                       double[] values,
-                                                      double tolerance) {
+                                                      DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final double x = points[i];
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 values[i],
                 dist.cumulativeProbability(x),
                 tolerance,
@@ -534,10 +536,10 @@ abstract class BaseContinuousDistributionTest
     final void testSurvivalProbabilityHighPrecision(ContinuousDistribution dist,
                                                     double[] points,
                                                     double[] values,
-                                                    double tolerance) {
+                                                    DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final double x = points[i];
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 values[i],
                 dist.survivalProbability(x),
                 tolerance,
@@ -555,7 +557,7 @@ abstract class BaseContinuousDistributionTest
     final void testInverseCumulativeProbability(ContinuousDistribution dist,
                                                 double[] points,
                                                 double[] values,
-                                                double tolerance) {
+                                                DoubleTolerance tolerance) {
         final double lower = dist.getSupportLowerBound();
         final double upper = dist.getSupportUpperBound();
         for (int i = 0; i < points.length; i++) {
@@ -564,7 +566,7 @@ abstract class BaseContinuousDistributionTest
                 continue;
             }
             final double p = points[i];
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 x,
                 dist.inverseCumulativeProbability(p),
                 tolerance,
@@ -586,7 +588,7 @@ abstract class BaseContinuousDistributionTest
     @MethodSource
     final void testCumulativeProbabilityInverseMapping(ContinuousDistribution dist,
                                                        double[] points,
-                                                       double tolerance) {
+                                                       DoubleTolerance tolerance) {
         final double lower = dist.getSupportLowerBound();
         final double upper = dist.getSupportUpperBound();
         for (int i = 0; i < points.length; i++) {
@@ -599,7 +601,7 @@ abstract class BaseContinuousDistributionTest
             final double p1 = dist.cumulativeProbability(x1);
             // Check the inverse CDF computed a value that will return to the
             // same probability value.
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 p,
                 p1,
                 tolerance,
@@ -615,9 +617,9 @@ abstract class BaseContinuousDistributionTest
     @MethodSource
     final void testSurvivalAndCumulativeProbabilityComplement(ContinuousDistribution dist,
                                                               double[] points,
-                                                              double tolerance) {
+                                                              DoubleTolerance tolerance) {
         for (final double x : points) {
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 1.0,
                 dist.survivalProbability(x) + dist.cumulativeProbability(x),
                 tolerance,
@@ -633,7 +635,7 @@ abstract class BaseContinuousDistributionTest
     @MethodSource
     final void testConsistency(ContinuousDistribution dist,
                                double[] points,
-                               double tolerance) {
+                               DoubleTolerance tolerance) {
         for (int i = 1; i < points.length; i++) {
 
             // check that cdf(x, x) = 0
@@ -641,7 +643,6 @@ abstract class BaseContinuousDistributionTest
             Assertions.assertEquals(
                 0.0,
                 dist.probability(x, x),
-                tolerance,
                 () -> "Non-zero probability(x, x) for " + x);
 
             // check that P(a < X <= b) = P(X <= b) - P(X <= a)
@@ -650,7 +651,7 @@ abstract class BaseContinuousDistributionTest
             final double diff = dist.cumulativeProbability(upper) -
                                 dist.cumulativeProbability(lower);
             final double direct = dist.probability(lower, upper);
-            Assertions.assertEquals(diff, direct, tolerance,
+            TestUtils.assertEquals(diff, direct, tolerance,
                 () -> "Inconsistent probability for (" + lower + "," + upper + ")");
         }
     }
@@ -664,6 +665,7 @@ abstract class BaseContinuousDistributionTest
     final void testOutsideSupport(ContinuousDistribution dist) {
         // Test various quantities when the variable is outside the support.
         final double lo = dist.getSupportLowerBound();
+        Assertions.assertEquals(0.0, dist.cumulativeProbability(lo), "cdf(lower)");
         Assertions.assertEquals(lo, dist.inverseCumulativeProbability(0.0), "icdf(0.0)");
         // Test for rounding errors during inversion
         Assertions.assertTrue(lo <= dist.inverseCumulativeProbability(Double.MIN_VALUE), "lo <= icdf(min)");
@@ -677,6 +679,7 @@ abstract class BaseContinuousDistributionTest
 
         final double hi = dist.getSupportUpperBound();
         Assertions.assertTrue(lo <= hi, "lower <= upper");
+        Assertions.assertEquals(1.0, dist.cumulativeProbability(hi), "cdf(upper)");
         Assertions.assertEquals(0.0, dist.survivalProbability(hi), "sf(upper)");
         Assertions.assertEquals(hi, dist.inverseCumulativeProbability(1.0), "icdf(1.0)");
         // Test for rounding errors during inversion
@@ -726,9 +729,9 @@ abstract class BaseContinuousDistributionTest
         // to run with uneven intervals. This will determine if the sampler
         // if broken for this parameterization of the distribution that has
         // an incorrect CDF(inverse CDF(p)) mapping.
-        final double tolerance = 1e-3;
+        final DoubleTolerance tolerance = DoubleTolerances.relative(1e-3);
         for (final double p : expected) {
-            Assertions.assertEquals(0.25, p, tolerance,
+            TestUtils.assertEquals(0.25, p, tolerance,
                 () -> "Unexpected quartiles: " + Arrays.toString(expected));
         }
 
@@ -761,7 +764,7 @@ abstract class BaseContinuousDistributionTest
     final void testDensityIntegrals(ContinuousDistribution dist,
                                     double[] points,
                                     double[] values,
-                                    double tolerance) {
+                                    DoubleTolerance tolerance) {
         final BaseAbstractUnivariateIntegrator integrator =
             new IterativeLegendreGaussIntegrator(5, 1e-12, 1e-10);
         final UnivariateFunction d = dist::density;
@@ -778,7 +781,7 @@ abstract class BaseContinuousDistributionTest
         for (int i = 1; i < integrationTestPoints.size(); i++) {
             final double x0 = integrationTestPoints.get(i - 1);
             final double x1 = integrationTestPoints.get(i);
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 dist.probability(x0, x1),
                 integrator.integrate(1000000, // Integrals may be slow to converge
                                      d, x0, x1), tolerance,
@@ -802,8 +805,8 @@ abstract class BaseContinuousDistributionTest
      */
     @ParameterizedTest
     @MethodSource
-    final void testMoments(ContinuousDistribution dist, double mean, double variance, double tolerance) {
-        Assertions.assertEquals(mean, dist.getMean(), tolerance, "mean");
-        Assertions.assertEquals(variance, dist.getVariance(), tolerance, "variance");
+    final void testMoments(ContinuousDistribution dist, double mean, double variance, DoubleTolerance tolerance) {
+        TestUtils.assertEquals(mean, dist.getMean(), tolerance, "mean");
+        TestUtils.assertEquals(variance, dist.getVariance(), tolerance, "variance");
     }
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
-import java.util.function.ToDoubleFunction;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
@@ -210,7 +210,7 @@ abstract class BaseDiscreteDistributionTest
             size[0]++;
             b.accept(Arguments.of(namedDistribution(d.getParameters()),
                     namedArray("points", p),
-                    d.getTolerance()));
+                    createTestTolerance(d)));
         });
         Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for test points");
         return b.build();
@@ -226,7 +226,7 @@ abstract class BaseDiscreteDistributionTest
         return stream(DiscreteDistributionTestData::isDisablePmf,
                       DiscreteDistributionTestData::getPmfPoints,
                       DiscreteDistributionTestData::getPmfValues,
-                      DiscreteDistributionTestData::getTolerance, "pmf");
+                      this::createTestTolerance, "pmf");
     }
 
     /**
@@ -239,7 +239,7 @@ abstract class BaseDiscreteDistributionTest
         return stream(DiscreteDistributionTestData::isDisableLogPmf,
                       DiscreteDistributionTestData::getPmfPoints,
                       DiscreteDistributionTestData::getLogPmfValues,
-                      DiscreteDistributionTestData::getTolerance, "logpmf");
+                      this::createTestTolerance, "logpmf");
     }
 
     /**
@@ -252,7 +252,7 @@ abstract class BaseDiscreteDistributionTest
         return stream(DiscreteDistributionTestData::isDisableCdf,
                       DiscreteDistributionTestData::getCdfPoints,
                       DiscreteDistributionTestData::getCdfValues,
-                      DiscreteDistributionTestData::getTolerance, "cdf");
+                      this::createTestTolerance, "cdf");
     }
 
     /**
@@ -267,7 +267,7 @@ abstract class BaseDiscreteDistributionTest
         return stream(DiscreteDistributionTestData::isDisableSf,
                       DiscreteDistributionTestData::getSfPoints,
                       DiscreteDistributionTestData::getSfValues,
-                      DiscreteDistributionTestData::getTolerance, "sf");
+                      this::createTestTolerance, "sf");
     }
 
     /**
@@ -279,7 +279,7 @@ abstract class BaseDiscreteDistributionTest
     Stream<Arguments> testCumulativeProbabilityHighPrecision() {
         return stream(DiscreteDistributionTestData::getCdfHpPoints,
                       DiscreteDistributionTestData::getCdfHpValues,
-                      DiscreteDistributionTestData::getHighPrecisionTolerance, "cdf.hp");
+                      this::createTestHighPrecisionTolerance, "cdf.hp");
     }
 
     /**
@@ -291,7 +291,7 @@ abstract class BaseDiscreteDistributionTest
     Stream<Arguments> testSurvivalProbabilityHighPrecision() {
         return stream(DiscreteDistributionTestData::getSfHpPoints,
                       DiscreteDistributionTestData::getSfHpValues,
-                      DiscreteDistributionTestData::getHighPrecisionTolerance, "sf.hp");
+                      this::createTestHighPrecisionTolerance, "sf.hp");
     }
 
     /**
@@ -357,7 +357,7 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testOutsideSupport() {
-        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), d.getTolerance()));
+        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), createTestTolerance(d)));
     }
 
     /**
@@ -385,8 +385,10 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testProbabilitySums() {
+        // TODO: Revise tolerance (e.g. using relative error)
         // Use a higher tolerance than the default of 1e-4 for the sums
-        final ToDoubleFunction<DiscreteDistributionTestData> tolerance = d -> 1e-9;
+        final Function<DiscreteDistributionTestData, DoubleTolerance> tolerance =
+            d -> DoubleTolerances.absolute(1e-9);
         return stream(DiscreteDistributionTestData::isDisablePmf,
                       DiscreteDistributionTestData::getCdfPoints,
                       DiscreteDistributionTestData::getCdfValues,
@@ -413,7 +415,7 @@ abstract class BaseDiscreteDistributionTest
      */
     Stream<Arguments> testMoments() {
         return data.stream().map(d -> {
-            return Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(), d.getTolerance());
+            return Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(), createTestTolerance(d));
         });
     }
 
@@ -433,10 +435,10 @@ abstract class BaseDiscreteDistributionTest
     final void testProbability(DiscreteDistribution dist,
                                int[] points,
                                double[] values,
-                               double tolerance) {
+                               DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final int x = points[i];
-            Assertions.assertEquals(values[i],
+            TestUtils.assertEquals(values[i],
                 dist.probability(x), tolerance,
                 () -> "Incorrect probability mass value returned for " + x);
         }
@@ -450,10 +452,10 @@ abstract class BaseDiscreteDistributionTest
     final void testLogProbability(DiscreteDistribution dist,
                                   int[] points,
                                   double[] values,
-                                  double tolerance) {
+                                  DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final int x = points[i];
-            Assertions.assertEquals(values[i],
+            TestUtils.assertEquals(values[i],
                 dist.logProbability(x), tolerance,
                 () -> "Incorrect log probability mass value returned for " + x);
         }
@@ -467,11 +469,11 @@ abstract class BaseDiscreteDistributionTest
     final void testCumulativeProbability(DiscreteDistribution dist,
                                          int[] points,
                                          double[] values,
-                                         double tolerance) {
+                                         DoubleTolerance tolerance) {
         // verify cumulativeProbability(double)
         for (int i = 0; i < points.length; i++) {
             final int x = points[i];
-            Assertions.assertEquals(values[i],
+            TestUtils.assertEquals(values[i],
                 dist.cumulativeProbability(x),
                 tolerance,
                 () -> "Incorrect cumulative probability value returned for " + x);
@@ -482,7 +484,7 @@ abstract class BaseDiscreteDistributionTest
             for (int j = 0; j < points.length; j++) {
                 final int x1 = points[j];
                 if (x0 <= x1) {
-                    Assertions.assertEquals(
+                    TestUtils.assertEquals(
                         values[j] - values[i],
                         dist.probability(x0, x1),
                         tolerance);
@@ -503,10 +505,10 @@ abstract class BaseDiscreteDistributionTest
     final void testSurvivalProbability(DiscreteDistribution dist,
                                        int[] points,
                                        double[] values,
-                                       double tolerance) {
+                                       DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final double x = points[i];
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 values[i],
                 dist.survivalProbability(points[i]),
                 tolerance,
@@ -523,10 +525,10 @@ abstract class BaseDiscreteDistributionTest
     final void testCumulativeProbabilityHighPrecision(DiscreteDistribution dist,
                                                       int[] points,
                                                       double[] values,
-                                                      double tolerance) {
+                                                      DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final int x = points[i];
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 values[i],
                 dist.cumulativeProbability(x),
                 tolerance,
@@ -543,10 +545,10 @@ abstract class BaseDiscreteDistributionTest
     final void testSurvivalProbabilityHighPrecision(DiscreteDistribution dist,
                                                     int[] points,
                                                     double[] values,
-                                                    double tolerance) {
+                                                    DoubleTolerance tolerance) {
         for (int i = 0; i < points.length; i++) {
             final int x = points[i];
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 values[i],
                 dist.survivalProbability(x),
                 tolerance,
@@ -621,9 +623,9 @@ abstract class BaseDiscreteDistributionTest
     @MethodSource
     final void testSurvivalAndCumulativeProbabilityComplement(DiscreteDistribution dist,
                                                               int[] points,
-                                                              double tolerance) {
+                                                              DoubleTolerance tolerance) {
         for (final int x : points) {
-            Assertions.assertEquals(
+            TestUtils.assertEquals(
                 1.0,
                 dist.survivalProbability(x) + dist.cumulativeProbability(x),
                 tolerance,
@@ -639,7 +641,7 @@ abstract class BaseDiscreteDistributionTest
     @MethodSource
     final void testConsistency(DiscreteDistribution dist,
                                int[] points,
-                               double tolerance) {
+                               DoubleTolerance tolerance) {
         for (int i = 1; i < points.length; i++) {
 
             // check that cdf(x, x) = 0
@@ -647,7 +649,6 @@ abstract class BaseDiscreteDistributionTest
             Assertions.assertEquals(
                 0.0,
                 dist.probability(x, x),
-                tolerance,
                 () -> "Non-zero probability(x, x) for " + x);
 
             // check that P(a < X <= b) = P(X <= b) - P(X <= a)
@@ -656,7 +657,7 @@ abstract class BaseDiscreteDistributionTest
             final double diff = dist.cumulativeProbability(upper) -
                                 dist.cumulativeProbability(lower);
             final double direct = dist.probability(lower, upper);
-            Assertions.assertEquals(diff, direct, tolerance,
+            TestUtils.assertEquals(diff, direct, tolerance,
                 () -> "Inconsistent probability for (" + lower + "," + upper + ")");
         }
     }
@@ -668,10 +669,10 @@ abstract class BaseDiscreteDistributionTest
     @ParameterizedTest
     @MethodSource
     final void testOutsideSupport(DiscreteDistribution dist,
-                                  double tolerance) {
+                                  DoubleTolerance tolerance) {
         // Test various quantities when the variable is outside the support.
         final int lo = dist.getSupportLowerBound();
-        Assertions.assertEquals(dist.probability(lo), dist.cumulativeProbability(lo), tolerance, () -> "pmf(lower) != cdf(lower) for " + lo);
+        TestUtils.assertEquals(dist.probability(lo), dist.cumulativeProbability(lo), tolerance, () -> "pmf(lower) != cdf(lower) for " + lo);
         Assertions.assertEquals(lo, dist.inverseCumulativeProbability(0.0), "icdf(0.0)");
 
         if (lo != Integer.MIN_VALUE) {
@@ -684,8 +685,9 @@ abstract class BaseDiscreteDistributionTest
 
         final int hi = dist.getSupportUpperBound();
         Assertions.assertTrue(lo <= hi, "lower <= upper");
+        Assertions.assertEquals(1.0, dist.cumulativeProbability(hi), "cdf(upper)");
         Assertions.assertEquals(0.0, dist.survivalProbability(hi), "sf(upper)");
-        Assertions.assertEquals(dist.probability(hi), dist.survivalProbability(hi - 1), tolerance, "sf(upper - 1)");
+        TestUtils.assertEquals(dist.probability(hi), dist.survivalProbability(hi - 1), tolerance, "sf(upper - 1)");
         Assertions.assertEquals(hi, dist.inverseCumulativeProbability(1.0), "icdf(1.0)");
         if (hi != Integer.MAX_VALUE) {
             final int above = hi + 1;
@@ -698,8 +700,8 @@ abstract class BaseDiscreteDistributionTest
         // Test the logProbability at the support bound. This hits edge case coverage for logProbability.
         // It is assumed the log probability may support a value when the plain probability will be zero.
         // So do not test Math.log(dist.probability(x)) == dist.logProbability(x)
-        Assertions.assertEquals(dist.probability(lo), Math.exp(dist.logProbability(lo)), tolerance, "pmf(lower) != exp(logpmf(lower))");
-        Assertions.assertEquals(dist.probability(hi), Math.exp(dist.logProbability(hi)), tolerance, "pmf(upper) != exp(logpmf(upper))");
+        TestUtils.assertEquals(dist.probability(lo), Math.exp(dist.logProbability(lo)), tolerance, "pmf(lower) != exp(logpmf(lower))");
+        TestUtils.assertEquals(dist.probability(hi), Math.exp(dist.logProbability(hi)), tolerance, "pmf(upper) != exp(logpmf(upper))");
     }
 
     /**
@@ -789,7 +791,7 @@ abstract class BaseDiscreteDistributionTest
     final void testProbabilitySums(DiscreteDistribution dist,
                                    int[] points,
                                    double[] values,
-                                   double tolerance) {
+                                   DoubleTolerance tolerance) {
         final ArrayList<Integer> integrationTestPoints = new ArrayList<>();
         for (int i = 0; i < points.length; i++) {
             if (Double.isNaN(values[i]) ||
@@ -808,7 +810,7 @@ abstract class BaseDiscreteDistributionTest
                 continue;
             }
             final double sum = IntStream.rangeClosed(x0 + 1, x1).mapToDouble(dist::probability).sum();
-            Assertions.assertEquals(dist.probability(x0, x1), sum, tolerance,
+            TestUtils.assertEquals(dist.probability(x0, x1), sum, tolerance,
                 () -> "Invalid probability sum: " + (x0 + 1) + " to " + x1);
         }
     }
@@ -829,8 +831,8 @@ abstract class BaseDiscreteDistributionTest
      */
     @ParameterizedTest
     @MethodSource
-    final void testMoments(DiscreteDistribution dist, double mean, double variance, double tolerance) {
-        Assertions.assertEquals(mean, dist.getMean(), tolerance, "mean");
-        Assertions.assertEquals(variance, dist.getVariance(), tolerance, "variance");
+    final void testMoments(DiscreteDistribution dist, double mean, double variance, DoubleTolerance tolerance) {
+        TestUtils.assertEquals(mean, dist.getMean(), tolerance, "mean");
+        TestUtils.assertEquals(variance, dist.getVariance(), tolerance, "variance");
     }
 }

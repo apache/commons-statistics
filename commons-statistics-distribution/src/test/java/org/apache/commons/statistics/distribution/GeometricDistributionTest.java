@@ -75,7 +75,7 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
         final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40};
         final double[] values = Arrays.stream(x).mapToDouble(k -> p * Math.pow(1 - p, k)).toArray();
         // The PMF should be an exact match to the direct implementation with Math.pow.
-        testProbability(dist, x, values, 0.0);
+        testProbability(dist, x, values, DoubleTolerances.equals());
     }
 
     /**

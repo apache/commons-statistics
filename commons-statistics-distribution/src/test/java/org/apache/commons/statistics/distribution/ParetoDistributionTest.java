@@ -63,12 +63,12 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
             dist,
             new double[] {2.100000000000001, 2.100000000000005},
             new double[] {6.217248937900875e-16, 3.2640556923979585e-15},
-            getHighPrecisionTolerance());
+            createHighPrecisionTolerance());
         testSurvivalProbabilityHighPrecision(
             dist,
             new double[] {42e11, 64e11},
             new double[] {6.005622169907148e-18, 3.330082930386111e-18},
-            getHighPrecisionTolerance());
+            createHighPrecisionTolerance());
     }
 
     @Test
@@ -83,14 +83,12 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
         final ParetoDistribution dist = new ParetoDistribution(3, 0.5);
         // BigDecimal: 1 - (scale/x).sqrt()
         final double[] values = {1.480297366166875E-16, 8.141635513917804E-16};
-        final double tolerance = 2e-17;
-        testCumulativeProbabilityHighPrecision(dist, x, values, tolerance);
+        testCumulativeProbabilityHighPrecision(dist, x, values, DoubleTolerances.absolute(2e-17));
 
         final ParetoDistribution dist2 = new ParetoDistribution(3, 2);
         // BigDecimal: 1 - (scale/x).pow(2)
         final double[] values2 = {5.921189464667499E-16, 3.256654205567118E-15};
-        final double tolerance2 = 8e-17;
-        testCumulativeProbabilityHighPrecision(dist2, x, values2, tolerance2);
+        testCumulativeProbabilityHighPrecision(dist2, x, values2, DoubleTolerances.absolute(8e-17));
     }
 
     @Test

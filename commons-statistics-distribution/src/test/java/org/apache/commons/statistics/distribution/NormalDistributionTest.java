@@ -60,7 +60,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
                                   new double[] {-Double.MAX_VALUE, Double.MAX_VALUE,
                                                 Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY},
                                   new double[] {0, 1, 0, 1},
-                                  0.0);
+                                  DoubleTolerances.equals());
     }
 
     /**
