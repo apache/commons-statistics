@@ -401,7 +401,7 @@ abstract class BaseDiscreteDistributionTest
         // Use a higher tolerance than the default of 1e-4 for the sums
         final Function<DiscreteDistributionTestData, DoubleTolerance> tolerance =
             d -> DoubleTolerances.absolute(1e-9);
-        return stream(DiscreteDistributionTestData::isDisablePmf,
+        return stream(d -> d.isDisablePmf() || d.isDisablePmfSum(),
                       DiscreteDistributionTestData::getCdfPoints,
                       DiscreteDistributionTestData::getCdfValues,
                       tolerance, "pmf sums");
@@ -803,6 +803,8 @@ abstract class BaseDiscreteDistributionTest
      * is compared with the probability over the same interval.
      * Test points outside of the domain of the probability function
      * are discarded and large intervals are ignored.
+     *
+     * <p>This test is ignored for large ranges.
      */
     @ParameterizedTest
     @MethodSource
@@ -820,6 +822,7 @@ abstract class BaseDiscreteDistributionTest
             integrationTestPoints.add(points[i]);
         }
         Collections.sort(integrationTestPoints);
+
         for (int i = 1; i < integrationTestPoints.size(); i++) {
             final int x0 = integrationTestPoints.get(i - 1);
             final int x1 = integrationTestPoints.get(i);

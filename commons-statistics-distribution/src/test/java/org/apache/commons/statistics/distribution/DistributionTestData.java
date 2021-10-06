@@ -291,6 +291,8 @@ abstract class DistributionTestData {
         private final double[] icdfPoints;
         /** Expected inverse CDF values. */
         private final int[] icdfValues;
+        /** Disable tests of the summation of the PMF verses the CDF. */
+        private final boolean disablePmfSum;
 
         /**
          * @param props Properties containing the test data
@@ -311,6 +313,7 @@ abstract class DistributionTestData {
             // A separate cdf.inverse property controls an inverse mapping test.
             icdfPoints = getAsDoubleArray(props, "icdf.points", null);
             icdfValues = getAsIntArray(props, "icdf.values", null);
+            disablePmfSum = getAsBoolean(props, "disable.pmf.sum", false);
             // Validation
             validatePair(cdfPoints, getCdfValues(), "cdf");
             validatePair(pmfPoints, getPmfValues(), "pmf");
@@ -441,6 +444,16 @@ abstract class DistributionTestData {
          */
         boolean isDisableLogPmf() {
             return disableLogPf;
+        }
+
+        /**
+         * Checks if a test of the sum of the PMF verses the PDF is disabled.
+         *
+         * @return true the PMF sum test is disabled.
+         * @see #getSfValues()
+         */
+        boolean isDisablePmfSum() {
+            return disablePmfSum;
         }
     }
 
@@ -926,6 +939,7 @@ abstract class DistributionTestData {
     boolean isDisableCdf() {
         return disableCdf;
     }
+
     /**
      * Checks if a test of the survival function method is disabled.
      *

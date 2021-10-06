@@ -77,7 +77,7 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double logProbability(int x) {
-        if (x < 0 || x == Integer.MAX_VALUE) {
+        if (x < 0) {
             return Double.NEGATIVE_INFINITY;
         } else if (x == 0) {
             return -mean;
@@ -93,9 +93,6 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
         if (x < 0) {
             return 0;
         }
-        if (x == Integer.MAX_VALUE) {
-            return 1;
-        }
         return RegularizedGamma.Q.value((double) x + 1, mean, epsilon,
                                         maxIterations);
     }
@@ -105,9 +102,6 @@ public class PoissonDistribution extends AbstractDiscreteDistribution {
     public double survivalProbability(int x) {
         if (x < 0) {
             return 1;
-        }
-        if (x == Integer.MAX_VALUE) {
-            return 0;
         }
         return RegularizedGamma.P.value((double) x + 1, mean, epsilon,
                                         maxIterations);
