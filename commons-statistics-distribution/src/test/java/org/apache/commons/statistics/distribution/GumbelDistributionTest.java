@@ -28,12 +28,6 @@ class GumbelDistributionTest extends BaseContinuousDistributionTest {
         return new GumbelDistribution(location, scale);
     }
 
-
-    @Override
-    protected double getHighPrecisionAbsoluteTolerance() {
-        return 1e-25;
-    }
-
     @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {

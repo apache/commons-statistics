@@ -35,11 +35,6 @@ class LevyDistributionTest  extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getHighPrecisionAbsoluteTolerance() {
-        return 1e-25;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0},
