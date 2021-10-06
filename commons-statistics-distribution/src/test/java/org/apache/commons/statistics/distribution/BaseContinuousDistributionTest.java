@@ -197,6 +197,11 @@ import org.junit.jupiter.params.provider.MethodSource;
 abstract class BaseContinuousDistributionTest
     extends BaseDistributionTest<ContinuousDistribution, ContinuousDistributionTestData> {
 
+    /** Relative accuracy of the integrator result. */
+    private static final double INTEGRATOR_ABS_ACCURACY = 1e-10;
+    /** Absolute accuracy of the integrator result. */
+    private static final double INTEGRATOR_REL_ACCURACY = 1e-12;
+
     @Override
     ContinuousDistributionTestData makeDistributionData(Properties properties) {
         return new ContinuousDistributionTestData(properties);
@@ -380,8 +385,9 @@ abstract class BaseContinuousDistributionTest
     /**
      * Stream the arguments to test the density integrals. The test
      * integrates the density function between consecutive test points for the cumulative
-     * density function. The default tolerance is 1e-9. Override this method to change
-     * the tolerance.
+     * density function. The default tolerance is based on the convergence tolerance of
+     * the underlying integrator (abs=1e-10, rel=1e-12).
+     * Override this method to change the tolerance.
      *
      * <p>This is disabled by {@link ContinuousDistributionTestData#isDisablePdf()}. If
      * the distribution cannot compute the density to match reference values then it
@@ -390,10 +396,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testDensityIntegrals() {
-        // TODO: Revise tolerance (e.g. using relative error)
-        // Use a higher tolerance than the default of 1e-4 for the sums
+        // Create a tolerance suitable for the same thresholds used by the intergator.
         final Function<ContinuousDistributionTestData, DoubleTolerance> tolerance =
-            d -> DoubleTolerances.absolute(1e-9);
+            d -> createAbsOrRelTolerance(INTEGRATOR_ABS_ACCURACY * 10, INTEGRATOR_REL_ACCURACY * 10);
         return stream(ContinuousDistributionTestData::isDisablePdf,
                       ContinuousDistributionTestData::getCdfPoints,
                       ContinuousDistributionTestData::getCdfValues,
@@ -781,7 +786,7 @@ abstract class BaseContinuousDistributionTest
                                     double[] values,
                                     DoubleTolerance tolerance) {
         final BaseAbstractUnivariateIntegrator integrator =
-            new IterativeLegendreGaussIntegrator(5, 1e-12, 1e-10);
+            new IterativeLegendreGaussIntegrator(5, INTEGRATOR_REL_ACCURACY, INTEGRATOR_ABS_ACCURACY);
         final UnivariateFunction d = dist::density;
         final ArrayList<Double> integrationTestPoints = new ArrayList<>();
         for (int i = 0; i < points.length; i++) {

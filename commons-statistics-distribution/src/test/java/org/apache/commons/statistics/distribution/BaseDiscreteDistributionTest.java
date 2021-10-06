@@ -194,6 +194,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 abstract class BaseDiscreteDistributionTest
     extends BaseDistributionTest<DiscreteDistribution, DiscreteDistributionTestData> {
 
+    /** Threshold for the PMF summation test for a range that is too large. */
+    private static final int SUM_RANGE_TOO_LARGE = 50;
+
     @Override
     DiscreteDistributionTestData makeDistributionData(Properties properties) {
         return new DiscreteDistributionTestData(properties);
@@ -387,8 +390,9 @@ abstract class BaseDiscreteDistributionTest
     /**
      * Stream the arguments to test the probability sums. The test
      * sums the probability mass function between consecutive test points for the cumulative
-     * density function. The default tolerance is 1e-9. Override this method to change
-     * the tolerance.
+     * density function. The default tolerance is based on the test tolerance for evaluation
+     * of single points of the CDF.
+     * Override this method to change the tolerance.
      *
      * <p>This is disabled by {@link DiscreteDistributionTestData#isDisablePmf()}. If
      * the distribution cannot compute the PMF to match reference values then it
@@ -397,10 +401,11 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testProbabilitySums() {
-        // TODO: Revise tolerance (e.g. using relative error)
-        // Use a higher tolerance than the default of 1e-4 for the sums
+        // Assume the the test tolerance for single CDF values can be relaxed slightly
+        // when summing values.
+        final double scale = 10;
         final Function<DiscreteDistributionTestData, DoubleTolerance> tolerance =
-            d -> DoubleTolerances.absolute(1e-9);
+            d -> createAbsOrRelTolerance(d.getAbsoluteTolerance() * scale, d.getRelativeTolerance() * scale);
         return stream(d -> d.isDisablePmf() || d.isDisablePmfSum(),
                       DiscreteDistributionTestData::getCdfPoints,
                       DiscreteDistributionTestData::getCdfValues,
@@ -827,7 +832,7 @@ abstract class BaseDiscreteDistributionTest
             final int x0 = integrationTestPoints.get(i - 1);
             final int x1 = integrationTestPoints.get(i);
             // Ignore large ranges
-            if (x1 - x0 > 50) {
+            if (x1 - x0 > SUM_RANGE_TOO_LARGE) {
                 continue;
             }
             final double sum = IntStream.rangeClosed(x0 + 1, x1).mapToDouble(dist::probability).sum();
