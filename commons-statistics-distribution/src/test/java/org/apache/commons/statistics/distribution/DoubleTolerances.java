@@ -84,7 +84,7 @@ final class DoubleTolerances {
      * @throws IllegalArgumentException if {@code eps < 0} or is not finite
      * @see Precision#equalsIncludingNaN(double, double, int)
      */
-    static DoubleTolerance equals(final int maxUlps) {
+    static DoubleTolerance ulps(final int maxUlps) {
         return new AbstractDoubleTolerance() {
             @Override
             public boolean test(double a, double b) {
@@ -112,7 +112,7 @@ final class DoubleTolerances {
      *
      * <p>Use of this method with {@code eps = 0.0} is not recommended as neighbouring
      * floating points numbers are considered equal. Consider using {@link #equals()}
-     * for binary equality or {@link #equals(int)} with {@code ulps=0} for numerical equality.
+     * for binary equality or {@link #ulps(int)} with {@code ulps=0} for numerical equality.
      *
      * @param eps Value to use for determining equality.
      * @return a new instance.
@@ -139,7 +139,7 @@ final class DoubleTolerances {
     }
 
     /**
-     * Creates a {@link DoubleTolerance} instance that uses the given absolute epsilon
+     * Creates a {@link DoubleTolerance} instance that uses the given relative epsilon
      * value for determining equality.
      *
      * <p>Notes:
@@ -150,11 +150,13 @@ final class DoubleTolerances {
      * the relative difference between them is less than or equal
      * to the given tolerance.
      * <li>NaNs are <strong>not</strong> considered equal.
+     * <li>The relative tolerance instance is symmetric; it evaluates the same for
+     * {@code (a, b)} or {@code (b, a)}.
      * </ul>
      *
      * <p>Use of this method with {@code eps = 0.0} is not recommended as neighbouring
      * floating points numbers are considered equal. Consider using {@link #equals()}
-     * for binary equality or {@link #equals(int)} with {@code ulps=0} for numerical equality.
+     * for binary equality or {@link #ulps(int)} with {@code ulps=0} for numerical equality.
      *
      * @param eps Value to use for determining equality.
      * @return a new instance.

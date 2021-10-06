@@ -259,7 +259,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the tolerance
      */
     DoubleTolerance createAbsTolerance(double eps) {
-        return eps > 0 ? DoubleTolerances.absolute(eps) : DoubleTolerances.equals(0);
+        return eps > 0 ? DoubleTolerances.absolute(eps) : DoubleTolerances.ulps(0);
     }
 
     /**
@@ -272,7 +272,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the tolerance
      */
     DoubleTolerance createRelTolerance(double eps) {
-        return eps > 0 ? DoubleTolerances.relative(eps) : DoubleTolerances.equals(0);
+        return eps > 0 ? DoubleTolerances.relative(eps) : DoubleTolerances.ulps(0);
     }
 
     /**
