@@ -99,6 +99,21 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         return ((double) upper - x) / upperMinusLowerPlus1;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public int inverseCumulativeProbability(final double p) {
+        ArgumentUtils.checkProbability(p);
+        // Casting will clip overflows to int min or max value
+        final int x = (int) (Math.ceil(p * upperMinusLowerPlus1 + lower - 1));
+        // Note: x may be too high due to floating-point error and rounding up with ceil.
+        // Return the next value down if that is also above the input cumulative probability.
+        // This ensures x == icdf(cdf(x))
+        if (x <= lower) {
+            return lower;
+        }
+        return cumulativeProbability(x - 1) >= p ? x - 1 : x;
+    }
+
     /**
      * {@inheritDoc}
      *

@@ -98,4 +98,36 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
 
         Assertions.assertEquals(hi, dist.getMean());
     }
+
+    /**
+     * Test the inverse CDF returns the correct x from the CDF result.
+     * This case was identified using various x and upper bounds to discover a mismatch
+     * of x != icdf(cdf(x)). This occurs due to rounding errors on the inversion.
+     */
+    @Test
+    void testInverseCDF() {
+        final int lower = 3;
+        final int x = 23;
+        final int upper = 40;
+        final double range = (double) upper - lower + 1;
+
+        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(lower, upper);
+        // Compute p and check it is as expected
+        final double p = dist.cumulativeProbability(x);
+        Assertions.assertEquals((x - lower + 1) / range, p);
+
+        // Invert
+        final double value = Math.ceil(p * range + lower - 1);
+        Assertions.assertEquals(x + 1, value, "Expected a rounding error");
+
+        Assertions.assertEquals(x, dist.inverseCumulativeProbability(p), "Expected rounding correction");
+
+        // Test for overflow of an integer when inverting
+        final int min = Integer.MIN_VALUE;
+        final UniformDiscreteDistribution dist2 = new UniformDiscreteDistribution(min, min + 10);
+        Assertions.assertEquals(min, dist2.inverseCumulativeProbability(0.0));
+        final int max = Integer.MAX_VALUE;
+        final UniformDiscreteDistribution dist3 = new UniformDiscreteDistribution(max - 10, max);
+        Assertions.assertEquals(max, dist3.inverseCumulativeProbability(1.0));
+    }
 }
