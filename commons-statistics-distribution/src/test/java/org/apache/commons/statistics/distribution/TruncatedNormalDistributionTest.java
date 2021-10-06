@@ -33,12 +33,6 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getRelativeTolerance() {
-        // This is limited by failures on many tests at a higher relative tolerance.
-        return 1e-9;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0, -1.0, 1.0},
