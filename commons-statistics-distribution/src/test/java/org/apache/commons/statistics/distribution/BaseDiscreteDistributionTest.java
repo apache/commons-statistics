@@ -490,16 +490,19 @@ abstract class BaseDiscreteDistributionTest
                 tolerance,
                 () -> "Incorrect cumulative probability value returned for " + x);
         }
-        // verify probability(double, double)
+        // Verify probability(double, double) is consistent with cumulativeProbability(double)
         for (int i = 0; i < points.length; i++) {
             final int x0 = points[i];
+            final double cdf0 = dist.cumulativeProbability(x0);
             for (int j = 0; j < points.length; j++) {
                 final int x1 = points[j];
                 if (x0 <= x1) {
+                    final double cdf1 = dist.cumulativeProbability(x1);
                     TestUtils.assertEquals(
-                        values[j] - values[i],
+                        cdf1 - cdf0,
                         dist.probability(x0, x1),
-                        tolerance);
+                        tolerance,
+                        () -> "Incorrect probability value returned for " + x0 + " to " + x1);
                 } else {
                     Assertions.assertThrows(IllegalArgumentException.class,
                         () -> dist.probability(x0, x1),
