@@ -66,14 +66,17 @@ import org.junit.jupiter.params.provider.MethodSource;
  * The parameters are parsed from String values to the appropriate parameter object. Currently
  * this supports Double and Integer; numbers can be unboxed and used to create the distribution.
  *
- * <p>Illegal arguments for the distribution are tested from all combinations provided by
+ * <p>Illegal arguments for the distribution are tested from parametersprovided by
  * {@link #makeInvalidParameters()}. If there are no illegal arguments this method may return
- * null to skip the test.
+ * null to skip the test. Primitive parameters are boxed to objects so ensure the canonical form
+ * is used, e.g. {@code 1.0} not {@code 1} for a {@code double} argument.
  *
  * <p>If the distribution provides parameter accessors then the child test class can return
  * the accessor names using {@link #getParameterNames()}. The distribution method accessors
- * will be detected and invoked using reflection. This method may return
- * null to skip the test.
+ * will be detected and invoked using reflection. The accessor must provide the same value
+ * as that passed to the {@link #makeDistribution(Object...)} method to create the distribution.
+ * This method may return null to skip the test, or null for the name to skip the test for a
+ * single parameter accessor.
  *
  * <p>The properties file must contain parameters for the distribution, properties of the
  * distribution (moments and bounds) and points to test the CDF and PMF with the expected values.
@@ -91,7 +94,8 @@ import org.junit.jupiter.params.provider.MethodSource;
  * {@link Math#log(double)} on the PMF values.
  * <li>Points and expected values for the survival function can be specified. The default will use
  * the expected CDF values (SF = 1 - CDF).
- * <li>A tolerance for equality assertions. The default is set by {@link #getTolerance()}.
+ * <li>A tolerance for equality assertions. The default is set by {@link #getAbsoluteTolerance()}
+ * and {@link #getRelativeTolerance()}.
  * <li>A flag to indicate the returned value for {@link DiscreteDistribution#isSupportConnected()}.
  * The default is set by {@link #isSupportConnected()}.
  * </ul>
@@ -99,7 +103,8 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <p>If the distribution provides higher precision implementations of
  * cumulative probability and/or survival probability as the values approach zero, then test
  * points and expected values can be provided with a tolerance for equality assertions of
- * high-precision computations. The default is set by {@link #getHighPrecisionTolerance()}.
+ * high-precision computations. The default is set by {@link #getHighPrecisionAbsoluteTolerance()}
+ * and {@link #getHighPrecisionRelativeTolerance()}.
  *
  * <p>Note: All properties files are read during test initialization. Any errors in a single
  * property file will throw an exception, invalidating the initialization and no tests
@@ -118,6 +123,13 @@ import org.junit.jupiter.params.provider.MethodSource;
  * data, create a test in the child class and call the relevant test case to verify
  * results. Note that it is recommended to use the properties file as this ensures the
  * entire functionality of the distribution is tested for that parameterization.
+ *
+ * <p>Tests using floating-point equivalence comparisons are asserted using a {@link DoubleTolerance}.
+ * This interface computes true or false for the comparison of two {@code double} types.
+ * This allows the flexibility to use absolute, relative or ULP thresholds in combinations
+ * built using And or Or conditions to compare numbers. The default uses an Or combination
+ * of the absolute and relative thresholds. See {@link DoubleTolerances} to construct
+ * custom instances for additional tests.
  *
  * <p>Test data should be validated against reference tables or other packages where
  * possible, and the source of the reference data and/or validation should be documented

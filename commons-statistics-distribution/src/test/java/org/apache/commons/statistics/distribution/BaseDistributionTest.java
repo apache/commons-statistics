@@ -89,8 +89,10 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
         // Set defaults
         final Properties defaults = new Properties();
         defaults.setProperty(DistributionTestData.KEY_CONNECTED, String.valueOf(isSupportConnected()));
-        defaults.setProperty(DistributionTestData.KEY_TOLERANCE, String.valueOf(getTolerance()));
-        defaults.setProperty(DistributionTestData.KEY_TOLERANCE_HP, String.valueOf(getHighPrecisionTolerance()));
+        defaults.setProperty(DistributionTestData.KEY_TOLERANCE_ABSOLUTE, String.valueOf(getAbsoluteTolerance()));
+        defaults.setProperty(DistributionTestData.KEY_TOLERANCE_RELATIVE, String.valueOf(getRelativeTolerance()));
+        defaults.setProperty(DistributionTestData.KEY_TOLERANCE_ABSOLUTE_HP, String.valueOf(getHighPrecisionAbsoluteTolerance()));
+        defaults.setProperty(DistributionTestData.KEY_TOLERANCE_RELATIVE_HP, String.valueOf(getHighPrecisionRelativeTolerance()));
         for (int i = 1; ; i++) {
             final String filename = String.format("test.%s.%d.properties", key, i);
             try (InputStream resource = this.getClass().getResourceAsStream(
@@ -110,33 +112,75 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     }
 
     /**
-     * Gets the default tolerance used in comparing expected and returned values.
+     * Gets the default absolute tolerance used in comparing expected and returned values.
      *
      * <p>The initial value is 1e-4.
      *
-     * <p>Override this method to set the <strong>default</strong> tolerance for all test
-     * cases defined by a properties file. Any properties file with a tolerance entry
-     * ignore this value.
+     * <p>Override this method to set the <strong>default</strong> absolute tolerance for all test
+     * cases defined by a properties file. Any properties file with an absolute tolerance entry
+     * ignores this value.
      *
-     * @return the tolerance
+     * <p>Notes: Floating-point values are considered equal using the absolute or the relative tolerance.
+     * See {@link #createTolerance()}.
+     *
+     * @return the absolute tolerance
      */
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         return 1e-4;
     }
 
     /**
-     * Gets the default tolerance used in comparing expected and returned values in high precision tests.
+     * Gets the default relative tolerance used in comparing expected and returned values.
+     *
+     * <p>The initial value is 1e-6.
+     *
+     * <p>Override this method to set the <strong>default</strong> relative tolerance for all test
+     * cases defined by a properties file. Any properties file with a relative tolerance entry
+     * ignores this value.
+     *
+     * <p>Notes: Floating-point values are considered equal using the absolute or the relative tolerance.
+     * See {@link #createTolerance()}.
+     *
+     * @return the relative tolerance
+     */
+    protected double getRelativeTolerance() {
+        return 1e-6;
+    }
+
+    /**
+     * Gets the default absolute tolerance used in comparing expected and returned values in high precision tests.
      *
      * <p>The initial value is 1e-22.
      *
-     * <p>Override this method to set the <strong>default</strong> high-precision tolerance for all test
-     * cases defined by a properties file. Any properties file with a high-precision tolerance entry
-     * ignore this value.
+     * <p>Override this method to set the <strong>default</strong> high-precision absolute tolerance for all test
+     * cases defined by a properties file. Any properties file with a high-precision absolute tolerance entry
+     * ignores this value.
      *
-     * @return the high precision tolerance
+     * <p>Notes: Floating-point values are considered equal using the absolute or the relative tolerance.
+     * See {@link #createHighPrecisionTolerance()}.
+     *
+     * @return the high precision absolute tolerance
      */
-    protected double getHighPrecisionTolerance() {
+    protected double getHighPrecisionAbsoluteTolerance() {
         return 1e-22;
+    }
+
+    /**
+     * Gets the default relative tolerance used in comparing expected and returned values in high precision tests.
+     *
+     * <p>The initial value is 1e-6.
+     *
+     * <p>Override this method to set the <strong>default</strong> high-precision relative tolerance for all test
+     * cases defined by a properties file. Any properties file with a high-precision relative tolerance entry
+     * ignores this value.
+     *
+     * <p>Notes: Floating-point values are considered equal using the absolute or the relative tolerance.
+     * See {@link #createHighPrecisionTolerance()}.
+     *
+     * @return the high precision relative tolerance
+     */
+    protected double getHighPrecisionRelativeTolerance() {
+        return 1e-6;
     }
 
     /**
@@ -208,6 +252,49 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     /**
      * Creates the tolerance using an absolute error.
      *
+     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical
+     * equality is used.
+     *
+     * @param eps Absolute tolerance
+     * @return the tolerance
+     */
+    DoubleTolerance createAbsTolerance(double eps) {
+        return eps > 0 ? DoubleTolerances.absolute(eps) : DoubleTolerances.equals(0);
+    }
+
+    /**
+     * Creates the tolerance using an relative error.
+     *
+     * <p>If the relative tolerance is zero it is ignored and a tolerance of numerical
+     * equality is used.
+     *
+     * @param eps Relative tolerance
+     * @return the tolerance
+     */
+    DoubleTolerance createRelTolerance(double eps) {
+        return eps > 0 ? DoubleTolerances.relative(eps) : DoubleTolerances.equals(0);
+    }
+
+    /**
+     * Creates the tolerance using an {@code Or} combination of absolute and relative error.
+     *
+     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
+     * is used.
+     *
+     * <p>If the relative tolerance is zero it is ignored.
+     *
+     * @param absTolerance Absolute tolerance
+     * @param relTolerance Relative tolerance
+     * @return the tolerance
+     */
+    DoubleTolerance createAbsOrRelTolerance(double absTolerance, double relTolerance) {
+        final DoubleTolerance tol = createAbsTolerance(absTolerance);
+        return relTolerance > 0 ? tol.or(DoubleTolerances.relative(relTolerance)) : tol;
+    }
+
+    /**
+     * Creates the tolerance using an absolute error.
+     *
      * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
      * is used.
      *
@@ -218,7 +305,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     DoubleTolerance createTestAbsTolerance(
             D testData, ToDoubleFunction<D> tolerance) {
         final double eps = tolerance == null ? 0 : tolerance.applyAsDouble(testData);
-        return eps > 0 ? DoubleTolerances.absolute(eps) : DoubleTolerances.equals();
+        return createAbsTolerance(eps);
     }
 
     /**
@@ -234,7 +321,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     DoubleTolerance createTestRelTolerance(
             D testData, ToDoubleFunction<D> tolerance) {
         final double eps = tolerance == null ? 0 : tolerance.applyAsDouble(testData);
-        return eps > 0 ? DoubleTolerances.relative(eps) : DoubleTolerances.equals();
+        return createRelTolerance(eps);
     }
 
     /**
@@ -252,51 +339,73 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      */
     DoubleTolerance createTestAbsOrRelTolerance(
             D testData, ToDoubleFunction<D> absTolerance, ToDoubleFunction<D> relTolerance) {
-        final DoubleTolerance tol = createTestAbsTolerance(testData, absTolerance);
-        final double eps = relTolerance == null ? 0 : relTolerance.applyAsDouble(testData);
-        return eps > 0 ? tol.or(DoubleTolerances.relative(eps)) : tol;
+        final double abs = absTolerance == null ? 0 : absTolerance.applyAsDouble(testData);
+        final double rel = relTolerance == null ? 0 : relTolerance.applyAsDouble(testData);
+        return createAbsOrRelTolerance(abs, rel);
     }
 
     /**
      * Creates the default tolerance for the test data.
      *
+     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
+     * is used.
+     *
+     * <p>If the relative tolerance is zero it is ignored.
+     *
      * @param testData Test data
      * @return the tolerance
      */
     DoubleTolerance createTestTolerance(D testData) {
-        // Current tests use only absolute error
-        return createTestAbsTolerance(testData, DistributionTestData::getTolerance);
+        return createTestAbsOrRelTolerance(testData,
+                                           DistributionTestData::getAbsoluteTolerance,
+                                           DistributionTestData::getRelativeTolerance);
     }
 
     /**
      * Creates the default high-precision tolerance for the test data.
      *
+     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
+     * is used.
+     *
+     * <p>If the relative tolerance is zero it is ignored.
+     *
      * @param testData Test data
      * @return the tolerance
      */
     DoubleTolerance createTestHighPrecisionTolerance(D testData) {
-        // Current tests use only absolute error
-        return createTestAbsTolerance(testData, DistributionTestData::getHighPrecisionTolerance);
+        return createTestAbsOrRelTolerance(testData,
+                                           DistributionTestData::getHighPrecisionAbsoluteTolerance,
+                                           DistributionTestData::getHighPrecisionRelativeTolerance);
     }
 
     /**
      * Creates the default tolerance.
      *
+     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
+     * is used.
+     *
+     * <p>If the relative tolerance is zero it is ignored.
+     *
      * @return the tolerance
      */
     DoubleTolerance createTolerance() {
-        // Current tests use only absolute error
-        return DoubleTolerances.absolute(getTolerance());
+        return createAbsOrRelTolerance(getAbsoluteTolerance(),
+                                       getRelativeTolerance());
     }
 
     /**
      * Creates the default high-precision tolerance.
      *
+     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
+     * is used.
+     *
+     * <p>If the relative tolerance is zero it is ignored.
+     *
      * @return the tolerance
      */
     DoubleTolerance createHighPrecisionTolerance() {
-        // Current tests use only absolute error
-        return DoubleTolerances.absolute(getHighPrecisionTolerance());
+        return createAbsOrRelTolerance(getHighPrecisionAbsoluteTolerance(),
+                                       getHighPrecisionRelativeTolerance());
     }
 
     //------------------------ Methods to stream the test data -----------------------------

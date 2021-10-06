@@ -33,7 +33,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         // Limited by the CDF inverse mapping
         return 1e-9;
     }

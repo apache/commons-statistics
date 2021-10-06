@@ -34,7 +34,7 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     @Override
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         return 1e-12;
     }
 
@@ -98,11 +98,11 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
         GeometricDistribution dist;
 
         dist = new GeometricDistribution(0.5);
-        Assertions.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), getTolerance());
-        Assertions.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), getTolerance());
+        Assertions.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), getAbsoluteTolerance());
+        Assertions.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), getAbsoluteTolerance());
 
         dist = new GeometricDistribution(0.3);
-        Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), getTolerance());
-        Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), getTolerance());
+        Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), getAbsoluteTolerance());
+        Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), getAbsoluteTolerance());
     }
 }

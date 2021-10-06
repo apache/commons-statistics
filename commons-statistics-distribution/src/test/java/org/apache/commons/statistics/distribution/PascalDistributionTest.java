@@ -32,7 +32,7 @@ class PascalDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     @Override
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         return 1e-12;
     }
 
@@ -59,11 +59,11 @@ class PascalDistributionTest extends BaseDiscreteDistributionTest {
         PascalDistribution dist;
 
         dist = new PascalDistribution(10, 0.5);
-        Assertions.assertEquals((10d * 0.5d) / 0.5, dist.getMean(), getTolerance());
-        Assertions.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), getTolerance());
+        Assertions.assertEquals((10d * 0.5d) / 0.5, dist.getMean(), getAbsoluteTolerance());
+        Assertions.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), getAbsoluteTolerance());
 
         dist = new PascalDistribution(25, 0.7);
-        Assertions.assertEquals((25d * 0.3d) / 0.7, dist.getMean(), getTolerance());
-        Assertions.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), getTolerance());
+        Assertions.assertEquals((25d * 0.3d) / 0.7, dist.getMean(), getAbsoluteTolerance());
+        Assertions.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), getAbsoluteTolerance());
     }
 }

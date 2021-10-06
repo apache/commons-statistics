@@ -32,7 +32,7 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         return 1e-10;
     }
 
@@ -54,7 +54,7 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testProbabilityRange() {
         final double actual = new ExponentialDistribution(5).probability(0.25, 0.75);
-        Assertions.assertEquals(0.0905214480756562, actual, getTolerance());
+        Assertions.assertEquals(0.0905214480756562, actual, getAbsoluteTolerance());
     }
 
     @Test

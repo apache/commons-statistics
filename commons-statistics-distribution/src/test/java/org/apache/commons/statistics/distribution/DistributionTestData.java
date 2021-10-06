@@ -33,10 +33,14 @@ abstract class DistributionTestData {
 
     /** The key for the support connected value. */
     static final String KEY_CONNECTED = "connected";
-    /** The key for the tolerance value. */
-    static final String KEY_TOLERANCE = "tolerance";
-    /** The key for the high-precision tolerance value. */
-    static final String KEY_TOLERANCE_HP = "tolerance.hp";
+    /** The key for the absolute tolerance value. */
+    static final String KEY_TOLERANCE_ABSOLUTE = "tolerance.absolute";
+    /** The key for the relative tolerance value. */
+    static final String KEY_TOLERANCE_RELATIVE = "tolerance.relative";
+    /** The key for the high-precision absolute tolerance value. */
+    static final String KEY_TOLERANCE_ABSOLUTE_HP = "tolerance.absolute.hp";
+    /** The key for the high-precision relative tolerance value. */
+    static final String KEY_TOLERANCE_RELATIVE_HP = "tolerance.relative.hp";
 
     /** Regex to split delimited text data (e.g. arrays of numbers). */
     private static final Pattern PATTERN = Pattern.compile("[ ,]+");
@@ -58,10 +62,14 @@ abstract class DistributionTestData {
     private final double variance;
     /** Support connected flag. */
     private final boolean connected;
-    /** Test tolerance for calculations. */
-    private final double tolerance;
-    /** Test tolerance for high-precision calculations.. */
-    private final double hpTolerance;
+    /** Test absolute tolerance for calculations. */
+    private final double absoluteTolerance;
+    /** Test relative tolerance for calculations. */
+    private final double relativeTolerance;
+    /** Test absolute tolerance for high-precision calculations.. */
+    private final double absoluteToleranceHp;
+    /** Test relative tolerance for high-precision calculations.. */
+    private final double relativeToleranceHp;
     /** Expected CDF values. */
     private final double[] cdfValues;
     /** Expected SF values for the survival function test points. */
@@ -446,8 +454,10 @@ abstract class DistributionTestData {
         mean = getAsDouble(props, "mean");
         variance = getAsDouble(props, "variance");
         connected = getAsBoolean(props, KEY_CONNECTED);
-        tolerance = getAsDouble(props, KEY_TOLERANCE);
-        hpTolerance = getAsDouble(props, KEY_TOLERANCE_HP);
+        absoluteTolerance = getAsDouble(props, KEY_TOLERANCE_ABSOLUTE);
+        absoluteToleranceHp = getAsDouble(props, KEY_TOLERANCE_ABSOLUTE_HP);
+        relativeTolerance = getAsDouble(props, KEY_TOLERANCE_RELATIVE);
+        relativeToleranceHp = getAsDouble(props, KEY_TOLERANCE_RELATIVE_HP);
         // Required
         cdfValues = getAsDoubleArray(props, "cdf.values");
         final String pf = getProbabilityFunctionName();
@@ -809,22 +819,41 @@ abstract class DistributionTestData {
     }
 
     /**
-     * Gets the tolerance used when comparing expected and actual results.
+     * Gets the absolute tolerance used when comparing expected and actual results.
      *
-     * @return the tolerance
+     * @return the absolute tolerance
      */
-    double getTolerance() {
-        return tolerance;
+    double getAbsoluteTolerance() {
+        return absoluteTolerance;
     }
 
     /**
-     * Gets the tolerance used when comparing expected and actual results
+     * Gets the relative tolerance used when comparing expected and actual results.
+     *
+     * @return the relative tolerance
+     */
+    double getRelativeTolerance() {
+        return relativeTolerance;
+    }
+
+    /**
+     * Gets the absolute tolerance used when comparing expected and actual results
      * of high-precision computations.
      *
-     * @return the tolerance
+     * @return the high-precision absolute tolerance
      */
-    double getHighPrecisionTolerance() {
-        return hpTolerance;
+    double getHighPrecisionAbsoluteTolerance() {
+        return absoluteToleranceHp;
+    }
+
+    /**
+     * Gets the relative tolerance used when comparing expected and actual results
+     * of high-precision computations.
+     *
+     * @return the high-precision relative tolerance
+     */
+    double getHighPrecisionRelativeTolerance() {
+        return relativeToleranceHp;
     }
 
     /**

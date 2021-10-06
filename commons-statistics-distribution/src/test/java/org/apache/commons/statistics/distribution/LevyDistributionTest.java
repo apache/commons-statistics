@@ -29,12 +29,12 @@ class LevyDistributionTest  extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         return 1e-10;
     }
 
     @Override
-    protected double getHighPrecisionTolerance() {
+    protected double getHighPrecisionAbsoluteTolerance() {
         return 1e-25;
     }
 

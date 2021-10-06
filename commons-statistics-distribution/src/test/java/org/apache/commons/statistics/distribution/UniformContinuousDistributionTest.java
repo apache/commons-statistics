@@ -33,7 +33,7 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         return 1e-12;
     }
 

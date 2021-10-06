@@ -32,13 +32,13 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         // Limited by the CDF inverse mapping
         return 1e-9;
     }
 
     @Override
-    protected double getHighPrecisionTolerance() {
+    protected double getHighPrecisionAbsoluteTolerance() {
         return 1e-25;
     }
 

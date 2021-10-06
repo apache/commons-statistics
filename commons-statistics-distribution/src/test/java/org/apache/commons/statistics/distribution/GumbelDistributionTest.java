@@ -29,12 +29,12 @@ class GumbelDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getTolerance() {
+    protected double getAbsoluteTolerance() {
         return 1e-12;
     }
 
     @Override
-    protected double getHighPrecisionTolerance() {
+    protected double getHighPrecisionAbsoluteTolerance() {
         return 1e-25;
     }
 
