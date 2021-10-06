@@ -700,11 +700,14 @@ abstract class BaseDiscreteDistributionTest
 
         final int hi = dist.getSupportUpperBound();
         Assertions.assertTrue(lo <= hi, "lower <= upper");
-        Assertions.assertEquals(1.0, dist.cumulativeProbability(hi), "cdf(upper)");
-        Assertions.assertEquals(0.0, dist.survivalProbability(hi), "sf(upper)");
-        TestUtils.assertEquals(dist.probability(hi), dist.survivalProbability(hi - 1), tolerance, "sf(upper - 1)");
         Assertions.assertEquals(hi, dist.inverseCumulativeProbability(1.0), "icdf(1.0)");
         if (hi != Integer.MAX_VALUE) {
+            // For distributions defined up to integer max value we cannot test that
+            // the CDF is 1.0 as they may be truncated.
+            Assertions.assertEquals(1.0, dist.cumulativeProbability(hi), "cdf(upper)");
+            Assertions.assertEquals(0.0, dist.survivalProbability(hi), "sf(upper)");
+            TestUtils.assertEquals(dist.probability(hi), dist.survivalProbability(hi - 1), tolerance, "sf(upper - 1)");
+
             final int above = hi + 1;
             Assertions.assertEquals(0.0, dist.probability(above), "pmf(x > upper)");
             Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.logProbability(above), "logpmf(x > upper)");

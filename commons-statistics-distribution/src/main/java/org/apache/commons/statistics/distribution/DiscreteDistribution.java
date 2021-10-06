@@ -107,6 +107,8 @@ public interface DiscreteDistribution {
      * </ul>
      * If the result exceeds the range of the data type {@code int},
      * then {@code Integer.MIN_VALUE} or {@code Integer.MAX_VALUE} is returned.
+     * In this case the result of {@link #cumulativeProbability(int)} called
+     * using the returned {@code p}-quantile may not compute the original {@code p}.
      *
      * @param p Cumulative probability.
      * @return the smallest {@code p}-quantile of this distribution

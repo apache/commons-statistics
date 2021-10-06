@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.Arrays;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -100,5 +101,30 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
         dist = new GeometricDistribution(0.3);
         TestUtils.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
         TestUtils.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
+    }
+
+    /**
+     * Test the most extreme parameters. Uses a small enough value of p that the distribution is
+     * truncated by the maximum integer value. This creates a case where (x+1) will overflow.
+     * This occurs in the cumulative and survival function computations.
+     */
+    @Test
+    void testExtremeParameters() {
+        final double p = Double.MIN_VALUE;
+        final GeometricDistribution dist = new GeometricDistribution(p);
+
+        final int x = Integer.MAX_VALUE;
+        // CDF = 1 - (1-p)^(x+1)
+        // Compute with log for accuracy with small p
+        final double cdf = -Math.expm1(Math.log1p(-p) * (x + 1.0));
+        Assertions.assertNotEquals(1.0, cdf);
+        Assertions.assertEquals(cdf, dist.cumulativeProbability(x));
+        Assertions.assertEquals(x, dist.inverseCumulativeProbability(dist.cumulativeProbability(x)));
+
+        // SF = (1-p)^(x+1)
+        // Compute with log for accuracy with small p
+        final double sf = Math.exp(Math.log1p(-p) * (x + 1.0));
+        Assertions.assertNotEquals(0.0, sf);
+        Assertions.assertEquals(sf, dist.survivalProbability(x));
     }
 }

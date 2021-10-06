@@ -98,10 +98,10 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     public double cumulativeProbability(int x) {
         if (x < 0) {
             return 0.0;
-        } else if (x == Integer.MAX_VALUE) {
-            return 1.0;
         }
-        return -Math.expm1(log1mProbabilityOfSuccess * (x + 1));
+        // Note: Double addition avoids overflow. This may compute a value less than 1.0
+        // for the max integer value when p is very small.
+        return -Math.expm1(log1mProbabilityOfSuccess * (x + 1.0));
     }
 
     /** {@inheritDoc} */
@@ -109,10 +109,10 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     public double survivalProbability(int x) {
         if (x < 0) {
             return 1.0;
-        } else if (x == Integer.MAX_VALUE) {
-            return 0.0;
         }
-        return Math.exp(log1mProbabilityOfSuccess * (x + 1));
+        // Note: Double addition avoids overflow. This may compute a value greater than 0.0
+        // for the max integer value when p is very small.
+        return Math.exp(log1mProbabilityOfSuccess * (x + 1.0));
     }
 
     /** {@inheritDoc} */
