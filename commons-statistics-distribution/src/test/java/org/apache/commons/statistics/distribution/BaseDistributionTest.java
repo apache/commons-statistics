@@ -114,7 +114,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     /**
      * Gets the default absolute tolerance used in comparing expected and returned values.
      *
-     * <p>The initial value is 1e-4.
+     * <p>The initial value is 0.0 (disabled).
      *
      * <p>Override this method to set the <strong>default</strong> absolute tolerance for all test
      * cases defined by a properties file. Any properties file with an absolute tolerance entry
@@ -126,13 +126,13 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the absolute tolerance
      */
     protected double getAbsoluteTolerance() {
-        return 1e-4;
+        return 0.0;
     }
 
     /**
      * Gets the default relative tolerance used in comparing expected and returned values.
      *
-     * <p>The initial value is 1e-6.
+     * <p>The initial value is 1e-12.
      *
      * <p>Override this method to set the <strong>default</strong> relative tolerance for all test
      * cases defined by a properties file. Any properties file with a relative tolerance entry
@@ -144,13 +144,13 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the relative tolerance
      */
     protected double getRelativeTolerance() {
-        return 1e-6;
+        return 1e-12;
     }
 
     /**
      * Gets the default absolute tolerance used in comparing expected and returned values in high precision tests.
      *
-     * <p>The initial value is 1e-22.
+     * <p>The initial value is 0.0 (disabled).
      *
      * <p>Override this method to set the <strong>default</strong> high-precision absolute tolerance for all test
      * cases defined by a properties file. Any properties file with a high-precision absolute tolerance entry
@@ -162,13 +162,13 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the high precision absolute tolerance
      */
     protected double getHighPrecisionAbsoluteTolerance() {
-        return 1e-22;
+        return 0.0;
     }
 
     /**
      * Gets the default relative tolerance used in comparing expected and returned values in high precision tests.
      *
-     * <p>The initial value is 1e-6.
+     * <p>The initial value is 1e-12.
      *
      * <p>Override this method to set the <strong>default</strong> high-precision relative tolerance for all test
      * cases defined by a properties file. Any properties file with a high-precision relative tolerance entry
@@ -180,7 +180,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the high precision relative tolerance
      */
     protected double getHighPrecisionRelativeTolerance() {
-        return 1e-6;
+        return 1e-12;
     }
 
     /**
