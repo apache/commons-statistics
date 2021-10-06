@@ -36,11 +36,6 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0, 3, 5},
@@ -63,17 +58,19 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     void testAdditionalMoments() {
         HypergeometricDistribution dist;
 
+        final DoubleTolerance tol = DoubleTolerances.ulps(1);
+
         dist = new HypergeometricDistribution(1500, 40, 100);
-        Assertions.assertEquals(40d * 100d / 1500d,
-            dist.getMean(), getAbsoluteTolerance());
-        Assertions.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)),
-            dist.getVariance(), getAbsoluteTolerance());
+        TestUtils.assertEquals(40d * 100d / 1500d,
+            dist.getMean(), tol);
+        TestUtils.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)),
+            dist.getVariance(), tol);
 
         dist = new HypergeometricDistribution(3000, 55, 200);
-        Assertions.assertEquals(55d * 200d / 3000d,
-            dist.getMean(), getAbsoluteTolerance());
-        Assertions.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)),
-            dist.getVariance(), getAbsoluteTolerance());
+        TestUtils.assertEquals(55d * 200d / 3000d,
+            dist.getMean(), tol);
+        TestUtils.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)),
+            dist.getVariance(), tol);
     }
 
     @Test

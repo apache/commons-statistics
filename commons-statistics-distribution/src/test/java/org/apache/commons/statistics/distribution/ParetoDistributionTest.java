@@ -33,7 +33,7 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getAbsoluteTolerance() {
+    protected double getRelativeTolerance() {
         // Limited by CDF inverse mapping test
         return 1e-9;
     }

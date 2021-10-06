@@ -34,11 +34,6 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-10;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0},
@@ -122,14 +117,15 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testMath280() {
         final NormalDistribution dist = new NormalDistribution(0, 1);
+        final DoubleTolerance tol = createTolerance();
         double result = dist.inverseCumulativeProbability(0.9986501019683698);
-        Assertions.assertEquals(3.0, result, getAbsoluteTolerance());
+        TestUtils.assertEquals(3.0, result, tol);
         result = dist.inverseCumulativeProbability(0.841344746068543);
-        Assertions.assertEquals(1.0, result, getAbsoluteTolerance());
+        TestUtils.assertEquals(1.0, result, tol);
         result = dist.inverseCumulativeProbability(0.9999683287581673);
-        Assertions.assertEquals(4.0, result, getAbsoluteTolerance());
+        TestUtils.assertEquals(4.0, result, tol);
         result = dist.inverseCumulativeProbability(0.9772498680518209);
-        Assertions.assertEquals(2.0, result, getAbsoluteTolerance());
+        TestUtils.assertEquals(2.0, result, tol);
     }
 
     /**

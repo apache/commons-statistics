@@ -30,10 +30,6 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
         return new PoissonDistribution(mean);
     }
 
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
 
     @Override
     Object[][] makeInvalidParameters() {

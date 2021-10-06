@@ -46,7 +46,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getAbsoluteTolerance() {
+    protected double getRelativeTolerance() {
         // A lower tolerance creates failures in the CDF inverse mapping test
         return 1e-9;
     }

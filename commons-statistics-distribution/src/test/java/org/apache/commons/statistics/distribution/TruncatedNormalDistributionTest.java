@@ -33,8 +33,9 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-7;
+    protected double getRelativeTolerance() {
+        // This is limited by failures on many tests at a higher relative tolerance.
+        return 1e-9;
     }
 
     @Override

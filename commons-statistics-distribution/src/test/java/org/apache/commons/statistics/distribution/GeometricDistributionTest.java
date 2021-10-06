@@ -17,7 +17,6 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.Arrays;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -31,11 +30,6 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     DiscreteDistribution makeDistribution(Object... parameters) {
         final double p = (Double) parameters[0];
         return new GeometricDistribution(p);
-    }
-
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
     }
 
     @Override
@@ -97,12 +91,14 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     void testAdditionalMoments() {
         GeometricDistribution dist;
 
+        final DoubleTolerance tol = DoubleTolerances.ulps(1);
+
         dist = new GeometricDistribution(0.5);
-        Assertions.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), getAbsoluteTolerance());
-        Assertions.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), getAbsoluteTolerance());
+        TestUtils.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
+        TestUtils.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
         dist = new GeometricDistribution(0.3);
-        Assertions.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), getAbsoluteTolerance());
-        Assertions.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), getAbsoluteTolerance());
+        TestUtils.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
+        TestUtils.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
     }
 }

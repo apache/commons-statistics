@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -31,10 +30,6 @@ class PascalDistributionTest extends BaseDiscreteDistributionTest {
         return new PascalDistribution(r, p);
     }
 
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
 
     @Override
     Object[][] makeInvalidParameters() {
@@ -58,12 +53,14 @@ class PascalDistributionTest extends BaseDiscreteDistributionTest {
     void testAdditionalMoments() {
         PascalDistribution dist;
 
+        DoubleTolerance tol = DoubleTolerances.ulps(1);
+
         dist = new PascalDistribution(10, 0.5);
-        Assertions.assertEquals((10d * 0.5d) / 0.5, dist.getMean(), getAbsoluteTolerance());
-        Assertions.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), getAbsoluteTolerance());
+        TestUtils.assertEquals((10d * 0.5d) / 0.5, dist.getMean(), tol);
+        TestUtils.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
         dist = new PascalDistribution(25, 0.7);
-        Assertions.assertEquals((25d * 0.3d) / 0.7, dist.getMean(), getAbsoluteTolerance());
-        Assertions.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), getAbsoluteTolerance());
+        TestUtils.assertEquals((25d * 0.3d) / 0.7, dist.getMean(), tol);
+        TestUtils.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), tol);
     }
 }

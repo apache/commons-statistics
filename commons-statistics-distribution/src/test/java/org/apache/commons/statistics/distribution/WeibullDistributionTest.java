@@ -35,10 +35,6 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
         return new WeibullDistribution(shape, scale);
     }
 
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
 
     @Override
     Object[][] makeInvalidParameters() {

@@ -29,8 +29,9 @@ class LevyDistributionTest  extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-10;
+    protected double getRelativeTolerance() {
+        // Limited by the inverse CDF which uses InverseErfc.
+        return 1e-9;
     }
 
     @Override

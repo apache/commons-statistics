@@ -30,11 +30,6 @@ class CauchyDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-10;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0},

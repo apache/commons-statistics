@@ -35,10 +35,6 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
         return new TriangularDistribution(lower, mode, upper);
     }
 
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
 
     @Override
     Object[][] makeInvalidParameters() {

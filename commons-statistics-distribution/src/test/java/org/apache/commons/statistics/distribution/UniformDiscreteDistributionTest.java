@@ -32,10 +32,6 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
         return new UniformDiscreteDistribution(lower, upper);
     }
 
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
 
     @Override
     Object[][] makeInvalidParameters() {

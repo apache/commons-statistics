@@ -28,10 +28,6 @@ class LaplaceDistributionTest extends BaseContinuousDistributionTest {
         return new LaplaceDistribution(location, scale);
     }
 
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
 
     @Override
     Object[][] makeInvalidParameters() {

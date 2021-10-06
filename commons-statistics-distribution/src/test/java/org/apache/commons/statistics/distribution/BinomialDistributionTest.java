@@ -31,10 +31,6 @@ class BinomialDistributionTest extends BaseDiscreteDistributionTest {
         return new BinomialDistribution(n, p);
     }
 
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
 
     @Override
     Object[][] makeInvalidParameters() {

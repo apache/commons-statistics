@@ -34,10 +34,6 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
         return new ZipfDistribution(n, e);
     }
 
-    @Override
-    protected double getAbsoluteTolerance() {
-        return 1e-12;
-    }
 
     @Override
     Object[][] makeInvalidParameters() {
