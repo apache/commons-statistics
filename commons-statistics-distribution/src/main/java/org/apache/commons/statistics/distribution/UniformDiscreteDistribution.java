@@ -84,7 +84,19 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
         if (x > upper) {
             return 1;
         }
-        return (x - lower + 1) / upperMinusLowerPlus1;
+        return ((double) x - lower + 1) / upperMinusLowerPlus1;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(int x) {
+        if (x < lower) {
+            return 1;
+        }
+        if (x > upper) {
+            return 0;
+        }
+        return ((double) upper - x) / upperMinusLowerPlus1;
     }
 
     /**
