@@ -140,7 +140,10 @@ import org.junit.jupiter.params.provider.MethodSource;
  * numeric data, and data arrays. Multi-line values can use a {@code \} character.
  * Data in the properties file will be converted to numbers using standard parsing
  * functions appropriate to the primitive type, e.g. {@link Double#parseDouble(String)}.
- * Special double values should use NaN, Infinity and -Infinity.
+ * Special double values should use NaN, Infinity and -Infinity. As a convenience
+ * for creating test data parsing of doubles supports the following notations from
+ * other languages ('inf', 'Inf'); parsing of ints supports 'min' and 'max' for the
+ * minimum and maximum integer values.
  *
  * <p>The following is a complete properties file for a distribution:
  * <pre>
@@ -148,19 +151,23 @@ import org.junit.jupiter.params.provider.MethodSource;
  * # Computed using XYZ
  * mean = 1.0
  * variance = NaN
- * # optional (default -Infinity)
+ * # optional (default -2147483648, Integer.MIN_VALUE)
  * lower = 0
- * # optional (default Infinity)
- * upper = Infinity
+ * # optional (default 2147483647, Integer.MAX_VALUE)
+ * upper = max
  * # optional (default true or over-ridden in isSupportConnected())
  * connected = false
- * # optional (default 1e-4 or over-ridden in getTolerance())
- * tolerance = 1e-9
- * # optional (default 1e-22 or over-ridden in getHighPrecisionTolerance())
- * tolerance.hp = 1e-30
+ * # optional (default 1e-12 or over-ridden in getRelativeTolerance())
+ * tolerance.relative = 1e-9
+ * # optional (default 0.0 or over-ridden in getAbsoluteTolerance())
+ * tolerance.absolute = 0.0
+ * # optional (default 1e-12 or over-ridden in getHighPrecisionRelativeTolerance())
+ * tolerance.relative.hp = 1e-10
+ * # optional (default 0.0 or over-ridden in getHighPrecisionAbsoluteTolerance())
+ * tolerance.absolute.hp = 1e-30
  * cdf.points = 0, 0.2
  * cdf.values = 0.0, 0.5
- * # optional (default uses cdf.values)
+ * # optional (default uses cdf.points)
  * pmf.points = 0, 40000
  * pmf.values = 0.0,\
  *  0.0
@@ -182,13 +189,19 @@ import org.junit.jupiter.params.provider.MethodSource;
  * disable.cdf.inverse = false
  * # Sampling test (default false)
  * disable.sample = false
- * # Sampling PMF values test (default false)
+ * # PMF values test (default false)
  * disable.pmf = false
- * # Sampling CDF values test (default false)
+ * # Log PMF values test (default false)
+ * disable.logpmf = false
+ * # CDF values test (default false)
  * disable.cdf = false
+ * # Survival function values test (default false)
+ * disable.sf = false
+ * # Sampling PMF summation verses CDF test (default false)
+ * disable.pmf.sum = false
  * </pre>
  *
- * <p>See {@link BinomialDistributionTest} for an example and the resource file {@code test.binomial.0.properties}.
+ * <p>See {@link BinomialDistributionTest} for an example and the resource file {@code test.binomial.1.properties}.
  */
 @TestInstance(Lifecycle.PER_CLASS)
 abstract class BaseDiscreteDistributionTest
