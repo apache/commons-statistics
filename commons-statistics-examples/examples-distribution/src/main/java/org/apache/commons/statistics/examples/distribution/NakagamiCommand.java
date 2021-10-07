@@ -52,14 +52,14 @@ class NakagamiCommand extends AbstractDistributionCommand {
                     arity = "1..*",
                     split = ",",
                     description = {"shape (default: ${DEFAULT-VALUE})."})
-            private double[] mu = {0.5, 1, 1, 1, 2, 2, 5};
+            private double[] mu = {0.333333, 0.5, 1.5, 0.5, 0.5};
 
             /** The distribution scale. */
             @Option(names = {"--omega", "--scale"},
                     arity = "1..*",
                     split = ",",
                     description = {"scale (default: ${DEFAULT-VALUE})."})
-            private double[] omega = {1, 1, 2, 3, 1, 2, 1};
+            private double[] omega = {3, 3, 3, 0.5, 1};
         }
 
         /** Extend the options to set the default values for this distribution. */
@@ -67,7 +67,7 @@ class NakagamiCommand extends AbstractDistributionCommand {
             /** Set defaults. */
             private Options() {
                 min = 0;
-                max = 3;
+                max = 4;
             }
         }
 
