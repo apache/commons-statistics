@@ -508,26 +508,6 @@ abstract class BaseDiscreteDistributionTest
                 tolerance,
                 () -> "Incorrect cumulative probability value returned for " + x);
         }
-        // Verify probability(double, double) is consistent with cumulativeProbability(double)
-        for (int i = 0; i < points.length; i++) {
-            final int x0 = points[i];
-            final double cdf0 = dist.cumulativeProbability(x0);
-            for (int j = 0; j < points.length; j++) {
-                final int x1 = points[j];
-                if (x0 <= x1) {
-                    final double cdf1 = dist.cumulativeProbability(x1);
-                    TestUtils.assertEquals(
-                        cdf1 - cdf0,
-                        dist.probability(x0, x1),
-                        tolerance,
-                        () -> "Incorrect probability value returned for " + x0 + " to " + x1);
-                } else {
-                    Assertions.assertThrows(IllegalArgumentException.class,
-                        () -> dist.probability(x0, x1),
-                        "distribution.probability(int, int) should have thrown an exception that first argument is too large");
-                }
-            }
-        }
     }
 
     /**
@@ -559,14 +539,7 @@ abstract class BaseDiscreteDistributionTest
                                                       int[] points,
                                                       double[] values,
                                                       DoubleTolerance tolerance) {
-        for (int i = 0; i < points.length; i++) {
-            final int x = points[i];
-            TestUtils.assertEquals(
-                values[i],
-                dist.cumulativeProbability(x),
-                tolerance,
-                () -> "cumulative probability is not precise for value " + x);
-        }
+        testCumulativeProbability(dist, points, values, tolerance);
     }
 
     /**
@@ -579,14 +552,7 @@ abstract class BaseDiscreteDistributionTest
                                                     int[] points,
                                                     double[] values,
                                                     DoubleTolerance tolerance) {
-        for (int i = 0; i < points.length; i++) {
-            final int x = points[i];
-            TestUtils.assertEquals(
-                values[i],
-                dist.survivalProbability(x),
-                tolerance,
-                () -> "survival probability is not precise for value " + x);
-        }
+        testSurvivalProbability(dist, points, values, tolerance);
     }
 
     /**
@@ -668,30 +634,51 @@ abstract class BaseDiscreteDistributionTest
 
     /**
      * Test that probability computations are consistent.
-     * This checks CDF(x, x) = 0 and CDF(x1) - CDF(x0) = probability(x0, x1).
+     * This checks probability(x, x) = 0; probability(x, x+1) = probability(x+1)
+     * and probability(x0, x1) = CDF(x1) - CDF(x0).
      */
     @ParameterizedTest
     @MethodSource
     final void testConsistency(DiscreteDistribution dist,
                                int[] points,
                                DoubleTolerance tolerance) {
-        for (int i = 1; i < points.length; i++) {
+        final int upper = dist.getSupportUpperBound();
+        for (int i = 0; i < points.length; i++) {
+            final int x0 = points[i];
 
-            // check that cdf(x, x) = 0
-            final int x = points[i];
+            // Check that probability(x, x) == 0
             Assertions.assertEquals(
                 0.0,
-                dist.probability(x, x),
-                () -> "Non-zero probability(x, x) for " + x);
+                dist.probability(x0, x0),
+                () -> "Non-zero probability(x, x) for " + x0);
 
-            // check that P(a < X <= b) = P(X <= b) - P(X <= a)
-            final int upper = Math.max(points[i], points[i - 1]);
-            final int lower = Math.min(points[i], points[i - 1]);
-            final double diff = dist.cumulativeProbability(upper) -
-                                dist.cumulativeProbability(lower);
-            final double direct = dist.probability(lower, upper);
-            TestUtils.assertEquals(diff, direct, tolerance,
-                () -> "Inconsistent probability for (" + lower + "," + upper + ")");
+            // Check that probability(x, x + 1) == probability(x + 1)
+            if (x0 < upper) {
+                Assertions.assertEquals(
+                    dist.probability(x0 + 1),
+                    dist.probability(x0, x0 + 1),
+                    () -> "probability(x + 1) != probability(x, x + 1) for " + x0);
+            }
+
+            final double cdf0 = dist.cumulativeProbability(x0);
+            for (int j = 0; j < points.length; j++) {
+                final int x1 = points[j];
+                // Ignore adjacent points.
+                // Use long arithmetic to avoid overflow if x0 is the maximum integer value
+                if (x0 + 1L < x1) {
+                    // Check that probability(x0, x1) = CDF(x1) - CDF(x0).
+                    final double cdf1 = dist.cumulativeProbability(x1);
+                    TestUtils.assertEquals(
+                        cdf1 - cdf0,
+                        dist.probability(x0, x1),
+                        tolerance,
+                        () -> "Inconsistent probability for (" + x0 + "," + x1 + ")");
+                } else if (x0 > x1) {
+                    Assertions.assertThrows(IllegalArgumentException.class,
+                        () -> dist.probability(x0, x1),
+                        "probability(int, int) should have thrown an exception that first argument is too large");
+                }
+            }
         }
     }
 
