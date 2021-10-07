@@ -40,6 +40,12 @@ public interface DiscreteDistribution {
      * The default implementation uses the identity
      * {@code P(x0 < X <= x1) = P(X <= x1) - P(X <= x0)}
      *
+     * <p>Special cases:
+     * <ul>
+     * <li>returns {@code 0.0} if {@code x0 == x1};
+     * <li>returns {@code probability(x1)} if {@code x0 + 1 == x1};
+     * </ul>
+     *
      * @param x0 Lower bound (exclusive).
      * @param x1 Upper bound (inclusive).
      * @return the probability that a random variable with this distribution
@@ -51,6 +57,10 @@ public interface DiscreteDistribution {
                                int x1) {
         if (x0 > x1) {
             throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH, x0, x1);
+        }
+        // Long addition avoids overflow
+        if (x0 + 1L >= x1) {
+            return x0 == x1 ? 0.0 : probability(x1);
         }
         return cumulativeProbability(x1) - cumulativeProbability(x0);
     }
