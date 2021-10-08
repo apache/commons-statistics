@@ -102,17 +102,36 @@ public class TDistribution extends AbstractContinuousDistribution {
         if (degreesOfFreedom > DOF_THRESHOLD_NORMAL) {
             return 0.5 * (1 + Erf.value(x * ONE_OVER_SQRT_TWO));
         }
-        final double a = 1 / (1 + x * x / degreesOfFreedom);
-        final double t = RegularizedBeta.value(a, dofOver2, 0.5);
+        final double x2overDf = x * x / degreesOfFreedom;
+        final double z = 1 / (1 + x2overDf);
+
+        // The RegularizedBeta has the complement:
+        //   I(z, a, b) = 1 - I(1 - z, a, b)
+        // This is used when z > (a + 1) / (2 + b + a).
+        // Detect this condition and directly use the complement.
+        if (z > (dofOver2 + 1) / (2.5 + dofOver2)) {
+            // zc = 1 - z; pc = 1 - p
+            final double zc = x2overDf / (1 + x2overDf);
+            final double pc = RegularizedBeta.value(zc, 0.5, dofOver2);
+
+            return x < 0 ?
+                // 0.5 * p == 0.5 * (1 - pc) = 0.5 - 0.5 * pc
+                0.5 - 0.5 * pc :
+                // 1 - 0.5 * p == 1 - 0.5 * (1 - pc) = 0.5 + 0.5 * pc
+                0.5 + 0.5 * pc;
+        }
+
+        final double p = RegularizedBeta.value(z, dofOver2, 0.5);
 
         return x < 0 ?
-            0.5 * t :
-            1 - 0.5 * t;
+            0.5 * p :
+            1 - 0.5 * p;
     }
 
     /** {@inheritDoc} */
     @Override
     public double survivalProbability(double x) {
+        // Exploit symmetry
         return cumulativeProbability(-x);
     }
 
