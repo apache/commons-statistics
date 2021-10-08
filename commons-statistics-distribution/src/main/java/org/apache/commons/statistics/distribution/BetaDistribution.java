@@ -155,7 +155,7 @@ public class BetaDistribution extends AbstractContinuousDistribution {
         } else if (x >= 1) {
             return 0;
         } else {
-            return RegularizedBeta.value(1 - x, beta, alpha);
+            return RegularizedBetaUtils.complement(x, alpha, beta);
         }
     }
 
