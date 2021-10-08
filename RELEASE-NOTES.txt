@@ -1,0 +1,12 @@
+
+              Apache Commons Statistics RELEASE NOTES
+
+The Apache Commons Statistics project provides tools for statistics.
+
+There has been no formal release of this component. 1.0-SNAPSHOT versions
+are available for testing using the Apache snapshots repository.
+
+For complete information on Apache Commons Statistics, including instructions on how to submit bug
+reports, patches, or suggestions for improvement, see the Apache Commons Statistics website:
+
+http://commons.apache.org/proper/commons-statistics/
