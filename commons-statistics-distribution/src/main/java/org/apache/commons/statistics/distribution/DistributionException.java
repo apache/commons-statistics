@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import java.util.Locale;
 
 /**
  * Package private exception class with constants for frequently used messages.
@@ -53,6 +52,6 @@ class DistributionException extends IllegalArgumentException {
      * @param formatArguments Arguments for formatting the message.
      */
     DistributionException(String message, Object... formatArguments) {
-        super(String.format((Locale) null, message, formatArguments));
+        super(String.format(message, formatArguments));
     }
 }
