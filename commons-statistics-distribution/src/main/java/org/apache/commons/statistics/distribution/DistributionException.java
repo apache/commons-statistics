@@ -53,6 +53,6 @@ class DistributionException extends IllegalArgumentException {
      * @param formatArguments Arguments for formatting the message.
      */
     DistributionException(String message, Object... formatArguments) {
-        super(String.format((Locale) null, message, formatArguments));
+        super(String.format(Locale.ROOT, message, formatArguments));
     }
 }
