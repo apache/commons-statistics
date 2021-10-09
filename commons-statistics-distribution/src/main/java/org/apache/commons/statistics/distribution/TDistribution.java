@@ -102,8 +102,10 @@ public class TDistribution extends AbstractContinuousDistribution {
         if (degreesOfFreedom > DOF_THRESHOLD_NORMAL) {
             return 0.5 * (1 + Erf.value(x * ONE_OVER_SQRT_TWO));
         }
-        final double x2overDf = x * x / degreesOfFreedom;
-        final double z = 1 / (1 + x2overDf);
+        final double x2 = x * x;
+        // z = 1 / (1 + x^2/df)
+        // Simplify by multiplication by df
+        final double z = degreesOfFreedom / (degreesOfFreedom + x2);
 
         // The RegularizedBeta has the complement:
         //   I(z, a, b) = 1 - I(1 - z, a, b)
@@ -111,7 +113,7 @@ public class TDistribution extends AbstractContinuousDistribution {
         // Detect this condition and directly use the complement.
         if (z > (dofOver2 + 1) / (2.5 + dofOver2)) {
             // zc = 1 - z; pc = 1 - p
-            final double zc = x2overDf / (1 + x2overDf);
+            final double zc = x2 / (degreesOfFreedom + x2);
             final double pc = RegularizedBeta.value(zc, 0.5, dofOver2);
 
             return x < 0 ?
