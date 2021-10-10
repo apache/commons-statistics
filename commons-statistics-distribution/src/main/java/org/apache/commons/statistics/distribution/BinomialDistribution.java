@@ -21,29 +21,39 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Binomial_distribution">binomial distribution</a>.
  */
-public class BinomialDistribution extends AbstractDiscreteDistribution {
+public final class BinomialDistribution extends AbstractDiscreteDistribution {
     /** The number of trials. */
     private final int numberOfTrials;
     /** The probability of success. */
     private final double probabilityOfSuccess;
 
     /**
+     * @param trials Number of trials.
+     * @param p Probability of success.
+     */
+    private BinomialDistribution(int trials,
+                                 double p) {
+        probabilityOfSuccess = p;
+        numberOfTrials = trials;
+    }
+
+    /**
      * Creates a binomial distribution.
      *
      * @param trials Number of trials.
      * @param p Probability of success.
-     * @throws IllegalArgumentException if {@code trials < 0}, or if
-     * {@code p < 0} or {@code p > 1}.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code trials < 0}, or if {@code p < 0}
+     * or {@code p > 1}.
      */
-    public BinomialDistribution(int trials,
-                                double p) {
+    public static BinomialDistribution of(int trials,
+                                          double p) {
         if (trials < 0) {
             throw new DistributionException(DistributionException.NEGATIVE,
                                             trials);
         }
         ArgumentUtils.checkProbability(p);
-        probabilityOfSuccess = p;
-        numberOfTrials = trials;
+        return new BinomialDistribution(trials, p);
     }
 
     /**

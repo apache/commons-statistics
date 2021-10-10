@@ -32,7 +32,7 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
         final double lower = (Double) parameters[0];
         final double mode = (Double) parameters[1];
         final double upper = (Double) parameters[2];
-        return new TriangularDistribution(lower, mode, upper);
+        return TriangularDistribution.of(lower, mode, upper);
     }
 
 
@@ -64,7 +64,7 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
         "0.12, 3.45, 12.56",
     })
     void testParameterAccessors(double lower, double mode, double upper) {
-        final TriangularDistribution dist = new TriangularDistribution(lower, mode, upper);
+        final TriangularDistribution dist = TriangularDistribution.of(lower, mode, upper);
         Assertions.assertEquals(lower, dist.getSupportLowerBound());
         Assertions.assertEquals(mode, dist.getMode());
         Assertions.assertEquals(upper, dist.getSupportUpperBound());
@@ -74,15 +74,15 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
     void testAdditionalMoments() {
         TriangularDistribution dist;
 
-        dist = new TriangularDistribution(0, 0.5, 1.0);
+        dist = TriangularDistribution.of(0, 0.5, 1.0);
         Assertions.assertEquals(0.5, dist.getMean());
         Assertions.assertEquals(1 / 24.0, dist.getVariance());
 
-        dist = new TriangularDistribution(0, 1, 1);
+        dist = TriangularDistribution.of(0, 1, 1);
         Assertions.assertEquals(2 / 3.0, dist.getMean());
         Assertions.assertEquals(1 / 18.0, dist.getVariance());
 
-        dist = new TriangularDistribution(-3, 2, 12);
+        dist = TriangularDistribution.of(-3, 2, 12);
         Assertions.assertEquals(3 + (2 / 3.0), dist.getMean());
         Assertions.assertEquals(175 / 18.0, dist.getVariance());
     }

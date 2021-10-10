@@ -77,6 +77,13 @@
     </properties>
   </rule>
 
+  <rule ref="category/java/codestyle.xml/ShortMethodName">
+    <properties>
+      <!-- Allow 'of' for factory constructors. -->
+      <property name="violationSuppressXPath" value="//ClassOrInterfaceType[matches(@Image, '^.*Distribution$')]"/>
+    </properties>
+  </rule>
+
   <rule ref="category/java/documentation.xml/CommentSize">
     <properties>
       <property name="maxLines"      value="200"/>

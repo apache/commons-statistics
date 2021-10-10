@@ -21,18 +21,26 @@ import org.apache.commons.rng.UniformRandomProvider;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Chi-squared_distribution">chi-squared distribution</a>.
  */
-public class ChiSquaredDistribution extends AbstractContinuousDistribution {
+public final class ChiSquaredDistribution extends AbstractContinuousDistribution {
     /** Internal Gamma distribution. */
     private final GammaDistribution gamma;
 
     /**
-     * Creates a distribution.
+     * @param degreesOfFreedom Degrees of freedom.
+     */
+    private ChiSquaredDistribution(double degreesOfFreedom) {
+        gamma = GammaDistribution.of(degreesOfFreedom / 2, 2);
+    }
+
+    /**
+     * Creates a chi-squared distribution.
      *
      * @param degreesOfFreedom Degrees of freedom.
+     * @return the distribution
      * @throws IllegalArgumentException if {@code degreesOfFreedom <= 0}.
      */
-    public ChiSquaredDistribution(double degreesOfFreedom) {
-        gamma = new GammaDistribution(degreesOfFreedom / 2, 2);
+    public static ChiSquaredDistribution of(double degreesOfFreedom) {
+        return new ChiSquaredDistribution(degreesOfFreedom);
     }
 
     /**

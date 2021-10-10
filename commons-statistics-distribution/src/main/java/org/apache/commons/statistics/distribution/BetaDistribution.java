@@ -38,7 +38,7 @@ import org.apache.commons.rng.sampling.distribution.ChengBetaSampler;
  * <p>
  * \( \alpha \) and \( \beta \) are <em>shape</em> parameters.
  */
-public class BetaDistribution extends AbstractContinuousDistribution {
+public final class BetaDistribution extends AbstractContinuousDistribution {
     /** First shape parameter. */
     private final double alpha;
     /** Second shape parameter. */
@@ -47,23 +47,33 @@ public class BetaDistribution extends AbstractContinuousDistribution {
     private final double z;
 
     /**
-     * Creates a new instance.
-     *
      * @param alpha First shape parameter (must be positive).
      * @param beta Second shape parameter (must be positive).
      */
-    public BetaDistribution(double alpha,
-                            double beta) {
+    private BetaDistribution(double alpha,
+                             double beta) {
+        this.alpha = alpha;
+        this.beta = beta;
+        z = LogGamma.value(alpha) + LogGamma.value(beta) - LogGamma.value(alpha + beta);
+    }
+
+    /**
+     * Creates a beta distribution.
+     *
+     * @param alpha First shape parameter (must be positive).
+     * @param beta Second shape parameter (must be positive).
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code alpha <= 0} or {@code beta <= 0}.
+     */
+    public static BetaDistribution of(double alpha,
+                                      double beta) {
         if (alpha <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, alpha);
         }
         if (beta <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, beta);
         }
-
-        this.alpha = alpha;
-        this.beta = beta;
-        z = LogGamma.value(alpha) + LogGamma.value(beta) - LogGamma.value(alpha + beta);
+        return new BetaDistribution(alpha, beta);
     }
 
     /**

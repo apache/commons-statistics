@@ -26,7 +26,7 @@ import org.apache.commons.rng.sampling.distribution.LevySampler;
  * This class implements the <a href="http://en.wikipedia.org/wiki/L%C3%A9vy_distribution">
  * L&eacute;vy distribution</a>.
  */
-public class LevyDistribution extends AbstractContinuousDistribution {
+public final class LevyDistribution extends AbstractContinuousDistribution {
     /** Location parameter. */
     private final double mu;
     /** Scale parameter. */
@@ -35,22 +35,31 @@ public class LevyDistribution extends AbstractContinuousDistribution {
     private final double halfC;
 
     /**
-     * Creates a distribution.
+     * @param mu Location parameter.
+     * @param c Scale parameter.
+     */
+    private LevyDistribution(double mu,
+                             double c) {
+        this.mu = mu;
+        this.c = c;
+        this.halfC = 0.5 * c;
+    }
+
+    /**
+     * Creates a Levy distribution.
      *
      * @param mu Location parameter.
      * @param c Scale parameter.
+     * @return the distribution
      * @throws IllegalArgumentException if {@code c <= 0}.
      */
-    public LevyDistribution(final double mu,
-                            final double c) {
+    public static LevyDistribution of(double mu,
+                                      double c) {
         if (c <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             c);
         }
-
-        this.mu = mu;
-        this.c = c;
-        this.halfC = 0.5 * c;
+        return new LevyDistribution(mu, c);
     }
 
     /**

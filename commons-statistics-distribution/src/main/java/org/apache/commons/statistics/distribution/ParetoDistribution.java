@@ -33,7 +33,7 @@ import org.apache.commons.rng.sampling.distribution.InverseTransformParetoSample
  * <p>\( k \) is a <em>scale</em> parameter: this is the minimum possible value of \( X \).
  * <br>\( \alpha \) is a <em>shape</em> parameter: this is the Pareto index.
  */
-public class ParetoDistribution extends AbstractContinuousDistribution {
+public final class ParetoDistribution extends AbstractContinuousDistribution {
     /** The minimum value for the shape parameter when computing when computing the variance. */
     private static final double MIN_SHAPE_FOR_VARIANCE = 2.0;
 
@@ -48,23 +48,11 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
     private final DoubleUnaryOperator logpdf;
 
     /**
-     * Creates a Pareto distribution.
-     *
      * @param scale Scale parameter (minimum possible value of X).
      * @param shape Shape parameter (Pareto index).
-     * @throws IllegalArgumentException if {@code scale <= 0}, {@code scale} is infinite,
-     * or {@code shape <= 0}.
      */
-    public ParetoDistribution(double scale,
-                              double shape) {
-        if (scale <= 0 || scale == Double.POSITIVE_INFINITY) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE_FINITE, scale);
-        }
-
-        if (shape <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
-        }
-
+    private ParetoDistribution(double scale,
+                               double shape) {
         this.scale = scale;
         this.shape = shape;
 
@@ -94,6 +82,27 @@ public class ParetoDistribution extends AbstractContinuousDistribution {
                 pdf = x -> x > scale ? 0 : Double.POSITIVE_INFINITY;
             }
         }
+    }
+
+    /**
+     * Creates a Pareto distribution.
+     *
+     * @param scale Scale parameter (minimum possible value of X).
+     * @param shape Shape parameter (Pareto index).
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code scale <= 0}, {@code scale} is
+     * infinite, or {@code shape <= 0}.
+     */
+    public static ParetoDistribution of(double scale,
+                                        double shape) {
+        if (scale <= 0 || scale == Double.POSITIVE_INFINITY) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE_FINITE, scale);
+        }
+
+        if (shape <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
+        }
+        return new ParetoDistribution(scale, shape);
     }
 
     /**

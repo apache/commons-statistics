@@ -22,9 +22,9 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.AhrensDieterMarsagliaTsangGammaSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Gamma_distribution">Gamma distribution</a>.
+ * Implementation of the <a href="http://en.wikipedia.org/wiki/Gamma_distribution">gamma distribution</a>.
  */
-public class GammaDistribution extends AbstractContinuousDistribution {
+public final class GammaDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
     private static final double SUPPORT_LO = 0;
     /** Support upper bound. */
@@ -90,22 +90,11 @@ public class GammaDistribution extends AbstractContinuousDistribution {
     private final double maxLogY;
 
     /**
-     * Creates a distribution.
-     *
      * @param shape Shape parameter.
      * @param scale Scale parameter.
-     * @throws IllegalArgumentException if {@code shape <= 0} or
-     * {@code scale <= 0}.
      */
-    public GammaDistribution(double shape,
-                             double scale) {
-        if (shape <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
-        }
-        if (scale <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
-        }
-
+    private GammaDistribution(double shape,
+                              double scale) {
         this.shape = shape;
         this.scale = scale;
         this.shiftedShape = shape + LANCZOS_G + 0.5;
@@ -121,6 +110,25 @@ public class GammaDistribution extends AbstractContinuousDistribution {
             shape + LANCZOS_G;
         this.minY = shape + LANCZOS_G - Math.log(Double.MAX_VALUE);
         this.maxLogY = Math.log(Double.MAX_VALUE) / (shape - 1.0);
+    }
+
+    /**
+     * Creates a gamma distribution.
+     *
+     * @param shape Shape parameter.
+     * @param scale Scale parameter.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code shape <= 0} or {@code scale <= 0}.
+     */
+    public static GammaDistribution of(double shape,
+                                       double scale) {
+        if (shape <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
+        }
+        if (scale <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
+        }
+        return new GammaDistribution(shape, scale);
     }
 
     /**

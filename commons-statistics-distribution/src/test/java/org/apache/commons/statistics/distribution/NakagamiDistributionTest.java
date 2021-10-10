@@ -28,7 +28,7 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double mu = (Double) parameters[0];
         final double omega = (Double) parameters[1];
-        return new NakagamiDistribution(mu, omega);
+        return NakagamiDistribution.of(mu, omega);
     }
 
     @Override
@@ -57,7 +57,7 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testExtremeLogDensity() {
         // XXX: Verify with more test data from a reference distribution
-        final NakagamiDistribution dist = new NakagamiDistribution(0.5, 1);
+        final NakagamiDistribution dist = NakagamiDistribution.of(0.5, 1);
         final double x = 50;
         Assertions.assertEquals(0.0, dist.density(x));
         Assertions.assertEquals(-1250.22579, dist.logDensity(x), 1e-4);

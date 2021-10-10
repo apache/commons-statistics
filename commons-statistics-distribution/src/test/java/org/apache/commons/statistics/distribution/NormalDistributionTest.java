@@ -30,7 +30,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double mean = (Double) parameters[0];
         final double sd = (Double) parameters[1];
-        return new NormalDistribution(mean, sd);
+        return NormalDistribution.of(mean, sd);
     }
 
     @Override
@@ -50,7 +50,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testCumulativeProbabilityExtremes() {
-        final NormalDistribution dist = new NormalDistribution(0, 1);
+        final NormalDistribution dist = NormalDistribution.of(0, 1);
         testCumulativeProbability(dist,
                                   new double[] {-Double.MAX_VALUE, Double.MAX_VALUE,
                                                 Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY},
@@ -64,7 +64,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
      */
     @Test
     void testLowerTail() {
-        final NormalDistribution dist = new NormalDistribution(0, 1);
+        final NormalDistribution dist = NormalDistribution.of(0, 1);
         for (int i = 0; i < 100; i++) { // make sure no convergence exception
             final double cdf = dist.cumulativeProbability(-i);
             if (i < 39) { // make sure not top-coded
@@ -87,7 +87,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
      */
     @Test
     void testUpperTail() {
-        final NormalDistribution dist = new NormalDistribution(0, 1);
+        final NormalDistribution dist = NormalDistribution.of(0, 1);
         for (int i = 0; i < 100; i++) { // make sure no convergence exception
             final double cdf = dist.cumulativeProbability(i);
             if (i < 9) { // make sure not top-coded
@@ -107,7 +107,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testMath1257() {
-        final ContinuousDistribution dist = new NormalDistribution(0, 1);
+        final ContinuousDistribution dist = NormalDistribution.of(0, 1);
         final double x = -10;
         final double expected = 7.61985e-24;
         final double v = dist.cumulativeProbability(x);
@@ -116,7 +116,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testMath280() {
-        final NormalDistribution dist = new NormalDistribution(0, 1);
+        final NormalDistribution dist = NormalDistribution.of(0, 1);
         final DoubleTolerance tol = createTolerance();
         double result = dist.inverseCumulativeProbability(0.9986501019683698);
         TestUtils.assertEquals(3.0, result, tol);
@@ -137,7 +137,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
     @Test
     @Disabled("Limited by accuracy of InverseErfc")
     void testInverseCDF() {
-        final NormalDistribution dist = new NormalDistribution(0, 1);
+        final NormalDistribution dist = NormalDistribution.of(0, 1);
         // Get smaller and the CDF should reduce.
         double x = 0;
         for (;;) {

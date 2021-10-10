@@ -41,7 +41,7 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * distribution.
  * </ul>
  */
-public class LogNormalDistribution extends AbstractContinuousDistribution {
+public final class LogNormalDistribution extends AbstractContinuousDistribution {
     /** &radic;(2 &pi;). */
     private static final double SQRT2PI = Math.sqrt(2 * Math.PI);
     /** &radic;(2). */
@@ -58,23 +58,32 @@ public class LogNormalDistribution extends AbstractContinuousDistribution {
     private final double sigmaSqrt2Pi;
 
     /**
-     * Creates a log-normal distribution.
-     *
      * @param mu Mean of the natural logarithm of the distribution values.
      * @param sigma Standard deviation of the natural logarithm of the distribution values.
-     * @throws IllegalArgumentException if {@code sigma <= 0}.
      */
-    public LogNormalDistribution(double mu,
-                                 double sigma) {
-        if (sigma <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sigma);
-        }
-
+    private LogNormalDistribution(double mu,
+                                  double sigma) {
         this.mu = mu;
         this.sigma = sigma;
         logSigmaPlusHalfLog2Pi = Math.log(sigma) + 0.5 * Math.log(2 * Math.PI);
         sigmaSqrt2 = sigma * SQRT2;
         sigmaSqrt2Pi = sigma * SQRT2PI;
+    }
+
+    /**
+     * Creates a log-normal distribution.
+     *
+     * @param mu Mean of the natural logarithm of the distribution values.
+     * @param sigma Standard deviation of the natural logarithm of the distribution values.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code sigma <= 0}.
+     */
+    public static LogNormalDistribution of(double mu,
+                                           double sigma) {
+        if (sigma <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sigma);
+        }
+        return new LogNormalDistribution(mu, sigma);
     }
 
     /**

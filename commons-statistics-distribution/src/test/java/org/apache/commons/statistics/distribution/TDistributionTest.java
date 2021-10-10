@@ -27,7 +27,7 @@ class TDistributionTest extends BaseContinuousDistributionTest {
     @Override
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double df = (Double) parameters[0];
-        return new TDistribution(df);
+        return TDistribution.of(df);
     }
 
     @Override
@@ -51,7 +51,7 @@ class TDistributionTest extends BaseContinuousDistributionTest {
      */
     @Test
     void testCumulativeProbabilityAgainstStackOverflow() {
-        final TDistribution td = new TDistribution(5.);
+        final TDistribution td = TDistribution.of(5.);
         Assertions.assertDoesNotThrow(() -> {
             td.cumulativeProbability(.1);
             td.cumulativeProbability(.01);
@@ -62,15 +62,15 @@ class TDistributionTest extends BaseContinuousDistributionTest {
     void testAdditionalMoments() {
         TDistribution dist;
 
-        dist = new TDistribution(1.5);
+        dist = TDistribution.of(1.5);
         Assertions.assertEquals(0, dist.getMean());
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
 
-        dist = new TDistribution(2.1);
+        dist = TDistribution.of(2.1);
         Assertions.assertEquals(0, dist.getMean());
         Assertions.assertEquals(2.1 / (2.1 - 2.0), dist.getVariance());
 
-        dist = new TDistribution(12.1);
+        dist = TDistribution.of(12.1);
         Assertions.assertEquals(0, dist.getMean());
         Assertions.assertEquals(12.1 / (12.1 - 2.0), dist.getVariance());
     }
@@ -90,10 +90,10 @@ class TDistributionTest extends BaseContinuousDistributionTest {
         final double[] args100 = new double[]{1.290, 1.660, 1.984, 2.364, 2.626, 3.174};
         // Data points are not very exact so use a low tolerance.
         final DoubleTolerance tolerance = DoubleTolerances.absolute(1e-4);
-        testSurvivalProbability(new TDistribution(2), args2, prob, tolerance);
-        testSurvivalProbability(new TDistribution(10), args10, prob, tolerance);
-        testSurvivalProbability(new TDistribution(30), args30, prob, tolerance);
-        testSurvivalProbability(new TDistribution(100), args100, prob, tolerance);
+        testSurvivalProbability(TDistribution.of(2), args2, prob, tolerance);
+        testSurvivalProbability(TDistribution.of(10), args10, prob, tolerance);
+        testSurvivalProbability(TDistribution.of(30), args30, prob, tolerance);
+        testSurvivalProbability(TDistribution.of(100), args100, prob, tolerance);
     }
 
     // See https://issues.apache.org/jira/browse/STATISTICS-25
@@ -123,7 +123,7 @@ class TDistributionTest extends BaseContinuousDistributionTest {
         final double c = 0.025;
         final double tol = 1e-9;
         for (int i = 0; i < df.length; i++) {
-            final TDistribution dist = new TDistribution(df[i]);
+            final TDistribution dist = TDistribution.of(df[i]);
             final double x = dist.cumulativeProbability(c);
             Assertions.assertEquals(expected[i], x, tol);
         }

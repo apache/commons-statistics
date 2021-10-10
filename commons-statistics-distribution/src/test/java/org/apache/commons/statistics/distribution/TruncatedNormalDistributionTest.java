@@ -29,7 +29,7 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
         final double sd = (Double) parameters[1];
         final double upper = (Double) parameters[2];
         final double lower = (Double) parameters[3];
-        return new TruncatedNormalDistribution(mean, sd, upper, lower);
+        return TruncatedNormalDistribution.of(mean, sd, upper, lower);
     }
 
     @Override

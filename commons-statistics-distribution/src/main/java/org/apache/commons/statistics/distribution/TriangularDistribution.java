@@ -23,7 +23,7 @@ package org.apache.commons.statistics.distribution;
  * @see <a href="http://en.wikipedia.org/wiki/Triangular_distribution">
  * Triangular distribution (Wikipedia)</a>
  */
-public class TriangularDistribution extends AbstractContinuousDistribution {
+public final class TriangularDistribution extends AbstractContinuousDistribution {
     /** Lower limit of this distribution (inclusive). */
     private final double a;
     /** Upper limit of this distribution (inclusive). */
@@ -38,17 +38,34 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
     private final double cdfMode;
 
     /**
-     * Creates a distribution.
+     * @param a Lower limit of this distribution (inclusive).
+     * @param c Mode of this distribution.
+     * @param b Upper limit of this distribution (inclusive).
+     */
+    private TriangularDistribution(double a,
+                                   double c,
+                                   double b) {
+        this.a = a;
+        this.c = c;
+        this.b = b;
+        divisor1 = (b - a) * (c - a);
+        divisor2 = (b - a) * (b - c);
+        cdfMode = (c - a) / (b - a);
+    }
+
+    /**
+     * Creates a triangular distribution.
      *
      * @param a Lower limit of this distribution (inclusive).
      * @param c Mode of this distribution.
      * @param b Upper limit of this distribution (inclusive).
-     * @throws IllegalArgumentException if {@code a >= b}, if {@code c > b}
-     * or if {@code c < a}.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code a >= b}, if {@code c > b} or if
+     * {@code c < a}.
      */
-    public TriangularDistribution(double a,
-                                  double c,
-                                  double b) {
+    public static TriangularDistribution of(double a,
+                                            double c,
+                                            double b) {
         if (a >= b) {
             throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH,
                                             a, b);
@@ -61,13 +78,7 @@ public class TriangularDistribution extends AbstractContinuousDistribution {
             throw new DistributionException(DistributionException.TOO_LARGE,
                                             c, b);
         }
-
-        this.a = a;
-        this.c = c;
-        this.b = b;
-        divisor1 = (b - a) * (c - a);
-        divisor2 = (b - a) * (b - c);
-        cdfMode = (c - a) / (b - a);
+        return new TriangularDistribution(a, c, b);
     }
 
     /**

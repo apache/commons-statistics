@@ -32,7 +32,7 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double shape = (Double) parameters[0];
         final double scale = (Double) parameters[1];
-        return new WeibullDistribution(shape, scale);
+        return WeibullDistribution.of(shape, scale);
     }
 
 
@@ -55,7 +55,7 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testInverseCumulativeProbabilitySmallPAccuracy() {
-        final WeibullDistribution dist = new WeibullDistribution(2, 3);
+        final WeibullDistribution dist = WeibullDistribution.of(2, 3);
         final double t = dist.inverseCumulativeProbability(1e-17);
         // Analytically, answer is solution to 1e-17 = 1-exp(-(x/3)^2)
         // x = sqrt(-9*log(1-1e-17))
@@ -69,7 +69,7 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
         "0.1, 2.34",
     })
     void testParameterAccessors(double shape, double scale) {
-        final WeibullDistribution dist = new WeibullDistribution(shape, scale);
+        final WeibullDistribution dist = WeibullDistribution.of(shape, scale);
         Assertions.assertEquals(shape, dist.getShape());
         Assertions.assertEquals(scale, dist.getScale());
     }
@@ -79,14 +79,14 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
         final double tol = 1e-9;
         WeibullDistribution dist;
 
-        dist = new WeibullDistribution(2.5, 3.5);
+        dist = WeibullDistribution.of(2.5, 3.5);
         // In R: 3.5*gamma(1+(1/2.5)) (or empirically: mean(rweibull(10000, 2.5, 3.5)))
         Assertions.assertEquals(3.5 * Math.exp(LogGamma.value(1 + (1 / 2.5))), dist.getMean(), tol);
         Assertions.assertEquals((3.5 * 3.5) *
             Math.exp(LogGamma.value(1 + (2 / 2.5))) -
             (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
 
-        dist = new WeibullDistribution(10.4, 2.222);
+        dist = WeibullDistribution.of(10.4, 2.222);
         Assertions.assertEquals(2.222 * Math.exp(LogGamma.value(1 + (1 / 10.4))), dist.getMean(), tol);
         Assertions.assertEquals((2.222 * 2.222) *
             Math.exp(LogGamma.value(1 + (2 / 10.4))) -

@@ -42,7 +42,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double alpha = (Double) parameters[0];
         final double beta = (Double) parameters[1];
-        return new BetaDistribution(alpha, beta);
+        return BetaDistribution.of(alpha, beta);
     }
 
     @Override
@@ -98,7 +98,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
 
     private static void checkCumulativePrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
-        final BetaDistribution dist = new BetaDistribution(alpha, beta);
+        final BetaDistribution dist = BetaDistribution.of(alpha, beta);
         Assertions.assertEquals(
             expected,
             dist.cumulativeProbability(value),
@@ -108,7 +108,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
 
     private static void checkSurvivalPrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
-        final BetaDistribution dist = new BetaDistribution(alpha, beta);
+        final BetaDistribution dist = BetaDistribution.of(alpha, beta);
         Assertions.assertEquals(
             expected,
             dist.survivalProbability(value),
@@ -118,13 +118,13 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testLogDensityPrecondition1() {
-        final BetaDistribution dist = new BetaDistribution(0.5, 3);
+        final BetaDistribution dist = BetaDistribution.of(0.5, 3);
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.logDensity(0.0));
     }
 
     @Test
     void testLogDensityPrecondition2() {
-        final BetaDistribution dist = new BetaDistribution(2, 0.5);
+        final BetaDistribution dist = BetaDistribution.of(2, 0.5);
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.logDensity(1.0));
     }
 
@@ -134,7 +134,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
         final int numSamples = 1000;
         for (final double alpha : ALPHA_BETAS) {
             for (final double beta : ALPHA_BETAS) {
-                final BetaDistribution betaDistribution = new BetaDistribution(alpha, beta);
+                final BetaDistribution betaDistribution = BetaDistribution.of(alpha, beta);
 
                 final ContinuousDistribution.Sampler sampler = betaDistribution.createSampler(rng);
                 final double[] observed = TestUtils.sample(numSamples, sampler);
@@ -156,7 +156,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
         final double level = 0.01;
         for (final double alpha : ALPHA_BETAS) {
             for (final double beta : ALPHA_BETAS) {
-                final BetaDistribution betaDistribution = new BetaDistribution(alpha, beta);
+                final BetaDistribution betaDistribution = BetaDistribution.of(alpha, beta);
 
                 final ContinuousDistribution.Sampler sampler = betaDistribution.createSampler(rng);
                 final double[] observed = TestUtils.sample(numSamples, sampler);

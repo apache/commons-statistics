@@ -26,7 +26,7 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  * @see <a href="http://en.wikipedia.org/wiki/F-distribution">F-distribution (Wikipedia)</a>
  * @see <a href="http://mathworld.wolfram.com/F-Distribution.html">F-distribution (MathWorld)</a>
  */
-public class FDistribution extends AbstractContinuousDistribution {
+public final class FDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
     private static final double SUPPORT_LO = 0;
     /** Support upper bound. */
@@ -48,15 +48,31 @@ public class FDistribution extends AbstractContinuousDistribution {
     private final double logBetaNhalfNhalf;
 
     /**
-     * Creates a distribution.
+     * @param numeratorDegreesOfFreedom Numerator degrees of freedom.
+     * @param denominatorDegreesOfFreedom Denominator degrees of freedom.
+     */
+    private FDistribution(double numeratorDegreesOfFreedom,
+                          double denominatorDegreesOfFreedom) {
+        this.numeratorDegreesOfFreedom = numeratorDegreesOfFreedom;
+        this.denominatorDegreesOfFreedom = denominatorDegreesOfFreedom;
+        final double nhalf = numeratorDegreesOfFreedom / 2;
+        final double mhalf = denominatorDegreesOfFreedom / 2;
+        nhalfLogn = nhalf * Math.log(numeratorDegreesOfFreedom);
+        mhalfLogm = mhalf * Math.log(denominatorDegreesOfFreedom);
+        logBetaNhalfNhalf = LogBeta.value(nhalf, mhalf);
+    }
+
+    /**
+     * Creates an F-distribution.
      *
      * @param numeratorDegreesOfFreedom Numerator degrees of freedom.
      * @param denominatorDegreesOfFreedom Denominator degrees of freedom.
+     * @return the distribution
      * @throws IllegalArgumentException if {@code numeratorDegreesOfFreedom <= 0} or
      * {@code denominatorDegreesOfFreedom <= 0}.
      */
-    public FDistribution(double numeratorDegreesOfFreedom,
-                         double denominatorDegreesOfFreedom) {
+    public static FDistribution of(double numeratorDegreesOfFreedom,
+                                   double denominatorDegreesOfFreedom) {
         if (numeratorDegreesOfFreedom <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             numeratorDegreesOfFreedom);
@@ -65,13 +81,7 @@ public class FDistribution extends AbstractContinuousDistribution {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             denominatorDegreesOfFreedom);
         }
-        this.numeratorDegreesOfFreedom = numeratorDegreesOfFreedom;
-        this.denominatorDegreesOfFreedom = denominatorDegreesOfFreedom;
-        final double nhalf = numeratorDegreesOfFreedom / 2;
-        final double mhalf = denominatorDegreesOfFreedom / 2;
-        nhalfLogn = nhalf * Math.log(numeratorDegreesOfFreedom);
-        mhalfLogm = mhalf * Math.log(denominatorDegreesOfFreedom);
-        logBetaNhalfNhalf = LogBeta.value(nhalf, mhalf);
+        return new FDistribution(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom);
     }
 
     /**

@@ -25,7 +25,7 @@ class LaplaceDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double location = (Double) parameters[0];
         final double scale = (Double) parameters[1];
-        return new LaplaceDistribution(location, scale);
+        return LaplaceDistribution.of(location, scale);
     }
 
 

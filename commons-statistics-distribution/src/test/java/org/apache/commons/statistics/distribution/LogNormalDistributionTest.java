@@ -29,7 +29,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double mu = (Double) parameters[0];
         final double sigma = (Double) parameters[1];
-        return new LogNormalDistribution(mu, sigma);
+        return LogNormalDistribution.of(mu, sigma);
     }
 
     @Override
@@ -56,7 +56,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testCumulativeProbabilityExtremes() {
         // Use a small shape parameter so that we can exceed 40 * shape
-        testCumulativeProbability(new LogNormalDistribution(1, 0.0001),
+        testCumulativeProbability(LogNormalDistribution.of(1, 0.0001),
                                   new double[] {0.5, 10},
                                   new double[] {0, 1.0},
                                   DoubleTolerances.equals());
@@ -65,7 +65,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testSurvivalProbabilityExtremes() {
         // Use a small shape parameter so that we can exceed 40 * shape
-        testSurvivalProbability(new LogNormalDistribution(1, 0.0001),
+        testSurvivalProbability(LogNormalDistribution.of(1, 0.0001),
                                 new double[] {0.5, 10},
                                 new double[] {1.0, 0.0},
                                 DoubleTolerances.equals());
@@ -77,7 +77,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
      */
     @Test
     void testExtremeValues() {
-        final LogNormalDistribution dist = new LogNormalDistribution(0, 1);
+        final LogNormalDistribution dist = LogNormalDistribution.of(0, 1);
         for (int i = 0; i < 1e5; i++) { // make sure no convergence exception
             final double upperTail = dist.cumulativeProbability(i);
             if (i <= 72) { // make sure not top-coded
@@ -95,7 +95,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testTinyVariance() {
-        final LogNormalDistribution dist = new LogNormalDistribution(0, 1e-9);
+        final LogNormalDistribution dist = LogNormalDistribution.of(0, 1e-9);
         final double t = dist.getVariance();
         Assertions.assertEquals(1e-18, t, 1e-20);
     }

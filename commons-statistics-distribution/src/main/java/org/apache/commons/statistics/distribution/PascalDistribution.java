@@ -46,7 +46,7 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  * {@code P(X <= k) = I(p, r, k + 1)},
  * where I is the regularized incomplete Beta function.
  */
-public class PascalDistribution extends AbstractDiscreteDistribution {
+public final class PascalDistribution extends AbstractDiscreteDistribution {
     /** The number of successes. */
     private final int numberOfSuccesses;
     /** The probability of success. */
@@ -62,16 +62,29 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
     private final double probabilityOfSuccessPowNumOfSuccesses;
 
     /**
-     * Create a Pascal distribution with the given number of successes and
-     * probability of success.
+     * @param r Number of successes.
+     * @param p Probability of success.
+     */
+    private PascalDistribution(int r,
+                               double p) {
+        numberOfSuccesses = r;
+        probabilityOfSuccess = p;
+        logProbabilityOfSuccessByNumOfSuccesses = Math.log(p) * numberOfSuccesses;
+        log1mProbabilityOfSuccess = Math.log1p(-p);
+        probabilityOfSuccessPowNumOfSuccesses = Math.pow(probabilityOfSuccess, numberOfSuccesses);
+    }
+
+    /**
+     * Create a Pascal distribution.
      *
      * @param r Number of successes.
      * @param p Probability of success.
-     * @throws IllegalArgumentException if {@code r <= 0} or {@code p <= 0}
-     * or {@code p > 1}.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code r <= 0} or {@code p <= 0} or
+     * {@code p > 1}.
      */
-    public PascalDistribution(int r,
-                              double p) {
+    public static PascalDistribution of(int r,
+                                        double p) {
         if (r <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, r);
         }
@@ -79,12 +92,7 @@ public class PascalDistribution extends AbstractDiscreteDistribution {
             p > 1) {
             throw new DistributionException(DistributionException.INVALID_NON_ZERO_PROBABILITY, p);
         }
-
-        numberOfSuccesses = r;
-        probabilityOfSuccess = p;
-        logProbabilityOfSuccessByNumOfSuccesses = Math.log(p) * numberOfSuccesses;
-        log1mProbabilityOfSuccess = Math.log1p(-p);
-        probabilityOfSuccessPowNumOfSuccesses = Math.pow(probabilityOfSuccess, numberOfSuccesses);
+        return new PascalDistribution(r, p);
     }
 
     /**

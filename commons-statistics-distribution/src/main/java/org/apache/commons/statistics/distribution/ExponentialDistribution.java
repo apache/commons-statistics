@@ -26,7 +26,7 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * A common alternative parameterization uses the rate parameter {@code λ} which is the reciprocal
  * of the mean.
  */
-public class ExponentialDistribution extends AbstractContinuousDistribution {
+public final class ExponentialDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
     private static final double SUPPORT_LO = 0;
     /** Support upper bound. */
@@ -37,17 +37,25 @@ public class ExponentialDistribution extends AbstractContinuousDistribution {
     private final double logMean;
 
     /**
-     * Creates a distribution.
+     * @param mean Mean of this distribution.
+     */
+    private ExponentialDistribution(double mean) {
+        this.mean = mean;
+        logMean = Math.log(mean);
+    }
+
+    /**
+     * Creates an exponential distribution.
      *
      * @param mean Mean of this distribution. This is a scale parameter.
+     * @return the distribution
      * @throws IllegalArgumentException if {@code mean <= 0}.
      */
-    public ExponentialDistribution(double mean) {
+    public static ExponentialDistribution of(double mean) {
         if (mean <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, mean);
         }
-        this.mean = mean;
-        logMean = Math.log(mean);
+        return new ExponentialDistribution(mean);
     }
 
     /** {@inheritDoc} */

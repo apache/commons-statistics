@@ -17,9 +17,9 @@
 package org.apache.commons.statistics.distribution;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Logistic_distribution">Logistic distribution</a>.
+ * Implementation of the <a href="http://en.wikipedia.org/wiki/Logistic_distribution">logistic distribution</a>.
  */
-public class LogisticDistribution extends AbstractContinuousDistribution {
+public final class LogisticDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
     private static final double SUPPORT_LO = Double.NEGATIVE_INFINITY;
     /** Support upper bound. */
@@ -34,22 +34,31 @@ public class LogisticDistribution extends AbstractContinuousDistribution {
     private final double logScale;
 
     /**
-     * Creates a distribution.
+     * @param mu Location parameter.
+     * @param scale Scale parameter (must be positive).
+     */
+    private LogisticDistribution(double mu,
+                                 double scale) {
+        this.mu = mu;
+        this.scale = scale;
+        this.logScale = Math.log(scale);
+    }
+
+    /**
+     * Creates a logistic distribution.
      *
      * @param mu Location parameter.
      * @param scale Scale parameter (must be positive).
+     * @return the distribution
      * @throws IllegalArgumentException if {@code scale <= 0}.
      */
-    public LogisticDistribution(double mu,
-                                double scale) {
+    public static LogisticDistribution of(double mu,
+                                          double scale) {
         if (scale <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             scale);
         }
-
-        this.mu = mu;
-        this.scale = scale;
-        this.logScale = Math.log(scale);
+        return new LogisticDistribution(mu, scale);
     }
 
     /**

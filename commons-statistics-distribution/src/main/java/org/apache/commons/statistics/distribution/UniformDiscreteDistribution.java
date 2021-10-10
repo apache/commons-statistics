@@ -24,7 +24,7 @@ import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(discrete)">
  * uniform integer distribution</a>.
  */
-public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
+public final class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /** Lower bound (inclusive) of this distribution. */
     private final int lower;
     /** Upper bound (inclusive) of this distribution. */
@@ -37,24 +37,34 @@ public class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     private final double logPmf;
 
     /**
-     * Creates a new uniform integer distribution using the given lower and
-     * upper bounds (both inclusive).
-     *
      * @param lower Lower bound (inclusive) of this distribution.
      * @param upper Upper bound (inclusive) of this distribution.
-     * @throws IllegalArgumentException if {@code lower > upper}.
      */
-    public UniformDiscreteDistribution(int lower,
-                                       int upper) {
-        if (lower > upper) {
-            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
-                                            lower, upper);
-        }
+    private UniformDiscreteDistribution(int lower,
+                                        int upper) {
         this.lower = lower;
         this.upper = upper;
         upperMinusLowerPlus1 = (double) upper - (double) lower + 1;
         pmf = 1.0 / upperMinusLowerPlus1;
         logPmf = -Math.log(upperMinusLowerPlus1);
+    }
+
+    /**
+     * Creates a new uniform integer distribution using the given lower and upper
+     * bounds (both inclusive).
+     *
+     * @param lower Lower bound (inclusive) of this distribution.
+     * @param upper Upper bound (inclusive) of this distribution.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code lower > upper}.
+     */
+    public static UniformDiscreteDistribution of(int lower,
+                                                 int upper) {
+        if (lower > upper) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH,
+                                            lower, upper);
+        }
+        return new UniformDiscreteDistribution(lower, upper);
     }
 
     /** {@inheritDoc} */

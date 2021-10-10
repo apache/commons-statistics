@@ -36,7 +36,7 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * @see <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution (Wikipedia)</a>
  * @see <a href="http://mathworld.wolfram.com/WeibullDistribution.html">Weibull distribution (MathWorld)</a>
  */
-public class WeibullDistribution extends AbstractContinuousDistribution {
+public final class WeibullDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
     private static final double SUPPORT_LO = 0;
     /** Support upper bound. */
@@ -51,14 +51,27 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
     private final double logShapeOverScale;
 
     /**
-     * Creates a distribution.
+     * @param alpha Shape parameter.
+     * @param beta Scale parameter.
+     */
+    private WeibullDistribution(double alpha,
+                                double beta) {
+        scale = beta;
+        shape = alpha;
+        shapeOverScale = shape / scale;
+        logShapeOverScale = Math.log(shapeOverScale);
+    }
+
+    /**
+     * Creates a Weibull distribution.
      *
      * @param alpha Shape parameter.
      * @param beta Scale parameter.
+     * @return the distribution
      * @throws IllegalArgumentException if {@code alpha <= 0} or {@code beta <= 0}.
      */
-    public WeibullDistribution(double alpha,
-                               double beta) {
+    public static WeibullDistribution of(double alpha,
+                                         double beta) {
         if (alpha <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             alpha);
@@ -67,10 +80,7 @@ public class WeibullDistribution extends AbstractContinuousDistribution {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             beta);
         }
-        scale = beta;
-        shape = alpha;
-        shapeOverScale = shape / scale;
-        logShapeOverScale = Math.log(shapeOverScale);
+        return new WeibullDistribution(alpha, beta);
     }
 
     /**

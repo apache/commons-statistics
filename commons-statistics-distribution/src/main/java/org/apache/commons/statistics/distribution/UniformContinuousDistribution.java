@@ -23,7 +23,7 @@ import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">uniform distribution</a>.
  */
-public class UniformContinuousDistribution extends AbstractContinuousDistribution {
+public final class UniformContinuousDistribution extends AbstractContinuousDistribution {
     /** Lower bound of this distribution (inclusive). */
     private final double lower;
     /** Upper bound of this distribution (exclusive). */
@@ -36,24 +36,33 @@ public class UniformContinuousDistribution extends AbstractContinuousDistributio
     private final double logPdf;
 
     /**
-     * Creates a uniform distribution.
-     *
      * @param lower Lower bound of this distribution (inclusive).
      * @param upper Upper bound of this distribution (inclusive).
-     * @throws IllegalArgumentException if {@code lower >= upper}.
      */
-    public UniformContinuousDistribution(double lower,
-                                         double upper) {
-        if (lower >= upper) {
-            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH,
-                                            lower, upper);
-        }
-
+    private UniformContinuousDistribution(double lower,
+                                          double upper) {
         this.lower = lower;
         this.upper = upper;
         upperMinusLower = upper - lower;
         pdf = 1.0 / upperMinusLower;
         logPdf = -Math.log(upperMinusLower);
+    }
+
+    /**
+     * Creates a uniform distribution.
+     *
+     * @param lower Lower bound of this distribution (inclusive).
+     * @param upper Upper bound of this distribution (inclusive).
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code lower >= upper}.
+     */
+    public static UniformContinuousDistribution of(double lower,
+                                                   double upper) {
+        if (lower >= upper) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH,
+                                            lower, upper);
+        }
+        return new UniformContinuousDistribution(lower, upper);
     }
 
     /** {@inheritDoc} */

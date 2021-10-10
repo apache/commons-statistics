@@ -23,7 +23,7 @@ import org.apache.commons.numbers.gamma.RegularizedGamma;
 /**
  * This class implements the <a href="http://en.wikipedia.org/wiki/Nakagami_distribution">Nakagami distribution</a>.
  */
-public class NakagamiDistribution extends AbstractContinuousDistribution {
+public final class NakagamiDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
     private static final double SUPPORT_LO = 0;
     /** Support upper bound. */
@@ -41,26 +41,35 @@ public class NakagamiDistribution extends AbstractContinuousDistribution {
     private final double logDensityPrefactor;
 
     /**
-     * Creates a distribution.
+     * @param mu Shape parameter.
+     * @param omega Scale parameter (must be positive). Controls the spread of the distribution.
+     */
+    private NakagamiDistribution(double mu,
+                                 double omega) {
+        this.mu = mu;
+        this.omega = omega;
+        densityPrefactor = 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu));
+        logDensityPrefactor = LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu;
+    }
+
+    /**
+     * Creates a Nakagami distribution.
      *
      * @param mu Shape parameter.
      * @param omega Scale parameter (must be positive). Controls the spread of the distribution.
+     * @return the distribution
      * @throws IllegalArgumentException  if {@code mu < 0.5} or if
      * {@code omega <= 0}.
      */
-    public NakagamiDistribution(double mu,
-                                double omega) {
+    public static NakagamiDistribution of(double mu,
+                                          double omega) {
         if (mu <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, mu);
         }
         if (omega <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, omega);
         }
-
-        this.mu = mu;
-        this.omega = omega;
-        densityPrefactor = 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu));
-        logDensityPrefactor = LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu;
+        return new NakagamiDistribution(mu, omega);
     }
 
     /**

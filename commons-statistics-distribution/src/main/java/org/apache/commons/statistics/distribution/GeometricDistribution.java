@@ -23,7 +23,7 @@ import org.apache.commons.rng.sampling.distribution.GeometricSampler;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a>.
  */
-public class GeometricDistribution extends AbstractDiscreteDistribution {
+public final class GeometricDistribution extends AbstractDiscreteDistribution {
     /** 1/2. */
     private static final double HALF = 0.5;
 
@@ -37,16 +37,9 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
     private final IntToDoubleFunction pmf;
 
     /**
-     * Creates a geometric distribution.
-     *
      * @param p Probability of success.
-     * @throws IllegalArgumentException if {@code p <= 0} or {@code p > 1}.
      */
-    public GeometricDistribution(double p) {
-        if (p <= 0 || p > 1) {
-            throw new DistributionException(DistributionException.INVALID_NON_ZERO_PROBABILITY, p);
-        }
-
+    private GeometricDistribution(double p) {
         probabilityOfSuccess = p;
         logProbabilityOfSuccess = Math.log(p);
         log1mProbabilityOfSuccess = Math.log1p(-p);
@@ -62,6 +55,20 @@ public class GeometricDistribution extends AbstractDiscreteDistribution {
         } else {
             pmf = x -> Math.exp(log1mProbabilityOfSuccess * x) * probabilityOfSuccess;
         }
+    }
+
+    /**
+     * Creates a geometric distribution.
+     *
+     * @param p Probability of success.
+     * @return the geometric distribution
+     * @throws IllegalArgumentException if {@code p <= 0} or {@code p > 1}.
+     */
+    public static GeometricDistribution of(double p) {
+        if (p <= 0 || p > 1) {
+            throw new DistributionException(DistributionException.INVALID_NON_ZERO_PROBABILITY, p);
+        }
+        return new GeometricDistribution(p);
     }
 
     /**

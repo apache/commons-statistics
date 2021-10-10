@@ -27,7 +27,7 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal (Gaussian) distribution</a>.
  */
-public class NormalDistribution extends AbstractContinuousDistribution {
+public final class NormalDistribution extends AbstractContinuousDistribution {
     /** &radic;(2). */
     private static final double SQRT2 = Math.sqrt(2.0);
     /** Mean of this distribution. */
@@ -40,22 +40,31 @@ public class NormalDistribution extends AbstractContinuousDistribution {
     private final double sdSqrt2;
 
     /**
-     * Creates a distribution.
-     *
      * @param mean Mean for this distribution.
      * @param sd Standard deviation for this distribution.
-     * @throws IllegalArgumentException if {@code sd <= 0}.
      */
-    public NormalDistribution(double mean,
-                              double sd) {
-        if (sd <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
-        }
-
+    private NormalDistribution(double mean,
+                               double sd) {
         this.mean = mean;
         standardDeviation = sd;
         logStandardDeviationPlusHalfLog2Pi = Math.log(sd) + 0.5 * Math.log(2 * Math.PI);
         sdSqrt2 = sd * SQRT2;
+    }
+
+    /**
+     * Creates a normal distribution.
+     *
+     * @param mean Mean for this distribution.
+     * @param sd Standard deviation for this distribution.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code sd <= 0}.
+     */
+    public static NormalDistribution of(double mean,
+                                        double sd) {
+        if (sd <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
+        }
+        return new NormalDistribution(mean, sd);
     }
 
     /**

@@ -29,7 +29,7 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double lower = (Double) parameters[0];
         final double upper = (Double) parameters[1];
-        return new UniformContinuousDistribution(lower, upper);
+        return UniformContinuousDistribution.of(lower, upper);
     }
 
     @Override
@@ -56,11 +56,11 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
     void testAdditionalMoments() {
         UniformContinuousDistribution dist;
 
-        dist = new UniformContinuousDistribution(0, 1);
+        dist = UniformContinuousDistribution.of(0, 1);
         Assertions.assertEquals(0.5, dist.getMean());
         Assertions.assertEquals(1 / 12.0, dist.getVariance());
 
-        dist = new UniformContinuousDistribution(-1.5, 0.6);
+        dist = UniformContinuousDistribution.of(-1.5, 0.6);
         Assertions.assertEquals(-0.45, dist.getMean());
         Assertions.assertEquals(0.3675, dist.getVariance());
     }
@@ -74,11 +74,11 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
         final double upper = 1e-9;
         final double tiny = 0x1.0p-100;
 
-        final UniformContinuousDistribution dist = new UniformContinuousDistribution(0, upper);
+        final UniformContinuousDistribution dist = UniformContinuousDistribution.of(0, upper);
         Assertions.assertEquals(2.5e-10, dist.inverseCumulativeProbability(0.25));
         Assertions.assertEquals(tiny * upper, dist.inverseCumulativeProbability(tiny));
 
-        final UniformContinuousDistribution dist2 = new UniformContinuousDistribution(-upper, 0);
+        final UniformContinuousDistribution dist2 = UniformContinuousDistribution.of(-upper, 0);
         // This is inexact
         Assertions.assertEquals(-7.5e-10, dist2.inverseCumulativeProbability(0.25), Math.ulp(-7.5e-10));
         Assertions.assertEquals(-upper + tiny * upper, dist2.inverseCumulativeProbability(tiny));

@@ -27,7 +27,7 @@ class PascalDistributionTest extends BaseDiscreteDistributionTest {
     DiscreteDistribution makeDistribution(Object... parameters) {
         final int r = (Integer) parameters[0];
         final double p = (Double) parameters[1];
-        return new PascalDistribution(r, p);
+        return PascalDistribution.of(r, p);
     }
 
 
@@ -55,11 +55,11 @@ class PascalDistributionTest extends BaseDiscreteDistributionTest {
 
         DoubleTolerance tol = DoubleTolerances.ulps(1);
 
-        dist = new PascalDistribution(10, 0.5);
+        dist = PascalDistribution.of(10, 0.5);
         TestUtils.assertEquals((10d * 0.5d) / 0.5, dist.getMean(), tol);
         TestUtils.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
-        dist = new PascalDistribution(25, 0.7);
+        dist = PascalDistribution.of(25, 0.7);
         TestUtils.assertEquals((25d * 0.3d) / 0.7, dist.getMean(), tol);
         TestUtils.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), tol);
     }

@@ -30,7 +30,7 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
     @Override
     DiscreteDistribution makeDistribution(Object... parameters) {
         final double mean = (Double) parameters[0];
-        return new PoissonDistribution(mean);
+        return PoissonDistribution.of(mean);
     }
 
 
@@ -53,7 +53,7 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
     void testLargeMeanCumulativeProbability() {
         double mean = 1.0;
         while (mean <= 10000000.0) {
-            final PoissonDistribution dist = new PoissonDistribution(mean);
+            final PoissonDistribution dist = PoissonDistribution.of(mean);
 
             double x = mean * 2.0;
             final double dx = x / 10.0;
@@ -82,12 +82,12 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
     @Test
     void testCumulativeProbabilitySpecial() {
         PoissonDistribution dist;
-        dist = new PoissonDistribution(9120);
+        dist = PoissonDistribution.of(9120);
         checkProbability(dist, 9075);
         checkProbability(dist, 9102);
-        dist = new PoissonDistribution(5058);
+        dist = PoissonDistribution.of(5058);
         checkProbability(dist, 5044);
-        dist = new PoissonDistribution(6986);
+        dist = PoissonDistribution.of(6986);
         checkProbability(dist, 6950);
     }
 
@@ -103,7 +103,7 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
     void testLargeMeanInverseCumulativeProbability() {
         double mean = 1.0;
         while (mean <= 100000.0) { // Extended test value: 1E7.  Reduced to limit run time.
-            final PoissonDistribution dist = new PoissonDistribution(mean);
+            final PoissonDistribution dist = PoissonDistribution.of(mean);
             double p = 0.1;
             final double dp = p;
             while (p < .99) {
@@ -125,7 +125,7 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
     void testLargeMeanHighPrecisionCumulativeProbabilities() {
         // computed using R version 3.4.4
         testCumulativeProbabilityHighPrecision(
-                new PoissonDistribution(100),
+                PoissonDistribution.of(100),
                 new int[] {28, 25},
                 new double[] {1.6858675763053070496e-17, 3.184075559619425735e-19},
                 createHighPrecisionTolerance());
@@ -138,7 +138,7 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
     @Disabled("Commons RNG does not allow truncated Poisson distribution")
     void testCreateSamplerWithLargeMean() {
         final int mean = Integer.MAX_VALUE;
-        final PoissonDistribution dist = new PoissonDistribution(mean);
+        final PoissonDistribution dist = PoissonDistribution.of(mean);
         // The mean is roughly the median for large mean
         Assertions.assertEquals(0.5, dist.cumulativeProbability(mean), 0.05);
         final UniformRandomProvider rng = RandomSource.SPLIT_MIX_64.create();

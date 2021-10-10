@@ -19,7 +19,7 @@ package org.apache.commons.statistics.distribution;
 /**
  * This class implements the <a href="http://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution</a>.
  */
-public class GumbelDistribution extends AbstractContinuousDistribution {
+public final class GumbelDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
     private static final double SUPPORT_LO = Double.NEGATIVE_INFINITY;
     /** Support upper bound. */
@@ -37,20 +37,29 @@ public class GumbelDistribution extends AbstractContinuousDistribution {
     private final double beta;
 
     /**
-     * Creates a distribution.
+     * @param mu Location parameter.
+     * @param beta Scale parameter (must be positive).
+     */
+    private GumbelDistribution(double mu,
+                               double beta) {
+        this.beta = beta;
+        this.mu = mu;
+    }
+
+    /**
+     * Creates a Gumbel distribution.
      *
      * @param mu Location parameter.
      * @param beta Scale parameter (must be positive).
+     * @return the distribution
      * @throws IllegalArgumentException if {@code beta <= 0}
      */
-    public GumbelDistribution(double mu,
-                              double beta) {
+    public static GumbelDistribution of(double mu,
+                                        double beta) {
         if (beta <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, beta);
         }
-
-        this.beta = beta;
-        this.mu = mu;
+        return new GumbelDistribution(mu, beta);
     }
 
     /**

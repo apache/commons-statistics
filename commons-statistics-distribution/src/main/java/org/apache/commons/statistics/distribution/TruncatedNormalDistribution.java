@@ -23,10 +23,10 @@ package org.apache.commons.statistics.distribution;
  * @see <a href="http://en.wikipedia.org/wiki/Truncated_normal_distribution">
  * Truncated normal distribution (Wikipedia)</a>
  */
-public class TruncatedNormalDistribution extends AbstractContinuousDistribution {
+public final class TruncatedNormalDistribution extends AbstractContinuousDistribution {
     /** A standard normal distribution used for calculations.
      * This is immutable and thread-safe and can be used across instances. */
-    private static final NormalDistribution STANDARD_NORMAL = new NormalDistribution(0, 1);
+    private static final NormalDistribution STANDARD_NORMAL = NormalDistribution.of(0, 1);
 
     /** Mean of parent normal distribution. */
     private final double parentMean;
@@ -54,24 +54,12 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
     private final double logParentSdByCdfDelta;
 
     /**
-     * Creates a truncated normal distribution.
-     * Note that the {@code mean} and {@code sd} is of the parent normal distribution,
-     * and not the true mean and standard deviation of the truncated normal distribution.
-     *
      * @param mean Mean for the parent distribution.
      * @param sd Standard deviation for the parent distribution.
      * @param lower Lower bound (inclusive) of the distribution, can be {@link Double#NEGATIVE_INFINITY}.
      * @param upper Upper bound (inclusive) of the distribution, can be {@link Double#POSITIVE_INFINITY}.
-     * @throws IllegalArgumentException if {@code sd <= 0} or if {@code upper <= lower}.
      */
-    public TruncatedNormalDistribution(double mean, double sd, double lower, double upper) {
-        if (sd <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
-        }
-        if (lower >= upper) {
-            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH, lower, upper);
-        }
-
+    private TruncatedNormalDistribution(double mean, double sd, double lower, double upper) {
         this.lower = lower;
         this.upper = upper;
 
@@ -117,6 +105,30 @@ public class TruncatedNormalDistribution extends AbstractContinuousDistribution 
                 variance = sd * sd * (1 + alphaBetaDelta - pdfCdfDelta * pdfCdfDelta);
             }
         }
+    }
+
+    /**
+     * Creates a truncated normal distribution.
+     *
+     * <p>Note that the {@code mean} and {@code sd} is of the parent normal distribution,
+     * and not the true mean and standard deviation of the truncated normal distribution.
+     *
+     * @param mean Mean for the parent distribution.
+     * @param sd Standard deviation for the parent distribution.
+     * @param lower Lower bound (inclusive) of the distribution, can be {@link Double#NEGATIVE_INFINITY}.
+     * @param upper Upper bound (inclusive) of the distribution, can be {@link Double#POSITIVE_INFINITY}.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code sd <= 0} or if {@code upper <= lower}.
+     */
+    public static TruncatedNormalDistribution of(double mean, double sd, double lower, double upper) {
+        if (sd <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
+        }
+        if (lower >= upper) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH, lower, upper);
+        }
+        return new TruncatedNormalDistribution(mean, sd, lower, upper);
+
     }
 
     /** {@inheritDoc} */

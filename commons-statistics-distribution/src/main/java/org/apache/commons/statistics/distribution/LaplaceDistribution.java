@@ -21,7 +21,7 @@ package org.apache.commons.statistics.distribution;
  *
  * @see <a href="http://en.wikipedia.org/wiki/Laplace_distribution">Laplace distribution (Wikipedia)</a>
  */
-public class LaplaceDistribution extends AbstractContinuousDistribution {
+public final class LaplaceDistribution extends AbstractContinuousDistribution {
     /** The location parameter. */
     private final double mu;
     /** The scale parameter. */
@@ -30,21 +30,30 @@ public class LaplaceDistribution extends AbstractContinuousDistribution {
     private final double log2beta;
 
     /**
-     * Creates a distribution.
-     *
      * @param mu Location parameter.
      * @param beta Scale parameter (must be positive).
-     * @throws IllegalArgumentException if {@code beta <= 0}
      */
-    public LaplaceDistribution(double mu,
-                               double beta) {
-        if (beta <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, beta);
-        }
-
+    private LaplaceDistribution(double mu,
+                                double beta) {
         this.mu = mu;
         this.beta = beta;
         log2beta = Math.log(2.0 * beta);
+    }
+
+    /**
+     * Creates a Laplace distribution.
+     *
+     * @param mu Location parameter.
+     * @param beta Scale parameter (must be positive).
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code beta <= 0}
+     */
+    public static LaplaceDistribution of(double mu,
+                                         double beta) {
+        if (beta <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, beta);
+        }
+        return new LaplaceDistribution(mu, beta);
     }
 
     /**

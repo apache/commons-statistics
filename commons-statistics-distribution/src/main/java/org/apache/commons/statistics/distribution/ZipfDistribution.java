@@ -37,7 +37,7 @@ import org.apache.commons.rng.sampling.distribution.RejectionInversionZipfSample
  * <li>{@code s} is the exponent</li>
  * </ul>
  */
-public class ZipfDistribution extends AbstractDiscreteDistribution {
+public final class ZipfDistribution extends AbstractDiscreteDistribution {
     /** Number of elements. */
     private final int numberOfElements;
     /** Exponent parameter of the distribution. */
@@ -48,15 +48,28 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
     private final double logNthHarmonic;
 
     /**
-     * Creates a distribution.
+     * @param numberOfElements Number of elements.
+     * @param exponent Exponent.
+     */
+    private ZipfDistribution(int numberOfElements,
+                             double exponent) {
+        this.numberOfElements = numberOfElements;
+        this.exponent = exponent;
+        this.nthHarmonic = generalizedHarmonic(numberOfElements, exponent);
+        logNthHarmonic = Math.log(nthHarmonic);
+    }
+
+    /**
+     * Creates a Zipf distribution.
      *
      * @param numberOfElements Number of elements.
      * @param exponent Exponent.
+     * @return the distribution
      * @exception IllegalArgumentException if {@code numberOfElements <= 0}
      * or {@code exponent <= 0}.
      */
-    public ZipfDistribution(int numberOfElements,
-                            double exponent) {
+    public static ZipfDistribution of(int numberOfElements,
+                                      double exponent) {
         if (numberOfElements <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             numberOfElements);
@@ -65,11 +78,7 @@ public class ZipfDistribution extends AbstractDiscreteDistribution {
             throw new DistributionException(DistributionException.NEGATIVE,
                                             exponent);
         }
-
-        this.numberOfElements = numberOfElements;
-        this.exponent = exponent;
-        this.nthHarmonic = generalizedHarmonic(numberOfElements, exponent);
-        logNthHarmonic = Math.log(nthHarmonic);
+        return new ZipfDistribution(numberOfElements, exponent);
     }
 
     /**

@@ -38,7 +38,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double shape = (Double) parameters[0];
         final double scale = (Double) parameters[1];
-        return new GammaDistribution(shape, scale);
+        return GammaDistribution.of(shape, scale);
     }
 
     @Override
@@ -62,11 +62,11 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     void testAdditionalMoments() {
         GammaDistribution dist;
 
-        dist = new GammaDistribution(1, 2);
+        dist = GammaDistribution.of(1, 2);
         Assertions.assertEquals(2, dist.getMean());
         Assertions.assertEquals(4, dist.getVariance());
 
-        dist = new GammaDistribution(1.1, 4.2);
+        dist = GammaDistribution.of(1.1, 4.2);
         Assertions.assertEquals(1.1d * 4.2d, dist.getMean());
         Assertions.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance());
     }
@@ -81,7 +81,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     }
 
     private void checkCumulativeProbability(double x, double a, double b, double expected) {
-        final GammaDistribution distribution = new GammaDistribution(a, b);
+        final GammaDistribution distribution = GammaDistribution.of(a, b);
         final double actual = distribution.cumulativeProbability(x);
         Assertions.assertEquals(expected, actual, 10e-4, () -> "probability for " + x);
     }
@@ -95,7 +95,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     }
 
     private void checkInverseCumulativeProbability(double expected, double a, double b, double p) {
-        final GammaDistribution distribution = new GammaDistribution(a, b);
+        final GammaDistribution distribution = GammaDistribution.of(a, b);
         final double actual = distribution.inverseCumulativeProbability(p);
         Assertions.assertEquals(expected, actual, 10e-4, () -> "critical value for " + p);
     }
@@ -145,7 +145,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     }
 
     private void checkDensity(double alpha, double rate, double[] x, double[] expected) {
-        final GammaDistribution dist = new GammaDistribution(alpha, 1 / rate);
+        final GammaDistribution dist = GammaDistribution.of(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(expected[i], dist.density(x[i]), Math.abs(expected[i]) * 1e-5);
         }
@@ -177,7 +177,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     }
 
     private void checkLogDensity(double alpha, double rate, double[] x, double[] expected) {
-        final GammaDistribution dist = new GammaDistribution(alpha, 1 / rate);
+        final GammaDistribution dist = GammaDistribution.of(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
             Assertions.assertEquals(expected[i], dist.logDensity(x[i]), Math.abs(expected[i]) * 1e-5);
         }
@@ -240,7 +240,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
                                final double meanNoOF, final double sdNoOF,
                                final double meanOF, final double sdOF,
                                final String resourceName) {
-        final GammaDistribution distribution = new GammaDistribution(shape, 1.0);
+        final GammaDistribution distribution = GammaDistribution.of(shape, 1.0);
         final SummaryStatistics statOld = new SummaryStatistics();
         // statNewNoOF = No overflow of old function
         // statNewOF   = Overflow of old function

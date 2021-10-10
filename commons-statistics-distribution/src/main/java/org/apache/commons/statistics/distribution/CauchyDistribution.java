@@ -22,7 +22,7 @@ import org.apache.commons.rng.sampling.distribution.StableSampler;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy distribution</a>.
  */
-public class CauchyDistribution extends AbstractContinuousDistribution {
+public final class CauchyDistribution extends AbstractContinuousDistribution {
     /** The location of this distribution. */
     private final double location;
     /** The scale of this distribution. */
@@ -33,21 +33,31 @@ public class CauchyDistribution extends AbstractContinuousDistribution {
     private final double scale2;
 
     /**
-     * Creates a distribution.
-     *
      * @param location Location parameter.
      * @param scale Scale parameter.
-     * @throws IllegalArgumentException if {@code scale <= 0}.
      */
-    public CauchyDistribution(double location,
-                              double scale) {
-        if (scale <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
-        }
+    private CauchyDistribution(double location,
+                               double scale) {
         this.scale = scale;
         this.location = location;
         scaleOverPi = scale / Math.PI;
         scale2 = scale * scale;
+    }
+
+    /**
+     * Creates a Cauchy distribution.
+     *
+     * @param location Location parameter.
+     * @param scale Scale parameter.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code scale <= 0}.
+     */
+    public static CauchyDistribution of(double location,
+                                        double scale) {
+        if (scale <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
+        }
+        return new CauchyDistribution(location, scale);
     }
 
     /**

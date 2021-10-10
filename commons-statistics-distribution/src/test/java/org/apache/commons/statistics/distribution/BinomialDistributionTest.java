@@ -28,7 +28,7 @@ class BinomialDistributionTest extends BaseDiscreteDistributionTest {
     DiscreteDistribution makeDistribution(Object... parameters) {
         final int n = (Integer) parameters[0];
         final double p = (Double) parameters[1];
-        return new BinomialDistribution(n, p);
+        return BinomialDistribution.of(n, p);
     }
 
 
@@ -55,7 +55,7 @@ class BinomialDistributionTest extends BaseDiscreteDistributionTest {
         // numerically stable.
 
         for (int trials = 500000; trials < 20000000; trials += 100000) {
-            final BinomialDistribution dist = new BinomialDistribution(trials, 0.5);
+            final BinomialDistribution dist = BinomialDistribution.of(trials, 0.5);
             final int p = dist.inverseCumulativeProbability(0.5);
             Assertions.assertEquals(trials / 2, p);
         }

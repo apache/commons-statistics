@@ -31,7 +31,7 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
     DiscreteDistribution makeDistribution(Object... parameters) {
         final int n = (Integer) parameters[0];
         final double e = (Double) parameters[1];
-        return new ZipfDistribution(n, e);
+        return ZipfDistribution.of(n, e);
     }
 
 
@@ -54,15 +54,15 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
     @Test
     void testHighPrecisionSurvivalProbabilities() {
         // computed using scipy.stats (1.7.1) zipfian
-        testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 10),
+        testSurvivalProbabilityHighPrecision(ZipfDistribution.of(60, 10),
             new int[] {57, 59},
             new double[] {2.3189337454689757e-18, 1.6521739576668957e-18},
             DoubleTolerances.absolute(1e-25));
-        testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 50.5),
+        testSurvivalProbabilityHighPrecision(ZipfDistribution.of(60, 50.5),
             new int[] {57, 59},
             new double[] {8.8488396450491320e-90, 1.5972093932264611e-90},
             DoubleTolerances.absolute(1e-95));
-        testSurvivalProbabilityHighPrecision(new ZipfDistribution(60, 100.5),
+        testSurvivalProbabilityHighPrecision(ZipfDistribution.of(60, 100.5),
             new int[] {57, 59},
             new double[] {5.9632998443758656e-178, 1.9760564023408183e-179},
             DoubleTolerances.absolute(1e-185));
@@ -79,7 +79,7 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
         final int n = 60;
         final double a = 200.5;
         Assertions.assertEquals(Double.POSITIVE_INFINITY, Math.pow(n, a));
-        ZipfDistribution dist = new ZipfDistribution(n, a);
+        ZipfDistribution dist = ZipfDistribution.of(n, a);
         final int[] points = MathArrays.natural(n);
         testSurvivalAndCumulativeProbabilityComplement(dist, points, createTolerance());
     }
@@ -113,7 +113,7 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
                 // seeds because each test case can fail with probability 0.001, the chance
                 // that all test cases do not fail is 0.999^(32*22) = 0.49442874426
                 final DiscreteDistribution.Sampler distribution =
-                    new ZipfDistribution(numPoints, exponent).createSampler(
+                    ZipfDistribution.of(numPoints, exponent).createSampler(
                         RandomSource.XO_SHI_RO_256_PP.create(6));
 
                 final double[] expectedCounts = new double[numPoints];

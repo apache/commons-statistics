@@ -28,7 +28,7 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double location = (Double) parameters[0];
         final double scale = (Double) parameters[1];
-        return new LogisticDistribution(location, scale);
+        return LogisticDistribution.of(location, scale);
     }
 
     @Override
@@ -54,7 +54,7 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testExtremeDensity() {
-        final LogisticDistribution dist = new LogisticDistribution(0, 1.0);
+        final LogisticDistribution dist = LogisticDistribution.of(0, 1.0);
         // Direct density (with scale = 1):
         // exp(-x) / (1 + exp(-x))^2
         // As x -> large negative then exp(-x) will overflow and a simple
@@ -82,7 +82,7 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testExtremeLogDensity() {
         final double scale = 2.5;
-        final LogisticDistribution dist = new LogisticDistribution(0, scale);
+        final LogisticDistribution dist = LogisticDistribution.of(0, scale);
         // Direct density (with scale = s):
         // exp(-x / s) / (1 + exp(-x / s))^2
         final double x = 1e160;

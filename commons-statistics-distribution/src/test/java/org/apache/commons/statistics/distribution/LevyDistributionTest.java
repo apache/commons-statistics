@@ -25,7 +25,7 @@ class LevyDistributionTest  extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double location = (Double) parameters[0];
         final double scale = (Double) parameters[1];
-        return new LevyDistribution(location, scale);
+        return LevyDistribution.of(location, scale);
     }
 
     @Override

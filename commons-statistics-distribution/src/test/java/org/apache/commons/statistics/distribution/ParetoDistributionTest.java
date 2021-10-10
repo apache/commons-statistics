@@ -29,7 +29,7 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double scale = (Double) parameters[0];
         final double shape = (Double) parameters[1];
-        return new ParetoDistribution(scale, shape);
+        return ParetoDistribution.of(scale, shape);
     }
 
     @Override
@@ -58,7 +58,7 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testHighPrecision() {
-        final ParetoDistribution dist = new ParetoDistribution(2.1, 1.4);
+        final ParetoDistribution dist = ParetoDistribution.of(2.1, 1.4);
         testCumulativeProbabilityHighPrecision(
             dist,
             new double[] {2.100000000000001, 2.100000000000005},
@@ -80,12 +80,12 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
         // The current implementation is closer to the answer than either R or Wolfram but
         // the tolerance is quite high as the error is typically in the second significant digit.
 
-        final ParetoDistribution dist = new ParetoDistribution(3, 0.5);
+        final ParetoDistribution dist = ParetoDistribution.of(3, 0.5);
         // BigDecimal: 1 - (scale/x).sqrt()
         final double[] values = {1.480297366166875E-16, 8.141635513917804E-16};
         testCumulativeProbabilityHighPrecision(dist, x, values, DoubleTolerances.absolute(2e-17));
 
-        final ParetoDistribution dist2 = new ParetoDistribution(3, 2);
+        final ParetoDistribution dist2 = ParetoDistribution.of(3, 2);
         // BigDecimal: 1 - (scale/x).pow(2)
         final double[] values2 = {5.921189464667499E-16, 3.256654205567118E-15};
         testCumulativeProbabilityHighPrecision(dist2, x, values2, DoubleTolerances.absolute(8e-17));
@@ -96,11 +96,11 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
         final double tol = 1e-9;
         ParetoDistribution dist;
 
-        dist = new ParetoDistribution(1, 1);
+        dist = ParetoDistribution.of(1, 1);
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean(), tol);
         Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance(), tol);
 
-        dist = new ParetoDistribution(2.2, 2.4);
+        dist = ParetoDistribution.of(2.2, 2.4);
         Assertions.assertEquals(3.771428571428, dist.getMean(), tol);
         Assertions.assertEquals(14.816326530, dist.getVariance(), tol);
     }
@@ -110,7 +110,7 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
      */
     @Test
     void testExtremeValues() {
-        final ParetoDistribution dist = new ParetoDistribution(1, 1);
+        final ParetoDistribution dist = ParetoDistribution.of(1, 1);
         for (int i = 0; i < 10000; i++) { // make sure no convergence exception
             final double upperTail = dist.cumulativeProbability(i);
             if (i <= 1000) { // make sure not top-coded

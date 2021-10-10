@@ -30,7 +30,7 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     @Override
     DiscreteDistribution makeDistribution(Object... parameters) {
         final double p = (Double) parameters[0];
-        return new GeometricDistribution(p);
+        return GeometricDistribution.of(p);
     }
 
     @Override
@@ -66,7 +66,7 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     @ParameterizedTest
     @ValueSource(doubles = {0.5, 0.6658665, 0.75, 0.8125347, 0.9, 0.95, 0.99})
     void testPMF(double p) {
-        final GeometricDistribution dist = new GeometricDistribution(p);
+        final GeometricDistribution dist = GeometricDistribution.of(p);
         final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40};
         final double[] values = Arrays.stream(x).mapToDouble(k -> p * Math.pow(1 - p, k)).toArray();
         // The PMF should be an exact match to the direct implementation with Math.pow.
@@ -83,7 +83,7 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     @ParameterizedTest
     @ValueSource(doubles = {0.2, 0.8})
     void testInverseCDF(double p) {
-        final GeometricDistribution dist = new GeometricDistribution(p);
+        final GeometricDistribution dist = GeometricDistribution.of(p);
         final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         testCumulativeProbabilityInverseMapping(dist, x);
     }
@@ -94,11 +94,11 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
 
         final DoubleTolerance tol = DoubleTolerances.ulps(1);
 
-        dist = new GeometricDistribution(0.5);
+        dist = GeometricDistribution.of(0.5);
         TestUtils.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
         TestUtils.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
 
-        dist = new GeometricDistribution(0.3);
+        dist = GeometricDistribution.of(0.3);
         TestUtils.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
         TestUtils.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
     }
@@ -111,7 +111,7 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     @Test
     void testExtremeParameters() {
         final double p = Double.MIN_VALUE;
-        final GeometricDistribution dist = new GeometricDistribution(p);
+        final GeometricDistribution dist = GeometricDistribution.of(p);
 
         final int x = Integer.MAX_VALUE;
         // CDF = 1 - (1-p)^(x+1)

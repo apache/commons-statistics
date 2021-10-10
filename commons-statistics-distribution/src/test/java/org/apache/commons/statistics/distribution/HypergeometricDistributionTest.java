@@ -32,7 +32,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
         final int populationSize = (Integer) parameters[0];
         final int numberOfSuccesses = (Integer) parameters[1];
         final int sampleSize = (Integer) parameters[2];
-        return new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize);
+        return HypergeometricDistribution.of(populationSize, numberOfSuccesses, sampleSize);
     }
 
     @Override
@@ -60,13 +60,13 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
 
         final DoubleTolerance tol = DoubleTolerances.ulps(1);
 
-        dist = new HypergeometricDistribution(1500, 40, 100);
+        dist = HypergeometricDistribution.of(1500, 40, 100);
         TestUtils.assertEquals(40d * 100d / 1500d,
             dist.getMean(), tol);
         TestUtils.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)),
             dist.getVariance(), tol);
 
-        dist = new HypergeometricDistribution(3000, 55, 200);
+        dist = HypergeometricDistribution.of(3000, 55, 200);
         TestUtils.assertEquals(55d * 200d / 3000d,
             dist.getMean(), tol);
         TestUtils.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)),
@@ -108,7 +108,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
 
     private static void testHypergeometricDistributionProbabilities(int populationSize, int sampleSize,
         int numberOfSucceses, double[][] data) {
-        final HypergeometricDistribution dist = new HypergeometricDistribution(populationSize, numberOfSucceses, sampleSize);
+        final HypergeometricDistribution dist = HypergeometricDistribution.of(populationSize, numberOfSucceses, sampleSize);
         for (int i = 0; i < data.length; ++i) {
             final int x = (int)data[i][0];
             final double pmf = data[i][1];
@@ -166,7 +166,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
         final int n = 1841;      // number of trials
 
         final int k = 0;
-        final HypergeometricDistribution dist = new HypergeometricDistribution(N, m, n);
+        final HypergeometricDistribution dist = HypergeometricDistribution.of(N, m, n);
 
         // Compute upper cumulative probability using the survival probability
         Assertions.assertEquals(0, Precision.compareTo(1.0, dist.survivalProbability(k - 1), 1));
@@ -183,7 +183,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
         final int m = 4;  // successes in population
         final int s = 0;  // number of trials
 
-        final HypergeometricDistribution dist = new HypergeometricDistribution(n, m, s);
+        final HypergeometricDistribution dist = HypergeometricDistribution.of(n, m, s);
 
         for (int i = 1; i <= n; i++) {
             final double p = dist.probability(i);
@@ -197,7 +197,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
         final int m = 11;  // successes in population
 
         for (int s = 0; s <= n; s++) {
-            final HypergeometricDistribution dist = new HypergeometricDistribution(n, m, s);
+            final HypergeometricDistribution dist = HypergeometricDistribution.of(n, m, s);
             final double p = dist.probability(s);
             Assertions.assertEquals(1, p, () -> "p=" + p);
         }
@@ -209,7 +209,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
         final int m = 42976365;
         final int n = 50;
         final DiscreteDistribution.Sampler dist =
-            new HypergeometricDistribution(N, m, n).createSampler(RandomSource.XO_SHI_RO_256_PP.create());
+            HypergeometricDistribution.of(N, m, n).createSampler(RandomSource.XO_SHI_RO_256_PP.create());
 
         for (int i = 0; i < 100; i++) {
             final int sample = dist.sample();
@@ -222,7 +222,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     void testHighPrecisionCumulativeProbabilities() {
         // computed using R version 3.4.4
         testCumulativeProbabilityHighPrecision(
-            new HypergeometricDistribution(500, 70, 300),
+            HypergeometricDistribution.of(500, 70, 300),
             new int[] {10, 8},
             new double[] {2.4055720603264525e-17, 1.2848174992266236e-19},
             createHighPrecisionTolerance());
@@ -232,7 +232,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     void testHighPrecisionSurvivalProbabilities() {
         // computed using R version 3.4.4
         testSurvivalProbabilityHighPrecision(
-            new HypergeometricDistribution(500, 70, 300),
+            HypergeometricDistribution.of(500, 70, 300),
             new int[] {68, 69},
             new double[] {4.570379934029859e-16, 7.4187180434325268e-18},
             createHighPrecisionTolerance());

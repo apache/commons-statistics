@@ -25,7 +25,7 @@ class GumbelDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double location = (Double) parameters[0];
         final double scale = (Double) parameters[1];
-        return new GumbelDistribution(location, scale);
+        return GumbelDistribution.of(location, scale);
     }
 
     @Override

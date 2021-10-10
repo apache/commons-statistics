@@ -28,7 +28,7 @@ class FDistributionTest extends BaseContinuousDistributionTest {
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double df1 = (Double) parameters[0];
         final double df2 = (Double) parameters[1];
-        return new FDistribution(df1, df2);
+        return FDistribution.of(df1, df2);
     }
 
     @Override
@@ -52,15 +52,15 @@ class FDistributionTest extends BaseContinuousDistributionTest {
     void testAdditionalMoments() {
         FDistribution dist;
 
-        dist = new FDistribution(1, 2);
+        dist = FDistribution.of(1, 2);
         Assertions.assertEquals(Double.NaN, dist.getMean());
         Assertions.assertEquals(Double.NaN, dist.getVariance());
 
-        dist = new FDistribution(1, 3);
+        dist = FDistribution.of(1, 3);
         Assertions.assertEquals(3d / (3d - 2d), dist.getMean());
         Assertions.assertEquals(Double.NaN, dist.getVariance());
 
-        dist = new FDistribution(1, 5);
+        dist = FDistribution.of(1, 5);
         Assertions.assertEquals(5d / (5d - 2d), dist.getMean());
         Assertions.assertEquals((2d * 5d * 5d * 4d) / 9d, dist.getVariance());
     }
@@ -68,7 +68,7 @@ class FDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testLargeDegreesOfFreedom() {
         final double x0 = 0.999;
-        final FDistribution fd = new FDistribution(100000, 100000);
+        final FDistribution fd = FDistribution.of(100000, 100000);
         final double p = fd.cumulativeProbability(x0);
         final double x = fd.inverseCumulativeProbability(p);
         Assertions.assertEquals(x0, x, 1.0e-5);
@@ -77,12 +77,12 @@ class FDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testSmallDegreesOfFreedom() {
         final double x0 = 0.975;
-        FDistribution fd = new FDistribution(1, 1);
+        FDistribution fd = FDistribution.of(1, 1);
         double p = fd.cumulativeProbability(x0);
         double x = fd.inverseCumulativeProbability(p);
         Assertions.assertEquals(x0, x, 1.0e-5);
 
-        fd = new FDistribution(1, 2);
+        fd = FDistribution.of(1, 2);
         p = fd.cumulativeProbability(x0);
         x = fd.inverseCumulativeProbability(p);
         Assertions.assertEquals(x0, x, 1.0e-5);
@@ -92,7 +92,7 @@ class FDistributionTest extends BaseContinuousDistributionTest {
     void testMath785() {
         // this test was failing due to inaccurate results from ContinuedFraction.
         final double prob = 0.01;
-        final FDistribution f = new FDistribution(200000, 200000);
+        final FDistribution f = FDistribution.of(200000, 200000);
         final double result = f.inverseCumulativeProbability(prob);
         Assertions.assertTrue(result < 1.0, "Failing to calculate inverse cumulative probability");
     }

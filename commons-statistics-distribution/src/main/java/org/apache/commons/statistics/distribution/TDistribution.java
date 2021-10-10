@@ -23,7 +23,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
 /**
  * Implementation of <a href='http://en.wikipedia.org/wiki/Student&apos;s_t-distribution'>Student's t-distribution</a>.
  */
-public class TDistribution extends AbstractContinuousDistribution {
+public final class TDistribution extends AbstractContinuousDistribution {
     /** 2. */
     private static final double TWO = 2;
     /** 1 / sqrt(2). */
@@ -43,16 +43,9 @@ public class TDistribution extends AbstractContinuousDistribution {
     private final double variance;
 
     /**
-     * Creates a distribution.
-     *
      * @param degreesOfFreedom Degrees of freedom.
-     * @throws IllegalArgumentException if {@code degreesOfFreedom <= 0}
      */
-    public TDistribution(double degreesOfFreedom) {
-        if (degreesOfFreedom <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
-                                            degreesOfFreedom);
-        }
+    private TDistribution(double degreesOfFreedom) {
         this.degreesOfFreedom = degreesOfFreedom;
 
         dofOver2 = 0.5 * degreesOfFreedom;
@@ -69,6 +62,21 @@ public class TDistribution extends AbstractContinuousDistribution {
             mean = Double.NaN;
             variance = Double.NaN;
         }
+    }
+
+    /**
+     * Creates a Student's t-distribution.
+     *
+     * @param degreesOfFreedom Degrees of freedom.
+     * @return the distribution
+     * @throws IllegalArgumentException if {@code degreesOfFreedom <= 0}
+     */
+    public static TDistribution of(double degreesOfFreedom) {
+        if (degreesOfFreedom <= 0) {
+            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
+                                            degreesOfFreedom);
+        }
+        return new TDistribution(degreesOfFreedom);
     }
 
     /**

@@ -20,7 +20,7 @@ package org.apache.commons.statistics.distribution;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Hypergeometric_distribution">hypergeometric distribution</a>.
  */
-public class HypergeometricDistribution extends AbstractDiscreteDistribution {
+public final class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /** The number of successes in the population. */
     private final int numberOfSuccesses;
     /** The population size. */
@@ -37,18 +37,36 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
     private final double q;
 
     /**
-     * Creates a new hypergeometric distribution.
+     * @param populationSize Population size.
+     * @param numberOfSuccesses Number of successes in the population.
+     * @param sampleSize Sample size.
+     */
+    private HypergeometricDistribution(int populationSize,
+                                       int numberOfSuccesses,
+                                       int sampleSize) {
+        this.numberOfSuccesses = numberOfSuccesses;
+        this.populationSize = populationSize;
+        this.sampleSize = sampleSize;
+        lowerBound = getLowerDomain(populationSize, numberOfSuccesses, sampleSize);
+        upperBound = getUpperDomain(numberOfSuccesses, sampleSize);
+        p = (double) sampleSize / (double) populationSize;
+        q = (double) (populationSize - sampleSize) / (double) populationSize;
+    }
+
+    /**
+     * Creates a hypergeometric distribution.
      *
      * @param populationSize Population size.
      * @param numberOfSuccesses Number of successes in the population.
      * @param sampleSize Sample size.
+     * @return the distribution
      * @throws IllegalArgumentException if {@code numberOfSuccesses < 0}, or
-     * {@code populationSize <= 0} or {@code numberOfSuccesses > populationSize},
-     * or {@code sampleSize > populationSize}.
+     * {@code populationSize <= 0} or {@code numberOfSuccesses > populationSize}, or
+     * {@code sampleSize > populationSize}.
      */
-    public HypergeometricDistribution(int populationSize,
-                                      int numberOfSuccesses,
-                                      int sampleSize) {
+    public static HypergeometricDistribution of(int populationSize,
+                                                int numberOfSuccesses,
+                                                int sampleSize) {
         if (populationSize <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             populationSize);
@@ -70,14 +88,7 @@ public class HypergeometricDistribution extends AbstractDiscreteDistribution {
             throw new DistributionException(DistributionException.TOO_LARGE,
                                             sampleSize, populationSize);
         }
-
-        this.numberOfSuccesses = numberOfSuccesses;
-        this.populationSize = populationSize;
-        this.sampleSize = sampleSize;
-        lowerBound = getLowerDomain(populationSize, numberOfSuccesses, sampleSize);
-        upperBound = getUpperDomain(numberOfSuccesses, sampleSize);
-        p = (double) sampleSize / (double) populationSize;
-        q = (double) (populationSize - sampleSize) / (double) populationSize;
+        return new HypergeometricDistribution(populationSize, numberOfSuccesses, sampleSize);
     }
 
     /**

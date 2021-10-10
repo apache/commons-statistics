@@ -29,7 +29,7 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
     DiscreteDistribution makeDistribution(Object... parameters) {
         final int lower = (Integer) parameters[0];
         final int upper = (Integer) parameters[1];
-        return new UniformDiscreteDistribution(lower, upper);
+        return UniformDiscreteDistribution.of(lower, upper);
     }
 
 
@@ -54,11 +54,11 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
     void testAdditionalMoments() {
         UniformDiscreteDistribution dist;
 
-        dist = new UniformDiscreteDistribution(0, 5);
+        dist = UniformDiscreteDistribution.of(0, 5);
         Assertions.assertEquals(2.5, dist.getMean());
         Assertions.assertEquals(35 / 12.0, dist.getVariance());
 
-        dist = new UniformDiscreteDistribution(0, 1);
+        dist = UniformDiscreteDistribution.of(0, 1);
         Assertions.assertEquals(0.5, dist.getMean());
         Assertions.assertEquals(3 / 12.0, dist.getVariance());
     }
@@ -73,7 +73,7 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
         // range = upper - lower + 1 would overflow
         Assertions.assertTrue(upper - lower < 0);
 
-        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(lower, upper);
+        final UniformDiscreteDistribution dist = UniformDiscreteDistribution.of(lower, upper);
 
         Assertions.assertEquals(0.5 / hi, dist.probability(123456));
         Assertions.assertEquals(0.5, dist.cumulativeProbability(-1));
@@ -91,7 +91,7 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
         // mean = (lower + upper) / 2 would overflow
         Assertions.assertTrue(lower + upper < 0);
 
-        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(lower, upper);
+        final UniformDiscreteDistribution dist = UniformDiscreteDistribution.of(lower, upper);
 
         Assertions.assertEquals(1d / 3d, dist.probability(hi));
         Assertions.assertEquals(2d / 3d, dist.cumulativeProbability(hi));
@@ -111,7 +111,7 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
         final int upper = 40;
         final double range = (double) upper - lower + 1;
 
-        final UniformDiscreteDistribution dist = new UniformDiscreteDistribution(lower, upper);
+        final UniformDiscreteDistribution dist = UniformDiscreteDistribution.of(lower, upper);
         // Compute p and check it is as expected
         final double p = dist.cumulativeProbability(x);
         Assertions.assertEquals((x - lower + 1) / range, p);
@@ -124,10 +124,10 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
 
         // Test for overflow of an integer when inverting
         final int min = Integer.MIN_VALUE;
-        final UniformDiscreteDistribution dist2 = new UniformDiscreteDistribution(min, min + 10);
+        final UniformDiscreteDistribution dist2 = UniformDiscreteDistribution.of(min, min + 10);
         Assertions.assertEquals(min, dist2.inverseCumulativeProbability(0.0));
         final int max = Integer.MAX_VALUE;
-        final UniformDiscreteDistribution dist3 = new UniformDiscreteDistribution(max - 10, max);
+        final UniformDiscreteDistribution dist3 = UniformDiscreteDistribution.of(max - 10, max);
         Assertions.assertEquals(max, dist3.inverseCumulativeProbability(1.0));
     }
 }
