@@ -195,14 +195,6 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    protected double getMedian() {
-        // Overridden for the probability(double, double) method.
-        // This is intentionally not a public method.
-        return mean;
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Gaussian distribution sampler.
         return GaussianSampler.of(ZigguratSampler.NormalizedGaussian.of(rng),
