@@ -449,6 +449,17 @@ abstract class BaseDiscreteDistributionTest
         });
     }
 
+    /**
+     * Create a stream of arguments containing the distribution to test.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testMedian() {
+        return data.stream().map(d -> {
+            return Arguments.of(namedDistribution(d.getParameters()));
+        });
+    }
+
     //------------------------ Tests -----------------------------
 
     // Tests are final. It is expected that the test can be modified by overriding
@@ -868,5 +879,20 @@ abstract class BaseDiscreteDistributionTest
     final void testMoments(DiscreteDistribution dist, double mean, double variance, DoubleTolerance tolerance) {
         TestUtils.assertEquals(mean, dist.getMean(), tolerance, "mean");
         TestUtils.assertEquals(variance, dist.getVariance(), tolerance, "variance");
+    }
+
+    /**
+     * Test the median of the distribution is equal to the value returned from the inverse CDF.
+     * The median is used internally for computation of the probability of a range
+     * using either the CDF or survival function. If overridden by a distribution it should
+     * be equivalent to the inverse CDF called with 0.5.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testMedian(DiscreteDistribution dist) {
+        if (dist instanceof AbstractDiscreteDistribution) {
+            final AbstractDiscreteDistribution d = (AbstractDiscreteDistribution) dist;
+            Assertions.assertEquals(d.inverseCumulativeProbability(0.5), d.getMedian(), "median");
+        }
     }
 }
