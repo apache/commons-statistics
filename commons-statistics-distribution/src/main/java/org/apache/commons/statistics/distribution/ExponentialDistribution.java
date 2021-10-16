@@ -31,6 +31,8 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
     private static final double SUPPORT_LO = 0;
     /** Support upper bound. */
     private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
+    /** ln(2). */
+    private static final double LN_2 = 0.6931471805599453094172;
     /** The mean of this distribution. */
     private final double mean;
     /** The logarithm of the mean, stored to reduce computing time. */
@@ -175,6 +177,15 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
     @Override
     public boolean isSupportConnected() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected double getMedian() {
+        // Overridden for the probability(double, double) method.
+        // This is intentionally not a public method.
+        // ln(2) / rate = mean * ln(2)
+        return mean * LN_2;
     }
 
     /** {@inheritDoc} */

@@ -642,14 +642,22 @@ abstract class BaseContinuousDistributionTest
                 () -> "Non-zero probability(x, x) for " + x0);
 
             final double cdf0 = dist.cumulativeProbability(x0);
+            final double sf0 = cdf0 >= 0.5 ? dist.survivalProbability(x0) : Double.NaN;
             for (int j = 0; j < points.length; j++) {
                 final double x1 = points[j];
                 // Ignore the same point
                 if (x0 < x1) {
                     // Check that probability(x0, x1) = CDF(x1) - CDF(x0).
-                    final double cdf1 = dist.cumulativeProbability(x1);
+                    // If x0 is above the median it is more accurate to use the
+                    // survival probability: probability(x0, x1) = SF(x0) - SF(x1).
+                    double expected;
+                    if (cdf0 >= 0.5) {
+                        expected = sf0 - dist.survivalProbability(x1);
+                    } else {
+                        expected = dist.cumulativeProbability(x1) - cdf0;
+                    }
                     TestUtils.assertEquals(
-                        cdf1 - cdf0,
+                        expected,
                         dist.probability(x0, x1),
                         tolerance,
                         () -> "Inconsistent probability for (" + x0 + "," + x1 + ")");

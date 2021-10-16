@@ -199,4 +199,12 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
     public boolean isSupportConnected() {
         return true;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    protected double getMedian() {
+        // Overridden for the probability(double, double) method.
+        // This is intentionally not a public method.
+        return mu;
+    }
 }

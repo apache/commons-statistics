@@ -27,6 +27,8 @@ import org.apache.commons.rng.sampling.distribution.LevySampler;
  * L&eacute;vy distribution</a>.
  */
 public final class LevyDistribution extends AbstractContinuousDistribution {
+    /** 1 / 2(erfc^-1 (0.5))^2. Computed using Matlab's VPA to 30 digits. */
+    private static final double HALF_OVER_ERFCINV_HALF_SQUARED = 2.1981093383177324039996779530797;
     /** Location parameter. */
     private final double mu;
     /** Scale parameter. */
@@ -213,6 +215,15 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
     @Override
     public boolean isSupportConnected() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected double getMedian() {
+        // Overridden for the probability(double, double) method.
+        // This is intentionally not a public method.
+        // u - c / 2(erfc^-1 (0.5))^2
+        return mu - c * HALF_OVER_ERFCINV_HALF_SQUARED;
     }
 
     /** {@inheritDoc} */

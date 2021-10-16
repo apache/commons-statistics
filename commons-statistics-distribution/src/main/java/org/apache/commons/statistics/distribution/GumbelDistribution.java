@@ -31,6 +31,8 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
      * Approximation of Euler's constant</a>.
      */
     private static final double EULER = 0.57721566490153286060;
+    /** ln(ln(2)). */
+    private static final double LN_LN_2 = -0.3665129205816643270124;
     /** Location parameter. */
     private final double mu;
     /** Scale parameter. */
@@ -190,5 +192,14 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
     @Override
     public boolean isSupportConnected() {
         return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected double getMedian() {
+        // Overridden for the probability(double, double) method.
+        // This is intentionally not a public method.
+        // u - beta * ln(ln(2))
+        return mu - beta * LN_LN_2;
     }
 }

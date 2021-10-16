@@ -25,11 +25,18 @@ import org.apache.commons.rng.sampling.distribution.InverseTransformContinuousSa
  * Default implementations are provided for some of the methods
  * that do not vary from distribution to distribution.
  *
- * This base class provides a default factory method for creating
+ * <p>This base class provides a default factory method for creating
  * a {@link ContinuousDistribution.Sampler sampler instance} that uses the
  * <a href="http://en.wikipedia.org/wiki/Inverse_transform_sampling">
  * inversion method</a> for generating random samples that follow the
  * distribution.
+ *
+ * <p>The class provides functionality to evaluate the probability in a range
+ * using either the cumulative probability or the survival probability.
+ * The survival probability is used if both arguments to
+ * {@link #probability(double, double)} are above the median.
+ * Child classes with a known median can override the default {@link #getMedian()}
+ * method.
  */
 abstract class AbstractContinuousDistribution
     implements ContinuousDistribution {
@@ -78,6 +85,51 @@ abstract class AbstractContinuousDistribution
     private static final double SOLVER_ABSOLUTE_ACCURACY = 1e-9;
     /** BrentSolver function value accuracy. */
     private static final double SOLVER_FUNCTION_VALUE_ACCURACY = 1e-15;
+
+    /** Cached value of the median. */
+    private double median = Double.NaN;
+
+    /**
+     * Gets the median. This is used to determine if the arguments to the
+     * {@link #probability(double, double)} function are in the upper or lower domain.
+     *
+     * <p>The default implementation calls {@link #inverseCumulativeProbability(double)}
+     * with a value of 0.5.
+     *
+     * @return the median
+     */
+    protected double getMedian() {
+        double m = median;
+        if (Double.isNaN(m)) {
+            median = m = inverseCumulativeProbability(0.5);
+        }
+        return m;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double probability(double x0,
+                              double x1) {
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH, x0, x1);
+        }
+        // Use the survival probability when in the upper domain [3]:
+        //
+        //  lower          median         upper
+        //    |              |              |
+        // 1.     |------|
+        //        x0     x1
+        // 2.         |----------|
+        //            x0         x1
+        // 3.                  |--------|
+        //                     x0       x1
+
+        final double m = getMedian();
+        if (x0 >= m) {
+            return survivalProbability(x0) - survivalProbability(x1);
+        }
+        return cumulativeProbability(x1) - cumulativeProbability(x0);
+    }
 
     /**
      * {@inheritDoc}

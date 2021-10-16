@@ -179,6 +179,14 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
 
     /** {@inheritDoc} */
     @Override
+    protected double getMedian() {
+        // Overridden for the probability(double, double) method.
+        // This is intentionally not a public method.
+        return getMean();
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Uniform distribution sampler.
         return ContinuousUniformSampler.of(rng, lower, upper)::sample;

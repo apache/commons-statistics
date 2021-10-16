@@ -187,6 +187,14 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
+    protected double getMedian() {
+        // Overridden for the probability(double, double) method.
+        // This is intentionally not a public method.
+        return location;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Cauchy distribution =
         // Stable distribution with alpha=1, beta=0, gamma=scale, delta=location

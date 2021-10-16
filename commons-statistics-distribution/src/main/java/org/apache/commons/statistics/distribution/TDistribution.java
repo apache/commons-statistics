@@ -200,6 +200,14 @@ public final class TDistribution extends AbstractContinuousDistribution {
         return Double.POSITIVE_INFINITY;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    protected double getMedian() {
+        // Overridden for the probability(double, double) method.
+        // This is intentionally not a public method.
+        return 0;
+    }
+
     /**
      * {@inheritDoc}
      *
