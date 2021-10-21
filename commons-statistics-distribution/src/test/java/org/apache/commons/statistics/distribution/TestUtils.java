@@ -28,6 +28,10 @@ import org.junit.jupiter.api.Assertions;
  */
 final class TestUtils {
     /**
+     * The relative error threshold below which absolute error is reported in ULP.
+     */
+    private static final double ULP_THRESHOLD = 100 * Math.ulp(1.0);
+    /**
      * The prefix for the formatted expected value.
      *
      * <p>This should be followed by the expected value then '>'.
@@ -41,6 +45,30 @@ final class TestUtils {
      * <p>This should be followed by the actual value then '>'.
      */
     private static final String ACTUAL_FORMAT = ">, actual: <";
+    /**
+     * The prefix for the formatted relative error value.
+     *
+     * <p>It is assumed this will be following the actual value.
+     *
+     * <p>This should be followed by the relative error value then '>'.
+     */
+    private static final String RELATIVE_ERROR_FORMAT = ">, rel.error: <";
+    /**
+     * The prefix for the formatted absolute error value.
+     *
+     * <p>It is assumed this will be following the relative value.
+     *
+     * <p>This should be followed by the absolute error value then '>'.
+     */
+    private static final String ABSOLUTE_ERROR_FORMAT = ">, abs.error: <";
+    /**
+     * The prefix for the formatted ULP error value.
+     *
+     * <p>It is assumed this will be following the relative value.
+     *
+     * <p>This should be followed by the ULP error value then '>'.
+     */
+    private static final String ULP_ERROR_FORMAT = ">, ulp error: <";
 
     /**
      * Collection of static methods used in math unit tests.
@@ -135,8 +163,18 @@ final class TestUtils {
      * @return the formatted values
      */
     private static String formatValues(double expected, double actual, DoubleTolerance tolerance) {
+        // Add error
+        final double diff = Math.abs(expected - actual);
+        final double rel = diff / Math.max(Math.abs(expected), Math.abs(actual));
         final StringBuilder msg = new StringBuilder(EXPECTED_FORMAT).append(expected).append(ACTUAL_FORMAT)
-            .append(actual).append('>');
+            .append(actual).append(RELATIVE_ERROR_FORMAT).append(rel);
+        if (rel < ULP_THRESHOLD) {
+            final long ulp = Math.abs(Double.doubleToRawLongBits(expected) - Double.doubleToRawLongBits(actual));
+            msg.append(ULP_ERROR_FORMAT).append(ulp);
+        } else {
+            msg.append(ABSOLUTE_ERROR_FORMAT).append(diff);
+        }
+        msg.append('>');
         appendTolerance(msg, tolerance);
         return msg.toString();
     }

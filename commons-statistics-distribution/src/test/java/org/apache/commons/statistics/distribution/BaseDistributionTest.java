@@ -69,9 +69,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 abstract class BaseDistributionTest<T, D extends DistributionTestData> {
-    /** The test data. Protected to allow use in sub-classes. */
-    protected final List<D> data = new ArrayList<>();
-
     /**
      * The smallest value (epsilon) for the relative error of a {@code double}.
      * Set the relative error to an integer factor of this to test very
@@ -86,6 +83,9 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * <p>Value is 2.220446049250313E-16.
      */
     static final double RELATIVE_EPS = Math.ulp(1.0);
+
+    /** The test data. Protected to allow use in sub-classes. */
+    protected final List<D> data = new ArrayList<>();
 
     /**
      * Setup the test using data loaded from resource files.
