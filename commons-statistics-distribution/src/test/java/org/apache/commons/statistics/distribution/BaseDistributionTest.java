@@ -73,6 +73,21 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     protected final List<D> data = new ArrayList<>();
 
     /**
+     * The smallest value (epsilon) for the relative error of a {@code double}.
+     * Set the relative error to an integer factor of this to test very
+     * small differences as errors of units in the last place (ULP).
+     * Assumes the relative error is:
+     * <pre>
+     *      |x - y|
+     *   -------------
+     *   max(|x|, |y|)
+     * </pre>
+     *
+     * <p>Value is 2.220446049250313E-16.
+     */
+    static final double RELATIVE_EPS = Math.ulp(1.0);
+
+    /**
      * Setup the test using data loaded from resource files.
      * Resource files are assumed to be named sequentially from 1:
      * <pre>
