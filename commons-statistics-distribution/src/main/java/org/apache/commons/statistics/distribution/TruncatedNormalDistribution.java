@@ -20,7 +20,7 @@ package org.apache.commons.statistics.distribution;
 /**
  * Implementation of the truncated normal distribution.
  *
- * @see <a href="http://en.wikipedia.org/wiki/Truncated_normal_distribution">
+ * @see <a href="https://en.wikipedia.org/wiki/Truncated_normal_distribution">
  * Truncated normal distribution (Wikipedia)</a>
  */
 public final class TruncatedNormalDistribution extends AbstractContinuousDistribution {
@@ -28,10 +28,8 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      * This is immutable and thread-safe and can be used across instances. */
     private static final NormalDistribution STANDARD_NORMAL = NormalDistribution.of(0, 1);
 
-    /** Mean of parent normal distribution. */
-    private final double parentMean;
-    /** Standard deviation of parent normal distribution. */
-    private final double parentSd;
+    /** Parent normal distribution. */
+    private final NormalDistribution parentNormal;
     /** Mean of this distribution. */
     private final double mean;
     /** Variance of this distribution. */
@@ -41,17 +39,14 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
     /** Upper bound of this distribution. */
     private final double upper;
 
-    /** Stored value of @{code standardNormal.cumulativeProbability((lower - mean) / sd)} for faster computations. */
-    private final double cdfAlpha;
-    /**
-     * Stored value of @{code standardNormal.cumulativeProbability((upper - mean) / sd) - cdfAlpha}
-     * for faster computations.
-     */
+    /** Stored value of {@code parentNormal.probability(lower, upper)}. This is used to
+     * normalise the probability computations. */
     private final double cdfDelta;
-    /** parentSd * cdfDelta. */
-    private final double parentSdByCdfDelta;
-    /** log(parentSd * cdfDelta). */
-    private final double logParentSdByCdfDelta;
+    /** log(cdfDelta). */
+    private final double logCdfDelta;
+    /** Stored value of {@code parentNormal.cumulativeProbability(lower)}. Used to map
+     * a probability into the range of the parent normal distribution. */
+    private final double cdfAlpha;
 
     /**
      * @param mean Mean for the parent distribution.
@@ -63,48 +58,66 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         this.lower = lower;
         this.upper = upper;
 
-        parentMean = mean;
-        parentSd = sd;
+        // Use an instance for the parent normal distribution to maximise accuracy
+        // in range computations using the error function
+        parentNormal = NormalDistribution.of(mean, sd);
+
+        cdfDelta = parentNormal.probability(lower, upper);
+        logCdfDelta = Math.log(cdfDelta);
+        // Used to map the inverseCumulativeProbability
+        cdfAlpha = parentNormal.cumulativeProbability(lower);
+
+        // Calculation of variance and mean.
+        //
+        // Use the equations provided on Wikipedia:
+        // https://en.wikipedia.org/wiki/Truncated_normal_distribution#Moments
 
         final double alpha = (lower - mean) / sd;
         final double beta = (upper - mean) / sd;
-
-        final double cdfBeta = STANDARD_NORMAL.cumulativeProbability(beta);
-        cdfAlpha = STANDARD_NORMAL.cumulativeProbability(alpha);
-        cdfDelta = cdfBeta - cdfAlpha;
-
-        parentSdByCdfDelta = parentSd * cdfDelta;
-        logParentSdByCdfDelta = Math.log(parentSdByCdfDelta);
-
-        // Calculation of variance and mean.
         final double pdfAlpha = STANDARD_NORMAL.density(alpha);
         final double pdfBeta = STANDARD_NORMAL.density(beta);
-        final double pdfCdfDelta = (pdfAlpha - pdfBeta) / cdfDelta;
-        final double alphaBetaDelta = (alpha * pdfAlpha - beta * pdfBeta) / cdfDelta;
 
-        if (lower == Double.NEGATIVE_INFINITY) {
-            if (upper == Double.POSITIVE_INFINITY) {
+        // lower or upper may be infinite or the density is zero.
+
+        double mu;
+        double var;
+
+        if (lower == Double.NEGATIVE_INFINITY || pdfAlpha == 0) {
+            if (upper == Double.POSITIVE_INFINITY || pdfBeta == 0) {
                 // No truncation
-                this.mean = mean;
-                variance = sd * sd;
+                mu = mean;
+                var = sd * sd;
             } else {
-                // One-sided lower tail truncation
-                final double betaRatio = pdfBeta / cdfBeta;
-                this.mean = mean - sd * betaRatio;
-                variance = sd * sd * (1 - beta * betaRatio - betaRatio * betaRatio);
+                // One sided truncation (of upper tail)
+                final double betaRatio = pdfBeta / cdfDelta;
+                mu = mean - sd * betaRatio;
+                var = sd * sd * (1 - beta * betaRatio - betaRatio * betaRatio);
             }
         } else {
-            if (upper == Double.POSITIVE_INFINITY) {
-                // One-sided upper tail truncation
+            if (upper == Double.POSITIVE_INFINITY || pdfBeta == 0) {
+                // One sided truncation (of lower tail)
                 final double alphaRatio = pdfAlpha / cdfDelta;
-                this.mean = mean + sd * alphaRatio;
-                variance = sd * sd * (1 + alpha * alphaRatio - alphaRatio * alphaRatio);
+                mu = mean + sd * alphaRatio;
+                var = sd * sd * (1 + alpha * alphaRatio - alphaRatio * alphaRatio);
             } else {
                 // Two-sided truncation
-                this.mean = mean + pdfCdfDelta * parentSd;
-                variance = sd * sd * (1 + alphaBetaDelta - pdfCdfDelta * pdfCdfDelta);
+                // Note:
+                // This computation is numerically unstable and requires improvement.
+
+                // Do not use z = cdfDelta which can create cancellation.
+                final double cdfBeta = parentNormal.cumulativeProbability(upper);
+                final double z = cdfBeta - cdfAlpha;
+                final double pdfCdfDelta = (pdfAlpha - pdfBeta) / z;
+                final double alphaBetaDelta = (alpha * pdfAlpha - beta * pdfBeta) / z;
+                mu = mean + pdfCdfDelta * sd;
+                var = sd * sd * (1 + alphaBetaDelta - pdfCdfDelta * pdfCdfDelta);
             }
         }
+
+        // The mean should be clipped to the range [lower, upper].
+        // The variance should be less than the variance of the parent normal distribution.
+        this.mean = clipToRange(mu);
+        variance = Math.min(var, sd * sd);
     }
 
     /**
@@ -137,7 +150,13 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         if (x < lower || x > upper) {
             return 0;
         }
-        return STANDARD_NORMAL.density((x - parentMean) / parentSd) / parentSdByCdfDelta;
+        return parentNormal.density(x) / cdfDelta;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double probability(double x0, double x1) {
+        return parentNormal.probability(clipToRange(x0), clipToRange(x1)) / cdfDelta;
     }
 
     /** {@inheritDoc} */
@@ -146,7 +165,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         if (x < lower || x > upper) {
             return Double.NEGATIVE_INFINITY;
         }
-        return STANDARD_NORMAL.logDensity((x - parentMean) / parentSd) - logParentSdByCdfDelta;
+        return parentNormal.logDensity(x) - logCdfDelta;
     }
 
     /** {@inheritDoc} */
@@ -157,7 +176,18 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         } else if (x >= upper) {
             return 1;
         }
-        return (STANDARD_NORMAL.cumulativeProbability((x - parentMean) / parentSd) - cdfAlpha) / cdfDelta;
+        return parentNormal.probability(lower, x) / cdfDelta;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x) {
+        if (x <= lower) {
+            return 1;
+        } else if (x >= upper) {
+            return 0;
+        }
+        return parentNormal.probability(x, upper) / cdfDelta;
     }
 
     /** {@inheritDoc} */
@@ -170,12 +200,9 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         } else if (p == 1) {
             return upper;
         }
-        final double x = STANDARD_NORMAL.inverseCumulativeProbability(cdfAlpha + p * cdfDelta) * parentSd + parentMean;
-        // Clip to support to handle floating-point error at the support bound
-        if (x <= lower) {
-            return lower;
-        }
-        return x < upper ? x : upper;
+        // Linearly map p to the range [lower, upper]
+        final double x = parentNormal.inverseCumulativeProbability(cdfAlpha + p * cdfDelta);
+        return clipToRange(x);
     }
 
     /**
@@ -222,5 +249,19 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
     @Override
     public boolean isSupportConnected() {
         return true;
+    }
+
+    /**
+     * Clip to the value to the range [lower, upper].
+     * This is used to handle floating-point error at the support bound.
+     *
+     * @param x the x
+     * @return x clipped to the range
+     */
+    private double clipToRange(double x) {
+        if (x <= lower) {
+            return lower;
+        }
+        return x < upper ? x : upper;
     }
 }
