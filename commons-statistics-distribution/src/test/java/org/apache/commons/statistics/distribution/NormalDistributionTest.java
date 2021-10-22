@@ -18,7 +18,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -44,6 +43,23 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         return new String[] {"Mean", "StandardDeviation"};
+    }
+
+    @Override
+    protected double getRelativeTolerance() {
+        // Tests are limited by the survival probability
+        // Tolerance is 3.3306690738754696E-15.
+        return 15 * RELATIVE_EPS;
+    }
+
+    @Override
+    protected double getHighPrecisionRelativeTolerance() {
+        // Tests are limited by the survival probability.
+        // Tolerance is 1.6653345369377348E-14.
+        // This is lowest achieved with various implementations of the
+        // survival function against high precision reference data.
+        // It requires computing the factor sqrt(2 * sd * sd) exactly.
+        return 75 * RELATIVE_EPS;
     }
 
     //-------------------- Additional test cases -------------------------------
@@ -117,27 +133,29 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testMath280() {
         final NormalDistribution dist = NormalDistribution.of(0, 1);
-        final DoubleTolerance tol = createTolerance();
-        double result = dist.inverseCumulativeProbability(0.9986501019683698);
-        TestUtils.assertEquals(3.0, result, tol);
+        // Tolerance limited by precision of p close to 1.
+        // Lower the tolerance as the p value approaches 1.
+        double result;
         result = dist.inverseCumulativeProbability(0.841344746068543);
-        TestUtils.assertEquals(1.0, result, tol);
-        result = dist.inverseCumulativeProbability(0.9999683287581673);
-        TestUtils.assertEquals(4.0, result, tol);
+        TestUtils.assertEquals(1.0, result, createRelTolerance(1e-15));
         result = dist.inverseCumulativeProbability(0.9772498680518209);
-        TestUtils.assertEquals(2.0, result, tol);
+        TestUtils.assertEquals(2.0, result, createRelTolerance(1e-14));
+        result = dist.inverseCumulativeProbability(0.9986501019683698);
+        TestUtils.assertEquals(3.0, result, createRelTolerance(1e-13));
+        result = dist.inverseCumulativeProbability(0.9999683287581673);
+        TestUtils.assertEquals(4.0, result, createRelTolerance(1e-12));
     }
 
     /**
-     * Test the inverse CDF. This is currently limited by the accuracy
-     * of {@code InverseErfc}. Although the CDF can be computed
-     * to x down to -38 (CDF around 2.8854e-316) the inverse of the probability
-     * fails when x is around 9 and the CDF is approximately 1.12e-19.
+     * Test the inverse CDF is supported through the entire range of small values
+     * that can be computed by the CDF. Approximate limit is x down to -38
+     * (CDF around 2.8854e-316).
+     * Verifies fix for STATISTICS-37.
      */
     @Test
-    @Disabled("Limited by accuracy of InverseErfc")
     void testInverseCDF() {
         final NormalDistribution dist = NormalDistribution.of(0, 1);
+        Assertions.assertEquals(0.0, dist.inverseCumulativeProbability(0.5));
         // Get smaller and the CDF should reduce.
         double x = 0;
         for (;;) {
@@ -148,7 +166,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
             }
             final double x0 = dist.inverseCumulativeProbability(cdf);
             // Must be close
-            Assertions.assertEquals(x, x0, 1.0, () -> "CDF = " + cdf);
+            Assertions.assertEquals(x, x0, Math.abs(x) * 1e-11, () -> "CDF = " + cdf);
         }
     }
 }

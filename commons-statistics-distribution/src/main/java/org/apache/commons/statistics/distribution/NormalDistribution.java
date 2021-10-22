@@ -28,17 +28,26 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal (Gaussian) distribution</a>.
  */
 public final class NormalDistribution extends AbstractContinuousDistribution {
-    /** &radic;(2). */
-    private static final double SQRT2 = Math.sqrt(2.0);
     /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */
     private static final double HALF_LOG_2_PI = 0.9189385332046727417803297;
+
     /** Mean of this distribution. */
     private final double mean;
     /** Standard deviation of this distribution. */
     private final double standardDeviation;
     /** The value of {@code log(sd) + 0.5*log(2*pi)} stored for faster computation. */
     private final double logStandardDeviationPlusHalfLog2Pi;
-    /** Standard deviation multiplied by sqrt(2). */
+    /**
+     * Standard deviation multiplied by sqrt(2).
+     * This is used to avoid a double division when computing the value passed to the
+     * error function:
+     * <pre>
+     *  ((x - u) / sd) / sqrt(2) == (x - u) / (sd * sqrt(2)).
+     *  </pre>
+     * <p>Note: Implementations may first normalise x and then divide by sqrt(2) resulting
+     * in differences due to rounding error that show increasingly large relative
+     * differences as the error function computes close to 0 in the extreme tail.
+     */
     private final double sdSqrt2;
 
     /**
@@ -50,7 +59,9 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
         this.mean = mean;
         standardDeviation = sd;
         logStandardDeviationPlusHalfLog2Pi = Math.log(sd) + HALF_LOG_2_PI;
-        sdSqrt2 = sd * SQRT2;
+        // Minimise rounding error by computing sqrt(2 * sd * sd) exactly.
+        // Compute using extended precision with care to avoid over/underflow.
+        sdSqrt2 = ExtendedPrecision.sqrt2xx(sd);
     }
 
     /**
@@ -63,10 +74,11 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
      */
     public static NormalDistribution of(double mean,
                                         double sd) {
-        if (sd <= 0) {
-            throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
+        if (sd > 0) {
+            return new NormalDistribution(mean, sd);
         }
-        return new NormalDistribution(mean, sd);
+        // zero, negative or nan
+        throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
     }
 
     /**
@@ -105,19 +117,10 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
         return -0.5 * x1 * x1 - logStandardDeviationPlusHalfLog2Pi;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>If {@code x} is more than 40 standard deviations from the mean, 0 or 1
-     * is returned, as in these cases the actual value is within
-     * {@code Double.MIN_VALUE} of 0 or 1.
-     */
+    /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x)  {
         final double dev = x - mean;
-        if (Math.abs(dev) > 40 * standardDeviation) {
-            return dev < 0 ? 0.0d : 1.0d;
-        }
         return 0.5 * Erfc.value(-dev / sdSqrt2);
     }
 
@@ -125,9 +128,6 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
     @Override
     public double survivalProbability(double x) {
         final double dev = x - mean;
-        if (Math.abs(dev) > 40 * standardDeviation) {
-            return dev > 0 ? 0.0d : 1.0d;
-        }
         return 0.5 * Erfc.value(dev / sdSqrt2);
     }
 
