@@ -24,8 +24,8 @@ import org.apache.commons.rng.sampling.distribution.PoissonSampler;
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>.
  */
 public final class PoissonDistribution extends AbstractDiscreteDistribution {
-    /** 0.5 * ln(2 &pi;). */
-    private static final double HALF_LOG_TWO_PI = 0.5 * Math.log(2 * Math.PI);
+    /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */
+    private static final double HALF_LOG_TWO_PI = 0.9189385332046727417803297;
     /** Default maximum number of iterations. */
     private static final int DEFAULT_MAX_ITERATIONS = 10000000;
     /** Default convergence criterion. */

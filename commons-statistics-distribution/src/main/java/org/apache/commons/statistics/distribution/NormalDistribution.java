@@ -29,7 +29,7 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  */
 public final class NormalDistribution extends AbstractContinuousDistribution {
     /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */
-    private static final double HALF_LOG_2_PI = 0.9189385332046727417803297;
+    private static final double HALF_LOG_TWO_PI = 0.9189385332046727417803297;
 
     /** Mean of this distribution. */
     private final double mean;
@@ -58,7 +58,7 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
                                double sd) {
         this.mean = mean;
         standardDeviation = sd;
-        logStandardDeviationPlusHalfLog2Pi = Math.log(sd) + HALF_LOG_2_PI;
+        logStandardDeviationPlusHalfLog2Pi = Math.log(sd) + HALF_LOG_TWO_PI;
         // Minimise rounding error by computing sqrt(2 * sd * sd) exactly.
         // Compute using extended precision with care to avoid over/underflow.
         sdSqrt2 = ExtendedPrecision.sqrt2xx(sd);
