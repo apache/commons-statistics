@@ -401,6 +401,18 @@ abstract class BaseDiscreteDistributionTest
     }
 
     /**
+     * Create a stream of arguments containing the distribution to test. Sampling is tested using
+     * the distribution quartiles. The quartiles should be approximately 25% of the distribution
+     * PMF. Discrete distributions that have single points that contain much more than 25% of the
+     * probability mass will be ignored.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testSamplingQuartiles() {
+        return streamDistrbution(DiscreteDistributionTestData::isDisableSample, "sampling quartiles");
+    }
+
+    /**
      * Stream the arguments to test the probability sums. The test
      * sums the probability mass function between consecutive test points for the cumulative
      * density function. The default tolerance is based on the test tolerance for evaluation
@@ -818,6 +830,52 @@ abstract class BaseDiscreteDistributionTest
         }
 
         TestUtils.assertChiSquareAccept(points, expected, counts, 0.001);
+    }
+
+    /**
+     * Test sampling from the distribution using quartiles.
+     * This test is ignored if the range for the distribution PMF is small
+     * and the quartiles do not map to approximately 0.25. When the range of
+     * the distribution is small then the {@link #testSampling(DiscreteDistribution, int[], double[])}
+     * method should be used with points that covers at least 50% of the PMF.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testSamplingQuartiles(DiscreteDistribution dist) {
+        final int[] quartiles = TestUtils.getDistributionQuartiles(dist);
+        // The distribution quartiles are created using the inverse CDF.
+        // This may not be accurate for extreme parameterizations of the distribution.
+        // So use the values to compute the expected probability for each interval.
+        final double[] expected = {
+            dist.cumulativeProbability(quartiles[0]),
+            dist.probability(quartiles[0], quartiles[1]),
+            dist.probability(quartiles[1], quartiles[2]),
+            dist.survivalProbability(quartiles[2]),
+        };
+        // Ignore this test if the quartiles are different from a quarter.
+        // This will exclude distributions where the PMF is heavily concentrated
+        // at a single point. In this case it can be realistically
+        // sampled using a small number of points.
+        final DoubleTolerance tolerance = DoubleTolerances.absolute(0.1);
+        for (final double p : expected) {
+            Assumptions.assumeTrue(tolerance.test(0.25, p),
+                () -> "Unexpected quartiles: " + Arrays.toString(expected));
+        }
+
+        final int sampleSize = 1000;
+        MathArrays.scaleInPlace(sampleSize, expected);
+
+        // Use fixed seed.
+        final DiscreteDistribution.Sampler sampler =
+            dist.createSampler(RandomSource.XO_SHI_RO_256_PP.create(123456789L));
+        final int[] sample = TestUtils.sample(sampleSize, sampler);
+
+        final long[] counts = new long[4];
+        for (int i = 0; i < sampleSize; i++) {
+            TestUtils.updateCounts(sample[i], counts, quartiles);
+        }
+
+        TestUtils.assertChiSquareAccept(expected, counts, 0.001);
     }
 
     /**

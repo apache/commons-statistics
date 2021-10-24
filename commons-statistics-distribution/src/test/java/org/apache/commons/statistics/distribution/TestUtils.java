@@ -313,6 +313,21 @@ final class TestUtils {
     }
 
     /**
+     * Computes the 25th, 50th and 75th percentiles of the given distribution and returns
+     * these values in an array.
+     *
+     * @param distribution Distribution.
+     * @return the quartiles
+     */
+    static int[] getDistributionQuartiles(DiscreteDistribution distribution) {
+        final int[] quantiles = new int[3];
+        quantiles[0] = distribution.inverseCumulativeProbability(0.25d);
+        quantiles[1] = distribution.inverseCumulativeProbability(0.5d);
+        quantiles[2] = distribution.inverseCumulativeProbability(0.75d);
+        return quantiles;
+    }
+
+    /**
      * Updates observed counts of values in quartiles.
      * counts[0] <-> 1st quartile ... counts[3] <-> top quartile
      *
@@ -321,6 +336,22 @@ final class TestUtils {
      * @param quartiles Quartiles.
      */
     static void updateCounts(double value, long[] counts, double[] quartiles) {
+        if (value > quartiles[1]) {
+            counts[value <= quartiles[2] ? 2 : 3]++;
+        } else {
+            counts[value <= quartiles[0] ? 0 : 1]++;
+        }
+    }
+
+    /**
+     * Updates observed counts of values in quartiles.
+     * counts[0] <-> 1st quartile ... counts[3] <-> top quartile
+     *
+     * @param value Observed value.
+     * @param counts Counts for each quartile.
+     * @param quartiles Quartiles.
+     */
+    static void updateCounts(double value, long[] counts, int[] quartiles) {
         if (value > quartiles[1]) {
             counts[value <= quartiles[2] ? 2 : 3]++;
         } else {
