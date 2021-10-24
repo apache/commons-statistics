@@ -747,7 +747,7 @@ abstract class BaseContinuousDistributionTest
             dist.cumulativeProbability(quartiles[0]),
             dist.probability(quartiles[0], quartiles[1]),
             dist.probability(quartiles[1], quartiles[2]),
-            1.0 - dist.cumulativeProbability(quartiles[2]),
+            dist.survivalProbability(quartiles[2]),
         };
         // Fail if the quartiles are different from a quarter.
         // Note: Set the tolerance to a high value to allow the sampling test
