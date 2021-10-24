@@ -18,7 +18,10 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.RegularizedGamma;
 import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.GaussianSampler;
 import org.apache.commons.rng.sampling.distribution.PoissonSampler;
+import org.apache.commons.rng.sampling.distribution.SharedStateContinuousSampler;
+import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>.
@@ -30,6 +33,8 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
     private static final int DEFAULT_MAX_ITERATIONS = 10000000;
     /** Default convergence criterion. */
     private static final double DEFAULT_EPSILON = 1e-12;
+    /** Upper bound on the mean to use the PoissonSampler. */
+    private static final double MAX_MEAN = 0.5 * Integer.MAX_VALUE;
     /** Mean of the distribution. */
     private final double mean;
     /** Maximum number of iterations for cumulative probability. */
@@ -180,6 +185,20 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Poisson distribution sampler.
-        return PoissonSampler.of(rng, mean)::sample;
+        // Large means are not supported.
+        // See STATISTICS-35.
+        final double mu = getMean();
+        if (mu < MAX_MEAN) {
+            return PoissonSampler.of(rng, mu)::sample;
+        }
+        // Switch to a Gaussian approximation.
+        // Use a 0.5 shift to round samples to the correct integer.
+        final SharedStateContinuousSampler s =
+            GaussianSampler.of(ZigguratSampler.NormalizedGaussian.of(rng),
+                               mu + 0.5, Math.sqrt(mu));
+        return () -> {
+            final double x = s.sample();
+            return Math.max(0, (int) x);
+        };
     }
 }
