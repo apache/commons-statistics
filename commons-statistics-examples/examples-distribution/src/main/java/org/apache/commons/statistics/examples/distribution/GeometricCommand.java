@@ -70,7 +70,7 @@ class GeometricCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<DiscreteDistribution>> list = new ArrayList<>();
             for (final double prob : params.p) {
-                final DiscreteDistribution d = new GeometricDistribution(prob);
+                final DiscreteDistribution d = GeometricDistribution.of(prob);
                 list.add(new Distribution<>(d, "p=" + prob));
             }
             return list;

@@ -70,7 +70,7 @@ class ChiSquaredCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (final double degreesOfFreedom : params.df) {
-                final ContinuousDistribution d = new ChiSquaredDistribution(degreesOfFreedom);
+                final ContinuousDistribution d = ChiSquaredDistribution.of(degreesOfFreedom);
                 list.add(new Distribution<>(d, "df=" + degreesOfFreedom));
             }
             return list;

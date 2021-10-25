@@ -83,7 +83,7 @@ class ZipfCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<DiscreteDistribution>> list = new ArrayList<>();
             for (int i = 0; i < max; i++) {
-                final DiscreteDistribution d = new ZipfDistribution(n[i], e[i]);
+                final DiscreteDistribution d = ZipfDistribution.of(n[i], e[i]);
                 list.add(new Distribution<>(d, "n=" + n[i] + ",p=" + e[i]));
             }
             return list;

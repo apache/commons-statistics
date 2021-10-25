@@ -83,7 +83,7 @@ class NakagamiCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new NakagamiDistribution(shape[i], scale[i]);
+                final ContinuousDistribution d = NakagamiDistribution.of(shape[i], scale[i]);
                 list.add(new Distribution<>(d, "mu=" + shape[i] + ",omega=" + scale[i]));
             }
             return list;

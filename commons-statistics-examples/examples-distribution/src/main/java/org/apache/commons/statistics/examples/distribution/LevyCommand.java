@@ -83,7 +83,7 @@ class LevyCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new LevyDistribution(location[i], scale[i]);
+                final ContinuousDistribution d = LevyDistribution.of(location[i], scale[i]);
                 list.add(new Distribution<>(d, "mu=" + location[i] + ",c=" + scale[i]));
             }
             return list;

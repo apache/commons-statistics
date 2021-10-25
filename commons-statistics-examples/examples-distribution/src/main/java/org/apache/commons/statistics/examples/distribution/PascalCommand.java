@@ -87,7 +87,7 @@ class PascalCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<DiscreteDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final DiscreteDistribution d = new PascalDistribution(r[i], p[i]);
+                final DiscreteDistribution d = PascalDistribution.of(r[i], p[i]);
                 list.add(new Distribution<>(d, "r=" + r[i] + ",p=" + p[i]));
             }
             return list;

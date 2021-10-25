@@ -84,7 +84,7 @@ class ParetoCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new ParetoDistribution(scale[i], shape[i]);
+                final ContinuousDistribution d = ParetoDistribution.of(scale[i], shape[i]);
                 list.add(new Distribution<>(d, "xm=" + scale[i] + ",alpha=" + shape[i]));
             }
             return list;

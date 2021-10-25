@@ -83,7 +83,7 @@ class FCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new FDistribution(df1[i], df2[i]);
+                final ContinuousDistribution d = FDistribution.of(df1[i], df2[i]);
                 list.add(new Distribution<>(d, "df1=" + df1[i] + ",df2=" + df2[i]));
             }
             return list;

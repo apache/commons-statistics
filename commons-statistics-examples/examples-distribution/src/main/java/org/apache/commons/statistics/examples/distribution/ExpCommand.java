@@ -69,7 +69,7 @@ class ExpCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (final double m : params.mean) {
-                final ContinuousDistribution d = new ExponentialDistribution(m);
+                final ContinuousDistribution d = ExponentialDistribution.of(m);
                 list.add(new Distribution<>(d, "mean=" + m));
             }
             return list;

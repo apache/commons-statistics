@@ -84,7 +84,7 @@ class BinomialCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<DiscreteDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final DiscreteDistribution d = new BinomialDistribution(trials[i], p[i]);
+                final DiscreteDistribution d = BinomialDistribution.of(trials[i], p[i]);
                 list.add(new Distribution<>(d, "trials=" + trials[i] + ",p=" + p[i]));
             }
             return list;

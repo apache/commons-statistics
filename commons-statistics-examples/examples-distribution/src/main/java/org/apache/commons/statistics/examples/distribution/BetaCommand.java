@@ -83,7 +83,7 @@ class BetaCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new BetaDistribution(alpha[i], beta[i]);
+                final ContinuousDistribution d = BetaDistribution.of(alpha[i], beta[i]);
                 list.add(new Distribution<>(d, "alpha=" + alpha[i] + ",beta=" + beta[i]));
             }
             return list;

@@ -85,7 +85,7 @@ class NormalCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new NormalDistribution(mean[i], sigma[i]);
+                final ContinuousDistribution d = NormalDistribution.of(mean[i], sigma[i]);
                 list.add(new Distribution<>(d, "mu=" + mean[i] + ",sigma=" + sigma[i]));
             }
             return list;

@@ -96,7 +96,7 @@ class TriangularCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new TriangularDistribution(lower[i], mode[i], upper[i]);
+                final ContinuousDistribution d = TriangularDistribution.of(lower[i], mode[i], upper[i]);
                 list.add(new Distribution<>(d, "a=" + lower[i] + ",b=" + upper[i] + ",c=" + upper[i]));
             }
             return list;

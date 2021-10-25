@@ -86,7 +86,7 @@ class UniformContinuousCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new UniformContinuousDistribution(lower[i], upper[i]);
+                final ContinuousDistribution d = UniformContinuousDistribution.of(lower[i], upper[i]);
                 list.add(new Distribution<>(d, "a=" + lower[i] + ",b=" + upper[i]));
             }
             return list;

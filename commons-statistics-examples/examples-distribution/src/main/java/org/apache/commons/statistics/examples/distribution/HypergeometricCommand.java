@@ -95,7 +95,7 @@ class HypergeometricCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<DiscreteDistribution>> list = new ArrayList<>();
             for (int i = 0; i < max; i++) {
-                final DiscreteDistribution d = new HypergeometricDistribution(popSize[i], successes[i], n[i]);
+                final DiscreteDistribution d = HypergeometricDistribution.of(popSize[i], successes[i], n[i]);
                 list.add(new Distribution<>(d, "N=" + popSize[i] + ",K=" + successes[i] + ",n=" + n[i]));
             }
             return list;

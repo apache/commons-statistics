@@ -70,7 +70,7 @@ class PoissonCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<DiscreteDistribution>> list = new ArrayList<>();
             for (final double m : params.mean) {
-                final DiscreteDistribution d = new PoissonDistribution(m);
+                final DiscreteDistribution d = PoissonDistribution.of(m);
                 list.add(new Distribution<>(d, "mean=" + m));
             }
             return list;

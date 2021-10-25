@@ -69,7 +69,7 @@ class TCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (final double degreesOfFreedom : params.df) {
-                final ContinuousDistribution d = new TDistribution(degreesOfFreedom);
+                final ContinuousDistribution d = TDistribution.of(degreesOfFreedom);
                 list.add(new Distribution<>(d, "df=" + degreesOfFreedom));
             }
             return list;

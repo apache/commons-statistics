@@ -83,7 +83,7 @@ class LaplaceCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new LaplaceDistribution(location[i], scale[i]);
+                final ContinuousDistribution d = LaplaceDistribution.of(location[i], scale[i]);
                 list.add(new Distribution<>(d, "mu=" + location[i] + ",beta=" + scale[i]));
             }
             return list;

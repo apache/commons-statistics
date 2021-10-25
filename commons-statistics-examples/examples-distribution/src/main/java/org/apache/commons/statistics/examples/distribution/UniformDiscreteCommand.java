@@ -85,7 +85,7 @@ class UniformDiscreteCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<DiscreteDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final DiscreteDistribution d = new UniformDiscreteDistribution(lower[i], upper[i]);
+                final DiscreteDistribution d = UniformDiscreteDistribution.of(lower[i], upper[i]);
                 list.add(new Distribution<>(d, "a=" + lower[i] + ",b=" + upper[i]));
             }
             return list;

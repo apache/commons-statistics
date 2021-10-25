@@ -84,7 +84,7 @@ class GammaCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new GammaDistribution(shape[i], scale[i]);
+                final ContinuousDistribution d = GammaDistribution.of(shape[i], scale[i]);
                 list.add(new Distribution<>(d, "shape=" + shape[i] + ",scale=" + scale[i]));
             }
             return list;

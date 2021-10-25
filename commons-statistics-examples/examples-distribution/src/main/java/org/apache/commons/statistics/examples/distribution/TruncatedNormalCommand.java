@@ -107,7 +107,7 @@ class TruncatedNormalCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new TruncatedNormalDistribution(mean[i], sigma[i], lower[i], upper[i]);
+                final ContinuousDistribution d = TruncatedNormalDistribution.of(mean[i], sigma[i], lower[i], upper[i]);
                 list.add(new Distribution<>(d, "mu=" + mean[i] + ",sigma=" + sigma[i] +
                                                ",lower=" + lower[i] + ",upper=" + upper[i]));
             }

@@ -84,7 +84,7 @@ class LogNormalCommand extends AbstractDistributionCommand {
             // Create distributions
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
-                final ContinuousDistribution d = new LogNormalDistribution(mean[i], sigma[i]);
+                final ContinuousDistribution d = LogNormalDistribution.of(mean[i], sigma[i]);
                 list.add(new Distribution<>(d, "mu=" + mean[i] + ",sigma=" + sigma[i]));
             }
             return list;
