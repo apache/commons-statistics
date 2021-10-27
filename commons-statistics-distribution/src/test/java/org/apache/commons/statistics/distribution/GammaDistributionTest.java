@@ -134,7 +134,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
      * be very large.
      */
     @Test
-    @Disabled
+    @Disabled("Implementation fails for small x")
     void testShapeBelow1() {
         // R2.5: print(dgamma(x, shape=0.05, rate=1), digits=20)
         final double[] x = new double[]{1e-100, 1e-10, 1e-5, 0.1};
