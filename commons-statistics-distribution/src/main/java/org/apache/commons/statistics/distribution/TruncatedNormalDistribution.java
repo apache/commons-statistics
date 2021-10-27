@@ -80,25 +80,25 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         // lower or upper may be infinite or the density is zero.
 
         double mu;
-        double var;
+        double v;
 
         if (lower == Double.NEGATIVE_INFINITY || pdfAlpha == 0) {
             if (upper == Double.POSITIVE_INFINITY || pdfBeta == 0) {
                 // No truncation
                 mu = mean;
-                var = sd * sd;
+                v = sd * sd;
             } else {
                 // One sided truncation (of upper tail)
                 final double betaRatio = pdfBeta / cdfDelta;
                 mu = mean - sd * betaRatio;
-                var = sd * sd * (1 - beta * betaRatio - betaRatio * betaRatio);
+                v = sd * sd * (1 - beta * betaRatio - betaRatio * betaRatio);
             }
         } else {
             if (upper == Double.POSITIVE_INFINITY || pdfBeta == 0) {
                 // One sided truncation (of lower tail)
                 final double alphaRatio = pdfAlpha / cdfDelta;
                 mu = mean + sd * alphaRatio;
-                var = sd * sd * (1 + alpha * alphaRatio - alphaRatio * alphaRatio);
+                v = sd * sd * (1 + alpha * alphaRatio - alphaRatio * alphaRatio);
             } else {
                 // Two-sided truncation
                 // Note:
@@ -110,14 +110,14 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
                 final double pdfCdfDelta = (pdfAlpha - pdfBeta) / z;
                 final double alphaBetaDelta = (alpha * pdfAlpha - beta * pdfBeta) / z;
                 mu = mean + pdfCdfDelta * sd;
-                var = sd * sd * (1 + alphaBetaDelta - pdfCdfDelta * pdfCdfDelta);
+                v = sd * sd * (1 + alphaBetaDelta - pdfCdfDelta * pdfCdfDelta);
             }
         }
 
         // The mean should be clipped to the range [lower, upper].
         // The variance should be less than the variance of the parent normal distribution.
         this.mean = clipToRange(mu);
-        variance = Math.min(var, sd * sd);
+        variance = Math.min(v, sd * sd);
     }
 
     /**

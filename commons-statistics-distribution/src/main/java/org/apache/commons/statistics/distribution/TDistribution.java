@@ -248,11 +248,11 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
         }
         // If the variance converges to 1 use a NormalDistribution.
         // Occurs at 2^55 = 3.60e16
-        final double var = StudentsTDistribution.computeVariance(degreesOfFreedom);
-        if (var == 1) {
+        final double variance = StudentsTDistribution.computeVariance(degreesOfFreedom);
+        if (variance == 1) {
             return new NormalTDistribution(degreesOfFreedom);
         }
-        return new StudentsTDistribution(degreesOfFreedom, var);
+        return new StudentsTDistribution(degreesOfFreedom, variance);
     }
 
     /**
