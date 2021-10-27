@@ -143,10 +143,10 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
         // See http://www.math.wm.edu/~leemis/chart/UDR/PDFs/Zipf.pdf
         // S(x) = P(X > x) = ((x+1)^a Hn,a - (x+1)^a Hx+1,a + 1) / ((x+1)^a Hn,a)
         // where a = exponent and Hx,a is the generalized harmonic for x with exponent a.
-        final double z = Math.pow(x + 1, exponent);
+        final double z = Math.pow(x + 1.0, exponent);
         // Compute generalizedHarmonic(x, exponent) and generalizedHarmonic(x+1, exponent)
         final double hx = generalizedHarmonic(x, exponent);
-        final double hx1 = hx + Math.pow(x + 1, -exponent);
+        final double hx1 = hx + Math.pow(x + 1.0, -exponent);
         // Compute the survival function
         final double p = (z * (nthHarmonic - hx1) + 1) / (z * nthHarmonic);
         // May overflow for large exponent so validate the probability.
