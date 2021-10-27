@@ -149,7 +149,6 @@ class ExtendedPrecisionTest {
         assertSqrt2xxStandardPrecision(RMS2, 1.3, 0.6);
     }
 
-    @Test
     private static void assertSqrt2xxStandardPrecision(RMS rms, double maxError, double rmsError) {
         Assertions.assertTrue(rms.getMax() < maxError, () -> "max error: " + rms.getMax());
         Assertions.assertTrue(rms.getRMS() < rmsError, () -> "rms error: " + rms.getRMS());
