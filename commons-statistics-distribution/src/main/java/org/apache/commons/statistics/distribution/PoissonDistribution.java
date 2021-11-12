@@ -111,6 +111,8 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
     public double cumulativeProbability(int x) {
         if (x < 0) {
             return 0;
+        } else if (x == 0) {
+            return Math.exp(-mean);
         }
         return RegularizedGamma.Q.value((double) x + 1, mean, epsilon,
                                         maxIterations);
@@ -121,6 +123,9 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
     public double survivalProbability(int x) {
         if (x < 0) {
             return 1;
+        } else if (x == 0) {
+            // 1 - exp(-mean)
+            return -Math.expm1(-mean);
         }
         return RegularizedGamma.P.value((double) x + 1, mean, epsilon,
                                         maxIterations);
