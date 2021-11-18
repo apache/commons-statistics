@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.function.IntUnaryOperator;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.InverseTransformDiscreteSampler;
 
@@ -113,64 +114,111 @@ abstract class AbstractDiscreteDistribution
     @Override
     public int inverseCumulativeProbability(final double p) {
         ArgumentUtils.checkProbability(p);
+        return inverseProbability(p, 1 - p, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns:
+     * <ul>
+     * <li>{@link #getSupportLowerBound()} for {@code p = 1},</li>
+     * <li>{@link #getSupportUpperBound()} for {@code p = 0}, or</li>
+     * <li>the result of a search for a root between the lower and upper bound using
+     *     {@link #survivalProbability(int) survivalProbability(x) - p}.
+     *     The bounds may be bracketed for efficiency.</li>
+     * </ul>
+     *
+     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
+     */
+    @Override
+    public int inverseSurvivalProbability(final double p) {
+        ArgumentUtils.checkProbability(p);
+        return inverseProbability(1 - p, p, true);
+    }
+
+    /**
+     * Implementation for the inverse cumulative or survival probability.
+     *
+     * @param p Cumulative probability.
+     * @param q Survival probability.
+     * @param complement Set to true to compute the inverse survival probability
+     * @return the value
+     */
+    private int inverseProbability(final double p, final double q, boolean complement) {
 
         int lower = getSupportLowerBound();
         if (p == 0) {
             return lower;
         }
-        if (lower == Integer.MIN_VALUE) {
-            if (checkedCumulativeProbability(lower) >= p) {
-                return lower;
-            }
-        } else {
-            lower -= 1; // this ensures cumulativeProbability(lower) < p, which
-                        // is important for the solving step
-        }
-
         int upper = getSupportUpperBound();
-        if (p == 1) {
+        if (q == 0) {
             return upper;
         }
 
+        // The binary search sets the upper value to the mid-point
+        // based on fun(x) >= 0. The upper value is returned.
+        //
+        // Create a function to search for x where the upper bound can be
+        // lowered if:
+        // cdf(x) >= p
+        // sf(x)  <= q
+        final IntUnaryOperator fun = complement ?
+            x -> Double.compare(q, checkedProbability(survivalProbability(x))) :
+            x -> Double.compare(checkedProbability(cumulativeProbability(x)), p);
+
+        if (lower == Integer.MIN_VALUE) {
+            if (fun.applyAsInt(lower) >= 0) {
+                return lower;
+            }
+        } else {
+            // this ensures:
+            // cumulativeProbability(lower) < p
+            // survivalProbability(lower) > q
+            // which is important for the solving step
+            lower -= 1;
+        }
+
         // use the one-sided Chebyshev inequality to narrow the bracket
-        // cf. AbstractRealDistribution.inverseCumulativeProbability(double)
+        // cf. AbstractContinuousDistribution.inverseCumulativeProbability(double)
         final double mu = getMean();
-        final double sigma = Math.sqrt(getVariance());
+        final double sig = Math.sqrt(getVariance());
         final boolean chebyshevApplies = Double.isFinite(mu) &&
-                                         Double.isFinite(sigma) &&
-                                         sigma != 0.0;
+                                         ArgumentUtils.isFiniteStrictlyPositive(sig);
 
         if (chebyshevApplies) {
-            double k = Math.sqrt((1.0 - p) / p);
-            double tmp = mu - k * sigma;
+            double tmp = mu - sig * Math.sqrt(q / p);
             if (tmp > lower) {
                 lower = ((int) Math.ceil(tmp)) - 1;
             }
-            k = 1.0 / k;
-            tmp = mu + k * sigma;
+            tmp = mu + sig * Math.sqrt(p / q);
             if (tmp < upper) {
                 upper = ((int) Math.ceil(tmp)) - 1;
             }
         }
 
-        return solveInverseCumulativeProbability(p, lower, upper);
+        // TODO
+        // Improve the simple bisection to use a faster search,
+        // e.g. a BrentSolver.
+
+        return solveInverseProbability(fun, lower, upper);
     }
 
     /**
      * This is a utility function used by {@link
-     * #inverseCumulativeProbability(double)}. It assumes {@code 0 < p < 1} and
-     * that the inverse cumulative probability lies in the bracket {@code
+     * #inverseProbability(double, double, boolean)}. It assumes
+     * that the inverse probability lies in the bracket {@code
      * (lower, upper]}. The implementation does simple bisection to find the
-     * smallest {@code p}-quantile {@code inf{x in Z | P(X <= x) >= p}}.
+     * smallest {@code x} such that {@code fun(x) >= 0}.
      *
-     * @param p Cumulative probability.
-     * @param lowerBound Value satisfying {@code cumulativeProbability(lower) < p}.
-     * @param upperBound Value satisfying {@code p <= cumulativeProbability(upper)}.
-     * @return the smallest {@code p}-quantile of this distribution.
+     * @param fun Probability function.
+     * @param lowerBound Value satisfying {@code fun(lower) < 0}.
+     * @param upperBound Value satisfying {@code fun(upper) >= 0}.
+     * @return the smallest x
      */
-    private int solveInverseCumulativeProbability(final double p,
-                                                  int lowerBound,
-                                                  int upperBound) {
+    private static int solveInverseProbability(IntUnaryOperator fun,
+                                               int lowerBound,
+                                               int upperBound) {
         // Use long to prevent overflow during computation of the middle
         long lower = lowerBound;
         long upper = upperBound;
@@ -180,28 +228,30 @@ abstract class AbstractDiscreteDistribution
             // lower and upper arguments of this method are positive, for
             // example, for PoissonDistribution.
             final long middle = (lower + upper) / 2;
-            final double pm = checkedCumulativeProbability((int) middle);
-            if (pm >= p) {
-                upper = middle;
-            } else {
+            final double pm = fun.applyAsInt((int) middle);
+            if (pm < 0) {
                 lower = middle;
+            } else {
+                upper = middle;
             }
         }
         return (int) upper;
     }
 
     /**
-     * Computes the cumulative probability function and checks for {@code NaN}
-     * values returned. Rethrows any exception encountered evaluating the cumulative
-     * probability function. Throws {@code IllegalStateException} if the cumulative
+     * Checks the probability function result for {@code NaN}.
+     * Throws {@code IllegalStateException} if the cumulative
      * probability function returns {@code NaN}.
      *
-     * @param argument Input value.
-     * @return the cumulative probability.
-     * @throws IllegalStateException if the cumulative probability is {@code NaN}.
+     * <p>TODO: Q. Is this required? The bisection search will
+     * eventually return if NaN is computed. Check the origin
+     * of this in Commons Math. Its origins may be for debugging.
+     *
+     * @param result Probability
+     * @return the probability.
+     * @throws IllegalStateException if the probability is {@code NaN}.
      */
-    private double checkedCumulativeProbability(int argument) {
-        final double result = cumulativeProbability(argument);
+    private static double checkedProbability(double result) {
         if (Double.isNaN(result)) {
             throw new IllegalStateException("Internal error");
         }

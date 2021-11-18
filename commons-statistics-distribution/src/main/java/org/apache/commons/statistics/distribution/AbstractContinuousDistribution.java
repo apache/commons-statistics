@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.function.DoubleBinaryOperator;
+import java.util.function.DoubleUnaryOperator;
 import org.apache.commons.numbers.rootfinder.BrentSolver;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.InverseTransformContinuousSampler;
@@ -147,6 +149,39 @@ abstract class AbstractContinuousDistribution
      */
     @Override
     public double inverseCumulativeProbability(final double p) {
+        ArgumentUtils.checkProbability(p);
+        return inverseProbability(p, 1 - p, false);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The default implementation returns:
+     * <ul>
+     * <li>{@link #getSupportLowerBound()} for {@code p = 1},</li>
+     * <li>{@link #getSupportUpperBound()} for {@code p = 0}, or</li>
+     * <li>the result of a search for a root between the lower and upper bound using
+     *     {@link #survivalProbability(double) survivalProbability(x) - p}.
+     *     The bounds may be bracketed for efficiency.</li>
+     * </ul>
+     *
+     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
+     */
+    @Override
+    public double inverseSurvivalProbability(final double p) {
+        ArgumentUtils.checkProbability(p);
+        return inverseProbability(1 - p, p, true);
+    }
+
+    /**
+     * Implementation for the inverse cumulative or survival probability.
+     *
+     * @param p Cumulative probability.
+     * @param q Survival probability.
+     * @param complement Set to true to compute the inverse survival probability
+     * @return the value
+     */
+    private double inverseProbability(final double p, final double q, boolean complement) {
         /* IMPLEMENTATION NOTES
          * --------------------
          * Where applicable, use is made of the one-sided Chebyshev inequality
@@ -173,17 +208,18 @@ abstract class AbstractContinuousDistribution
          * In cases where the Chebyshev inequality does not apply, geometric
          * progressions 1, 2, 4, ... and -1, -2, -4, ... are used to bracket
          * the root.
+         *
+         * In the case of the survival probability the bracket can be set using the same
+         * bound given that the argument p = 1 - q, with q the survival probability.
          */
-        ArgumentUtils.checkProbability(p);
 
         double lowerBound = getSupportLowerBound();
-        if (p == 0) {
-            return lowerBound;
-        }
-
         double upperBound = getSupportUpperBound();
-        if (p == 1) {
-            return upperBound;
+        if (p == 0) {
+            return complement ? upperBound : lowerBound;
+        }
+        if (q == 0) {
+            return complement ? lowerBound : upperBound;
         }
 
         final double mu = getMean();
@@ -193,55 +229,103 @@ abstract class AbstractContinuousDistribution
 
         if (lowerBound == Double.NEGATIVE_INFINITY) {
             if (chebyshevApplies) {
-                lowerBound = mu - sig * Math.sqrt((1 - p) / p);
+                lowerBound = mu - sig * Math.sqrt(q / p);
             }
             // Bound may have been set as infinite
             if (lowerBound == Double.NEGATIVE_INFINITY) {
                 lowerBound = Math.min(-1, upperBound);
-                while (cumulativeProbability(lowerBound) >= p) {
-                    lowerBound *= 2;
+                if (complement) {
+                    while (survivalProbability(lowerBound) < q) {
+                        lowerBound *= 2;
+                    }
+                } else {
+                    while (cumulativeProbability(lowerBound) >= p) {
+                        lowerBound *= 2;
+                    }
                 }
+                // Ensure finite
+                lowerBound = Math.max(lowerBound, -Double.MAX_VALUE);
             }
         }
 
         if (upperBound == Double.POSITIVE_INFINITY) {
             if (chebyshevApplies) {
-                upperBound = mu + sig * Math.sqrt(p / (1 - p));
+                upperBound = mu + sig * Math.sqrt(p / q);
             }
             // Bound may have been set as infinite
             if (upperBound == Double.POSITIVE_INFINITY) {
                 upperBound = Math.max(1, lowerBound);
-                while (cumulativeProbability(upperBound) < p) {
-                    upperBound *= 2;
+                if (complement) {
+                    while (survivalProbability(upperBound) >= q) {
+                        upperBound *= 2;
+                    }
+                } else {
+                    while (cumulativeProbability(upperBound) < p) {
+                        upperBound *= 2;
+                    }
                 }
+                // Ensure finite
+                upperBound = Math.min(upperBound, Double.MAX_VALUE);
             }
         }
 
+        final DoubleUnaryOperator fun = complement ?
+            arg -> survivalProbability(arg) - q :
+            arg -> cumulativeProbability(arg) - p;
         final double x = new BrentSolver(SOLVER_RELATIVE_ACCURACY,
                                          SOLVER_ABSOLUTE_ACCURACY,
                                          SOLVER_FUNCTION_VALUE_ACCURACY)
-            .findRoot(arg -> cumulativeProbability(arg) - p,
+            .findRoot(fun,
                       lowerBound,
                       0.5 * (lowerBound + upperBound),
                       upperBound);
 
         if (!isSupportConnected()) {
-            /* Test for plateau. */
-            final double dx = SOLVER_ABSOLUTE_ACCURACY;
-            if (x - dx >= lowerBound) {
-                final double px = cumulativeProbability(x);
-                if (cumulativeProbability(x - dx) == px) {
-                    upperBound = x;
-                    while (upperBound - lowerBound > dx) {
-                        final double midPoint = 0.5 * (lowerBound + upperBound);
-                        if (cumulativeProbability(midPoint) < px) {
-                            lowerBound = midPoint;
-                        } else {
-                            upperBound = midPoint;
-                        }
+            return searchPlateau(complement, lowerBound, x);
+        }
+        return x;
+    }
+
+    /**
+     * Test the probability function for a plateau at the point x. If detected
+     * search the plateau for the lowest point y such that
+     * {@code inf{y in R | P(y) == P(x)}}.
+     *
+     * <p>This function is used when the distribution support is not connected
+     * to satisfy the inverse probability requirements of {@link ContinuousDistribution}
+     * on the returned value.
+     *
+     * @param complement Set to true to search the survival probability.
+     * @param lower Lower bound used to limit the search downwards.
+     * @param x Current value.
+     * @return the infimum y
+     */
+    private double searchPlateau(boolean complement, double lower, final double x) {
+        /* Test for plateau. Lower the value x if the probability is the same. */
+        final double dx = SOLVER_ABSOLUTE_ACCURACY;
+        if (x - dx >= lower) {
+            final DoubleUnaryOperator fun = complement ?
+                this::survivalProbability :
+                this::cumulativeProbability;
+            final double px = fun.applyAsDouble(x);
+            if (fun.applyAsDouble(x - dx) == px) {
+                double upperBound = x;
+                double lowerBound = lower;
+                // Bisection search
+                // Require cdf(x) < px and sf(x) > px to move the lower bound
+                // to the midpoint.
+                final DoubleBinaryOperator cmp = complement ?
+                    (a, b) -> a > b ? -1 : 1 :
+                    (a, b) -> a < b ? -1 : 1;
+                while (upperBound - lowerBound > dx) {
+                    final double midPoint = 0.5 * (lowerBound + upperBound);
+                    if (cmp.applyAsDouble(fun.applyAsDouble(midPoint), px) < 0) {
+                        lowerBound = midPoint;
+                    } else {
+                        upperBound = midPoint;
                     }
-                    return upperBound;
                 }
+                return upperBound;
             }
         }
         return x;

@@ -86,8 +86,8 @@ public interface ContinuousDistribution {
      * to this distribution, this method returns {@code P(X > x)}.
      * In other words, this method represents the complementary cumulative
      * distribution function.
-     * <p>
-     * By default, this is defined as {@code 1 - cumulativeProbability(x)}, but
+     *
+     * <p>By default, this is defined as {@code 1 - cumulativeProbability(x)}, but
      * the specific implementation may be more accurate.
      *
      * @param x Point at which the survival function is evaluated.
@@ -113,6 +113,27 @@ public interface ContinuousDistribution {
      * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}.
      */
     double inverseCumulativeProbability(double p);
+
+    /**
+     * Computes the inverse survival probability function of this distribution. For a random
+     * variable {@code X} distributed according to this distribution, the
+     * returned value is
+     * <ul>
+     * <li>{@code inf{x in R | P(X>=x) <= p}} for {@code 0 <= p < 1},</li>
+     * <li>{@code inf{x in R | P(X>=x) < 1}} for {@code p = 1}.</li>
+     * </ul>
+     *
+     * <p>By default, this is defined as {@code inverseCumulativeProbability(1 - p)}, but
+     * the specific implementation may be more accurate.
+     *
+     * @param p Survival probability.
+     * @return the smallest {@code (1-p)}-quantile of this distribution
+     * (largest 0-quantile for {@code p = 1}).
+     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}.
+     */
+    default double inverseSurvivalProbability(double p) {
+        return inverseCumulativeProbability(1 - p);
+    }
 
     /**
      * Gets the mean of this distribution.

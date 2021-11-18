@@ -45,6 +45,12 @@ class DiscreteDistributionTest {
                 }
                 return x > 5 ? 1.0 : 0.75;
             }
+
+            @Override
+            public int inverseCumulativeProbability(double p) {
+                // For the default inverseSurvivalProbability(double) method
+                return (int) (10 * p);
+            }
         };
 
         for (final int x : new int[] {Integer.MIN_VALUE, -1, 0, 1, 2, Integer.MAX_VALUE}) {
@@ -52,6 +58,11 @@ class DiscreteDistributionTest {
             Assertions.assertEquals(Math.log(x), dist.logProbability(x));
             // Must return 1 - CDF(x)
             Assertions.assertEquals(1.0 - dist.cumulativeProbability(x), dist.survivalProbability(x));
+        }
+
+        for (final double p : new double[] {0.2, 0.5, 0.7}) {
+            Assertions.assertEquals(dist.inverseCumulativeProbability(1 - p),
+                                    dist.inverseSurvivalProbability(p));
         }
     }
 

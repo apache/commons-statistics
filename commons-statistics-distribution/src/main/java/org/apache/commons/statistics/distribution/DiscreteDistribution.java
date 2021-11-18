@@ -95,8 +95,8 @@ public interface DiscreteDistribution {
      * to this distribution, this method returns {@code P(X > x)}.
      * In other words, this method represents the complementary cumulative
      * distribution function.
-     * <p>
-     * By default, this is defined as {@code 1 - cumulativeProbability(x)}, but
+     *
+     * <p>By default, this is defined as {@code 1 - cumulativeProbability(x)}, but
      * the specific implementation may be more accurate.
      *
      * @param x Point at which the survival function is evaluated.
@@ -115,7 +115,7 @@ public interface DiscreteDistribution {
      * <li>{@code inf{x in Z | P(X<=x) >= p}} for {@code 0 < p <= 1},</li>
      * <li>{@code inf{x in Z | P(X<=x) > 0}} for {@code p = 0}.</li>
      * </ul>
-     * If the result exceeds the range of the data type {@code int},
+     * <p>If the result exceeds the range of the data type {@code int},
      * then {@code Integer.MIN_VALUE} or {@code Integer.MAX_VALUE} is returned.
      * In this case the result of {@link #cumulativeProbability(int)} called
      * using the returned {@code p}-quantile may not compute the original {@code p}.
@@ -126,6 +126,31 @@ public interface DiscreteDistribution {
      * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}.
      */
     int inverseCumulativeProbability(double p);
+
+    /**
+     * Computes the inverse survival probability function of this distribution.
+     * For a random variable {@code X} distributed according to this distribution,
+     * the returned value is
+     * <ul>
+     * <li>{@code inf{x in R | P(X>=x) <= p}} for {@code 0 <= p < 1},</li>
+     * <li>{@code inf{x in R | P(X>=x) < 1}} for {@code p = 1}.</li>
+     * </ul>
+     * <p>If the result exceeds the range of the data type {@code int},
+     * then {@code Integer.MIN_VALUE} or {@code Integer.MAX_VALUE} is returned.
+     * In this case the result of {@link #survivalProbability(int)} called
+     * using the returned {@code (1-p)}-quantile may not compute the original {@code p}.
+     *
+     * <p>By default, this is defined as {@code inverseCumulativeProbability(1 - p)}, but
+     * the specific implementation may be more accurate.
+     *
+     * @param p Cumulative probability.
+     * @return the smallest {@code (1-p)}-quantile of this distribution
+     * (largest 0-quantile for {@code p = 1}).
+     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}.
+     */
+    default int inverseSurvivalProbability(double p) {
+        return inverseCumulativeProbability(1 - p);
+    }
 
     /**
      * Gets the mean of this distribution.

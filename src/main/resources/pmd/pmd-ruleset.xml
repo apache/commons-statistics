@@ -109,6 +109,13 @@
         value="//ClassOrInterfaceDeclaration[@Image='AbstractContinuousDistribution']"/>
     </properties>
   </rule>
+  <rule ref="category/java/design.xml/ExcessiveMethodLength">
+    <properties>
+      <!-- Method length is due to comments. -->
+      <property name="violationSuppressXPath"
+        value="//ClassOrInterfaceDeclaration[@Image='AbstractContinuousDistribution']"/>
+    </properties>
+  </rule>
 
   <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
     <properties>

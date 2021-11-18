@@ -39,7 +39,8 @@ class ContinuousDistributionTest {
             }
             @Override
             public double inverseCumulativeProbability(double p) {
-                return 0;
+                // For the default inverseSurvivalProbability(double) method
+                return 10 * p;
             }
             @Override
             public double getVariance() {
@@ -82,5 +83,10 @@ class ContinuousDistributionTest {
         // Should throw for bad range
         Assertions.assertThrows(DistributionException.class, () -> dist.probability(0.5, 0.4));
         Assertions.assertEquals(high - low, dist.probability(0.5, 1.5));
+        Assertions.assertEquals(high - low, dist.probability(0.5, 1.5));
+        for (final double p : new double[] {0.2, 0.5, 0.7}) {
+            Assertions.assertEquals(dist.inverseCumulativeProbability(1 - p),
+                                    dist.inverseSurvivalProbability(p));
+        }
     }
 }

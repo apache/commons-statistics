@@ -22,9 +22,12 @@ import org.apache.commons.math3.analysis.integration.UnivariateIntegrator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-/** Various tests related to MATH-699. */
+/**
+ * Test cases for AbstractContinuousDistribution default implementations.
+ */
 class AbstractContinuousDistributionTest {
 
+    /** Various tests related to MATH-699. */
     @Test
     void testContinuous() {
         final double x0 = 0.0;
@@ -95,11 +98,34 @@ class AbstractContinuousDistributionTest {
                 return false;
             }
         };
-        final double expected = x1;
-        final double actual = distribution.inverseCumulativeProbability(p12);
-        Assertions.assertEquals(expected, actual, 1e-8);
+        // CDF is continuous before x1 and after x2. Plateau in between:
+        // CDF(x1 <= X <= x2) = p12.
+        // The inverse returns the infimum.
+        double expected = x1;
+        double actual = distribution.inverseCumulativeProbability(p12);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse CDF");
+
+        actual = distribution.inverseSurvivalProbability(1 - p12);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse SF");
+
+        // Test the continuous region
+        expected = 0.5 * (x1 - x0);
+        actual = distribution.inverseCumulativeProbability(p12 * 0.5);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse CDF");
+
+        actual = distribution.inverseSurvivalProbability(1 - p12 * 0.5);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse SF");
+
+        // Edge case where the result is within the solver accuracy of the lower bound
+        expected = x0;
+        actual = distribution.inverseCumulativeProbability(Double.MIN_VALUE);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse CDF");
+
+        actual = distribution.inverseSurvivalProbability(Math.nextDown(1.0));
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse SF");
     }
 
+    /** Various tests related to MATH-699. */
     @Test
     void testDiscontinuous() {
         final double x0 = 0.0;
@@ -177,9 +203,31 @@ class AbstractContinuousDistributionTest {
                 return false;
             }
         };
-        final double expected = x2;
-        final double actual = distribution.inverseCumulativeProbability(p23);
-        Assertions.assertEquals(expected, actual, 1e-8);
+        // CDF continuous before x1 and after x3. Two plateuas in between stepped at x2:
+        // CDF(x1 <= X <= x2) = p12.
+        // CDF(x2 <= X <= x3) = p23. The inverse returns the infimum.
+        double expected = x2;
+        double actual = distribution.inverseCumulativeProbability(p23);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse CDF");
+
+        actual = distribution.inverseSurvivalProbability(1 - p23);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse SF");
+
+        // Test the continuous region
+        expected = 0.5 * (x1 - x0);
+        actual = distribution.inverseCumulativeProbability(p12 * 0.5);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse CDF");
+
+        actual = distribution.inverseSurvivalProbability(1 - p12 * 0.5);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse SF");
+
+        // Edge case where the result is within the solver accuracy of the lower bound
+        expected = x0;
+        actual = distribution.inverseCumulativeProbability(Double.MIN_VALUE);
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse CDF");
+
+        actual = distribution.inverseSurvivalProbability(Math.nextDown(1.0));
+        Assertions.assertEquals(expected, actual, 1e-8, "Inverse SF");
     }
 
     /**
@@ -208,7 +256,7 @@ class AbstractContinuousDistributionTest {
 
             @Override
             public double density(final double x) {
-                return x == x0 ? Double.POSITIVE_INFINITY : 0.0;
+                throw new AssertionError();
             }
 
             @Override
@@ -236,11 +284,99 @@ class AbstractContinuousDistributionTest {
                 return true;
             }
         };
-        final double x = distribution.inverseCumulativeProbability(0.5);
+        double x = distribution.inverseCumulativeProbability(0.5);
         // The value can be anything other than x0
-        Assertions.assertNotEquals(x0, x);
+        Assertions.assertNotEquals(x0, x, "Inverse CDF");
         // Ideally it would be the next value after x0 but accuracy is dependent
         // on the tolerance of the solver
-        Assertions.assertEquals(x0, x, 1e-8);
+        Assertions.assertEquals(x0, x, 1e-8, "Inverse CDF");
+
+        // The same functionality should be supported for the inverse survival probability
+        x = distribution.inverseSurvivalProbability(0.5);
+        Assertions.assertNotEquals(x0, x, "Inverse SF");
+        Assertions.assertEquals(x0, x, 1e-8, "Inverse SF");
+    }
+
+    /**
+     * Test infinite variance. This invalidates the Chebyshev inequality.
+     *
+     * <p>This test verifies the solver reverts to manual bracketing and raises no exception.
+     */
+    @Test
+    void testInfiniteVariance() {
+        // Distribution must have an infinite bound and infinite variance.
+        // This is an invalid case for the Chebyshev inequality.
+
+        // Create a triangle distribution: (a, c, b); a=lower, c=mode, b=upper
+        // (-10, 0, 10)
+        // Area of the first triangle [-10, 0] is set assuming the height is 10
+        // => 10 * 10 * 2 / 2 = 100
+        // Length of triangle to achieve half the area:
+        // x = sqrt(50) = 7.07..
+
+        final AbstractContinuousDistribution distribution;
+        distribution = new AbstractContinuousDistribution() {
+            @Override
+            public double cumulativeProbability(final double x) {
+                if (x > 0) {
+                    // Use symmetry for the upper triangle
+                    return 1 - cumulativeProbability(-x);
+                }
+                if (x < -10) {
+                    return 0;
+                }
+                return Math.pow(x + 10, 2) / 200;
+            }
+
+            @Override
+            public double density(final double x) {
+                throw new AssertionError();
+            }
+
+            @Override
+            public double getMean() {
+                return 0;
+            }
+
+            @Override
+            public double getVariance() {
+                // Report variance incorrectly
+                return Double.POSITIVE_INFINITY;
+            }
+
+            @Override
+            public double getSupportLowerBound() {
+                // Report lower bound incorrectly (it should be -10) to test cdf(0)
+                return Double.NEGATIVE_INFINITY;
+            }
+
+            @Override
+            public double getSupportUpperBound() {
+                // Report upper bound incorrectly (it should be 10) to test cdf(1)
+                return Double.POSITIVE_INFINITY;
+            }
+
+            @Override
+            public boolean isSupportConnected() {
+                return true;
+            }
+        };
+
+        // Accuracy is dependent on the tolerance of the solver
+        final double tolerance = 1e-8;
+
+        final double x = Math.sqrt(50);
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.inverseCumulativeProbability(0), "Inverse CDF");
+        Assertions.assertEquals(x - 10, distribution.inverseCumulativeProbability(0.25), tolerance, "Inverse CDF");
+        Assertions.assertEquals(0, distribution.inverseCumulativeProbability(0.5), tolerance, "Inverse CDF");
+        Assertions.assertEquals(10 - x, distribution.inverseCumulativeProbability(0.75), tolerance, "Inverse CDF");
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, distribution.inverseCumulativeProbability(1), "Inverse CDF");
+
+        // The same functionality should be supported for the inverse survival probability
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, distribution.inverseSurvivalProbability(1), "Inverse CDF");
+        Assertions.assertEquals(x - 10, distribution.inverseSurvivalProbability(0.75), tolerance, "Inverse SF");
+        Assertions.assertEquals(0, distribution.inverseSurvivalProbability(0.5), tolerance, "Inverse SF");
+        Assertions.assertEquals(10 - x, distribution.inverseSurvivalProbability(0.25), tolerance, "Inverse SF");
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, distribution.inverseSurvivalProbability(0), "Inverse CDF");
     }
 }
