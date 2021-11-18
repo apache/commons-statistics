@@ -17,8 +17,11 @@
 
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.math3.util.MathArrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link UniformDiscreteDistribution}.
@@ -101,33 +104,69 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
 
     /**
      * Test the inverse CDF returns the correct x from the CDF result.
-     * This case was identified using various x and upper bounds to discover a mismatch
-     * of x != icdf(cdf(x)). This occurs due to rounding errors on the inversion.
+     * Test cases created to generate rounding errors on the inversion.
      */
-    @Test
-    void testInverseCDF() {
-        final int lower = 3;
-        final int x = 23;
-        final int upper = 40;
-        final double range = (double) upper - lower + 1;
-
+    @ParameterizedTest
+    @CsvSource(value = {
+        // Extreme bounds
+        "-2147483648, -2147483648",
+        "-2147483648, -2147483647",
+        "-2147483648, -2147483646",
+        "-2147483648, -2147483638",
+        "2147483647, 2147483647",
+        "2147483646, 2147483647",
+        "2147483645, 2147483647",
+        "2147483637, 2147483647",
+        // icdf(cdf(x)) requires rounding up
+        "3, 40",
+        "71, 201",
+        "223, 267",
+        "45, 125",
+        "53, 81",
+        // icdf(cdf(x)) requires rounding down
+        "48, 247",
+        "141, 222",
+        "106, 223",
+        "156, 201",
+        "86, 265",
+    })
+    void testInverseCDF(int lower, int upper) {
         final UniformDiscreteDistribution dist = UniformDiscreteDistribution.of(lower, upper);
-        // Compute p and check it is as expected
-        final double p = dist.cumulativeProbability(x);
-        Assertions.assertEquals((x - lower + 1) / range, p);
+        final int[] x = MathArrays.sequence(upper - lower, lower, 1);
+        testCumulativeProbabilityInverseMapping(dist, x);
+    }
 
-        // Invert
-        final double value = Math.ceil(p * range + lower - 1);
-        Assertions.assertEquals(x + 1, value, "Expected a rounding error");
-
-        Assertions.assertEquals(x, dist.inverseCumulativeProbability(p), "Expected rounding correction");
-
-        // Test for overflow of an integer when inverting
-        final int min = Integer.MIN_VALUE;
-        final UniformDiscreteDistribution dist2 = UniformDiscreteDistribution.of(min, min + 10);
-        Assertions.assertEquals(min, dist2.inverseCumulativeProbability(0.0));
-        final int max = Integer.MAX_VALUE;
-        final UniformDiscreteDistribution dist3 = UniformDiscreteDistribution.of(max - 10, max);
-        Assertions.assertEquals(max, dist3.inverseCumulativeProbability(1.0));
+    /**
+     * Test the inverse SF returns the correct x from the SF result.
+     * Test cases created to generate rounding errors on the inversion.
+     */
+    @ParameterizedTest
+    @CsvSource(value = {
+        // Extreme bounds
+        "-2147483648, -2147483648",
+        "-2147483648, -2147483647",
+        "-2147483648, -2147483646",
+        "-2147483648, -2147483638",
+        "2147483647, 2147483647",
+        "2147483646, 2147483647",
+        "2147483645, 2147483647",
+        "2147483637, 2147483647",
+        // isf(sf(x)) requires rounding up
+        "52, 91",
+        "81, 106",
+        "79, 268",
+        "54, 249",
+        "189, 267",
+        // isf(sf(x)) requires rounding down
+        "105, 279",
+        "42, 261",
+        "37, 133",
+        "59, 214",
+        "33, 118",
+    })
+    void testInverseSF(int lower, int upper) {
+        final UniformDiscreteDistribution dist = UniformDiscreteDistribution.of(lower, upper);
+        final int[] x = MathArrays.sequence(upper - lower, lower, 1);
+        testSurvivalProbabilityInverseMapping(dist, x);
     }
 }

@@ -36,6 +36,8 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
     private final double divisor2;
     /** Cumulative probability at the mode. */
     private final double cdfMode;
+    /** Survival probability at the mode. */
+    private final double sfMode;
 
     /**
      * @param a Lower limit of this distribution (inclusive).
@@ -51,6 +53,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
         divisor1 = (b - a) * (c - a);
         divisor2 = (b - a) * (b - c);
         cdfMode = (c - a) / (b - a);
+        sfMode = (b - c) / (b - a);
     }
 
     /**
@@ -136,7 +139,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
      */
     @Override
     public double cumulativeProbability(double x)  {
-        if (x < a) {
+        if (x <= a) {
             return 0;
         }
         if (x < c) {
@@ -146,11 +149,33 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
         if (x == c) {
             return cdfMode;
         }
-        if (x <= b) {
+        if (x < b) {
             final double divident = (b - x) * (b - x);
             return 1 - (divident / divisor2);
         }
         return 1;
+    }
+
+
+    /** {@inheritDoc} */
+    @Override
+    public double survivalProbability(double x)  {
+        // By symmetry:
+        if (x <= a) {
+            return 1;
+        }
+        if (x < c) {
+            final double divident = (x - a) * (x - a);
+            return 1 - (divident / divisor1);
+        }
+        if (x == c) {
+            return sfMode;
+        }
+        if (x < b) {
+            final double divident = (b - x) * (b - x);
+            return divident / divisor2;
+        }
+        return 0;
     }
 
     /** {@inheritDoc} */
@@ -167,6 +192,23 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
             return a + Math.sqrt(p * divisor1);
         }
         return b - Math.sqrt((1 - p) * divisor2);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        // By symmetry:
+        ArgumentUtils.checkProbability(p);
+        if (p == 1) {
+            return a;
+        }
+        if (p == 0) {
+            return b;
+        }
+        if (p >= sfMode) {
+            return a + Math.sqrt((1 - p) * divisor1);
+        }
+        return b - Math.sqrt(p * divisor2);
     }
 
     /**

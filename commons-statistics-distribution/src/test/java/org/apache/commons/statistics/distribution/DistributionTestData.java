@@ -83,6 +83,8 @@ abstract class DistributionTestData {
 
     /** Disable a {@code x = icdf(cdf(x))} mapping test. */
     private final boolean disableCdfInverse;
+    /** Disable a {@code x = isf(sf(x))} mapping test. */
+    private final boolean disableSfInverse;
     /** Disable tests of the sample method. */
     private final boolean disableSample;
     /** Disable tests of the cumulative probability function method. */
@@ -114,6 +116,10 @@ abstract class DistributionTestData {
         private final double[] icdfPoints;
         /** Expected inverse CDF values. */
         private final double[] icdfValues;
+        /** Test points to evaluate the inverse SF. */
+        private final double[] isfPoints;
+        /** Expected inverse SF values. */
+        private final double[] isfValues;
 
         /**
          * @param props Properties containing the test data
@@ -131,9 +137,11 @@ abstract class DistributionTestData {
             cdfHpPoints = getAsDoubleArray(props, "cdf.hp.points", null);
             sfHpPoints = getAsDoubleArray(props, "sf.hp.points", null);
             // Do not default to an inverse mapping.
-            // A separate cdf.inverse property controls an inverse mapping test.
+            // A separate [cdf|sf].inverse property controls an inverse mapping test.
             icdfPoints = getAsDoubleArray(props, "icdf.points", null);
             icdfValues = getAsDoubleArray(props, "icdf.values", null);
+            isfPoints = getAsDoubleArray(props, "isf.points", null);
+            isfValues = getAsDoubleArray(props, "isf.values", null);
             // Validation
             validatePair(cdfPoints, getCdfValues(), "cdf");
             validatePair(pdfPoints, getPdfValues(), "pdf");
@@ -142,6 +150,7 @@ abstract class DistributionTestData {
             validatePair(cdfHpPoints, getCdfHpValues(), "cdf.hp");
             validatePair(sfHpPoints, getSfHpValues(), "sf.hp");
             validatePair(icdfPoints, icdfValues, "icdf");
+            validatePair(isfPoints, isfValues, "isf");
         }
 
         @Override
@@ -246,6 +255,20 @@ abstract class DistributionTestData {
             return icdfValues;
         }
 
+        @Override
+        double[] getIsfPoints() {
+            return isfPoints;
+        }
+
+        /**
+         * Gets the expected inverse survival probability values for the test inverse SF points.
+         *
+         * @return the inverse SF values
+         */
+        double[] getIsfValues() {
+            return isfValues;
+        }
+
         /**
          * Checks if a test of the PDF method is disabled.
          *
@@ -291,6 +314,10 @@ abstract class DistributionTestData {
         private final double[] icdfPoints;
         /** Expected inverse CDF values. */
         private final int[] icdfValues;
+        /** Test points to evaluate the inverse SF. */
+        private final double[] isfPoints;
+        /** Expected inverse SF values. */
+        private final int[] isfValues;
         /** Disable tests of the summation of the PMF verses the CDF. */
         private final boolean disablePmfSum;
 
@@ -310,9 +337,11 @@ abstract class DistributionTestData {
             cdfHpPoints = getAsIntArray(props, "cdf.hp.points", null);
             sfHpPoints = getAsIntArray(props, "sf.hp.points", null);
             // Do not default to an inverse mapping.
-            // A separate cdf.inverse property controls an inverse mapping test.
+            // A separate [cdf|sf].inverse property controls an inverse mapping test.
             icdfPoints = getAsDoubleArray(props, "icdf.points", null);
             icdfValues = getAsIntArray(props, "icdf.values", null);
+            isfPoints = getAsDoubleArray(props, "isf.points", null);
+            isfValues = getAsIntArray(props, "isf.values", null);
             disablePmfSum = getAsBoolean(props, "disable.pmf.sum", false);
             // Validation
             validatePair(cdfPoints, getCdfValues(), "cdf");
@@ -322,6 +351,7 @@ abstract class DistributionTestData {
             validatePair(cdfHpPoints, getCdfHpValues(), "cdf.hp");
             validatePair(sfHpPoints, getSfHpValues(), "sf.hp");
             validatePair(icdfPoints, icdfValues, "icdf");
+            validatePair(isfPoints, isfValues, "isf");
         }
 
         @Override
@@ -426,6 +456,20 @@ abstract class DistributionTestData {
             return icdfValues;
         }
 
+        @Override
+        double[] getIsfPoints() {
+            return isfPoints;
+        }
+
+        /**
+         * Gets the expected inverse survival probability values for the test inverse SF points.
+         *
+         * @return the inverse SF values
+         */
+        int[] getIsfValues() {
+            return isfValues;
+        }
+
         /**
          * Checks if a test of the PMF method is disabled.
          *
@@ -489,6 +533,7 @@ abstract class DistributionTestData {
         cdfHpValues = getAsDoubleArray(props, "cdf.hp.values", null);
         sfHpValues = getAsDoubleArray(props, "sf.hp.values", null);
         disableCdfInverse = getAsBoolean(props, "disable.cdf.inverse", false);
+        disableSfInverse = getAsBoolean(props, "disable.sf.inverse", false);
         disableSample = getAsBoolean(props, "disable.sample", false);
         disablePf = getAsBoolean(props, "disable." + pf, false);
         disableLogPf = getAsBoolean(props, "disable." + pf, false);
@@ -913,12 +958,38 @@ abstract class DistributionTestData {
     abstract double[] getIcdfPoints();
 
     /**
+     * Gets the points to evaluate the inverse SF.
+     *
+     * @return the inverse SF points
+     */
+    abstract double[] getIsfPoints();
+
+    /**
      * Checks if a {@code x = icdf(cdf(x))} mapping test is disabled.
+     *
+     * <p>Note that this property disables a round-trip test of the points used to test
+     * the cumulative probability. The inverse cumulative probability can also be tested
+     * separately using the {@link #getIcdfPoints()} allowing the forward and reverse
+     * functions to target different data.
      *
      * @return true if a CDF inverse mapping test is disabled.
      */
     boolean isDisableCdfInverse() {
         return disableCdfInverse;
+    }
+
+    /**
+     * Checks if a {@code x = isf(sf(x))} mapping test is disabled.
+     *
+     * <p>Note that this property disables a round-trip test of the points used to test
+     * the survival probability. The inverse survival probability can also be tested
+     * separately using the {@link #getIsfPoints()} allowing the forward and reverse
+     * functions to target different data.
+     *
+     * @return true if a SF inverse mapping test is disabled.
+     */
+    boolean isDisableSfInverse() {
+        return disableSfInverse;
     }
 
     /**

@@ -622,6 +622,59 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
 
     /**
      * Create a stream of arguments containing the distribution to test, the test
+     * points, and the test tolerance. The points and tolerance
+     * are identified using functions on the test instance data.
+     *
+     * <p>If the length of the points is zero then a
+     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
+     *
+     * @param points Function to create the points
+     * @param tolerance Function to create the tolerance
+     * @param name Name of the function under test
+     * @return the stream
+     */
+    <P, V> Stream<Arguments> streamPoints(Function<D, P> points,
+                                          Function<D, DoubleTolerance> tolerance,
+                                          String name) {
+        return streamPoints(doNotIgnore(), points, tolerance, name);
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test, the test
+     * points, and the test tolerance. The points and tolerance
+     * are identified using functions on the test instance data.
+     *
+     * <p>If the length of the points is zero then a
+     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
+     *
+     * @param filter Filter applied on the test data. If true the data is ignored.
+     * @param points Function to create the points
+     * @param tolerance Function to create the tolerance
+     * @param name Name of the function under test
+     * @return the stream
+     */
+    <P, V> Stream<Arguments> streamPoints(Predicate<D> filter,
+                                          Function<D, P> points,
+                                          Function<D, DoubleTolerance> tolerance,
+                                          String name) {
+        final Builder<Arguments> b = Stream.builder();
+        final int[] size = {0};
+        data.forEach(d -> {
+            final P p = points.apply(d);
+            if (filter.test(d) || TestUtils.getLength(p) == 0) {
+                return;
+            }
+            size[0]++;
+            b.accept(Arguments.of(namedDistribution(d.getParameters()),
+                     namedArray("points", p),
+                     tolerance.apply(d)));
+        });
+        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
+        return b.build();
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test, the test
      * points, test values and the test tolerance. The points, values and tolerance
      * are identified using functions on the test instance data.
      *

@@ -182,9 +182,6 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
             return 0;
         }
         final double dev = Math.log(x) - mu;
-        if (Math.abs(dev) > 40 * sigma) {
-            return dev < 0 ? 0.0d : 1.0d;
-        }
         return 0.5 * Erfc.value(-dev / sigmaSqrt2);
     }
 
@@ -195,17 +192,21 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
             return 1;
         }
         final double dev = Math.log(x) - mu;
-        if (Math.abs(dev) > 40 * sigma) {
-            return dev > 0 ? 0.0d : 1.0d;
-        }
         return 0.5 * Erfc.value(dev / sigmaSqrt2);
     }
 
     /** {@inheritDoc} */
     @Override
-    public double inverseCumulativeProbability(final double p) {
+    public double inverseCumulativeProbability(double p) {
         ArgumentUtils.checkProbability(p);
         return Math.exp(mu - sigmaSqrt2 * InverseErfc.value(2 * p));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        return Math.exp(mu + sigmaSqrt2 * InverseErfc.value(2 * p));
     }
 
     /**

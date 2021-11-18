@@ -132,6 +132,18 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
         return mu - Math.log(-Math.log(p)) * beta;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        if (p == 1) {
+            return Double.NEGATIVE_INFINITY;
+        } else if (p == 0) {
+            return Double.POSITIVE_INFINITY;
+        }
+        return mu - Math.log(-Math.log1p(-p)) * beta;
+    }
+
     /**
      * {@inheritDoc}
      *

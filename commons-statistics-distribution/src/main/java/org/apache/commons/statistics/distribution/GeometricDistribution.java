@@ -33,6 +33,9 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
     private final double logProbabilityOfSuccess;
     /** {@code log(1 - p)} where p is the probability of success. */
     private final double log1mProbabilityOfSuccess;
+    /** Value of survival probability for x=0.
+     * Used in the survival functions. Equal to (1 - probability of success). */
+    private final double sf0;
     /** Implementation of PMF(x). Assumes that {@code x > 0}. */
     private final IntToDoubleFunction pmf;
 
@@ -43,15 +46,16 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
         probabilityOfSuccess = p;
         logProbabilityOfSuccess = Math.log(p);
         log1mProbabilityOfSuccess = Math.log1p(-p);
+        sf0 = 1 - p;
 
         // Choose the PMF implementation.
         // When p >= 0.5 then 1 - p is exact and using the power function
         // is consistently more accurate than the use of the exponential function.
         // When p -> 0 then the exponential function avoids large error propagation
         // of the power function used with an inexact 1 - p.
+        // Also compute the survival probability for use when x=0.
         if (p >= HALF) {
-            final double q = 1 - p;
-            pmf = x -> Math.pow(q, x) * probabilityOfSuccess;
+            pmf = x -> Math.pow(sf0, x) * probabilityOfSuccess;
         } else {
             pmf = x -> Math.exp(log1mProbabilityOfSuccess * x) * probabilityOfSuccess;
         }
@@ -85,7 +89,7 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
     public double probability(int x) {
         if (x <= 0) {
             // Special case of x=0 exploiting cancellation.
-            return x == 0 ? probabilityOfSuccess : 0.0;
+            return x == 0 ? probabilityOfSuccess : 0;
         }
         return pmf.applyAsDouble(x);
     }
@@ -103,8 +107,9 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(int x) {
-        if (x < 0) {
-            return 0.0;
+        if (x <= 0) {
+            // Note: CDF(x=0) = PDF(x=0) = probabilityOfSuccess
+            return x == 0 ? probabilityOfSuccess : 0;
         }
         // Note: Double addition avoids overflow. This may compute a value less than 1.0
         // for the max integer value when p is very small.
@@ -114,8 +119,10 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double survivalProbability(int x) {
-        if (x < 0) {
-            return 1.0;
+        if (x <= 0) {
+            // Note: SF(x=0) = 1 - PDF(x=0) = 1 - probabilityOfSuccess
+            // Use a pre-computed value to avoid cancellation when probabilityOfSuccess -> 0
+            return x == 0 ? sf0 : 1;
         }
         // Note: Double addition avoids overflow. This may compute a value greater than 0.0
         // for the max integer value when p is very small.
@@ -129,17 +136,58 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
         if (p == 1) {
             return getSupportUpperBound();
         }
-        if (p == 0) {
+        if (p <= probabilityOfSuccess) {
             return 0;
         }
-        final int x = (int) Math.ceil(Math.log1p(-p) / log1mProbabilityOfSuccess - 1);
-        // Note: x may be too high due to floating-point error and rounding up with ceil.
-        // Return the next value down if that is also above the input cumulative probability.
+        // p > probabilityOfSuccess
+        // => log(1-p) < log(1-probabilityOfSuccess);
+        // Both terms are negative as probabilityOfSuccess > 0.
+        // This should be lower bounded to (2 - 1) = 1
+        int x = (int) (Math.ceil(Math.log1p(-p) / log1mProbabilityOfSuccess) - 1);
+
+        // Correct rounding errors.
         // This ensures x == icdf(cdf(x))
-        if (x <= 0) {
+
+        if (cumulativeProbability(x - 1) >= p) {
+            // No checks for x=0.
+            // If x=0; cdf(-1) = 0 and the condition is false as p>0 at this point.
+            x--;
+        } else if (cumulativeProbability(x) < p && x < Integer.MAX_VALUE) {
+            // The supported upper bound is max_value here as probabilityOfSuccess != 1
+            x++;
+        }
+
+        return x;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        if (p == 0) {
+            return getSupportUpperBound();
+        }
+        if (p >= sf0) {
             return 0;
         }
-        return cumulativeProbability(x - 1) >= p ? x - 1 : x;
+
+        // p < 1 - probabilityOfSuccess
+        // Inversion as for icdf using log(p) in place of log1p(-p)
+        int x = (int) (Math.ceil(Math.log(p) / log1mProbabilityOfSuccess) - 1);
+
+        // Correct rounding errors.
+        // This ensures x == isf(sf(x))
+
+        if (survivalProbability(x - 1) <= p) {
+            // No checks for x=0
+            // If x=0; sf(-1) = 1 and the condition is false as p<1 at this point.
+            x--;
+        } else if (survivalProbability(x) > p && x < Integer.MAX_VALUE) {
+            // The supported upper bound is max_value here as probabilityOfSuccess != 1
+            x++;
+        }
+
+        return x;
     }
 
     /**

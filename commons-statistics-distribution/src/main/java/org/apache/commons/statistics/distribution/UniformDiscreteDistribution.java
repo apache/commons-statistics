@@ -35,6 +35,8 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
     private final double pmf;
     /** Cache of the log probability. */
     private final double logPmf;
+    /** Value of survival probability for x=0. Used in the inverse survival function. */
+    private final double sf0;
 
     /**
      * @param lower Lower bound (inclusive) of this distribution.
@@ -47,6 +49,7 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
         upperMinusLowerPlus1 = (double) upper - (double) lower + 1;
         pmf = 1.0 / upperMinusLowerPlus1;
         logPmf = -Math.log(upperMinusLowerPlus1);
+        sf0 = (upperMinusLowerPlus1 - 1) / upperMinusLowerPlus1;
     }
 
     /**
@@ -88,10 +91,11 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
     /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(int x) {
-        if (x < lower) {
-            return 0;
+        if (x <= lower) {
+            // Note: CDF(x=0) = PDF(x=0)
+            return x == lower ? pmf : 0;
         }
-        if (x > upper) {
+        if (x >= upper) {
             return 1;
         }
         return ((double) x - lower + 1) / upperMinusLowerPlus1;
@@ -100,10 +104,12 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
     /** {@inheritDoc} */
     @Override
     public double survivalProbability(int x) {
-        if (x < lower) {
-            return 1;
+        if (x <= lower) {
+            // Note: SF(x=0) = 1 - PDF(x=0)
+            // Use a pre-computed value to avoid cancellation when probabilityOfSuccess -> 0
+            return x == lower ? sf0 : 1;
         }
-        if (x > upper) {
+        if (x >= upper) {
             return 0;
         }
         return ((double) upper - x) / upperMinusLowerPlus1;
@@ -111,17 +117,66 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
 
     /** {@inheritDoc} */
     @Override
-    public int inverseCumulativeProbability(final double p) {
+    public int inverseCumulativeProbability(double p) {
         ArgumentUtils.checkProbability(p);
-        // Casting will clip overflows to int min or max value
-        final int x = (int) (Math.ceil(p * upperMinusLowerPlus1 + lower - 1));
-        // Note: x may be too high due to floating-point error and rounding up with ceil.
-        // Return the next value down if that is also above the input cumulative probability.
-        // This ensures x == icdf(cdf(x))
-        if (x <= lower) {
+        if (p > sf0) {
+            return upper;
+        }
+        if (p <= pmf) {
             return lower;
         }
-        return cumulativeProbability(x - 1) >= p ? x - 1 : x;
+        // p in ( pmf         , sf0             ]
+        // p in ( 1 / {u-l+1} , {u-l} / {u-l+1} ]
+        // x in ( l           , u-1             ]
+        int x = (int) (lower + Math.ceil(p * upperMinusLowerPlus1) - 1);
+
+        // Correct rounding errors.
+        // This ensures x == icdf(cdf(x))
+        // Note: Directly computing the CDF(x-1) avoids integer overflow if x=min_value
+
+        if (((double) x - lower) / upperMinusLowerPlus1 >= p) {
+            // No check for x > lower: cdf(x=lower) = 0 and thus is below p
+            // cdf(x-1) >= p
+            x--;
+        } else if (((double) x - lower + 1) / upperMinusLowerPlus1 < p) {
+            // No check for x < upper: cdf(x=upper) = 1 and thus is above p
+            // cdf(x) < p
+            x++;
+        }
+
+        return x;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int inverseSurvivalProbability(final double p) {
+        ArgumentUtils.checkProbability(p);
+        if (p < pmf) {
+            return upper;
+        }
+        if (p >= sf0) {
+            return lower;
+        }
+        // p in [ pmf         , sf0             )
+        // p in [ 1 / {u-l+1} , {u-l} / {u-l+1} )
+        // x in [ u-1         , l               )
+        int x = (int) (upper - Math.floor(p * upperMinusLowerPlus1));
+
+        // Correct rounding errors.
+        // This ensures x == isf(sf(x))
+        // Note: Directly computing the SF(x-1) avoids integer overflow if x=min_value
+
+        if (((double) upper - x + 1) / upperMinusLowerPlus1 <= p) {
+            // No check for x > lower: sf(x=lower) = 1 and thus is above p
+            // sf(x-1) <= p
+            x--;
+        } else if (((double) upper - x) / upperMinusLowerPlus1 > p) {
+            // No check for x < upper: sf(x=upper) = 0 and thus is below p
+            // sf(x) > p
+            x++;
+        }
+
+        return x;
     }
 
     /**

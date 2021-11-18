@@ -18,6 +18,7 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.Erfc;
+import org.apache.commons.numbers.gamma.InverseErf;
 import org.apache.commons.numbers.gamma.InverseErfc;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.LevySampler;
@@ -153,9 +154,17 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    public double inverseCumulativeProbability(final double p) {
+    public double inverseCumulativeProbability(double p) {
         ArgumentUtils.checkProbability(p);
         final double t = InverseErfc.value(p);
+        return mu + halfC / (t * t);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        final double t = InverseErf.value(p);
         return mu + halfC / (t * t);
     }
 

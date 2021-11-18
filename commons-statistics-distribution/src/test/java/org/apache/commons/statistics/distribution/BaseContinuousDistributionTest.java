@@ -21,9 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Properties;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.BaseAbstractUnivariateIntegrator;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
@@ -31,7 +29,6 @@ import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.statistics.distribution.DistributionTestData.ContinuousDistributionTestData;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -91,12 +88,14 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <li>Points for the PDF (and log PDF) can be specified. The default will use the CDF points.
  * Note: It is not expected that evaluation of the PDF will require different points to the CDF.
  * <li>Points and expected values for the inverse CDF can be specified. These are used in
- * addition to a test of the inverse mapping of the CDF values to the CDF test points. The
+ * addition to test the inverse mapping of the CDF values to the CDF test points. The
  * inverse mapping test can be disabled.
  * <li>Expected values for the log PDF can be specified. The default will use
  * {@link Math#log(double)} on the PDF values.
- * <li>Points and expected values for the survival function can be specified. The default will use
- * the expected CDF values (SF = 1 - CDF).
+ * <li>Points and expected values for the survival function can be specified. These are used in
+ * addition to test the inverse mapping of the SF values to the SF test points. The
+ * inverse mapping test can be disabled.
+ * The default will use the expected CDF values (SF = 1 - CDF).
  * <li>A tolerance for equality assertions. The default is set by {@link #getAbsoluteTolerance()}
  * and {@link #getRelativeTolerance()}.
  * <li>A flag to indicate the returned value for {@link ContinuousDistribution#isSupportConnected()}.
@@ -176,19 +175,24 @@ import org.junit.jupiter.params.provider.MethodSource;
  * # optional (default uses log pdf.values)
  * logpdf.values = -1900.123, -Infinity
  * # optional (default uses cdf.points and 1 - cdf.values)
- * sf.points = 400
+ * sf.points = 400.0
  * sf.values = 0.0
  * # optional high-precision CDF test
  * cdf.hp.points = 1e-16
  * cdf.hp.values = 1.23e-17
  * # optional high-precision survival function test
- * sf.hp.points = 9
+ * sf.hp.points = 9.0
  * sf.hp.values = 2.34e-18
  * # optional inverse CDF test (defaults to ignore)
- * icdf.values = 0.0, 0.5
- * ipdf.values = 0.0, 0.2
+ * icdf.points = 0.0, 0.5
+ * icdf.values = 0.0, 0.2
+ * # optional inverse CDF test (defaults to ignore)
+ * isf.points = 1.0, 0.5
+ * isf.values = 0.0, 0.2
  * # CDF inverse mapping test (default false)
  * disable.cdf.inverse = false
+ * # SF inverse mapping test (default false)
+ * disable.sf.inverse = false
  * # Sampling test (default false)
  * disable.sample = false
  * # PDF values test (default false)
@@ -230,31 +234,8 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> streamCdfTestPoints() {
-        return streamCdfTestPoints(d -> false);
-    }
-
-    /**
-     * Create a stream of arguments containing the distribution to test, the CDF
-     * test points and the test tolerance.
-     *
-     * @param filter Filter applied on the test data. If true the data is ignored.
-     * @return the stream
-     */
-    Stream<Arguments> streamCdfTestPoints(Predicate<ContinuousDistributionTestData> filter) {
-        final Builder<Arguments> b = Stream.builder();
-        final int[] size = {0};
-        data.forEach(d -> {
-            final double[] p = d.getCdfPoints();
-            if (filter.test(d) || TestUtils.getLength(p) == 0) {
-                return;
-            }
-            size[0]++;
-            b.accept(Arguments.of(namedDistribution(d.getParameters()),
-                     namedArray("points", p),
-                     createTestTolerance(d)));
-        });
-        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for cdf test points");
-        return b.build();
+        return streamPoints(ContinuousDistributionTestData::getCdfPoints,
+                            this::createTestTolerance, "cdf test points");
     }
 
     /**
@@ -348,6 +329,18 @@ abstract class BaseContinuousDistributionTest
     }
 
     /**
+     * Create a stream of arguments containing the distribution to test, the inverse SF test points
+     * and values, and the test tolerance.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testInverseSurvivalProbability() {
+        return stream(ContinuousDistributionTestData::getIsfPoints,
+                      ContinuousDistributionTestData::getIsfValues,
+                      this::createTestTolerance, "isf");
+    }
+
+    /**
      * Create a stream of arguments containing the distribution to test, the test points
      * to evaluate the CDF, and the test tolerance. The equality
      * {@code cdf(x) = cdf(icdf(cdf(x)))} must be true within the tolerance.
@@ -355,7 +348,22 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testCumulativeProbabilityInverseMapping() {
-        return streamCdfTestPoints(ContinuousDistributionTestData::isDisableCdfInverse);
+        return streamPoints(ContinuousDistributionTestData::isDisableCdfInverse,
+                            ContinuousDistributionTestData::getCdfPoints,
+                            this::createTestTolerance, "cdf test points");
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test, the test points
+     * to evaluate the SF, and the test tolerance. The equality
+     * {@code sf(x) = sf(isf(sf(x)))} must be true within the tolerance.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testSurvivalProbabilityInverseMapping() {
+        return streamPoints(ContinuousDistributionTestData::isDisableSfInverse,
+                            ContinuousDistributionTestData::getSfPoints,
+                            this::createTestTolerance, "sf test points");
     }
 
     /**
@@ -582,6 +590,33 @@ abstract class BaseContinuousDistributionTest
     }
 
     /**
+     * Test that inverse survival probability density calculations match expected values.
+     *
+     * <p>Note: Any expected values outside the support of the distribution are ignored.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testInverseSurvivalProbability(ContinuousDistribution dist,
+                                              double[] points,
+                                              double[] values,
+                                              DoubleTolerance tolerance) {
+        final double lower = dist.getSupportLowerBound();
+        final double upper = dist.getSupportUpperBound();
+        for (int i = 0; i < points.length; i++) {
+            final double x = values[i];
+            if (x < lower || x > upper) {
+                continue;
+            }
+            final double p = points[i];
+            TestUtils.assertEquals(
+                x,
+                dist.inverseSurvivalProbability(p),
+                tolerance,
+                () -> "Incorrect inverse survival probability value returned for " + p);
+        }
+    }
+
+    /**
      * Test that an inverse mapping of the cumulative probability density values matches
      * the original point, {@code x = icdf(cdf(x))}.
      *
@@ -613,6 +648,41 @@ abstract class BaseContinuousDistributionTest
                 p1,
                 tolerance,
                 () -> "Incorrect CDF(inverse CDF(CDF(x))) value returned for " + x);
+        }
+    }
+
+    /**
+     * Test that an inverse mapping of the survival probability density values matches
+     * the original point, {@code x = isf(sf(x))}.
+     *
+     * <p>Note: It is possible for two points to compute the same SF value. In this
+     * case the mapping is not a bijection. Thus a further forward mapping is performed
+     * to check {@code sf(x) = sf(isf(sf(x)))} within the allowed tolerance.
+     *
+     * <p>Note: Any points outside the support of the distribution are ignored.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testSurvivalProbabilityInverseMapping(ContinuousDistribution dist,
+                                                     double[] points,
+                                                     DoubleTolerance tolerance) {
+        final double lower = dist.getSupportLowerBound();
+        final double upper = dist.getSupportUpperBound();
+        for (int i = 0; i < points.length; i++) {
+            final double x = points[i];
+            if (x < lower || x > upper) {
+                continue;
+            }
+            final double p = dist.survivalProbability(x);
+            final double x1 = dist.inverseSurvivalProbability(p);
+            final double p1 = dist.survivalProbability(x1);
+            // Check the inverse SF computed a value that will return to the
+            // same probability value.
+            TestUtils.assertEquals(
+                p,
+                p1,
+                tolerance,
+                () -> "Incorrect SF(inverse SF(SF(x))) value returned for " + x);
         }
     }
 
@@ -692,9 +762,11 @@ abstract class BaseContinuousDistributionTest
         final double lo = dist.getSupportLowerBound();
         Assertions.assertEquals(0.0, dist.cumulativeProbability(lo), "cdf(lower)");
         Assertions.assertEquals(lo, dist.inverseCumulativeProbability(0.0), "icdf(0.0)");
+        Assertions.assertEquals(lo, dist.inverseSurvivalProbability(1.0), "isf(1.0)");
         // Test for rounding errors during inversion
         Assertions.assertTrue(lo <= dist.inverseCumulativeProbability(Double.MIN_VALUE), "lo <= icdf(min)");
         Assertions.assertTrue(lo <= dist.inverseCumulativeProbability(Double.MIN_NORMAL), "lo <= icdf(min_normal)");
+        Assertions.assertTrue(lo <= dist.inverseSurvivalProbability(Math.nextDown(1.0)), "lo <= isf(nextDown(1.0))");
 
         final double below = Math.nextDown(lo);
         Assertions.assertEquals(0.0, dist.density(below), "pdf(x < lower)");
@@ -707,8 +779,11 @@ abstract class BaseContinuousDistributionTest
         Assertions.assertEquals(1.0, dist.cumulativeProbability(hi), "cdf(upper)");
         Assertions.assertEquals(0.0, dist.survivalProbability(hi), "sf(upper)");
         Assertions.assertEquals(hi, dist.inverseCumulativeProbability(1.0), "icdf(1.0)");
+        Assertions.assertEquals(hi, dist.inverseSurvivalProbability(0.0), "isf(0.0)");
         // Test for rounding errors during inversion
         Assertions.assertTrue(hi >= dist.inverseCumulativeProbability(Math.nextDown(1.0)), "hi >= icdf(nextDown(1.0))");
+        Assertions.assertTrue(hi >= dist.inverseSurvivalProbability(Double.MIN_VALUE), "lo <= isf(min)");
+        Assertions.assertTrue(hi >= dist.inverseSurvivalProbability(Double.MIN_NORMAL), "lo <= isf(min_normal)");
 
         final double above = Math.nextUp(hi);
         Assertions.assertEquals(0.0, dist.density(above), "pdf(x > upper)");
@@ -731,6 +806,8 @@ abstract class BaseContinuousDistributionTest
         }
         Assertions.assertThrows(DistributionException.class, () -> dist.inverseCumulativeProbability(-1), "p < 0.0");
         Assertions.assertThrows(DistributionException.class, () -> dist.inverseCumulativeProbability(2), "p > 1.0");
+        Assertions.assertThrows(DistributionException.class, () -> dist.inverseSurvivalProbability(-1), "q < 0.0");
+        Assertions.assertThrows(DistributionException.class, () -> dist.inverseSurvivalProbability(2), "q > 1.0");
     }
 
     /**

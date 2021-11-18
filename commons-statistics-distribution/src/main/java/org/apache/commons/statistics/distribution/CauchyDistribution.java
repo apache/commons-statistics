@@ -126,6 +126,23 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
+     * <p>Returns {@code Double.NEGATIVE_INFINITY} when {@code p == 1}
+     * and {@code Double.POSITIVE_INFINITY} when {@code p == 0}.
+     */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        if (p == 1) {
+            return Double.NEGATIVE_INFINITY;
+        } else  if (p == 0) {
+            return Double.POSITIVE_INFINITY;
+        }
+        return location - scale * Math.tan(Math.PI * (p - 0.5));
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * <p>The mean is always undefined no matter the parameters.
      *
      * @return mean (always Double.NaN)

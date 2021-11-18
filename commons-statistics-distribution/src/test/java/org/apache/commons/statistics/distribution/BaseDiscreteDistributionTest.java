@@ -23,7 +23,6 @@ import java.util.Properties;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
 import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.statistics.distribution.DistributionTestData.DiscreteDistributionTestData;
@@ -88,12 +87,14 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <li>Points for the PMF (and log PMF) can be specified. The default will use the CDF points.
  * Note: It is not expected that evaluation of the PMF will require different points to the CDF.
  * <li>Points and expected values for the inverse CDF can be specified. These are used in
- * addition to a test of the inverse mapping of the CDF values to the CDF test points. The
+ * addition to test the inverse mapping of the CDF values to the CDF test points. The
  * inverse mapping test can be disabled.
  * <li>Expected values for the log PMF can be specified. The default will use
  * {@link Math#log(double)} on the PMF values.
- * <li>Points and expected values for the survival function can be specified. The default will use
- * the expected CDF values (SF = 1 - CDF).
+ * <li>Points and expected values for the survival function can be specified. These are used in
+ * addition to test the inverse mapping of the SF values to the SF test points. The
+ * inverse mapping test can be disabled.
+ * The default will use the expected CDF values (SF = 1 - CDF).
  * <li>A tolerance for equality assertions. The default is set by {@link #getAbsoluteTolerance()}
  * and {@link #getRelativeTolerance()}.
  * <li>A flag to indicate the returned value for {@link DiscreteDistribution#isSupportConnected()}.
@@ -165,7 +166,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * tolerance.relative.hp = 1e-10
  * # optional (default 0.0 or over-ridden in getHighPrecisionAbsoluteTolerance())
  * tolerance.absolute.hp = 1e-30
- * cdf.points = 0, 0.2
+ * cdf.points = 0, 2
  * cdf.values = 0.0, 0.5
  * # optional (default uses cdf.points)
  * pmf.points = 0, 40000
@@ -183,10 +184,15 @@ import org.junit.jupiter.params.provider.MethodSource;
  * sf.hp.points = 9
  * sf.hp.values = 2.34e-18
  * # optional inverse CDF test (defaults to ignore)
- * icdf.values = 0.0, 0.5
- * ipmf.values = 0.0, 0.2
+ * icdf.points = 0.0, 0.5
+ * icdf.values = 3, 4
+ * # optional inverse CDF test (defaults to ignore)
+ * isf.points = 1.0, 0.5
+ * isf.values = 3, 4
  * # CDF inverse mapping test (default false)
  * disable.cdf.inverse = false
+ * # SF inverse mapping test (default false)
+ * disable.sf.inverse = false
  * # Sampling test (default false)
  * disable.sample = false
  * # PMF values test (default false)
@@ -228,20 +234,8 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> streamCdfTestPoints() {
-        final Builder<Arguments> b = Stream.builder();
-        final int[] size = {0};
-        data.forEach(d -> {
-            final int[] p = d.getCdfPoints();
-            if (TestUtils.getLength(p) == 0) {
-                return;
-            }
-            size[0]++;
-            b.accept(Arguments.of(namedDistribution(d.getParameters()),
-                    namedArray("points", p),
-                    createTestTolerance(d)));
-        });
-        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for test points");
-        return b.build();
+        return streamPoints(DiscreteDistributionTestData::getCdfPoints,
+                            this::createTestTolerance, "cdf test points");
     }
 
     /**
@@ -324,7 +318,7 @@ abstract class BaseDiscreteDistributionTest
 
     /**
      * Create a stream of arguments containing the distribution to test, the inverse CDF test points
-     * and values, and the test tolerance.
+     * and values. No test tolerance is required as the values are integers and must be exact.
      *
      * @return the stream
      */
@@ -334,24 +328,36 @@ abstract class BaseDiscreteDistributionTest
     }
 
     /**
+     * Create a stream of arguments containing the distribution to test, the inverse CDF test points
+     * and values. No test tolerance is required as the values are integers and must be exact.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testInverseSurvivalProbability() {
+        return stream(DiscreteDistributionTestData::getIsfPoints,
+                      DiscreteDistributionTestData::getIsfValues, "isf");
+    }
+
+    /**
      * Create a stream of arguments containing the distribution to test and the CDF test points.
      *
      * @return the stream
      */
     Stream<Arguments> testCumulativeProbabilityInverseMapping() {
-        final Builder<Arguments> b = Stream.builder();
-        final int[] size = {0};
-        data.forEach(d -> {
-            final int[] p = d.getCdfPoints();
-            if (d.isDisableCdfInverse() || TestUtils.getLength(p) == 0) {
-                return;
-            }
-            size[0]++;
-            b.accept(Arguments.of(namedDistribution(d.getParameters()),
-                     namedArray("points", p)));
-        });
-        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for cdf test points");
-        return b.build();
+        return stream(DiscreteDistributionTestData::isDisableCdfInverse,
+                      DiscreteDistributionTestData::getCdfPoints,
+                      "cdf test points");
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test and the SF test points.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testSurvivalProbabilityInverseMapping() {
+        return stream(DiscreteDistributionTestData::isDisableSfInverse,
+                      DiscreteDistributionTestData::getSfPoints,
+                      "sf test points");
     }
 
     /**
@@ -591,7 +597,7 @@ abstract class BaseDiscreteDistributionTest
         final int lower = dist.getSupportLowerBound();
         final int upper = dist.getSupportUpperBound();
         for (int i = 0; i < points.length; i++) {
-            final double x = values[i];
+            final int x = values[i];
             if (x < lower || x > upper) {
                 continue;
             }
@@ -604,14 +610,56 @@ abstract class BaseDiscreteDistributionTest
     }
 
     /**
+     * Test that inverse survival probability density calculations match expected values.
+     *
+     * <p>Note: Any expected values outside the support of the distribution are ignored.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testInverseSurvivalProbability(DiscreteDistribution dist,
+                                              double[] points,
+                                              int[] values) {
+        final int lower = dist.getSupportLowerBound();
+        final int upper = dist.getSupportUpperBound();
+        for (int i = 0; i < points.length; i++) {
+            final int x = values[i];
+            if (x < lower || x > upper) {
+                continue;
+            }
+            final double p = points[i];
+            Assertions.assertEquals(
+                x,
+                dist.inverseSurvivalProbability(p),
+                () -> "Incorrect inverse survival probability value returned for " + p);
+        }
+    }
+
+    /**
      * Test that an inverse mapping of the cumulative probability density values matches
      * the original point, {@code x = icdf(cdf(x))}.
      *
      * <p>Note: It is possible for two points to compute the same CDF value. In this
-     * case the mapping is not a bijection. Any points computing a CDF=1 are ignored
+     * case the mapping is not a bijection. Any points computing a CDF=0 or 1 are ignored
      * as this is expected to be inverted to the domain bound.
      *
      * <p>Note: Any points outside the support of the distribution are ignored.
+     *
+     * <p>This test checks consistency of the inverse with the forward function.
+     * The test checks (where applicable):
+     * <ul>
+     *  <li>{@code icdf( cdf(x) ) = x}
+     *  <li>{@code icdf( p > cdf(x) ) >= x+1}
+     *  <li>{@code icdf( cdf(x-1) < p < cdf(x) ) = x}
+     * </ul>
+     *
+     * <p>Does not check {@code isf( 1 - cdf(x) ) = x} since the complement {@code q = 1 - p}
+     * is inexact. The bound change for the isf to compute x may be different. The isf bound
+     * change is verified in a separate test.
+     * Thus the {@code icdf <-> cdf} mapping and {@code isf <-> sf} mapping are verified to
+     * have correct boundary changes with respect to the forward function and its inverse
+     * but the boundaries are allowed to be different. This can be corrected for example
+     * with an implementation that has a consistent computation for {@code x > median} and
+     * another for {@code x < median} with an inverse computation determined by {@code p > 0.5}.
      */
     @ParameterizedTest
     @MethodSource
@@ -625,7 +673,7 @@ abstract class BaseDiscreteDistributionTest
                 continue;
             }
             final double p = dist.cumulativeProbability(x);
-            if (p == 1.0) {
+            if ((int) p == p) {
                 // Assume mapping not a bijection and ignore
                 continue;
             }
@@ -634,6 +682,102 @@ abstract class BaseDiscreteDistributionTest
                 x,
                 x1,
                 () -> "Incorrect CDF inverse value returned for " + p);
+            // The next p value up should return the next value
+            final double pp = Math.nextUp(p);
+            if (x != upper && pp != 1 && p != dist.cumulativeProbability(x + 1)) {
+                final double x2 = dist.inverseCumulativeProbability(pp);
+                Assertions.assertEquals(
+                    x + 1,
+                    x2,
+                    () -> "Incorrect CDF inverse value returned for " + pp);
+            }
+
+            // Invert a probability inside the range to the previous CDF value
+            if (x != lower) {
+                final double pm1 = dist.cumulativeProbability(x - 1);
+                final double px = (pm1 + p) / 2;
+                if (px > pm1) {
+                    final double xx = dist.inverseCumulativeProbability(px);
+                    Assertions.assertEquals(
+                        x,
+                        xx,
+                        () -> "Incorrect CDF inverse value returned for " + px);
+                }
+            }
+        }
+    }
+
+    /**
+     * Test that an inverse mapping of the survival probability density values matches
+     * the original point, {@code x = isf(sf(x))}.
+     *
+     * <p>Note: It is possible for two points to compute the same SF value. In this
+     * case the mapping is not a bijection. Any points computing a SF=0 or 1 are ignored
+     * as this is expected to be inverted to the domain bound.
+     *
+     * <p>Note: Any points outside the support of the distribution are ignored.
+     *
+     * <p>This test checks consistency of the inverse with the forward function.
+     * The test checks (where applicable):
+     * <ul>
+     *  <li>{@code isf( sf(x) ) = x}
+     *  <li>{@code isf( p < sf(x) ) >= x+1}
+     *  <li>{@code isf( sf(x-1) > p > sf(x) ) = x}
+     * </ul>
+     *
+     * <p>Does not check {@code icdf( 1 - sf(x) ) = x} since the complement {@code q = 1 - p}
+     * is inexact. The bound change for the icdf to compute x may be different. The icdf bound
+     * change is verified in a separate test.
+     * Thus the {@code icdf <-> cdf} mapping and {@code isf <-> sf} mapping are verified to
+     * have correct boundary changes with respect to the forward function and its inverse
+     * but the boundaries are allowed to be different. This can be corrected for example
+     * with an implementation that has a consistent computation for {@code x > median} and
+     * another for {@code x < median} with an inverse computation determined by {@code p > 0.5}.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testSurvivalProbabilityInverseMapping(DiscreteDistribution dist,
+                                                     int[] points) {
+        final int lower = dist.getSupportLowerBound();
+        final int upper = dist.getSupportUpperBound();
+        for (int i = 0; i < points.length; i++) {
+            final int x = points[i];
+            if (x < lower || x > upper) {
+                continue;
+            }
+            final double p = dist.survivalProbability(x);
+            if ((int) p == p) {
+                // Assume mapping not a bijection and ignore
+                continue;
+            }
+            final double x1 = dist.inverseSurvivalProbability(p);
+            Assertions.assertEquals(
+                x,
+                x1,
+                () -> "Incorrect SF inverse value returned for " + p);
+
+            // The next p value down should return the next value
+            final double pp = Math.nextDown(p);
+            if (x != upper && pp != 0 && p != dist.survivalProbability(x + 1)) {
+                final double x2 = dist.inverseSurvivalProbability(pp);
+                Assertions.assertEquals(
+                    x + 1,
+                    x2,
+                    () -> "Incorrect SF inverse value returned for " + pp);
+            }
+
+            // Invert a probability inside the range to the previous SF value
+            if (x != lower) {
+                final double pm1 = dist.survivalProbability(x - 1);
+                final double px = (pm1 + p) / 2;
+                if (px < pm1) {
+                    final double xx = dist.inverseSurvivalProbability(px);
+                    Assertions.assertEquals(
+                        x,
+                        xx,
+                        () -> "Incorrect CDF inverse value returned for " + px);
+                }
+            }
         }
     }
 
@@ -725,6 +869,7 @@ abstract class BaseDiscreteDistributionTest
         final int lo = dist.getSupportLowerBound();
         TestUtils.assertEquals(dist.probability(lo), dist.cumulativeProbability(lo), tolerance, () -> "pmf(lower) != cdf(lower) for " + lo);
         Assertions.assertEquals(lo, dist.inverseCumulativeProbability(0.0), "icdf(0.0)");
+        Assertions.assertEquals(lo, dist.inverseSurvivalProbability(1.0), "isf(1.0)");
 
         if (lo != Integer.MIN_VALUE) {
             final int below = lo - 1;
@@ -737,6 +882,7 @@ abstract class BaseDiscreteDistributionTest
         final int hi = dist.getSupportUpperBound();
         Assertions.assertTrue(lo <= hi, "lower <= upper");
         Assertions.assertEquals(hi, dist.inverseCumulativeProbability(1.0), "icdf(1.0)");
+        Assertions.assertEquals(hi, dist.inverseSurvivalProbability(0.0), "isf(0.0)");
         if (hi != Integer.MAX_VALUE) {
             // For distributions defined up to integer max value we cannot test that
             // the CDF is 1.0 as they may be truncated.
@@ -772,6 +918,8 @@ abstract class BaseDiscreteDistributionTest
         }
         Assertions.assertThrows(DistributionException.class, () -> dist.inverseCumulativeProbability(-1), "p < 0.0");
         Assertions.assertThrows(DistributionException.class, () -> dist.inverseCumulativeProbability(2), "p > 1.0");
+        Assertions.assertThrows(DistributionException.class, () -> dist.inverseSurvivalProbability(-1), "q < 0.0");
+        Assertions.assertThrows(DistributionException.class, () -> dist.inverseSurvivalProbability(2), "q > 1.0");
     }
 
     /**

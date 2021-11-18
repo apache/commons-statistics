@@ -112,7 +112,7 @@ abstract class AbstractDiscreteDistribution
      * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
      */
     @Override
-    public int inverseCumulativeProbability(final double p) {
+    public int inverseCumulativeProbability(double p) {
         ArgumentUtils.checkProbability(p);
         return inverseProbability(p, 1 - p, false);
     }
@@ -132,7 +132,7 @@ abstract class AbstractDiscreteDistribution
      * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
      */
     @Override
-    public int inverseSurvivalProbability(final double p) {
+    public int inverseSurvivalProbability(double p) {
         ArgumentUtils.checkProbability(p);
         return inverseProbability(1 - p, p, true);
     }
@@ -145,7 +145,7 @@ abstract class AbstractDiscreteDistribution
      * @param complement Set to true to compute the inverse survival probability
      * @return the value
      */
-    private int inverseProbability(final double p, final double q, boolean complement) {
+    private int inverseProbability(double p, double q, boolean complement) {
 
         int lower = getSupportLowerBound();
         if (p == 0) {

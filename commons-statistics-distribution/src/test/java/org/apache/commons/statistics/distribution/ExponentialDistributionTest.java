@@ -69,4 +69,11 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
         // computed using  print(dexp(2, rate=1/3), digits=10) in R 2.5
         Assertions.assertEquals(0.1711390397, d2.density(2.0), 1e-8);
     }
+
+    @Test
+    void testInverseCDFWithZero() {
+        final ExponentialDistribution d1 = ExponentialDistribution.of(1);
+        Assertions.assertEquals(0.0, d1.inverseCumulativeProbability(0.0));
+        Assertions.assertEquals(0.0, d1.inverseCumulativeProbability(-0.0));
+    }
 }

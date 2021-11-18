@@ -148,7 +148,7 @@ abstract class AbstractContinuousDistribution
      * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
      */
     @Override
-    public double inverseCumulativeProbability(final double p) {
+    public double inverseCumulativeProbability(double p) {
         ArgumentUtils.checkProbability(p);
         return inverseProbability(p, 1 - p, false);
     }
@@ -168,7 +168,7 @@ abstract class AbstractContinuousDistribution
      * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
      */
     @Override
-    public double inverseSurvivalProbability(final double p) {
+    public double inverseSurvivalProbability(double p) {
         ArgumentUtils.checkProbability(p);
         return inverseProbability(1 - p, p, true);
     }
@@ -214,12 +214,12 @@ abstract class AbstractContinuousDistribution
          */
 
         double lowerBound = getSupportLowerBound();
-        double upperBound = getSupportUpperBound();
         if (p == 0) {
-            return complement ? upperBound : lowerBound;
+            return lowerBound;
         }
+        double upperBound = getSupportUpperBound();
         if (q == 0) {
-            return complement ? lowerBound : upperBound;
+            return upperBound;
         }
 
         final double mu = getMean();

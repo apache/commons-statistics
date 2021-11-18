@@ -47,6 +47,9 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
     /** Stored value of {@code parentNormal.cumulativeProbability(lower)}. Used to map
      * a probability into the range of the parent normal distribution. */
     private final double cdfAlpha;
+    /** Stored value of {@code parentNormal.survivalProbability(upper)}. Used to map
+     * a probability into the range of the parent normal distribution. */
+    private final double sfBeta;
 
     /**
      * @param mean Mean for the parent distribution.
@@ -64,8 +67,9 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
 
         cdfDelta = parentNormal.probability(lower, upper);
         logCdfDelta = Math.log(cdfDelta);
-        // Used to map the inverseCumulativeProbability
+        // Used to map the inverse probability.
         cdfAlpha = parentNormal.cumulativeProbability(lower);
+        sfBeta = parentNormal.survivalProbability(upper);
 
         // Calculation of variance and mean.
         //
@@ -202,6 +206,21 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         }
         // Linearly map p to the range [lower, upper]
         final double x = parentNormal.inverseCumulativeProbability(cdfAlpha + p * cdfDelta);
+        return clipToRange(x);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        // Exact bound
+        if (p == 1) {
+            return lower;
+        } else if (p == 0) {
+            return upper;
+        }
+        // Linearly map p to the range [lower, upper]
+        final double x = parentNormal.inverseSurvivalProbability(sfBeta + p * cdfDelta);
         return clipToRange(x);
     }
 

@@ -117,6 +117,20 @@ public final class LaplaceDistribution extends AbstractContinuousDistribution {
         return mu + beta * x;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        if (p == 1) {
+            return Double.NEGATIVE_INFINITY;
+        } else if (p == 0) {
+            return Double.POSITIVE_INFINITY;
+        }
+        // By symmetry: x = -icdf(p); then transform back by the scale and location
+        final double x = (p > 0.5) ? Math.log(2.0 * (1.0 - p)) : -Math.log(2.0 * p);
+        return mu + beta * x;
+    }
+
     /**
      * {@inheritDoc}
      *

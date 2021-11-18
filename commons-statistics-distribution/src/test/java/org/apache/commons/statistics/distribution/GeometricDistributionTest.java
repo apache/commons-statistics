@@ -75,17 +75,58 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
 
     /**
      * Test the inverse CDF returns the correct x from the CDF result.
-     * This case was identified using various probabilities to discover a mismatch
+     * Cases were identified using various probabilities to discover a mismatch
      * of x != icdf(cdf(x)). This occurs due to rounding errors on the inversion.
-     *
-     * @param p Probability of success
      */
     @ParameterizedTest
-    @ValueSource(doubles = {0.2, 0.8})
+    @ValueSource(doubles = {
+        0.2,
+        0.8,
+        // icdf(cdf(x)) requires rounding up
+        0.07131208016887369,
+        0.14441285445326058,
+        0.272118157703929,
+        0.424656239093432,
+        0.00899452845634574,
+        // icdf(cdf(x)) requires rounding down
+        0.3441320118140774,
+        0.5680886873083258,
+        0.8738746761971425,
+        0.17373328785967923,
+        0.09252030895185881,
+    })
     void testInverseCDF(double p) {
         final GeometricDistribution dist = GeometricDistribution.of(p);
         final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         testCumulativeProbabilityInverseMapping(dist, x);
+    }
+
+    /**
+     * Test the inverse SF returns the correct x from the SF result.
+     * Cases were identified using various probabilities to discover a mismatch
+     * of x != isf(sf(x)). This occurs due to rounding errors on the inversion.
+     */
+    @ParameterizedTest
+    @ValueSource(doubles = {
+        0.2,
+        0.8,
+        // isf(sf(x)) requires rounding up
+        0.9625911263689207,
+        0.2858964038911178,
+        0.31872883511135996,
+        0.46149078212832284,
+        0.3701613946505057,
+        // isf(sf(x)) requires rounding down
+        0.3796493606864414,
+        0.1113177920615187,
+        0.2587259503484439,
+        0.8996839434455458,
+        0.450704136259792,
+    })
+    void testInverseSF(double p) {
+        final GeometricDistribution dist = GeometricDistribution.of(p);
+        final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        testSurvivalProbabilityInverseMapping(dist, x);
     }
 
     @Test
@@ -119,12 +160,82 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
         final double cdf = -Math.expm1(Math.log1p(-p) * (x + 1.0));
         Assertions.assertNotEquals(1.0, cdf);
         Assertions.assertEquals(cdf, dist.cumulativeProbability(x));
-        Assertions.assertEquals(x, dist.inverseCumulativeProbability(dist.cumulativeProbability(x)));
+        for (int i = 0; i < 5; i++) {
+            Assertions.assertEquals(x - i, dist.inverseCumulativeProbability(dist.cumulativeProbability(x - i)));
+        }
+
+        // CDF(x=0) = p
+        Assertions.assertEquals(p, dist.cumulativeProbability(0));
+        Assertions.assertEquals(0, dist.inverseCumulativeProbability(p));
+        Assertions.assertEquals(1, dist.inverseCumulativeProbability(Math.nextUp(p)));
+        for (int i = 1; i < 5; i++) {
+            Assertions.assertEquals(i, dist.inverseCumulativeProbability(dist.cumulativeProbability(i)));
+        }
 
         // SF = (1-p)^(x+1)
         // Compute with log for accuracy with small p
         final double sf = Math.exp(Math.log1p(-p) * (x + 1.0));
+        Assertions.assertEquals(1.0 - cdf, sf);
+        Assertions.assertEquals(sf, dist.survivalProbability(x));
+        // SF is too close to 1 to be able to invert
+        Assertions.assertEquals(1.0, sf);
+        Assertions.assertEquals(x, dist.inverseSurvivalProbability(Math.nextDown(1.0)));
+    }
+
+    /**
+     * Test the most extreme parameters. Uses a large enough value of p that the distribution is
+     * compacted to x=0.
+     *
+     * <p>p is one ULP down from 1.0.
+     */
+    @Test
+    void testExtremeParameters2() {
+        final double p = Math.nextDown(1.0);
+        final GeometricDistribution dist = GeometricDistribution.of(p);
+
+        final int x = 0;
+        // CDF = 1 - (1-p)^(x+1)
+        // CDF(x=0) = p
+        Assertions.assertEquals(p, dist.cumulativeProbability(0));
+        Assertions.assertEquals(0, dist.inverseCumulativeProbability(p));
+        // CDF is too close to 1 to be able to invert next value
+        Assertions.assertEquals(Integer.MAX_VALUE, dist.inverseCumulativeProbability(Math.nextUp(p)));
+
+        // SF = (1-p)^(x+1)
+        final double sf = 1 - p;
         Assertions.assertNotEquals(0.0, sf);
         Assertions.assertEquals(sf, dist.survivalProbability(x));
+        for (int i = 1; i < 5; i++) {
+            Assertions.assertEquals(i, dist.inverseSurvivalProbability(dist.survivalProbability(i)));
+        }
+    }
+
+    /**
+     * Test the most extreme parameters. Uses a large enough value of p that the distribution is
+     * compacted to x=0.
+     *
+     * <p>p is two ULP down from 1.0.
+     */
+    @Test
+    void testExtremeParameters3() {
+        final double p = Math.nextDown(Math.nextDown(1.0));
+        final GeometricDistribution dist = GeometricDistribution.of(p);
+
+        final int x = 0;
+        // CDF = 1 - (1-p)^(x+1)
+        // CDF(x=0) = p
+        Assertions.assertEquals(p, dist.cumulativeProbability(0));
+        Assertions.assertEquals(0, dist.inverseCumulativeProbability(p));
+        Assertions.assertEquals(1, dist.inverseCumulativeProbability(Math.nextUp(p)));
+        // CDF is too close to 1 to be able to invert next value
+        Assertions.assertEquals(Integer.MAX_VALUE, dist.inverseCumulativeProbability(Math.nextUp(Math.nextUp(p))));
+
+        // SF = (1-p)^(x+1)
+        final double sf = 1 - p;
+        Assertions.assertNotEquals(0.0, sf);
+        Assertions.assertEquals(sf, dist.survivalProbability(x));
+        for (int i = 1; i < 5; i++) {
+            Assertions.assertEquals(i, dist.inverseSurvivalProbability(dist.survivalProbability(i)));
+        }
     }
 }

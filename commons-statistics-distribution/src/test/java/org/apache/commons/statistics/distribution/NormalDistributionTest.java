@@ -47,9 +47,9 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        // Tests are limited by the survival probability
-        // Tolerance is 3.3306690738754696E-15.
-        return 15 * RELATIVE_EPS;
+        // Tests are limited by the inverse survival probability
+        // Tolerance is 4.440892098500626E-15.
+        return 20 * RELATIVE_EPS;
     }
 
     @Override

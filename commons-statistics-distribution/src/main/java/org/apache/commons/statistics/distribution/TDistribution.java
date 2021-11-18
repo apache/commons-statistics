@@ -72,6 +72,8 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
             return STANDARD_NORMAL.inverseCumulativeProbability(p);
         }
 
+        // Survival probability functions inherit the symmetry operations from the TDistribution
+
         @Override
         public double getMean() {
             return 0;
@@ -269,6 +271,13 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     public double survivalProbability(double x) {
         // Exploit symmetry
         return cumulativeProbability(-x);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        // Exploit symmetry
+        return -inverseCumulativeProbability(p);
     }
 
     /**

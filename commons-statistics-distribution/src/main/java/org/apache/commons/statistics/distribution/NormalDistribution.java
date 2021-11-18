@@ -133,9 +133,16 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    public double inverseCumulativeProbability(final double p) {
+    public double inverseCumulativeProbability(double p) {
         ArgumentUtils.checkProbability(p);
         return mean - sdSqrt2 * InverseErfc.value(2 * p);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        return mean + sdSqrt2 * InverseErfc.value(2 * p);
     }
 
     /** {@inheritDoc} */

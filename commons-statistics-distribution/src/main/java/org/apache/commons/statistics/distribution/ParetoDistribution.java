@@ -204,6 +204,19 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
         return scale / Math.exp(Math.log1p(-p) / shape);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        if (p == 1) {
+            return getSupportLowerBound();
+        }
+        if (p == 0) {
+            return getSupportUpperBound();
+        }
+        return scale / Math.pow(p, 1 / shape);
+    }
+
     /**
      * {@inheritDoc}
      * <p>

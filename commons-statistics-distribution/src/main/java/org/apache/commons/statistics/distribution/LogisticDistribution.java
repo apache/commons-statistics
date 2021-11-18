@@ -140,6 +140,19 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
         }
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        if (p == 1) {
+            return SUPPORT_LO;
+        } else if (p == 0) {
+            return SUPPORT_HI;
+        } else {
+            return scale * -Math.log(p / (1 - p)) + mu;
+        }
+    }
+
     /**
      * {@inheritDoc}
      *

@@ -111,10 +111,18 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
 
     /** {@inheritDoc} */
     @Override
-    public double inverseCumulativeProbability(final double p) {
+    public double inverseCumulativeProbability(double p) {
         ArgumentUtils.checkProbability(p);
         // Avoid floating-point error for lower + p * (upper - lower) when p == 1.
         return p == 1 ? upper : p * upperMinusLower + lower;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        // Avoid floating-point error for upper - p * (upper - lower) when p == 1.
+        return p == 1 ? lower : upper - p * upperMinusLower;
     }
 
     /**

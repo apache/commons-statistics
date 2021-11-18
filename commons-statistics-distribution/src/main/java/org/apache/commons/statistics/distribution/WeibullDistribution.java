@@ -212,6 +212,23 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
+     * <p>Returns {@code 0} when {@code p == 1} and
+     * {@code Double.POSITIVE_INFINITY} when {@code p == 0}.
+     */
+    @Override
+    public double inverseSurvivalProbability(double p) {
+        ArgumentUtils.checkProbability(p);
+        if (p == 1) {
+            return 0.0;
+        } else  if (p == 0) {
+            return Double.POSITIVE_INFINITY;
+        }
+        return scale * Math.pow(-Math.log(p), 1.0 / shape);
+    }
+
+    /**
+     * {@inheritDoc}
+     *
      * <p>The mean is {@code scale * Gamma(1 + (1 / shape))}, where {@code Gamma()}
      * is the Gamma-function.
      */
