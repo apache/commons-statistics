@@ -41,13 +41,14 @@ named by the command. Each distribution command has the following functions:
 | cdf | Cumulative Probability Density Function |
 | survival | Survival Probability Function |
 | icdf | Inverse Cumulative Probability Density Function |
+| isf | Inverse Survival Probability Function |
 | lpdf | Natural logarithm of the PDF (continuous distributions) |
 | lpmf | Natural logarithm of the PMF (discrete distributions) |
 
 For convenicence the discrete distribution pmf and lpmf commands are aliased to pdf and lpdf.
 
 The pdf, cdf and survival functions accept an input value and output a probability or
-probability density. The icdf function accepts an input probability and outputs a value.
+probability density. The icdf and isf functions accepts an input probability and outputs a value.
 The distribution is configured with suitable defaults for the distribution parameters
 and the range of values to evaluate. Executing the command will output a delimited
 table that can be plotted for visual inspection. The output will default to stdout and

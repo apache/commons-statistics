@@ -37,6 +37,7 @@ import picocli.CommandLine.Option;
              ChiSquaredCommand.CDF.class,
              ChiSquaredCommand.Survival.class,
              ChiSquaredCommand.ICDF.class,
+             ChiSquaredCommand.ISF.class,
          })
 class ChiSquaredCommand extends AbstractDistributionCommand {
 
@@ -89,6 +90,18 @@ class ChiSquaredCommand extends AbstractDistributionCommand {
         }
     }
 
+    /** Base command for the distribution that defines the parameters for inverse probability functions. */
+    private abstract static class InverseProbabilityCommand extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
+        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+
+        @Override
+        protected DistributionOptions getDistributionOptions() {
+            return distributionOptions;
+        }
+    }
+
     /** Verification checks command. */
     @Command(name = "check",
              hidden = true,
@@ -118,14 +131,10 @@ class ChiSquaredCommand extends AbstractDistributionCommand {
     /** ICDF command. */
     @Command(name = "icdf",
              description = "Chi-squared distribution inverse CDF.")
-    static class ICDF extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+    static class ICDF extends InverseProbabilityCommand {}
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
-        }
-    }
+    /** ISF command. */
+    @Command(name = "isf",
+             description = "Chi-squared distribution inverse SF.")
+    static class ISF extends InverseProbabilityCommand {}
 }

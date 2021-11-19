@@ -37,6 +37,7 @@ import picocli.CommandLine.Option;
              TruncatedNormalCommand.CDF.class,
              TruncatedNormalCommand.Survival.class,
              TruncatedNormalCommand.ICDF.class,
+             TruncatedNormalCommand.ISF.class,
          })
 class TruncatedNormalCommand extends AbstractDistributionCommand {
 
@@ -127,6 +128,18 @@ class TruncatedNormalCommand extends AbstractDistributionCommand {
         }
     }
 
+    /** Base command for the distribution that defines the parameters for inverse probability functions. */
+    private abstract static class InverseProbabilityCommand extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
+        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+
+        @Override
+        protected DistributionOptions getDistributionOptions() {
+            return distributionOptions;
+        }
+    }
+
     /** Verification checks command. */
     @Command(name = "check",
              hidden = true,
@@ -156,14 +169,10 @@ class TruncatedNormalCommand extends AbstractDistributionCommand {
     /** ICDF command. */
     @Command(name = "icdf",
              description = "Truncated normal distribution inverse CDF.")
-    static class ICDF extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+    static class ICDF extends InverseProbabilityCommand {}
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
-        }
-    }
+    /** ISF command. */
+    @Command(name = "isf",
+             description = "Truncated normal distribution inverse SF.")
+    static class ISF extends InverseProbabilityCommand {}
 }

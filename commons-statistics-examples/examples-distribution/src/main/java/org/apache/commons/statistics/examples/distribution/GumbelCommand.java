@@ -36,6 +36,7 @@ import picocli.CommandLine.Option;
              GumbelCommand.CDF.class,
              GumbelCommand.Survival.class,
              GumbelCommand.ICDF.class,
+             GumbelCommand.ISF.class,
          })
 class GumbelCommand extends AbstractDistributionCommand {
 
@@ -102,6 +103,18 @@ class GumbelCommand extends AbstractDistributionCommand {
         }
     }
 
+    /** Base command for the distribution that defines the parameters for inverse probability functions. */
+    private abstract static class InverseProbabilityCommand extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
+        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+
+        @Override
+        protected DistributionOptions getDistributionOptions() {
+            return distributionOptions;
+        }
+    }
+
     /** Verification checks command. */
     @Command(name = "check",
              hidden = true,
@@ -131,14 +144,10 @@ class GumbelCommand extends AbstractDistributionCommand {
     /** ICDF command. */
     @Command(name = "icdf",
              description = "Gumbel distribution inverse CDF.")
-    static class ICDF extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+    static class ICDF extends InverseProbabilityCommand {}
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
-        }
-    }
+    /** ISF command. */
+    @Command(name = "isf",
+             description = "Gumbel distribution inverse SF.")
+    static class ISF extends InverseProbabilityCommand {}
 }

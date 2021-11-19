@@ -36,6 +36,7 @@ import picocli.CommandLine.Option;
              ExpCommand.CDF.class,
              ExpCommand.Survival.class,
              ExpCommand.ICDF.class,
+             ExpCommand.ISF.class,
          })
 class ExpCommand extends AbstractDistributionCommand {
 
@@ -88,6 +89,18 @@ class ExpCommand extends AbstractDistributionCommand {
         }
     }
 
+    /** Base command for the distribution that defines the parameters for inverse probability functions. */
+    private abstract static class InverseProbabilityCommand extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
+        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+
+        @Override
+        protected DistributionOptions getDistributionOptions() {
+            return distributionOptions;
+        }
+    }
+
     /** Verification checks command. */
     @Command(name = "check",
              hidden = true,
@@ -117,14 +130,10 @@ class ExpCommand extends AbstractDistributionCommand {
     /** ICDF command. */
     @Command(name = "icdf",
              description = "Exponential distribution inverse CDF.")
-    static class ICDF extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+    static class ICDF extends InverseProbabilityCommand {}
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
-        }
-    }
+    /** ISF command. */
+    @Command(name = "isf",
+             description = "Exponential distribution inverse SF.")
+    static class ISF extends InverseProbabilityCommand {}
 }

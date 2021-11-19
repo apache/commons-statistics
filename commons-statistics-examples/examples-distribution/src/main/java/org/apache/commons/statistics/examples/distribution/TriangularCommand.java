@@ -37,6 +37,7 @@ import picocli.CommandLine.Option;
              TriangularCommand.CDF.class,
              TriangularCommand.Survival.class,
              TriangularCommand.ICDF.class,
+             TriangularCommand.ISF.class,
          })
 class TriangularCommand extends AbstractDistributionCommand {
 
@@ -115,36 +116,8 @@ class TriangularCommand extends AbstractDistributionCommand {
         }
     }
 
-    /** Verification checks command. */
-    @Command(name = "check",
-             hidden = true,
-             description = "Triangular distribution verification checks.")
-    static class Check extends ProbabilityCommand {}
-
-    /** PDF command. */
-    @Command(name = "pdf",
-             description = "Triangular PDF.")
-    static class PDF extends ProbabilityCommand {}
-
-    /** LPDF command. */
-    @Command(name = "lpdf",
-             description = "Triangular distribution natural logarithm of the PDF.")
-    static class LPDF extends ProbabilityCommand {}
-
-    /** CDF command. */
-    @Command(name = "cdf",
-             description = "Triangular CDF.")
-    static class CDF extends ProbabilityCommand {}
-
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
-             description = "Triangular survival probability.")
-    static class Survival extends ProbabilityCommand {}
-
-    /** ICDF command. */
-    @Command(name = "icdf",
-             description = "Triangular inverse CDF.")
-    static class ICDF extends BaseCommand {
+    /** Base command for the distribution that defines the parameters for inverse probability functions. */
+    private abstract static class InverseProbabilityCommand extends BaseCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
         private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
@@ -154,4 +127,40 @@ class TriangularCommand extends AbstractDistributionCommand {
             return distributionOptions;
         }
     }
+
+    /** Verification checks command. */
+    @Command(name = "check",
+             hidden = true,
+             description = "Triangular distribution verification checks.")
+    static class Check extends ProbabilityCommand {}
+
+    /** PDF command. */
+    @Command(name = "pdf",
+             description = "Triangular distribution PDF.")
+    static class PDF extends ProbabilityCommand {}
+
+    /** LPDF command. */
+    @Command(name = "lpdf",
+             description = "Triangular distribution natural logarithm of the PDF.")
+    static class LPDF extends ProbabilityCommand {}
+
+    /** CDF command. */
+    @Command(name = "cdf",
+             description = "Triangular distribution CDF.")
+    static class CDF extends ProbabilityCommand {}
+
+    /** Survival command. */
+    @Command(name = "survival", aliases = {"sur"},
+             description = "Triangular distribution survival probability.")
+    static class Survival extends ProbabilityCommand {}
+
+    /** ICDF command. */
+    @Command(name = "icdf",
+             description = "Triangular distribution inverse CDF.")
+    static class ICDF extends InverseProbabilityCommand {}
+
+    /** ISF command. */
+    @Command(name = "isf",
+             description = "Triangular distribution inverse SF.")
+    static class ISF extends InverseProbabilityCommand {}
 }

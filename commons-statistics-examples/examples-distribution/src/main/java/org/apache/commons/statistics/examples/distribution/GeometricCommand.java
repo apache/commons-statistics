@@ -37,6 +37,7 @@ import picocli.CommandLine.Option;
              GeometricCommand.CDF.class,
              GeometricCommand.Survival.class,
              GeometricCommand.ICDF.class,
+             GeometricCommand.ISF.class,
          })
 class GeometricCommand extends AbstractDistributionCommand {
 
@@ -89,6 +90,18 @@ class GeometricCommand extends AbstractDistributionCommand {
         }
     }
 
+    /** Base command for the distribution that defines the parameters for inverse probability functions. */
+    private abstract static class InverseProbabilityCommand extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
+        private InverseDiscreteDistributionOptions distributionOptions = new InverseDiscreteDistributionOptions();
+
+        @Override
+        protected DistributionOptions getDistributionOptions() {
+            return distributionOptions;
+        }
+    }
+
     /** Verification checks command. */
     @Command(name = "check",
              hidden = true,
@@ -120,14 +133,10 @@ class GeometricCommand extends AbstractDistributionCommand {
     /** ICDF command. */
     @Command(name = "icdf",
              description = "Geometric distribution inverse CDF.")
-    static class ICDF extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseDiscreteDistributionOptions distributionOptions = new InverseDiscreteDistributionOptions();
+    static class ICDF extends InverseProbabilityCommand {}
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
-        }
-    }
+    /** ISF command. */
+    @Command(name = "isf",
+             description = "Geometric distribution inverse SF.")
+    static class ISF extends InverseProbabilityCommand {}
 }

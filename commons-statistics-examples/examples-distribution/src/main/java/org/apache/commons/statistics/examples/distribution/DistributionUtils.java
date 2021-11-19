@@ -24,6 +24,7 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.statistics.distribution.ContinuousDistribution;
 import org.apache.commons.statistics.distribution.DiscreteDistribution;
 
@@ -33,6 +34,10 @@ import org.apache.commons.statistics.distribution.DiscreteDistribution;
 final class DistributionUtils {
     /** Message prefix for an unknown function. */
     private static final String UNKNOWN_FUNCTION = "Unknown function: ";
+    /** Maximum relative error for equality in the 'check' command. */
+    private static final double MAX_RELATIVE_ERROR = 1e-6;
+    /** Maximum absolute error for equality to 0 or 1 for a probability. */
+    private static final double DELTA_P = 1e-6;
 
     /** No public construction. */
     private DistributionUtils() {}
@@ -217,6 +222,12 @@ final class DistributionUtils {
                 if (!(upper == dd.inverseCumulativeProbability(1))) {
                     out.printf("%s upper icdf(1.0) : %s != %s", title, upper, dd.inverseCumulativeProbability(1));
                 }
+                if (!(lower == dd.inverseSurvivalProbability(1))) {
+                    out.printf("%s lower isf(1.0) : %s != %s", title, lower, dd.inverseSurvivalProbability(1));
+                }
+                if (!(upper == dd.inverseSurvivalProbability(0))) {
+                    out.printf("%s upper isf(0.0) : %s != %s", title, upper, dd.inverseSurvivalProbability(0));
+                }
                 // Validate CDF + Survival == 1
                 for (final double x : points) {
                     final double p1 = dd.cumulativeProbability(x);
@@ -226,23 +237,35 @@ final class DistributionUtils {
                         out.printf("%s x=%s : cdf + survival != 1.0 : %s + %s%n", title, x, p1, p2);
                     }
                     // Verify x = icdf(cdf(x)). Ignore p-values close to the bounds.
-                    if (p1 <= 1e-6 || p1 >= 1.0 - 1e-6) {
-                        continue;
+                    if (!closeToInteger(p1)) {
+                        final double xx = dd.inverseCumulativeProbability(p1);
+                        if (!Precision.equalsWithRelativeTolerance(x, xx, MAX_RELATIVE_ERROR) &&
+                            // The inverse may not be a bijection, check forward again
+                            !Precision.equalsWithRelativeTolerance(p1, dd.cumulativeProbability(xx),
+                                                                   MAX_RELATIVE_ERROR)) {
+                            out.printf("%s x=%s : icdf(%s) : %s (cdf=%s)%n", title, x, p1, xx,
+                                dd.cumulativeProbability(xx));
+                        }
                     }
-                    final double xx = dd.inverseCumulativeProbability(p1);
-                    final double dx = Math.abs(x - xx);
-                    // Absolute or relative error
-                    if (!(dx < 1e-10 || dx / Math.abs(x) < 1e-5)) {
-                        out.printf("%s x=%s : icdf(%s) : %s (cdf=%s)%n", title, x, p1, xx,
-                            dd.cumulativeProbability(xx));
+                    // Verify x = isf(sf(x)). Ignore p-values close to the bounds.
+                    if (!closeToInteger(p2)) {
+                        final double xx = dd.inverseSurvivalProbability(p2);
+                        if (!Precision.equalsWithRelativeTolerance(x, xx, MAX_RELATIVE_ERROR) &&
+                            // The inverse may not be a bijection, check forward again
+                            !Precision.equalsWithRelativeTolerance(p2, dd.survivalProbability(xx),
+                                                                   MAX_RELATIVE_ERROR)) {
+                            out.printf("%s x=%s : isf(%s) : %s (sf=%s)%n", title, x, p2, xx,
+                                dd.survivalProbability(xx));
+                        }
                     }
                 }
                 // Validate pdf and logpdf
                 for (final double x : points) {
                     final double p1 = dd.density(x);
-                    final double p2 = dd.logDensity(x);
-                    if (!(Math.abs(Math.exp(p2) - p1) < 1e-10)) {
-                        out.printf("%s x=%s : pdf != exp(logpdf) : %s + %s%n", title, x, p1, Math.exp(p2));
+                    final double lp = dd.logDensity(x);
+                    final double p2 = Math.exp(lp);
+                    if (!Precision.equalsWithRelativeTolerance(p1, p2, MAX_RELATIVE_ERROR)) {
+                        out.printf("%s x=%s : pdf != exp(logpdf) : %s != %s%n", title, x, p1, p2);
                     }
                 }
             });
@@ -273,6 +296,12 @@ final class DistributionUtils {
                 if (!(upper == dd.inverseCumulativeProbability(1))) {
                     out.printf("%s upper != icdf(1.0) : %d != %d", title, upper, dd.inverseCumulativeProbability(1));
                 }
+                if (!(lower == dd.inverseSurvivalProbability(1))) {
+                    out.printf("%s lower isf(1.0) : %d != %d", title, lower, dd.inverseSurvivalProbability(1));
+                }
+                if (!(upper == dd.inverseSurvivalProbability(0))) {
+                    out.printf("%s upper isf(0.0) : %d != %d", title, upper, dd.inverseSurvivalProbability(0));
+                }
                 // Validate CDF + Survival == 1
                 for (final int x : points) {
                     final double p1 = dd.cumulativeProbability(x);
@@ -282,21 +311,29 @@ final class DistributionUtils {
                         out.printf("%s x=%d : cdf + survival != 1.0 : %s + %s%n", title, x, p1, p2);
                     }
                     // Verify x = icdf(cdf(x)). Ignore p-values close to the bounds.
-                    if (p1 <= 1e-6 || p1 >= 1.0 - 1e-6) {
-                        continue;
+                    if (!closeToInteger(p1)) {
+                        final int xx = dd.inverseCumulativeProbability(p1);
+                        if (x != xx) {
+                            out.printf("%s x=%d : icdf(%s) : %d (cdf=%s)%n", title, x, p1, xx,
+                                dd.cumulativeProbability(xx));
+                        }
                     }
-                    final int xx = dd.inverseCumulativeProbability(p1);
-                    if (x != xx) {
-                        out.printf("%s x=%d : icdf(%s) : %d (cdf=%s)%n", title, x, p1, xx,
-                            dd.cumulativeProbability(xx));
+                    // Verify x = isf(sf(x)). Ignore p-values close to the bounds.
+                    if (!closeToInteger(p2)) {
+                        final int xx = dd.inverseSurvivalProbability(p2);
+                        if (x != xx) {
+                            out.printf("%s x=%d : isf(%s) : %d (sf=%s)%n", title, x, p2, xx,
+                                dd.survivalProbability(xx));
+                        }
                     }
                 }
                 // Validate pmf and logpmf
                 for (final int x : points) {
                     final double p1 = dd.probability(x);
-                    final double p2 = dd.logProbability(x);
-                    if (!(Math.abs(Math.exp(p2) - p1) < 1e-10)) {
-                        out.printf("%s x=%d : pmf != exp(logpmf) : %s + %s%n", title, x, p1, Math.exp(p2));
+                    final double lp = dd.logProbability(x);
+                    final double p2 = Math.exp(lp);
+                    if (!Precision.equalsWithRelativeTolerance(p1, p2, MAX_RELATIVE_ERROR)) {
+                        out.printf("%s x=%d : pmf != exp(logpmf) : %s != %s%n", title, x, p1, p2);
                     }
                 }
             });
@@ -445,14 +482,25 @@ final class DistributionUtils {
      * @return the function
      */
     private static ContinuousFunction createFunction(InverseContinuousDistributionOptions distributionOptions) {
+        ContinuousFunction f;
+        switch (distributionOptions.distributionFunction) {
+        case ICDF:
+            f = ContinuousDistribution::inverseCumulativeProbability;
+            break;
+        case ISF:
+            f = ContinuousDistribution::inverseSurvivalProbability;
+            break;
+        default:
+            throw new IllegalArgumentException(UNKNOWN_FUNCTION + distributionOptions.distributionFunction);
+        }
         if (!distributionOptions.suppressException) {
-            return ContinuousDistribution::inverseCumulativeProbability;
+            return f;
         }
         return new ContinuousFunction() {
             @Override
             public double apply(ContinuousDistribution dist, double x) {
                 try {
-                    return dist.inverseCumulativeProbability(x);
+                    return f.apply(dist, x);
                 } catch (IllegalArgumentException ex) {
                     // Ignore
                     return Double.NaN;
@@ -468,14 +516,25 @@ final class DistributionUtils {
      * @return the function
      */
     private static InverseDiscreteFunction createFunction(InverseDiscreteDistributionOptions distributionOptions) {
+        InverseDiscreteFunction f;
+        switch (distributionOptions.distributionFunction) {
+        case ICDF:
+            f = DiscreteDistribution::inverseCumulativeProbability;
+            break;
+        case ISF:
+            f = DiscreteDistribution::inverseSurvivalProbability;
+            break;
+        default:
+            throw new IllegalArgumentException(UNKNOWN_FUNCTION + distributionOptions.distributionFunction);
+        }
         if (!distributionOptions.suppressException) {
-            return DiscreteDistribution::inverseCumulativeProbability;
+            return f;
         }
         return new InverseDiscreteFunction() {
             @Override
             public int apply(DiscreteDistribution dist, double x) {
                 try {
-                    return dist.inverseCumulativeProbability(x);
+                    return f.apply(dist, x);
                 } catch (IllegalArgumentException ex) {
                     // Ignore
                     return Integer.MIN_VALUE;
@@ -693,5 +752,15 @@ final class DistributionUtils {
             Arrays.fill(array, array[0]);
         }
         return array;
+    }
+
+    /**
+     * Check if the value is close to an integer.
+     *
+     * @param p Value
+     * @return true if within a tolerance of an integer
+     */
+    private static boolean closeToInteger(double p) {
+        return Math.abs(Math.rint(p) - p) < DELTA_P;
     }
 }

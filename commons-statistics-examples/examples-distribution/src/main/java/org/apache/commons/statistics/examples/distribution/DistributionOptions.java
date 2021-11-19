@@ -46,7 +46,7 @@ class DistributionOptions {
     protected File inputFile;
 
     /** Flag indicating if an exception should be suppressed during function evaluation.
-     * Exceptions are thrown by the ICDF function when the input probability is not in
+     * Exceptions are thrown by the ICDF and ISF functions when the input probability is not in
      * the interval {@code [0, 1]}. */
     @Option(names = { "--no-ex", "--no-exception" },
             description = {"Suppress function evaluation exceptions (returns NaN or integer min value)."})
