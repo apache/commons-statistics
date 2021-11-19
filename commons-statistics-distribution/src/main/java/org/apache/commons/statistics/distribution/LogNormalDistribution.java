@@ -42,10 +42,10 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * </ul>
  */
 public final class LogNormalDistribution extends AbstractContinuousDistribution {
+    /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */
+    private static final double HALF_LOG_TWO_PI = 0.9189385332046727417803297;
     /** &radic;(2 &pi;). */
     private static final double SQRT2PI = Math.sqrt(2 * Math.PI);
-    /** &radic;(2). */
-    private static final double SQRT2 = Math.sqrt(2);
     /** The mu parameter of this distribution. */
     private final double mu;
     /** The sigma parameter of this distribution. */
@@ -65,8 +65,8 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
                                   double sigma) {
         this.mu = mu;
         this.sigma = sigma;
-        logSigmaPlusHalfLog2Pi = Math.log(sigma) + 0.5 * Math.log(2 * Math.PI);
-        sigmaSqrt2 = sigma * SQRT2;
+        logSigmaPlusHalfLog2Pi = Math.log(sigma) + HALF_LOG_TWO_PI;
+        sigmaSqrt2 = ExtendedPrecision.sqrt2xx(sigma);
         sigmaSqrt2Pi = sigma * SQRT2PI;
     }
 
