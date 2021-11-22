@@ -154,8 +154,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * lower = 0
  * # optional (default Infinity)
  * upper = Infinity
- * # optional (default true or over-ridden in isSupportConnected())
- * connected = false
  * # optional (default 1e-12 or over-ridden in getRelativeTolerance())
  * tolerance.relative = 1e-9
  * # optional (default 0.0 or over-ridden in getAbsoluteTolerance())
