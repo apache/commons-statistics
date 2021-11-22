@@ -259,18 +259,6 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
-
-    /**
      * Clip to the value to the range [lower, upper].
      * This is used to handle floating-point error at the support bound.
      *

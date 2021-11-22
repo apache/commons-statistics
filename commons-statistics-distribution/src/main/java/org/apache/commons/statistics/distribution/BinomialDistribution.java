@@ -167,18 +167,6 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
         return probabilityOfSuccess > 0.0 ? numberOfTrials : 0;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
-
     /** {@inheritDoc} */
     @Override
     protected int getMedian() {

@@ -98,8 +98,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * The default will use the expected CDF values (SF = 1 - CDF).
  * <li>A tolerance for equality assertions. The default is set by {@link #getAbsoluteTolerance()}
  * and {@link #getRelativeTolerance()}.
- * <li>A flag to indicate the returned value for {@link ContinuousDistribution#isSupportConnected()}.
- * The default is set by {@link #isSupportConnected()}.
  * </ul>
  *
  * <p>If the distribution provides higher precision implementations of
@@ -431,7 +429,7 @@ abstract class BaseContinuousDistributionTest
      */
     Stream<Arguments> testSupport() {
         return data.stream().map(d -> {
-            return Arguments.of(namedDistribution(d.getParameters()), d.getLower(), d.getUpper(), d.isConnected());
+            return Arguments.of(namedDistribution(d.getParameters()), d.getLower(), d.getUpper());
         });
     }
 
@@ -896,10 +894,9 @@ abstract class BaseContinuousDistributionTest
      */
     @ParameterizedTest
     @MethodSource
-    final void testSupport(ContinuousDistribution dist, double lower, double upper, boolean connected) {
+    final void testSupport(ContinuousDistribution dist, double lower, double upper) {
         Assertions.assertEquals(lower, dist.getSupportLowerBound(), "lower bound");
         Assertions.assertEquals(upper, dist.getSupportUpperBound(), "upper bound");
-        Assertions.assertEquals(connected, dist.isSupportConnected(), "is connected");
     }
 
     /**

@@ -195,18 +195,6 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
         return upper;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
-
     /** {@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {

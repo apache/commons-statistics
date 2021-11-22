@@ -236,18 +236,6 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
         return probabilityOfSuccess < 1 ? Integer.MAX_VALUE : 0;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
-
     /** {@inheritDoc} */
     @Override
     public Sampler createSampler(UniformRandomProvider rng) {

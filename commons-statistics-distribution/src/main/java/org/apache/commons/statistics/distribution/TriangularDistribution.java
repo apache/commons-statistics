@@ -258,16 +258,4 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
     public double getSupportUpperBound() {
         return b;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
 }

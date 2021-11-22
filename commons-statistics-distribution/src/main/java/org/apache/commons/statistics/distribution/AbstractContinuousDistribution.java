@@ -286,6 +286,36 @@ abstract class AbstractContinuousDistribution
         return x;
     }
 
+
+    /**
+     * Indicates whether the support is connected, i.e. whether all values between the
+     * lower and upper bound of the support are included in the support.
+     *
+     * <p>This method is used in the default implementation of the inverse cumulative and
+     * survival probability functions.
+     *
+     * <p>The default value is true which assumes the cdf and sf have no plateau regions
+     * where the same probability value is returned for a large range of x.
+     * Override this method if there are gaps in the support of the cdf and sf.
+     *
+     * <p>If false then the inverse will perform an additional step to ensure that the
+     * lower-bound of the interval on which the cdf is constant should be returned. This
+     * will search from the initial point x downwards if a smaller value also has the same
+     * cumulative (survival) probability.
+     *
+     * <p>Any plateau with a width in x smaller than the inverse absolute accuracy will
+     * not be searched.
+     *
+     * <p>Note: This method was public in commons math. It has been reduced to protected
+     * in commons statistics as it is an implementation detail.
+     *
+     * @return whether the support is connected.
+     * @see <a href="https://issues.apache.org/jira/browse/MATH-699">MATH-699</a>
+     */
+    protected boolean isSupportConnected() {
+        return true;
+    }
+
     /**
      * Test the probability function for a plateau at the point x. If detected
      * search the plateau for the lowest point y such that

@@ -31,8 +31,6 @@ abstract class DistributionTestData {
     // These values are expected to be the same for all test cases
     // and may be set in the properties before creating the test data instance.
 
-    /** The key for the support connected value. */
-    static final String KEY_CONNECTED = "connected";
     /** The key for the absolute tolerance value. */
     static final String KEY_TOLERANCE_ABSOLUTE = "tolerance.absolute";
     /** The key for the relative tolerance value. */
@@ -60,8 +58,6 @@ abstract class DistributionTestData {
     private final double mean;
     /** Variance. */
     private final double variance;
-    /** Support connected flag. */
-    private final boolean connected;
     /** Test absolute tolerance for calculations. */
     private final double absoluteTolerance;
     /** Test relative tolerance for calculations. */
@@ -510,7 +506,6 @@ abstract class DistributionTestData {
                             .map(DistributionTestData::parseParameter).toArray();
         mean = getAsDouble(props, "mean");
         variance = getAsDouble(props, "variance");
-        connected = getAsBoolean(props, KEY_CONNECTED);
         absoluteTolerance = getAsDouble(props, KEY_TOLERANCE_ABSOLUTE);
         absoluteToleranceHp = getAsDouble(props, KEY_TOLERANCE_ABSOLUTE_HP);
         relativeTolerance = getAsDouble(props, KEY_TOLERANCE_RELATIVE);
@@ -865,15 +860,6 @@ abstract class DistributionTestData {
      */
     double getVariance() {
         return variance;
-    }
-
-    /**
-     * Checks if the support is connected (continuous from lower to upper bound).
-     *
-     * @return true if the support is connected
-     */
-    boolean isConnected() {
-        return connected;
     }
 
     /**

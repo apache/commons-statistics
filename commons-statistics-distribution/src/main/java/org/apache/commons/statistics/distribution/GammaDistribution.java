@@ -354,18 +354,6 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * <p>
      * Sampling algorithms:
      * <ul>

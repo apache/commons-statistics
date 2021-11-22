@@ -281,16 +281,4 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     public int getSupportUpperBound() {
         return upperBound;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
 }

@@ -184,18 +184,6 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
         return SUPPORT_HI;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
-
     /** {@inheritDoc} */
     @Override
     protected double getMedian() {

@@ -270,16 +270,4 @@ public final class FDistribution extends AbstractContinuousDistribution {
     public double getSupportUpperBound() {
         return SUPPORT_HI;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
 }

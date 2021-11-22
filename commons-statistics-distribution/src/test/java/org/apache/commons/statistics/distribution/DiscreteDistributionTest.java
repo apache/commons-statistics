@@ -179,10 +179,6 @@ class DiscreteDistributionTest {
             throw new AssertionError();
         }
         @Override
-        public boolean isSupportConnected() {
-            throw new AssertionError();
-        }
-        @Override
         public Sampler createSampler(UniformRandomProvider rng) {
             throw new AssertionError();
         }

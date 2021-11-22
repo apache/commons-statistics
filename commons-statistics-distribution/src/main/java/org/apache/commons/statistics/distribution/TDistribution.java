@@ -305,16 +305,4 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     public double getSupportUpperBound() {
         return Double.POSITIVE_INFINITY;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
 }

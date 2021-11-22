@@ -191,15 +191,6 @@ public interface DiscreteDistribution {
     int getSupportUpperBound();
 
     /**
-     * Indicates whether the support is connected, i.e. whether all
-     * integers between the lower and upper bound of the support are
-     * included in the support.
-     *
-     * @return whether the support is connected.
-     */
-    boolean isSupportConnected();
-
-    /**
      * Creates a sampler.
      *
      * @param rng Generator of uniformly distributed numbers.

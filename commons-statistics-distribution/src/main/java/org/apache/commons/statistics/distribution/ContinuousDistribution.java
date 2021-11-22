@@ -170,15 +170,6 @@ public interface ContinuousDistribution {
     double getSupportUpperBound();
 
     /**
-     * Indicates whether the support is connected, i.e. whether
-     * all values between the lower and upper bound of the support
-     * are included in the support.
-     *
-     * @return whether the support is connected.
-     */
-    boolean isSupportConnected();
-
-    /**
      * Creates a sampler.
      *
      * @param rng Generator of uniformly distributed numbers.

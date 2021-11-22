@@ -103,7 +103,6 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
         final String key = getDistributionName().toLowerCase(Locale.ROOT);
         // Set defaults
         final Properties defaults = new Properties();
-        defaults.setProperty(DistributionTestData.KEY_CONNECTED, String.valueOf(isSupportConnected()));
         defaults.setProperty(DistributionTestData.KEY_TOLERANCE_ABSOLUTE, String.valueOf(getAbsoluteTolerance()));
         defaults.setProperty(DistributionTestData.KEY_TOLERANCE_RELATIVE, String.valueOf(getRelativeTolerance()));
         defaults.setProperty(DistributionTestData.KEY_TOLERANCE_ABSOLUTE_HP, String.valueOf(getHighPrecisionAbsoluteTolerance()));
@@ -196,17 +195,6 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      */
     protected double getHighPrecisionRelativeTolerance() {
         return 1e-12;
-    }
-
-    /**
-     * The expected value for the distribution {@code isSupportConnected()} method.
-     * The default is {@code true}. Test class should override this when the distribution
-     * is not support connected.
-     *
-     * @return true if the distribution is support connected
-     */
-    protected boolean isSupportConnected() {
-        return true;
     }
 
     /**

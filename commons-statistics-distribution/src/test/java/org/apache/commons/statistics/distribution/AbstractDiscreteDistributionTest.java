@@ -127,10 +127,6 @@ class AbstractDiscreteDistributionTest {
             public int getSupportUpperBound() {
                 return Integer.MIN_VALUE + 3;
             }
-            @Override
-            public boolean isSupportConnected() {
-                throw new AssertionError();
-            }
         };
         Assertions.assertEquals(dist.getSupportLowerBound(), dist.inverseCumulativeProbability(0.0));
         Assertions.assertEquals(Integer.MIN_VALUE, dist.inverseCumulativeProbability(0.05));
@@ -182,10 +178,6 @@ class AbstractDiscreteDistributionTest {
             public int getSupportUpperBound() {
                 return 3;
             }
-            @Override
-            public boolean isSupportConnected() {
-                throw new AssertionError();
-            }
         };
         Assertions.assertEquals(dist.getSupportLowerBound(), dist.inverseCumulativeProbability(0.0));
         Assertions.assertEquals(0, dist.inverseCumulativeProbability(0.05));
@@ -227,10 +219,6 @@ class AbstractDiscreteDistributionTest {
             @Override
             public int getSupportUpperBound() {
                 return Integer.MAX_VALUE;
-            }
-            @Override
-            public boolean isSupportConnected() {
-                return false;
             }
         };
         Assertions.assertThrows(IllegalStateException.class, () -> dist.inverseCumulativeProbability(0.5));
@@ -281,11 +269,6 @@ class AbstractDiscreteDistributionTest {
         @Override
         public int getSupportUpperBound() {
             return 6;
-        }
-
-        @Override
-        public final boolean isSupportConnected() {
-            return true;
         }
     }
 }

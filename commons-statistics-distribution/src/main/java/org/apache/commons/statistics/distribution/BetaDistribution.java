@@ -223,18 +223,6 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
      * <p>Sampling is performed using Cheng's algorithm:
      * <blockquote>
      * <pre>

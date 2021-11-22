@@ -34,10 +34,6 @@ class ContinuousDistributionTest {
 
         final ContinuousDistribution dist = new ContinuousDistribution() {
             @Override
-            public boolean isSupportConnected() {
-                return false;
-            }
-            @Override
             public double inverseCumulativeProbability(double p) {
                 // For the default inverseSurvivalProbability(double) method
                 return 10 * p;

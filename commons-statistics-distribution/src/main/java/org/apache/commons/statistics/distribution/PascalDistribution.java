@@ -219,16 +219,4 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
     public int getSupportUpperBound() {
         return probabilityOfSuccess < 1 ? Integer.MAX_VALUE : 0;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The support of this distribution is connected.
-     *
-     * @return {@code true}
-     */
-    @Override
-    public boolean isSupportConnected() {
-        return true;
-    }
 }
