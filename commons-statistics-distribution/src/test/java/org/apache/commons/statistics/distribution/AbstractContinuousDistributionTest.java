@@ -95,6 +95,7 @@ class AbstractContinuousDistributionTest {
 
             @Override
             public boolean isSupportConnected() {
+                // This is deliberately false; the functionality is the subject of this test
                 return false;
             }
         };
@@ -200,6 +201,7 @@ class AbstractContinuousDistributionTest {
 
             @Override
             public boolean isSupportConnected() {
+                // This is deliberately false; the functionality is the subject of this test
                 return false;
             }
         };
@@ -278,11 +280,6 @@ class AbstractContinuousDistributionTest {
             public double getSupportUpperBound() {
                 return Double.POSITIVE_INFINITY;
             }
-
-            @Override
-            public boolean isSupportConnected() {
-                return true;
-            }
         };
         double x = distribution.inverseCumulativeProbability(0.5);
         // The value can be anything other than x0
@@ -354,11 +351,6 @@ class AbstractContinuousDistributionTest {
             public double getSupportUpperBound() {
                 // Report upper bound incorrectly (it should be 10) to test cdf(1)
                 return Double.POSITIVE_INFINITY;
-            }
-
-            @Override
-            public boolean isSupportConnected() {
-                return true;
             }
         };
 
