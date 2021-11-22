@@ -17,8 +17,14 @@
 
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
+import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
+import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link UniformContinuousDistribution}.
@@ -82,5 +88,66 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
         // This is inexact
         Assertions.assertEquals(-7.5e-10, dist2.inverseCumulativeProbability(0.25), Math.ulp(-7.5e-10));
         Assertions.assertEquals(-upper + tiny * upper, dist2.inverseCumulativeProbability(tiny));
+    }
+
+    /**
+     * Test the probability in a range uses the exact computation of
+     * {@code (x1 - x0) / (upper - lower)} assuming x0 and x1 are within [lower, upper].
+     * This test will fail if the distribution uses the default implementation in
+     * {@link AbstractContinuousDistribution}.
+     */
+    @ParameterizedTest
+    @CsvSource(value = {
+        "-1.6358421681, -0.566237287234",
+        "-10.23678, 234.234",
+        "234.2342, 54322342.13",
+    })
+    void testProbabilityRange(double lower, double upper) {
+        final UniformContinuousDistribution dist = UniformContinuousDistribution.of(lower, upper);
+        final double r = upper - lower;
+        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final ContinuousSampler sampler = ContinuousUniformSampler.of(rng, lower, upper);
+        for (int i = 0; i < 100; i++) {
+            double x0 = sampler.sample();
+            double x1 = sampler.sample();
+            if (x1 < x0) {
+                final double tmp = x0;
+                x1 = x0;
+                x0 = tmp;
+            }
+            Assertions.assertEquals((x1 - x0) / r, dist.probability(x0, x1));
+        }
+    }
+
+    @Test
+    void testProbabilityRangeEdgeCases() {
+        final UniformContinuousDistribution dist = UniformContinuousDistribution.of(0, 11);
+
+        Assertions.assertThrows(DistributionException.class, () -> dist.probability(4, 3));
+
+        // x0 >= upper
+        Assertions.assertEquals(0, dist.probability(11, 16));
+        Assertions.assertEquals(0, dist.probability(15, 16));
+        // x1 < lower
+        Assertions.assertEquals(0, dist.probability(-3, -1));
+
+        // x0 == x1
+        Assertions.assertEquals(0, dist.probability(4.12, 4.12));
+        Assertions.assertEquals(0, dist.probability(5.68, 5.68));
+
+        // x1 > upper
+        Assertions.assertEquals(1, dist.probability(0, 16));
+        Assertions.assertEquals((11 - 3.45) / 11, dist.probability(3.45, 16));
+        Assertions.assertEquals((11 - 4.89) / 11, dist.probability(4.89, 16));
+        Assertions.assertEquals(0, dist.probability(11, 16));
+
+        // x0 < lower
+        Assertions.assertEquals(2.0 / 11, dist.probability(-2, 2));
+        Assertions.assertEquals(3.0 / 11, dist.probability(-2, 3));
+        Assertions.assertEquals(4.0 / 11, dist.probability(-2, 4));
+        Assertions.assertEquals(1.0, dist.probability(-2, 11));
+
+        // x1 > upper && x0 < lower
+        Assertions.assertEquals(1, dist.probability(-2, 16));
     }
 }

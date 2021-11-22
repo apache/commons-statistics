@@ -77,6 +77,28 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
 
     /** {@inheritDoc} */
     @Override
+    public double probability(double x0,
+                              double x1) {
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH, x0, x1);
+        }
+        if (x0 >= upper || x1 <= lower) {
+            // (x0, x1] does not overlap [lower, upper]
+            return 0;
+        }
+
+        // x0 < upper
+        // x1 >= lower
+
+        // Find the range between x0 and x1 that is within [lower, upper].
+        final double l = Math.max(lower, x0);
+        final double u = Math.min(upper, x1);
+
+        return (u - l) / upperMinusLower;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double logDensity(double x) {
         if (x < lower ||
             x > upper) {
@@ -183,14 +205,6 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
     @Override
     public boolean isSupportConnected() {
         return true;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected double getMedian() {
-        // Overridden for the probability(double, double) method.
-        // This is intentionally not a public method.
-        return getMean();
     }
 
     /** {@inheritDoc} */
