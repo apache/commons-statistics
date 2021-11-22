@@ -81,6 +81,30 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
 
     /** {@inheritDoc} */
     @Override
+    public double probability(int x0,
+                              int x1) {
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH, x0, x1);
+        }
+        if (x0 >= upper || x1 < lower) {
+            // (x0, x1] does not overlap [lower, upper]
+            return 0;
+        }
+
+        // x0 < upper
+        // x1 >= lower
+
+        // Find the range between x0 (exclusive) and x1 (inclusive) within [lower, upper].
+        // In the case of x0 < lower set l so that u - l == (u - lower) + 1
+        // long arithmetic prevents overflow
+        final long l = Math.max(lower - 1L, x0);
+        final long u = Math.min(upper, x1);
+
+        return (u - l) / upperMinusLowerPlus1;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double logProbability(int x) {
         if (x < lower || x > upper) {
             return Double.NEGATIVE_INFINITY;

@@ -169,4 +169,90 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
         final int[] x = MathArrays.sequence(upper - lower, lower, 1);
         testSurvivalProbabilityInverseMapping(dist, x);
     }
+
+    /**
+     * Test the probability in a range uses the exact computation of
+     * {@code (x1 - x0) / (upper - lower + 1)} assuming x0 and x1 are within [lower, upper].
+     * This test will fail if the distribution uses the default implementation in
+     * {@link AbstractDiscreteDistribution}.
+     */
+    @ParameterizedTest
+    @CsvSource(value = {
+        // Extreme bounds
+        "-2147483648, -2147483648",
+        "-2147483648, -2147483647",
+        "-2147483648, -2147483646",
+        "-2147483648, -2147483638",
+        "2147483647, 2147483647",
+        "2147483646, 2147483647",
+        "2147483645, 2147483647",
+        "2147483637, 2147483647",
+        // Range is a prime number
+        "-10, 2", // 13
+        "10, 16",  // 7
+        "-20, -10", // 11
+        // Range is even
+        "-10, 3", // 14
+        "10, 17",  // 8
+        "-20, -9", // 12
+        // Large range
+        "-2147483648, 2147483647",
+        "-2147483648, 1263781682",
+        "-2147483648, 1781682",
+        "-2147483648, -231781682",
+        "-1324234584, 2147483647",
+        "-324234584, 2147483647",
+        "6234584, 2147483647",
+        "-1256362376, 125637",
+        "-62378468, 1325657374",
+    })
+    void testProbabilityRange(int lower, int upper) {
+        final UniformDiscreteDistribution dist = UniformDiscreteDistribution.of(lower, upper);
+        final double r = (double) upper - lower + 1;
+        final long stride = r < 20 ? 1 : (long) (r / 20);
+        for (long x0 = lower; x0 <= upper; x0 += stride) {
+            for (long x1 = x0; x1 <= upper; x1 += stride) {
+                final double p = (x1 - x0) / r;
+                Assertions.assertEquals(p, dist.probability((int) x0, (int) x1));
+            }
+        }
+    }
+
+    @Test
+    void testProbabilityRangeEdgeCases() {
+        final UniformDiscreteDistribution dist = UniformDiscreteDistribution.of(3, 5);
+
+        Assertions.assertThrows(DistributionException.class, () -> dist.probability(4, 3));
+
+        // x0 >= upper
+        Assertions.assertEquals(0, dist.probability(5, 6));
+        Assertions.assertEquals(0, dist.probability(15, 16));
+        // x1 < lower
+        Assertions.assertEquals(0, dist.probability(-3, 1));
+
+        // x0 == x1
+        Assertions.assertEquals(0, dist.probability(3, 3));
+        Assertions.assertEquals(0, dist.probability(4, 4));
+        Assertions.assertEquals(0, dist.probability(5, 5));
+        Assertions.assertEquals(0, dist.probability(6, 6));
+
+        // x0+1 == x1
+        Assertions.assertEquals(1.0 / 3, dist.probability(3, 4));
+        Assertions.assertEquals(1.0 / 3, dist.probability(4, 5));
+
+        // x1 > upper
+        Assertions.assertEquals(1, dist.probability(2, 6));
+        Assertions.assertEquals(2.0 / 3, dist.probability(3, 6));
+        Assertions.assertEquals(1.0 / 3, dist.probability(4, 6));
+        Assertions.assertEquals(0, dist.probability(5, 6));
+
+        // x0 < lower
+        Assertions.assertEquals(0, dist.probability(-2, 2));
+        Assertions.assertEquals(1.0 / 3, dist.probability(-2, 3));
+        Assertions.assertEquals(2.0 / 3, dist.probability(-2, 4));
+        Assertions.assertEquals(1.0, dist.probability(-2, 5));
+
+        // x1 > upper && x0 < lower
+        Assertions.assertEquals(1, dist.probability(-2, 6));
+    }
 }
