@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.math.BigDecimal;
+
 /**
  * Computes extended precision floating-point operations.
  *
@@ -27,6 +29,8 @@ package org.apache.commons.statistics.distribution;
  * <p>Adapted from {@code org.apache.commons.numbers.core.ExtendedPrecion}.
  */
 final class ExtendedPrecision {
+    /** sqrt(2 pi). Computed to 64-digits. */
+    private static final String SQRT_TWO_PI = "2.506628274631000502415765284811045253006986740609938316629923576";
     /**
      * The multiplier used to split the double value into high and low parts. From
      * Dekker (1971): "The constant should be chosen equal to 2^(p - p/2) + 1,
@@ -42,9 +46,73 @@ final class ExtendedPrecision {
     private static final double SCALE_UP = 0x1.0p600;
     /** Scale down by 2^600. */
     private static final double SCALE_DOWN = 0x1.0p-600;
+    /** sqrt(2 pi) as a double. */
+    private static final double SQRT2PI;
+    /** Upper bits of sqrt(2 pi). */
+    private static final double SQRT2PI_H;
+    /** Lower bits of sqrt(2 pi). */
+    private static final double SQRT2PI_L;
+    /** Round-off from sqrt(2 pi) as a double. */
+    private static final double SQRT2PI_R;
+
+    static {
+        // Initialise constants
+        final BigDecimal sqrt2pi = new BigDecimal(SQRT_TWO_PI);
+
+        // Use a 106-bit number as:
+        // (SQRT2PI, SQRT2PI_R)
+        SQRT2PI = sqrt2pi.doubleValue();
+        SQRT2PI_R = sqrt2pi.subtract(new BigDecimal(SQRT2PI)).doubleValue();
+
+        // Split the upper 53-bits for extended precision multiplication
+        SQRT2PI_H = highPartUnscaled(SQRT2PI);
+        SQRT2PI_L = SQRT2PI - SQRT2PI_H;
+    }
 
     /** No instances. */
     private ExtendedPrecision() {}
+
+    /**
+     * Multiply the term by sqrt(2 pi).
+     *
+     * @param x Value (assumed to be positive)
+     * @return x * sqrt(2 pi)
+     */
+    static double xsqrt2pi(double x) {
+        // Note: Do not convert x to absolute for this use case
+        if (x > BIG) {
+            if (x == Double.POSITIVE_INFINITY) {
+                return Double.POSITIVE_INFINITY;
+            }
+            return computeXsqrt2pi(x * SCALE_DOWN) * SCALE_UP;
+        } else if (x < SMALL) {
+            // Note: Ignore possible zero for this use case
+            return computeXsqrt2pi(x * SCALE_UP) * SCALE_DOWN;
+        } else {
+            return computeXsqrt2pi(x);
+        }
+    }
+
+    /**
+     * Compute {@code a * sqrt(2 * pi)}.
+     *
+     * @param a Value
+     * @return the result
+     */
+    private static double computeXsqrt2pi(double a) {
+        // Split the number
+        final double ha = highPartUnscaled(a);
+        final double la = a - ha;
+
+        // Extended precision product with sqrt(2 * pi)
+        final double x = a * SQRT2PI;
+        final double xx = productLow(ha, la, SQRT2PI_H, SQRT2PI_L, x);
+
+        // Add the term a multiplied by the round-off from sqrt(2 * pi)
+        // result = a * (SQRT2PI + SQRT2PI_R)
+        // Sum from small to high
+        return a * SQRT2PI_R + xx + x;
+    }
 
     /**
      * Compute {@code sqrt(2 * x * x)}.

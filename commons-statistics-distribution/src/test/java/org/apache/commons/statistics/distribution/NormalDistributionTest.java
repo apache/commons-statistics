@@ -17,14 +17,21 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 /**
  * Test cases for {@link NormalDistribution}.
  * Extends {@link BaseContinuousDistributionTest}. See javadoc of that class for details.
  */
 class NormalDistributionTest extends BaseContinuousDistributionTest {
+    /** A standard normal distribution used for calculations.
+     * This is immutable and thread-safe and can be used across instances. */
+    private static final NormalDistribution STANDARD_NORMAL = NormalDistribution.of(0, 1);
+
     @Override
     ContinuousDistribution makeDistribution(Object... parameters) {
         final double mean = (Double) parameters[0];
@@ -56,7 +63,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
     protected double getHighPrecisionRelativeTolerance() {
         // Tests are limited by the survival probability.
         // Tolerance is 1.6653345369377348E-14.
-        // This is lowest achieved with various implementations of the
+        // This is the lowest achieved with various implementations of the
         // survival function against high precision reference data.
         // It requires computing the factor sqrt(2 * sd * sd) exactly.
         return 75 * RELATIVE_EPS;
@@ -168,5 +175,15 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
             // Must be close
             Assertions.assertEquals(x, x0, Math.abs(x) * 1e-11, () -> "CDF = " + cdf);
         }
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "normpdf.csv")
+    void testPDF(double x, BigDecimal expected) {
+        final double e = expected.doubleValue();
+        final double a = STANDARD_NORMAL.density(x);
+        // Require high precision. Currently this does not work at 1 ULP.
+        Assertions.assertEquals(e, a, Math.ulp(e) * 2,
+            () -> "ULP error: " + expected.subtract(new BigDecimal(a)).doubleValue() / Math.ulp(e));
     }
 }

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test for {@link ExtendedPrecision}.
@@ -33,10 +34,14 @@ import org.junit.jupiter.params.provider.CsvFileSource;
 class ExtendedPrecisionTest {
     /** sqrt(2). */
     private static final double ROOT2 = Math.sqrt(2.0);
-    /** The sum of the squared ULP error for the first standard computation. */
-    private static final RMS RMS1 = new RMS();
-    /** The sum of the squared ULP error for the second standard computation. */
-    private static final RMS RMS2 = new RMS();
+    /** sqrt(2 * pi) to 64 digits. This is 1 ULP different from Math.sqrt(2 * Math.PI). */
+    private static final double ROOT2PI = 2.506628274631000502415765284811045253006986740609938316629923576;
+    /** The sum of the squared ULP error for the first standard computation for sqrt(2 * x * x). */
+    private static final RMS SQRT2XX_RMS1 = new RMS();
+    /** The sum of the squared ULP error for the second standard computation for sqrt(2 * x * x). */
+    private static final RMS SQRT2XX_RMS2 = new RMS();
+    /** The sum of the squared ULP error for the first computation for x * sqrt(2 pi). */
+    private static final RMS XSQRT2PI_RMS = new RMS();
 
     /**
      * Class to compute the root mean squared error (RMS).
@@ -120,7 +125,7 @@ class ExtendedPrecisionTest {
 
     /**
      * Test the extended precision {@code sqrt(2 * x * x)}. The expected result
-     * is an exact computation. For comparison ulp errors are collected for
+     * is an extended precision computation. For comparison ulp errors are collected for
      * two standard precision computations.
      *
      * @param x Value x
@@ -133,23 +138,55 @@ class ExtendedPrecisionTest {
         final double e = expected.doubleValue();
         Assertions.assertEquals(e, ExtendedPrecision.sqrt2xx(x));
         // Compute error for the standard computations
-        addError(Math.sqrt(2 * x * x), expected, e, RMS1);
-        addError(x * ROOT2, expected, e, RMS2);
+        addError(Math.sqrt(2 * x * x), expected, e, SQRT2XX_RMS1);
+        addError(x * ROOT2, expected, e, SQRT2XX_RMS2);
     }
 
     @Test
     void testSqrt2xxStandardPrecision1() {
         // Typical result:   max   0.7780  rms   0.2144
-        assertSqrt2xxStandardPrecision(RMS1, 0.9, 0.3);
+        assertPrecision(SQRT2XX_RMS1, 0.9, 0.3);
     }
 
     @Test
     void testSqrt2xxStandardPrecision2() {
         // Typical result:   max   1.0598  rms   0.4781
-        assertSqrt2xxStandardPrecision(RMS2, 1.3, 0.6);
+        assertPrecision(SQRT2XX_RMS2, 1.3, 0.6);
     }
 
-    private static void assertSqrt2xxStandardPrecision(RMS rms, double maxError, double rmsError) {
+    @ParameterizedTest
+    @ValueSource(doubles = {0, 1, Double.MAX_VALUE, Double.POSITIVE_INFINITY, Double.NaN})
+    void testXsqrt2piEdgeCases(double x) {
+        final double expected = x * ROOT2PI;
+        final double actual = ExtendedPrecision.xsqrt2pi(x);
+        Assertions.assertEquals(expected, actual, 1e-15);
+    }
+
+    /**
+     * Test the extended precision {@code x * sqrt(2 * pi)}. The expected result
+     * is an extended precision computation. For comparison ulp errors are collected for
+     * a standard computation.
+     *
+     * @param x Value x
+     * @param expected Expected result of {@code x * sqrt(2 * pi)}.
+     */
+    @ParameterizedTest
+    @Order(1)
+    @CsvFileSource(resources = "xsqrt2pi.csv")
+    void testXsqrt2pi(double x, BigDecimal expected) {
+        final double e = expected.doubleValue();
+        Assertions.assertEquals(e, ExtendedPrecision.xsqrt2pi(x));
+        // Compute error for the standard computation
+        addError(x * ROOT2PI, expected, e, XSQRT2PI_RMS);
+    }
+
+    @Test
+    void testXsqrt2piPrecision() {
+        // Typical result:   max   1.1397  rms   0.5368
+        assertPrecision(XSQRT2PI_RMS, 1.2, 0.6);
+    }
+
+    private static void assertPrecision(RMS rms, double maxError, double rmsError) {
         Assertions.assertTrue(rms.getMax() < maxError, () -> "max error: " + rms.getMax());
         Assertions.assertTrue(rms.getRMS() < rmsError, () -> "rms error: " + rms.getRMS());
     }

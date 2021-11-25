@@ -49,6 +49,10 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
      * differences as the error function computes close to 0 in the extreme tail.
      */
     private final double sdSqrt2;
+    /**
+     * Standard deviation multiplied by sqrt(2 pi). Computed to high precision.
+     */
+    private final double sdSqrt2pi;
 
     /**
      * @param mean Mean for this distribution.
@@ -62,6 +66,8 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
         // Minimise rounding error by computing sqrt(2 * sd * sd) exactly.
         // Compute using extended precision with care to avoid over/underflow.
         sdSqrt2 = ExtendedPrecision.sqrt2xx(sd);
+        // Compute sd * sqrt(2 * pi)
+        sdSqrt2pi = ExtendedPrecision.xsqrt2pi(sd);
     }
 
     /**
@@ -93,7 +99,9 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
-        return Math.exp(logDensity(x));
+        final double x0 = x - mean;
+        final double x1 = x0 / standardDeviation;
+        return Math.exp(-0.5 * x1 * x1) / sdSqrt2pi;
     }
 
     /** {@inheritDoc} */
