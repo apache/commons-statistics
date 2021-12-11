@@ -47,6 +47,11 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
         return new String[] {"Mean"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-14;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test
