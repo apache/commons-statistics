@@ -29,31 +29,17 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 public final class PoissonDistribution extends AbstractDiscreteDistribution {
     /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */
     private static final double HALF_LOG_TWO_PI = 0.9189385332046727417803297;
-    /** Default maximum number of iterations. */
-    private static final int DEFAULT_MAX_ITERATIONS = 10000000;
-    /** Default convergence criterion. */
-    private static final double DEFAULT_EPSILON = 1e-12;
     /** Upper bound on the mean to use the PoissonSampler. */
     private static final double MAX_MEAN = 0.5 * Integer.MAX_VALUE;
     /** Mean of the distribution. */
     private final double mean;
-    /** Maximum number of iterations for cumulative probability. */
-    private final int maxIterations;
-    /** Convergence criterion for cumulative probability. */
-    private final double epsilon;
 
     /**
      * @param mean Poisson mean.
-     * @param epsilon Convergence criterion for cumulative probabilities.
-     * @param maxIterations Maximum number of iterations for cumulative
      * probabilities.
      */
-    private PoissonDistribution(double mean,
-                                double epsilon,
-                                int maxIterations) {
+    private PoissonDistribution(double mean) {
         this.mean = mean;
-        this.epsilon = epsilon;
-        this.maxIterations = maxIterations;
     }
 
     /**
@@ -64,27 +50,10 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
      * @throws IllegalArgumentException if {@code mean <= 0}.
      */
     public static PoissonDistribution of(double mean) {
-        return of(mean, DEFAULT_EPSILON, DEFAULT_MAX_ITERATIONS);
-    }
-
-    /**
-     * Creates a Poisson distribution with the specified convergence
-     * criterion and maximum number of iterations.
-     *
-     * @param mean Poisson mean.
-     * @param epsilon Convergence criterion for cumulative probabilities.
-     * @param maxIterations Maximum number of iterations for cumulative
-     * probabilities.
-     * @return the distribution
-     * @throws IllegalArgumentException if {@code mean <= 0}.
-     */
-    public static PoissonDistribution of(double mean,
-                                         double epsilon,
-                                         int maxIterations) {
         if (mean <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, mean);
         }
-        return new PoissonDistribution(mean, epsilon, maxIterations);
+        return new PoissonDistribution(mean);
     }
 
     /** {@inheritDoc} */
@@ -114,8 +83,7 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
         } else if (x == 0) {
             return Math.exp(-mean);
         }
-        return RegularizedGamma.Q.value((double) x + 1, mean, epsilon,
-                                        maxIterations);
+        return RegularizedGamma.Q.value((double) x + 1, mean);
     }
 
     /** {@inheritDoc} */
@@ -127,8 +95,7 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
             // 1 - exp(-mean)
             return -Math.expm1(-mean);
         }
-        return RegularizedGamma.P.value((double) x + 1, mean, epsilon,
-                                        maxIterations);
+        return RegularizedGamma.P.value((double) x + 1, mean);
     }
 
     /** {@inheritDoc} */
