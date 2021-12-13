@@ -24,7 +24,6 @@ import java.io.InputStreamReader;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.commons.numbers.gamma.LanczosApproximation;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -67,37 +66,37 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
         Assertions.assertEquals(4, dist.getVariance());
 
         dist = GammaDistribution.of(1.1, 4.2);
-        Assertions.assertEquals(1.1d * 4.2d, dist.getMean());
-        Assertions.assertEquals(1.1d * 4.2d * 4.2d, dist.getVariance());
+        Assertions.assertEquals(1.1 * 4.2, dist.getMean());
+        Assertions.assertEquals(1.1 * 4.2 * 4.2, dist.getVariance());
     }
 
     @Test
     void testAdditionalCumulativeProbability() {
-        checkCumulativeProbability(-1.000, 4.0, 2.0, .0000);
-        checkCumulativeProbability(15.501, 4.0, 2.0, .9499);
-        checkCumulativeProbability(0.504, 4.0, 1.0, .0018);
-        checkCumulativeProbability(10.011, 1.0, 2.0, .9933);
-        checkCumulativeProbability(5.000, 2.0, 2.0, .7127);
+        checkCumulativeProbability(-1.000, 4.0, 2.0, 0.0);
+        checkCumulativeProbability(15.501, 4.0, 2.0, 0.94989465156755404);
+        checkCumulativeProbability(0.504, 4.0, 1.0, 0.0018026739713985257);
+        checkCumulativeProbability(10.011, 1.0, 2.0, 0.99329900998454213);
+        checkCumulativeProbability(5.000, 2.0, 2.0, 0.71270250481635422);
     }
 
     private void checkCumulativeProbability(double x, double a, double b, double expected) {
         final GammaDistribution distribution = GammaDistribution.of(a, b);
         final double actual = distribution.cumulativeProbability(x);
-        Assertions.assertEquals(expected, actual, 10e-4, () -> "probability for " + x);
+        Assertions.assertEquals(expected, actual, expected * 1e-15, () -> "probability for " + x);
     }
 
     @Test
     void testAdditionalInverseCumulativeProbability() {
-        checkInverseCumulativeProbability(15.501, 4.0, 2.0, .9499);
-        checkInverseCumulativeProbability(0.504, 4.0, 1.0, .0018);
-        checkInverseCumulativeProbability(10.011, 1.0, 2.0, .9933);
-        checkInverseCumulativeProbability(5.000, 2.0, 2.0, .7127);
+        checkInverseCumulativeProbability(15.501, 4.0, 2.0, 0.94989465156755404);
+        checkInverseCumulativeProbability(0.504, 4.0, 1.0, 0.0018026739713985257);
+        checkInverseCumulativeProbability(10.011, 1.0, 2.0, 0.99329900998454213);
+        checkInverseCumulativeProbability(5.000, 2.0, 2.0, 0.71270250481635422);
     }
 
     private void checkInverseCumulativeProbability(double expected, double a, double b, double p) {
         final GammaDistribution distribution = GammaDistribution.of(a, b);
         final double actual = distribution.inverseCumulativeProbability(p);
-        Assertions.assertEquals(expected, actual, 10e-4, () -> "critical value for " + p);
+        Assertions.assertEquals(expected, actual, expected * 1e-10, () -> "critical value for " + p);
     }
 
     @Test
@@ -122,19 +121,13 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
         // To force overflow condition
         // R2.5: print(dgamma(x, shape=1000, rate=100), digits=10)
         checkDensity(1000, 100, x, new double[]{0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 0.000000000e+00, 3.304830256e-84});
-
-        // TODO - This requires more test cases that evaluate points when the density
-        // switches the computation.
     }
 
     /**
-     * Test a shape below 1. This captures a known failure condition.
-     * The conditions to detect overflow are incorrect and the computation
-     * switches to an inaccurate method that computes pdf == 0 when it should
-     * be very large.
+     * Test a shape far below 1. Support for very small shape parameters
+     * was fixed in STATISTICS-39.
      */
     @Test
-    @Disabled("Implementation fails for small x")
     void testShapeBelow1() {
         // R2.5: print(dgamma(x, shape=0.05, rate=1), digits=20)
         final double[] x = new double[]{1e-100, 1e-10, 1e-5, 0.1};
@@ -147,7 +140,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     private void checkDensity(double alpha, double rate, double[] x, double[] expected) {
         final GammaDistribution dist = GammaDistribution.of(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], dist.density(x[i]), Math.abs(expected[i]) * 1e-5);
+            Assertions.assertEquals(expected[i], dist.density(x[i]), Math.abs(expected[i]) * 1e-9);
         }
     }
 
@@ -171,15 +164,19 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
         checkLogDensity(0.1, 4, x, new double[]{-inf, 10.319872287, -3.490250753, -6.114083216, -10.737915678, -23.562577337});
         // R2.5: print(dgamma(x, shape=.1, rate=1, log=TRUE), digits=10)
         checkLogDensity(0.1, 1, x, new double[]{-inf, 10.181245850, -2.128880189, -3.252712652, -4.876545114, -8.701206773});
-        // To force overflow condition
+        // To force overflow condition to pdf=zero
         // R2.5: print(dgamma(x, shape=1000, rate=100, log=TRUE), digits=10)
         checkLogDensity(1000, 100, x, new double[]{-inf, -15101.7453846, -2042.5042706, -1400.0502372, -807.5962038, -192.2217627});
+        // To force overflow condition to pdf=infinity
+        final double[] x1 = {1e-315, 1e-320, 1e-323};
+        // scipy.stats gamma(1e-2).logpdf(x1)
+        checkLogDensity(0.01, 1, x1, new double[]{713.46168137365419, 724.85948860402209, 731.70997561537104});
     }
 
     private void checkLogDensity(double alpha, double rate, double[] x, double[] expected) {
         final GammaDistribution dist = GammaDistribution.of(alpha, 1 / rate);
         for (int i = 0; i < x.length; i++) {
-            Assertions.assertEquals(expected[i], dist.logDensity(x[i]), Math.abs(expected[i]) * 1e-5);
+            Assertions.assertEquals(expected[i], dist.logDensity(x[i]), Math.abs(expected[i]) * 1e-9);
         }
     }
 
@@ -212,15 +209,6 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
         return Math.pow(x / scale, shape - 1) / scale *
                Math.exp(-x / scale) / Math.exp(logGamma(shape));
     }
-
-    // TODO
-    // Test against using Commons Numbers LogGamma.
-    // The implementation for LogGamma has improved since Math-849 due to the use
-    // of a LogGamma1P implementation when x < 8.
-    // Compute logpdf(x) =
-    //   (shape - 1) * Math.log(x) - x / scale - LogGamma.value(shape) - shape * Math.log(scale)
-    // This is the method used in scipy stats.
-    // The result is used with exp to compute the pdf.
 
     /**
      * MATH-753: large values of x or shape parameter cause density(double) to
@@ -336,13 +324,28 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Test
+    void testMath753Shape025() {
+        doTestMath753(0.25, 1.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-0.25.csv");
+    }
+
+    @Test
+    void testMath753Shape05() {
+        doTestMath753(0.5, 1.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-0.5.csv");
+    }
+
+    @Test
+    void testMath753Shape075() {
+        doTestMath753(0.75, 1.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-0.75.csv");
+    }
+
+    @Test
     void testMath753Shape1() {
-        doTestMath753(1.0, 1.5, 0.5, 0.0, 0.0, "gamma-distribution-shape-1.csv");
+        doTestMath753(1.0, 1.0, 0.5, 0.0, 0.0, "gamma-distribution-shape-1.csv");
     }
 
     @Test
     void testMath753Shape8() {
-        doTestMath753(8.0, 1.5, 1.0, 0.0, 0.0, "gamma-distribution-shape-8.csv");
+        doTestMath753(8.0, 1.0, 1.0, 0.0, 0.0, "gamma-distribution-shape-8.csv");
     }
 
     @Test
@@ -357,11 +360,11 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testMath753Shape142() {
-        doTestMath753(142.0, 3.3, 1.6, 40.0, 40.0, "gamma-distribution-shape-142.csv");
+        doTestMath753(142.0, 1.5, 1.0, 40.0, 40.0, "gamma-distribution-shape-142.csv");
     }
 
     @Test
     void testMath753Shape1000() {
-        doTestMath753(1000.0, 1.0, 1.0, 160.0, 230.0, "gamma-distribution-shape-1000.csv");
+        doTestMath753(1000.0, 1.0, 1.0, 160.0, 200.0, "gamma-distribution-shape-1000.csv");
     }
 }

@@ -57,52 +57,114 @@ fpprec : 64;
  */
 p(x, a, b) := (x / b)**a * exp(-x / b) / x / gamma(a);
 
+/* Formatting function to convert big float exponent to e. */
+str(x) := ssubst("e","b",string(x));
+
 /* 
  * Make sure x is a list of exactly representable doubles: use only power-of-two
  * fractions of unity.
  */
 
 /* 
- * TODO: Add files for shape 0.25, 0.5, 0.75.
- *
- * With scale b=1 the mean = variance = shape a.
+ * Note:
  * The ranges chosen below are not consistent with respect to the spread of the distribution
- * and the extent of the tail. The range may have been chosen to create overflow conditions
+ * and the extent of the tail. The ranges may have been chosen to create overflow conditions
  * for each shape parameter using the MATH-753 density computation.
+ *
+ * Shape [0.25, 0.5, 0.75] added after MATH-753 following port of the code to Commons Statistics.
+ * Ranges chosen to cover approximately 50% of the CDF with the first range and the rest
+ * to cover >99% of the CDF with at least 1000 total data points.
+ *
+ * Quantiles for [0.001, 0.01, 0.1, 0.25, 0.5, 0.75, 0.9, 0.99, 0.999] are output for reference.
+ * Ranges use [min:increment:max].
  */
 
+/* shape = 0.25
+ * icdf(x) = 6.75e-13, 6.75e-9, 6.75e-5, 2.64e-3, 4.37e-2, 2.61e-1, 7.50e-1, 2.43, 4.38
+ * [2.44140625E-4:2.44140625E-4:0.0625] + [0.06640625:0.00390625:3.0625]
+ */
+out :  header("gamma-distribution-shape-.25.csv");
+x : float(append(makelist(i / 4096, i, 1, 4096 * 0.0625), makelist(i / 256 + 0.0625, i, 1, 256 * 3)));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 0.25, 1))), fpprintprec:30;
+close(out);
+
+/* shape = 0.5
+ * icdf(x) = 7.85e-7, 7.85e-5, 7.90e-3, 5.08e-2, 2.27e-1, 6.62e-1, 1.35, 3.32, 5.41 
+ * [4.8828125E-4:4.8828125E-4:0.25] + [0.2578125:0.0078125:6.25]
+ */
+out :  header("gamma-distribution-shape-.5.csv");
+x : float(append(makelist(i / 2048, i, 1, 2048 * 0.25), makelist(i / 128 + 0.25, i, 1, 128 * 6)));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 0.5, 1))), fpprintprec:30;
+close(out);
+
+/* shape = 0.75
+ * icdf(x) = 8.94e-5, 1.93e-3, 4.25e-2, 1.53e-1, 4.54e-1, 1.03, 1.85, 4.00, 6.21 
+ * [9.765625E-4:9.765625E-4:0.5] + [0.515625:0.015625:10.5]
+ */
+out :  header("gamma-distribution-shape-.75.csv");
+x : float(append(makelist(i / 1024, i, 1, 1024 * 0.5), makelist(i / 64 + 0.5, i, 1, 64 * 10)));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 0.75, 1))), fpprintprec:30;
+close(out);
+
+/* shape = 1
+ * icdf(x) = 1.00e-3, 1.01e-2, 1.05e-1, 2.88e-1, 6.93e-1, 1.39, 2.30, 4.61, 6.91
+ * [0.03125:0.03125:100]
+ */
 out :  header("gamma-distribution-shape-1.csv");
 x : float(makelist(i / 32, i, 1, 32 * 100));
-y : p(bfloat(x), 1, 1);
-printf(out, "~{~f, ~h~%~}", join(x, y));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 1, 1))), fpprintprec:30;
 close(out);
 
+/* shape = 8
+ * icdf(x) = 1.97, 2.91, 4.66, 5.96, 7.67, 9.68, 11.77, 16.0, 19.63
+ * [0.03125:0.03125:100]
+ */
 out :  header("gamma-distribution-shape-8.csv");
 x : float(makelist(i / 32, i, 1, 32 * 100));
-y : p(bfloat(x), 8, 1);
-printf(out, "~{~h, ~h~%~}", join(x, y));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 8, 1))), fpprintprec:30;
 close(out);
 
+/* shape = 10
+ * icdf(x) = 2.96, 4.13, 6.22, 7.73, 9.67, 11.91, 14.21, 18.78, 22.66
+ * [0.25:0.25:100]
+ */
 out :  header("gamma-distribution-shape-10.csv");
 x : float(makelist(i / 4, i, 1, 4 * 100));
-y : p(bfloat(x), 10, 1);
-printf(out, "~{~h, ~h~%~}", join(x, y));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 10, 1))), fpprintprec:30;
 close(out);
 
+/* shape = 100
+ * icdf(x) = 71.92, 78.22, 87.42, 93.09, 99.67, 106.55, 113.01, 124.72, 133.77
+ * [0.03125:0.03125:3] + [4:1:300]
+ */
 out :  header("gamma-distribution-shape-100.csv");
 x : float(append(makelist(i / 32, i, 1, 32 * 3), makelist(i + 3, i, 1, 297)));
-y : p(bfloat(x), 100, 1);
-printf(out, "~{~h, ~h~%~}", join(x, y));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 100, 1))), fpprintprec:30;
 close(out);
 
+/* shape = 142
+ * 108.0, 115.76, 126.96, 133.79, 141.67, 149.85, 157.47, 171.18, 181.69
+ * [0.03125:0.03125:10] + [11:1:450]
+ */
 out :  header("gamma-distribution-shape-142.csv");
 x : float(append(makelist(i / 32, i, 1, 32 * 10), makelist(i + 10, i, 1, 440)));
-y : p(bfloat(x), 142, 1);
-printf(out, "~{~h, ~h~%~}", join(x, y));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 142, 1))), fpprintprec:30;
 close(out);
 
+/* shape = 1000
+ * icdf(x) = 905.12, 927.91, 959.69, 978.49, 999.67, 1021.14, 1040.73, 1075.03, 1100.58
+ * [0.03125:0.03125:10] + [11:1:3000]
+ */
 out :  header("gamma-distribution-shape-1000.csv");
 x : float(append(makelist(i / 32, i, 1, 32 * 10), makelist(i + 10, i, 1, 2990)));
-y : p(bfloat(x), 1000, 1);
-printf(out, "~{~h, ~h~%~}", join(x, y));
+for z in x do
+  printf(out, "~f, ~a~%", z, str(p(bfloat(z), 1000, 1))), fpprintprec:30;
 close(out);
