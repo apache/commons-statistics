@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 import org.apache.commons.math3.analysis.UnivariateFunction;
 import org.apache.commons.math3.analysis.integration.BaseAbstractUnivariateIntegrator;
 import org.apache.commons.math3.analysis.integration.IterativeLegendreGaussIntegrator;
+import org.apache.commons.math3.exception.MaxCountExceededException;
 import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.statistics.distribution.DistributionTestData.ContinuousDistributionTestData;
@@ -410,7 +411,7 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testDensityIntegrals() {
-        // Create a tolerance suitable for the same thresholds used by the intergator.
+        // Create a tolerance suitable for the same thresholds used by the integrator.
         final Function<ContinuousDistributionTestData, DoubleTolerance> tolerance =
             d -> createAbsOrRelTolerance(INTEGRATOR_ABS_ACCURACY * 10, INTEGRATOR_REL_ACCURACY * 10);
         return stream(ContinuousDistributionTestData::isDisablePdf,
@@ -879,10 +880,23 @@ abstract class BaseContinuousDistributionTest
         for (int i = 1; i < integrationTestPoints.size(); i++) {
             final double x0 = integrationTestPoints.get(i - 1);
             final double x1 = integrationTestPoints.get(i);
+            // Exclude extremely steep integrals
+            // (e.g. the gamma distribution with shape < 1)
+            if (Math.max(dist.density(x0), dist.density(x1)) > 1e3) {
+                continue;
+            }
+            double integral = 0;
+            try {
+                // Integrals may be slow to converge
+                integral = integrator.integrate(1000000,
+                                                d, x0, x1);
+            } catch (MaxCountExceededException e) {
+                Assertions.fail("Failed density integral: " + x0 + " to " + x1, e);
+            }
             TestUtils.assertEquals(
                 dist.probability(x0, x1),
-                integrator.integrate(1000000, // Integrals may be slow to converge
-                                     d, x0, x1), tolerance,
+                integral,
+                tolerance,
                 () -> "Invalid density integral: " + x0 + " to " + x1);
         }
     }

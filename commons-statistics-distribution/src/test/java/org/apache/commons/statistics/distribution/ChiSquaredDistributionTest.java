@@ -48,7 +48,7 @@ class ChiSquaredDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testAdditionalDensity() {
         // Values have many digits above the decimal point so use relative tolerance
-        final DoubleTolerance tol = createRelTolerance(1e-9);
+        final DoubleTolerance tol = createRelTolerance(5e-14);
 
         final double[] x = new double[]{-0.1, 1e-6, 0.5, 1, 2, 5};
         // R 2.5:
