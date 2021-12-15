@@ -33,7 +33,7 @@ enum DistributionFunction {
     /** Inverse Cumulative Probability Density Function. */
     ICDF,
     /** Survival Probability Function. */
-    Survival,
+    SF,
     /** Inverse Survival Probability Function. */
     ISF
 }

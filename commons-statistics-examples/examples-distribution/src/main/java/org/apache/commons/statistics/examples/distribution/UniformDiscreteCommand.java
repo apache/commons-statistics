@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              UniformDiscreteCommand.PMF.class,
              UniformDiscreteCommand.LPMF.class,
              UniformDiscreteCommand.CDF.class,
-             UniformDiscreteCommand.Survival.class,
+             UniformDiscreteCommand.SF.class,
              UniformDiscreteCommand.ICDF.class,
              UniformDiscreteCommand.ISF.class,
          })
@@ -140,10 +140,10 @@ class UniformDiscreteCommand extends AbstractDistributionCommand {
              description = "Discrete uniform distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Discrete uniform distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

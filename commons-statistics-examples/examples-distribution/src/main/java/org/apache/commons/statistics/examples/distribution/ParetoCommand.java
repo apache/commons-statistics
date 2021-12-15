@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              ParetoCommand.PDF.class,
              ParetoCommand.LPDF.class,
              ParetoCommand.CDF.class,
-             ParetoCommand.Survival.class,
+             ParetoCommand.SF.class,
              ParetoCommand.ICDF.class,
              ParetoCommand.ISF.class,
          })
@@ -137,10 +137,10 @@ class ParetoCommand extends AbstractDistributionCommand {
              description = "Pareto distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Pareto distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

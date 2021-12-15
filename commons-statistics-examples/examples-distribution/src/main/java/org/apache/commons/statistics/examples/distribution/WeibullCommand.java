@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              WeibullCommand.PDF.class,
              WeibullCommand.LPDF.class,
              WeibullCommand.CDF.class,
-             WeibullCommand.Survival.class,
+             WeibullCommand.SF.class,
              WeibullCommand.ICDF.class,
              WeibullCommand.ISF.class,
          })
@@ -137,10 +137,10 @@ class WeibullCommand extends AbstractDistributionCommand {
              description = "Weibull distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Weibull distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

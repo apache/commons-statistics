@@ -21,7 +21,7 @@ import picocli.CommandLine.Command;
 
 /**
  * Construct instances of probability distributions using the Commons Statistics library.
- * Output values from the distribution functions: PDF; CDF; Survival Function; and Inverse CDF.
+ * Output values from the distribution functions: PDF; CDF; SF Function; and Inverse CDF.
  */
 public final class DistributionsApplication {
 
@@ -33,8 +33,9 @@ public final class DistributionsApplication {
     // PDF(x)          Probability Density Function (continuous distributions)
     // PMF(x)          Probability Mass Function (discrete distributions)
     // CDF(x)          Cumulative Probability Function
-    // Survival(x)     Survival Probability Function
+    // SF(x)           Survival Probability Function
     // InverseCDF(p)   Inverse Cumulative Probability Function
+    // InverseSF(p)    Inverse Survival Probability Function
     //
     // There is very little logic in the application. All the classes serve to provide
     // commands for annotation with the PicoCLI library. Each command must have an annotated

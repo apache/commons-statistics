@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              ChiSquaredCommand.PDF.class,
              ChiSquaredCommand.LPDF.class,
              ChiSquaredCommand.CDF.class,
-             ChiSquaredCommand.Survival.class,
+             ChiSquaredCommand.SF.class,
              ChiSquaredCommand.ICDF.class,
              ChiSquaredCommand.ISF.class,
          })
@@ -123,10 +123,10 @@ class ChiSquaredCommand extends AbstractDistributionCommand {
              description = "Chi-squared distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Chi-squared distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

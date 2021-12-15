@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              BetaCommand.PDF.class,
              BetaCommand.LPDF.class,
              BetaCommand.CDF.class,
-             BetaCommand.Survival.class,
+             BetaCommand.SF.class,
              BetaCommand.ICDF.class,
              BetaCommand.ISF.class,
          })
@@ -136,10 +136,10 @@ class BetaCommand extends AbstractDistributionCommand {
              description = "Beta distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Beta distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

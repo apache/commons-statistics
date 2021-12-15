@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              GumbelCommand.PDF.class,
              GumbelCommand.LPDF.class,
              GumbelCommand.CDF.class,
-             GumbelCommand.Survival.class,
+             GumbelCommand.SF.class,
              GumbelCommand.ICDF.class,
              GumbelCommand.ISF.class,
          })
@@ -136,10 +136,10 @@ class GumbelCommand extends AbstractDistributionCommand {
              description = "Gumbel distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Gumbel distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

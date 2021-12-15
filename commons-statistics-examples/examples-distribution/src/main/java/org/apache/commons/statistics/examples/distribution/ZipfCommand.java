@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              ZipfCommand.PMF.class,
              ZipfCommand.LPMF.class,
              ZipfCommand.CDF.class,
-             ZipfCommand.Survival.class,
+             ZipfCommand.SF.class,
              ZipfCommand.ICDF.class,
              ZipfCommand.ISF.class,
          })
@@ -138,10 +138,10 @@ class ZipfCommand extends AbstractDistributionCommand {
              description = "Zipf distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Zipf distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

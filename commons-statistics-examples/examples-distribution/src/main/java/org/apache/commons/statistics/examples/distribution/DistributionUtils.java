@@ -228,7 +228,7 @@ final class DistributionUtils {
                 if (!(upper == dd.inverseSurvivalProbability(0))) {
                     out.printf("%s upper isf(0.0) : %s != %s", title, upper, dd.inverseSurvivalProbability(0));
                 }
-                // Validate CDF + Survival == 1
+                // Validate CDF + SF == 1
                 for (final double x : points) {
                     final double p1 = dd.cumulativeProbability(x);
                     final double p2 = dd.survivalProbability(x);
@@ -302,7 +302,7 @@ final class DistributionUtils {
                 if (!(upper == dd.inverseSurvivalProbability(0))) {
                     out.printf("%s upper isf(0.0) : %d != %d", title, upper, dd.inverseSurvivalProbability(0));
                 }
-                // Validate CDF + Survival == 1
+                // Validate CDF + SF == 1
                 for (final int x : points) {
                     final double p1 = dd.cumulativeProbability(x);
                     final double p2 = dd.survivalProbability(x);
@@ -413,7 +413,7 @@ final class DistributionUtils {
         case CDF:
             f = ContinuousDistribution::cumulativeProbability;
             break;
-        case Survival:
+        case SF:
             f = ContinuousDistribution::survivalProbability;
             break;
         default:
@@ -453,7 +453,7 @@ final class DistributionUtils {
         case CDF:
             f = DiscreteDistribution::cumulativeProbability;
             break;
-        case Survival:
+        case SF:
             f = DiscreteDistribution::survivalProbability;
             break;
         default:

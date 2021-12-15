@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              LogNormalCommand.PDF.class,
              LogNormalCommand.LPDF.class,
              LogNormalCommand.CDF.class,
-             LogNormalCommand.Survival.class,
+             LogNormalCommand.SF.class,
              LogNormalCommand.ICDF.class,
              LogNormalCommand.ISF.class,
          })
@@ -137,10 +137,10 @@ class LogNormalCommand extends AbstractDistributionCommand {
              description = "Log-normal distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Log-normal distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

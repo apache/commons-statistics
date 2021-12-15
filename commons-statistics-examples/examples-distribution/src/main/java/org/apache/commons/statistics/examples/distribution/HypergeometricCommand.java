@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              HypergeometricCommand.PMF.class,
              HypergeometricCommand.LPMF.class,
              HypergeometricCommand.CDF.class,
-             HypergeometricCommand.Survival.class,
+             HypergeometricCommand.SF.class,
              HypergeometricCommand.ICDF.class,
              HypergeometricCommand.ISF.class,
          })
@@ -150,10 +150,10 @@ class HypergeometricCommand extends AbstractDistributionCommand {
              description = "Hypergeometric distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Hypergeometric distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

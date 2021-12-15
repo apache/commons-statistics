@@ -39,7 +39,7 @@ named by the command. Each distribution command has the following functions:
 | pdf | Probability Density Function (continuous distributions) |
 | pmf | Probability Mass Function (discrete distributions) |
 | cdf | Cumulative Probability Density Function |
-| survival | Survival Probability Function |
+| sf | Survival Probability Function |
 | icdf | Inverse Cumulative Probability Density Function |
 | isf | Inverse Survival Probability Function |
 | lpdf | Natural logarithm of the PDF (continuous distributions) |

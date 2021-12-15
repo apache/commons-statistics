@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              GammaCommand.PDF.class,
              GammaCommand.LPDF.class,
              GammaCommand.CDF.class,
-             GammaCommand.Survival.class,
+             GammaCommand.SF.class,
              GammaCommand.ICDF.class,
              GammaCommand.ISF.class,
          })
@@ -137,10 +137,10 @@ class GammaCommand extends AbstractDistributionCommand {
              description = "Gamma distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Gamma distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

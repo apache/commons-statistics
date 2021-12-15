@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              PascalCommand.PMF.class,
              PascalCommand.LPMF.class,
              PascalCommand.CDF.class,
-             PascalCommand.Survival.class,
+             PascalCommand.SF.class,
              PascalCommand.ICDF.class,
              PascalCommand.ISF.class,
          })
@@ -142,10 +142,10 @@ class PascalCommand extends AbstractDistributionCommand {
              description = "Pascal distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Pascal distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              NakagamiCommand.PDF.class,
              NakagamiCommand.LPDF.class,
              NakagamiCommand.CDF.class,
-             NakagamiCommand.Survival.class,
+             NakagamiCommand.SF.class,
              NakagamiCommand.ICDF.class,
              NakagamiCommand.ISF.class,
          })
@@ -136,10 +136,10 @@ class NakagamiCommand extends AbstractDistributionCommand {
              description = "Nakagami distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Nakagami distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

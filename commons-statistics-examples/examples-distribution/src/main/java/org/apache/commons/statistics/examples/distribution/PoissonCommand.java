@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              PoissonCommand.PMF.class,
              PoissonCommand.LPMF.class,
              PoissonCommand.CDF.class,
-             PoissonCommand.Survival.class,
+             PoissonCommand.SF.class,
              PoissonCommand.ICDF.class,
              PoissonCommand.ISF.class,
          })
@@ -125,10 +125,10 @@ class PoissonCommand extends AbstractDistributionCommand {
              description = "Poisson distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Poisson distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

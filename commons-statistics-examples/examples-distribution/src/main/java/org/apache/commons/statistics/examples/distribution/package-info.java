@@ -20,7 +20,8 @@
  *
  * <p>
  * This package contains an application for computing functions of probability distributions.
- * The following functions can be evaluated: PDF, CDF, Survival function, and Inverse CDF.
+ * The following functions can be evaluated: PDF, CDF, Survival function, Inverse CDF and
+ * Inverse survival function.
  * </p>
  */
 

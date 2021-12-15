@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              GeometricCommand.PMF.class,
              GeometricCommand.LPMF.class,
              GeometricCommand.CDF.class,
-             GeometricCommand.Survival.class,
+             GeometricCommand.SF.class,
              GeometricCommand.ICDF.class,
              GeometricCommand.ISF.class,
          })
@@ -125,10 +125,10 @@ class GeometricCommand extends AbstractDistributionCommand {
              description = "Geometric distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Geometric distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

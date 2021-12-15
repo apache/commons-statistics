@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              TriangularCommand.PDF.class,
              TriangularCommand.LPDF.class,
              TriangularCommand.CDF.class,
-             TriangularCommand.Survival.class,
+             TriangularCommand.SF.class,
              TriangularCommand.ICDF.class,
              TriangularCommand.ISF.class,
          })
@@ -149,10 +149,10 @@ class TriangularCommand extends AbstractDistributionCommand {
              description = "Triangular distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Triangular distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              TCommand.PDF.class,
              TCommand.LPDF.class,
              TCommand.CDF.class,
-             TCommand.Survival.class,
+             TCommand.SF.class,
              TCommand.ICDF.class,
              TCommand.ISF.class,
          })
@@ -122,10 +122,10 @@ class TCommand extends AbstractDistributionCommand {
              description = "T distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "T distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

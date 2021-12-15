@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              LevyCommand.PDF.class,
              LevyCommand.LPDF.class,
              LevyCommand.CDF.class,
-             LevyCommand.Survival.class,
+             LevyCommand.SF.class,
              LevyCommand.ICDF.class,
              LevyCommand.ISF.class,
          })
@@ -136,10 +136,10 @@ class LevyCommand extends AbstractDistributionCommand {
              description = "Levy distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Levy distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

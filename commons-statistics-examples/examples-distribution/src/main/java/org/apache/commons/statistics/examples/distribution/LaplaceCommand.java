@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              LaplaceCommand.PDF.class,
              LaplaceCommand.LPDF.class,
              LaplaceCommand.CDF.class,
-             LaplaceCommand.Survival.class,
+             LaplaceCommand.SF.class,
              LaplaceCommand.ICDF.class,
              LaplaceCommand.ISF.class,
          })
@@ -136,10 +136,10 @@ class LaplaceCommand extends AbstractDistributionCommand {
              description = "Laplace distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Laplace distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

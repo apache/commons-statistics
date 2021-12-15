@@ -34,7 +34,7 @@ import picocli.CommandLine.Option;
              CauchyCommand.PDF.class,
              CauchyCommand.LPDF.class,
              CauchyCommand.CDF.class,
-             CauchyCommand.Survival.class,
+             CauchyCommand.SF.class,
              CauchyCommand.ICDF.class,
              CauchyCommand.ISF.class,
          })
@@ -136,10 +136,10 @@ class CauchyCommand extends AbstractDistributionCommand {
              description = "Cauchy distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Cauchy distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",

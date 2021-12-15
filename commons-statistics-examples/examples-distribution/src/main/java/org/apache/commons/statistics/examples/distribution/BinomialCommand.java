@@ -35,7 +35,7 @@ import picocli.CommandLine.Option;
              BinomialCommand.PMF.class,
              BinomialCommand.LPMF.class,
              BinomialCommand.CDF.class,
-             BinomialCommand.Survival.class,
+             BinomialCommand.SF.class,
              BinomialCommand.ICDF.class,
              BinomialCommand.ISF.class,
          })
@@ -139,10 +139,10 @@ class BinomialCommand extends AbstractDistributionCommand {
              description = "Binomial distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
-    /** Survival command. */
-    @Command(name = "survival", aliases = {"sur"},
+    /** SF command. */
+    @Command(name = "sf",
              description = "Binomial distribution survival probability.")
-    static class Survival extends ProbabilityCommand {}
+    static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",
