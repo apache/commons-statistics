@@ -23,6 +23,13 @@ import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(discrete)">
  * uniform integer distribution</a>.
+ *
+ * <p>The probability mass function of \( X \) is:
+ *
+ * <p>\[ f(k; a, b) = \frac{1}{b-a+1} \]
+ *
+ * <p>for integer \( a, b \) and \( a \le b \) and
+ * \( k \in [a, b] \).
  */
 public final class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /** Lower bound (inclusive) of this distribution. */

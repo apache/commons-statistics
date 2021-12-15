@@ -22,6 +22,13 @@ import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">uniform distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; a, b) = \frac{1}{b-a} \]
+ *
+ * <p>for \( -\infty \lt a \lt b \lt \infty \) and
+ * \( x \in [a, b] \).
  */
 public final class UniformContinuousDistribution extends AbstractContinuousDistribution {
     /** Lower bound of this distribution (inclusive). */

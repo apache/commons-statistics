@@ -18,6 +18,14 @@ package org.apache.commons.statistics.distribution;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Logistic_distribution">logistic distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; \mu, s) = \frac{e^{-(x-\mu)/s}} {s\left(1+e^{-(x-\mu)/s}\right)^2} \]
+ *
+ * <p>for \( \mu \) the location,
+ * \( s &gt; 0 \) the scale, and
+ * \( x \in (-\infty, \infty) \).
  */
 public final class LogisticDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */

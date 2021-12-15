@@ -19,6 +19,19 @@ package org.apache.commons.statistics.distribution;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Hypergeometric_distribution">hypergeometric distribution</a>.
+ *
+ * <p>The probability mass function of \( X \) is:
+ *
+ * <p>\[ f(k; n, p) = \frac{\binom{K}{k} \binom{N - K}{n-k}}{\binom{N}{n}} \]
+ *
+ * <p>for \( N \in \{0, 1, 2, \dots\} \) the population size,
+ * \( K \in \{0, 1, \dots, N\} \) the number of success states,
+ * \( n \in \{0, 1, \dots, N\} \) the number of samples,
+ * \( k \in \{\max(0, n+K-N), \dots, \min(n, K)\} \) the number of successes, and
+ *
+ * <p>\[ \binom{a}{b} = \frac{a!}{b! \, (a-b)!} \]
+ *
+ * <p>is the binomial coefficient.
  */
 public final class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /** The number of successes in the population. */

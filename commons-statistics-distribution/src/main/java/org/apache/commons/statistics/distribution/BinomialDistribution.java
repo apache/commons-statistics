@@ -20,6 +20,18 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Binomial_distribution">binomial distribution</a>.
+ *
+ * <p>The probability mass function of \( X \) is:
+ *
+ * <p>\[ f(k; n, p) = \binom{n}{k} p^k (1-p)^{n-k} \]
+ *
+ * <p>for \( n \in \{0, 1, 2, \dots\} \) the number of trials,
+ * \( p \in [0, 1] \) the probability of success,
+ * \( k \in \{0, 1, \dots, n\} \) the number of successes, and
+ *
+ * <p>\[ \binom{n}{k} = \frac{n!}{k! \, (n-k)!} \]
+ *
+ * <p>is the binomial coefficient.
  */
 public final class BinomialDistribution extends AbstractDiscreteDistribution {
     /** The number of trials. */

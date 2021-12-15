@@ -18,7 +18,18 @@
 package org.apache.commons.statistics.distribution;
 
 /**
- * Implementation of the triangular real distribution.
+ * Implementation of the triangular distribution.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; a, b, c) = \begin{cases}
+ *       \frac{2(x-a)}{(b-a)(c-a)} &amp; \text{for } a \le x \lt c  \\
+ *       \frac{2}{b-a}             &amp; \text{for } x = c \\
+ *       \frac{2(b-x)}{(b-a)(b-c)} &amp; \text{for } c \lt x \le b \\
+ *       \end{cases} \]
+ *
+ * <p>for \( -\infty \lt a \le c \le b \lt \infty \) and
+ * \( x \in [a, b] \).
  *
  * @see <a href="http://en.wikipedia.org/wiki/Triangular_distribution">
  * Triangular distribution (Wikipedia)</a>

@@ -26,20 +26,15 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Log-normal_distribution">log-normal distribution</a>.
  *
- * <p>
- * <strong>Parameters:</strong>
- * {@code X} is log-normally distributed if its natural logarithm {@code log(X)}
- * is normally distributed. The probability distribution function of {@code X}
- * is given by (for {@code x > 0})
- * </p>
- * <p>
- * {@code exp(-0.5 * ((ln(x) - mu) / s)^2) / (s * sqrt(2 * pi) * x)}
- * </p>
- * <ul>
- * <li>{@code mu} is the mean of the normally distributed natural logarithm of this distribution,</li>
- * <li>{@code s} is standard deviation of the normally distributed natural logarithm of this
- * distribution.
- * </ul>
+ * <p>\( X \) is log-normally distributed if its natural logarithm \( \ln(x) \)
+ * is normally distributed. The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; \mu, \sigma) = \frac 1 {x\sigma\sqrt{2\pi\,}} e^{-{\frac 1 2}\left( \frac{\ln x-\mu}{\sigma} \right)^2 } \]
+ *
+ * <p>for \( \mu \) the mean of the normally distributed natural logarithm of this distribution,
+ * \( \sigma &gt; 0 \) the standard deviation of the normally distributed natural logarithm of this
+ * distribution, and
+ * \( x \in (0, \infty) \).
  */
 public final class LogNormalDistribution extends AbstractContinuousDistribution {
     /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */

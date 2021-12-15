@@ -23,6 +23,13 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
 /**
  * Implementation of the F-distribution.
  *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; d_1, d_2) = \frac{1}{\operatorname{B}\left(\frac{d_1}{2},\frac{d_2}{2}\right)} \left(\frac{d_1}{d_2}\right)^{d_1/2} x^{d_1/2 - 1} \left(1+\frac{d_1}{d_2} \, x \right)^{-(d_1+d_2)/2} \]
+ *
+ * <p>for \( d_1, d_2 &gt; 0 \) the degrees of freedom, \( \operatorname{B}(d_1 / 2, d_2 / 2) \) is the beta function,
+ * and \( x \in [0, \infty) \).
+ *
  * @see <a href="http://en.wikipedia.org/wiki/F-distribution">F-distribution (Wikipedia)</a>
  * @see <a href="http://mathworld.wolfram.com/F-Distribution.html">F-distribution (MathWorld)</a>
  */

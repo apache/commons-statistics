@@ -28,7 +28,8 @@ import org.apache.commons.rng.sampling.distribution.ChengBetaSampler;
  *
  * <p>\[ f(x; \alpha, \beta) = \frac{1}{ B(\alpha, \beta)} x^{\alpha-1} (1-x)^{\beta-1} \]
  *
- * <p>for \( \alpha &gt; 0 \), \( \beta &gt; 0 \), \( x \in [0, 1] \) and
+ * <p>for \( \alpha &gt; 0 \),
+ * \( \beta &gt; 0 \), \( x \in [0, 1] \), and
  * the beta function, \( B \), is a normalization constant:
  *
  * <p>\[ B(\alpha, \beta) = \frac{\Gamma(\alpha+\beta)}{\Gamma(\alpha) \Gamma(\beta)} \]

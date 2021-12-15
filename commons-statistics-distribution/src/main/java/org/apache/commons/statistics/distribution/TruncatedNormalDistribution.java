@@ -24,6 +24,17 @@ import org.apache.commons.numbers.gamma.Erfcx;
 /**
  * Implementation of the truncated normal distribution.
  *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x;\mu,\sigma,a,b) = \frac{1}{\sigma}\,\frac{\phi(\frac{x - \mu}{\sigma})}{\Phi(\frac{b - \mu}{\sigma}) - \Phi(\frac{a - \mu}{\sigma}) } \]
+ *
+ * <p>for \( \mu \) mean of the parent normal distribution,
+ * \( \sigma \) standard deviation of the parent normal distribution,
+ * \( -\infty \le a \lt b \le \infty \) the truncation interval, and
+ * \( x \in [a, b] \), where \( \phi \) is the probability
+ * density function of the standard normal distribution and \( \Phi \)
+ * is its cumulative distribution function.
+ *
  * @see <a href="https://en.wikipedia.org/wiki/Truncated_normal_distribution">
  * Truncated normal distribution (Wikipedia)</a>
  */

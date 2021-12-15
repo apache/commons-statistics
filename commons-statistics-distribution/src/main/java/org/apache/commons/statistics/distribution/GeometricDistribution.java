@@ -22,6 +22,16 @@ import org.apache.commons.rng.sampling.distribution.GeometricSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a>.
+ *
+ * <p>The probability mass function of \( X \) is:
+ *
+ * <p>\[ f(k; p) = (1-p)^k \, p \]
+ *
+ * <p>for \( p \in (0, 1] \) the probability of success and
+ * \( k \in \{0, 1, 2, \dots\} \) the number of failures.
+ *
+ * <p>This parameterization is used to model the number of failures until
+ * the first success.
  */
 public final class GeometricDistribution extends AbstractDiscreteDistribution {
     /** 1/2. */

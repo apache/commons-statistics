@@ -25,6 +25,13 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>.
+ *
+ * <p>The probability mass function of \( X \) is:
+ *
+ * <p>\[ f(k; \lambda) = \frac{\lambda^k e^{-k}}{k!} \]
+ *
+ * <p>for \( \lambda \in (0, \infty) \) the mean and
+ * \( k \in \{0, 1, 2, \dots\} \) the number of events.
  */
 public final class PoissonDistribution extends AbstractDiscreteDistribution {
     /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */

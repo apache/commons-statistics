@@ -18,6 +18,16 @@ package org.apache.commons.statistics.distribution;
 
 /**
  * This class implements the <a href="http://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; \mu, \beta) =  \frac{1}{\beta} e^{-(z+e^{-z})} \]
+ *
+ * <p>where \[ z = \frac{x - \mu}{\beta} \]
+ *
+ * <p>for \( \mu \) the location,
+ * \( \beta &gt; 0 \) the scale, and
+ * \( x \in (-\infty, \infty) \).
  */
 public final class GumbelDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */

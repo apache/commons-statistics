@@ -28,7 +28,9 @@ import org.apache.commons.rng.sampling.distribution.InverseTransformParetoSample
  *
  * <p>\[ f(x; k, \alpha) = \frac{\alpha  k^\alpha}{x^{\alpha + 1}} \]
  *
- * <p>for \( k &gt; 0 \), \( \alpha &gt; 0 \), \( x \in [k, \infty) \).
+ * <p>for \( k &gt; 0 \),
+ * \( \alpha &gt; 0 \), and
+ * \( x \in [k, \infty) \).
  *
  * <p>\( k \) is a <em>scale</em> parameter: this is the minimum possible value of \( X \).
  * <br>\( \alpha \) is a <em>shape</em> parameter: this is the Pareto index.

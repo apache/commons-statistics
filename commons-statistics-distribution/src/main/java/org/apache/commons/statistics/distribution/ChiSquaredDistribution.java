@@ -20,6 +20,14 @@ import org.apache.commons.rng.UniformRandomProvider;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Chi-squared_distribution">chi-squared distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; k) = \frac{1}{2^{k/2} \Gamma(k/2)} x^{k/2 -1} e^{-x/2} \]
+ *
+ * <p>for \( k &gt; 0 \) the degrees of freedom,
+ * \( \Gamma(k/2) \) is the gamma function, and
+ * \( x \in [0, \infty) \).
  */
 public final class ChiSquaredDistribution extends AbstractContinuousDistribution {
     /** Internal Gamma distribution. */

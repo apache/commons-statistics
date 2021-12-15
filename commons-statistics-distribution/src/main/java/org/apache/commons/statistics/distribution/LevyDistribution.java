@@ -26,6 +26,14 @@ import org.apache.commons.rng.sampling.distribution.LevySampler;
 /**
  * This class implements the <a href="http://en.wikipedia.org/wiki/L%C3%A9vy_distribution">
  * L&eacute;vy distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; \mu, c) = \sqrt{\frac{c}{2\pi}}~~\frac{e^{ -\frac{c}{2(x-\mu)}}} {(x-\mu)^{3/2}} \]
+ *
+ * <p>for \( \mu \) the location,
+ * \( c &gt; 0 \) the scale, and
+ * \( x \in [\mu, \infty) \).
  */
 public final class LevyDistribution extends AbstractContinuousDistribution {
     /** 1 / 2(erfc^-1 (0.5))^2. Computed using Matlab's VPA to 30 digits. */

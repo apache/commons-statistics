@@ -19,6 +19,14 @@ package org.apache.commons.statistics.distribution;
 /**
  * This class implements the Laplace distribution.
  *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; \mu, b) = \frac{1}{2b} \exp \left( -\frac{|x-\mu|}{b} \right) \]
+ *
+ * <p>for \( \mu \) the location,
+ * \( b &gt; 0 \) the scale, and
+ * \( x \in (-\infty, \infty) \).
+ *
  * @see <a href="http://en.wikipedia.org/wiki/Laplace_distribution">Laplace distribution (Wikipedia)</a>
  */
 public final class LaplaceDistribution extends AbstractContinuousDistribution {

@@ -23,19 +23,17 @@ import org.apache.commons.rng.sampling.distribution.RejectionInversionZipfSample
 
 /**
  * Implementation of the <a href="https://en.wikipedia.org/wiki/Zipf's_law">Zipf distribution</a>.
- * <p>
- * <strong>Parameters:</strong>
- * For a random variable {@code X} whose values are distributed according to this
- * distribution, the probability mass function is given by:
- * <pre>
- *   P(X = k) = H(N,s) * 1 / k^s    for {@code k = 1,2,...,N}.
- * </pre>
- * <p>{@code H(N,s)} is the normalizing constant
- * which corresponds to the generalized harmonic number of order N of s.
- * <ul>
- * <li>{@code N} is the number of elements</li>
- * <li>{@code s} is the exponent</li>
- * </ul>
+ *
+ * <p>The probability mass function of \( X \) is:
+ *
+ * <p>\[ f(k; N, s) = \frac{1/k^s}{H_{N,s}} \]
+ *
+ * <p>for \( N \in \{1, 2, 3, \dots\} \) the number of elements,
+ * \( s \gt 0 \) the exponent characterizing the distribution,
+ * \( k \in \{1, 2, \dots, N\} \) the element rank, and
+ * \( H_{N,s} \) is the normalizing constant which corresponds to the
+ * <a href="https://en.wikipedia.org/wiki/Harmonic_number#Generalized_harmonic_numbers">
+ * generalized harmonic number</a> of order N of s.
  */
 public final class ZipfDistribution extends AbstractDiscreteDistribution {
     /** Number of elements. */

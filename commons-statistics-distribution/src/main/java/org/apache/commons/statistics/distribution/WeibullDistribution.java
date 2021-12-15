@@ -22,15 +22,20 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
- * Implementation of the Weibull distribution. This implementation uses the
- * two parameter form of the distribution defined by
- * <a href="http://mathworld.wolfram.com/WeibullDistribution.html">
- * Weibull Distribution</a>, equations (1) and (2).
+ * Implementation of the Weibull distribution.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x;k,\lambda) = \frac{k}{\lambda}\left(\frac{x}{\lambda}\right)^{k-1}e^{-(x/\lambda)^{k}} \]
+ *
+ * <p>for \( k &gt; 0 \) the shape,
+ * \( \lambda &gt; 0 \) the scale, and
+ * \( x \in (0, \infty) \).
  *
  * <p>Note the special cases:
  * <ul>
- * <li>{@code shape == 1} is the exponential distribution
- * <li>{@code shape == 2} is the Rayleigh distribution
+ * <li>\( k = 1 \) is the exponential distribution
+ * <li>\( k = 2 \) is the Rayleigh distribution with scale \( \sigma = \frac {\lambda}{\sqrt{2}} \)
  * </ul>
  *
  * @see <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution (Wikipedia)</a>
@@ -51,13 +56,13 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
     private final double logShapeOverScale;
 
     /**
-     * @param alpha Shape parameter.
-     * @param beta Scale parameter.
+     * @param shape Shape parameter.
+     * @param scale Scale parameter.
      */
-    private WeibullDistribution(double alpha,
-                                double beta) {
-        scale = beta;
-        shape = alpha;
+    private WeibullDistribution(double shape,
+                                double scale) {
+        this.scale = scale;
+        this.shape = shape;
         shapeOverScale = shape / scale;
         logShapeOverScale = Math.log(shapeOverScale);
     }
@@ -65,22 +70,22 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a Weibull distribution.
      *
-     * @param alpha Shape parameter.
-     * @param beta Scale parameter.
+     * @param shape Shape parameter.
+     * @param scale Scale parameter.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code alpha <= 0} or {@code beta <= 0}.
+     * @throws IllegalArgumentException if {@code shape <= 0} or {@code scale <= 0}.
      */
-    public static WeibullDistribution of(double alpha,
-                                         double beta) {
-        if (alpha <= 0) {
+    public static WeibullDistribution of(double shape,
+                                         double scale) {
+        if (shape <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
-                                            alpha);
+                                            shape);
         }
-        if (beta <= 0) {
+        if (scale <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
-                                            beta);
+                                            scale);
         }
-        return new WeibullDistribution(alpha, beta);
+        return new WeibullDistribution(shape, scale);
     }
 
     /**

@@ -22,6 +22,14 @@ import org.apache.commons.numbers.gamma.LogGamma;
 
 /**
  * Implementation of <a href='http://en.wikipedia.org/wiki/Student&apos;s_t-distribution'>Student's t-distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; v) = \frac{\Gamma(\frac{\nu+1}{2})} {\sqrt{\nu\pi}\,\Gamma(\frac{\nu}{2})} \left(1+\frac{t^2}{\nu} \right)^{\!-\frac{\nu+1}{2}} \]
+ *
+ * <p>for \( v &gt; 0 \) the degrees of freedom,
+ * \( \Gamma \) is the gamma function, and
+ * \( x \in (-\infty, \infty) \).
  */
 public abstract class TDistribution extends AbstractContinuousDistribution {
     /** A standard normal distribution used for calculations.

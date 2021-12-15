@@ -23,28 +23,38 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Negative_binomial_distribution">Pascal distribution.</a>
  *
- * The Pascal distribution is a special case of the Negative Binomial distribution
+ * <p>The Pascal distribution is a special case of the Negative Binomial distribution
  * where the number of successes parameter is an integer.
  *
- * There are various ways to express the probability mass and distribution
+ * <p>There are various ways to express the probability mass and distribution
  * functions for the Pascal distribution. The present implementation represents
- * the distribution of the number of failures before {@code r} successes occur.
+ * the distribution of the number of failures before \( r \) successes occur.
  * This is the convention adopted in e.g.
  * <a href="http://mathworld.wolfram.com/NegativeBinomialDistribution.html">MathWorld</a>,
  * but <em>not</em> in
  * <a href="http://en.wikipedia.org/wiki/Negative_binomial_distribution">Wikipedia</a>.
  *
- * For a random variable {@code X} whose values are distributed according to this
- * distribution, the probability mass function is given by<br>
- * {@code P(X = k) = C(k + r - 1, r - 1) * p^r * (1 - p)^k,}<br>
- * where {@code r} is the number of successes, {@code p} is the probability of
- * success, and {@code X} is the total number of failures. {@code C(n, k)} is
- * the binomial coefficient ({@code n} choose {@code k}). The mean and variance
- * of {@code X} are<br>
- * {@code E(X) = (1 - p) * r / p, var(X) = (1 - p) * r / p^2.}<br>
- * Finally, the cumulative distribution function is given by<br>
- * {@code P(X <= k) = I(p, r, k + 1)},
- * where I is the regularized incomplete Beta function.
+ * <p>The probability mass function of \( X \) is:
+ *
+ * <p>\[ f(k; r, p) = \binom{k+r-1}{r-1} p^r \, (1-p)^k \]
+ *
+ * <p>for \( r \in \{1, 2, \dots\} \) the number of successes,
+ * \( p \in (0, 1] \) the probability of success,
+ * \( k \in \{0, 1, 2, \dots\} \) the total number of failures, and
+ *
+ * <p>\[ \binom{k+r-1}{r-1} = \frac{(k+r-1)!}{(r-1)! \, k!} \]
+ *
+ * <p>is the binomial coefficient.
+ *
+ * <p>The mean and variance of \( X \) are:
+ *
+ * <p>\[ \begin{aligned} \mathbb{E}(X) &amp;= \frac {(1 - p) r}{p} \\ \mathrm{Var}(X) &amp;= \frac {(1 - p) r}{p^2} \end{aligned} \]
+ *
+ * <p>The cumulative distribution function of \( X \) is:
+ *
+ * <p>\[ P(X \leq k) = I(p, r, k + 1) \]
+ *
+ * <p>where \( I \) is the regularized incomplete beta function.
  */
 public final class PascalDistribution extends AbstractDiscreteDistribution {
     /** The number of successes. */

@@ -21,6 +21,14 @@ import org.apache.commons.rng.sampling.distribution.StableSampler;
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; x_0, \gamma) = { 1 \over \pi \gamma } \left[ { \gamma^2 \over (x - x_0)^2 + \gamma^2  } \right] \]
+ *
+ * <p>for \( x_0 \) the location,
+ * \( \gamma &gt; 0 \) the scale, and
+ * \( x \in (-\infty, \infty) \).
  */
 public final class CauchyDistribution extends AbstractContinuousDistribution {
     /** The location of this distribution. */

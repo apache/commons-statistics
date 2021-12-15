@@ -23,6 +23,13 @@ import org.apache.commons.rng.sampling.distribution.AhrensDieterMarsagliaTsangGa
 
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Gamma_distribution">gamma distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x;k,\theta) =  \frac{x^{k-1}e^{-x/\theta}}{\theta^k\Gamma(k)} \]
+ *
+ * <p>for \( k &gt; 0 \) the shape, \( \theta &gt; 0 \) the scale, \( \Gamma(k) \) is the gamma function
+ * and \( x \in (0, \infty) \).
  */
 public final class GammaDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */

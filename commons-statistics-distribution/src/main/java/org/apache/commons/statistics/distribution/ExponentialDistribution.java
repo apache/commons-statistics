@@ -22,8 +22,15 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 /**
  * Implementation of the <a href="http://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.
  *
- * <p>This implementation uses the scale parameter {@code μ} which is the mean of the distribution.
- * A common alternative parameterization uses the rate parameter {@code λ} which is the reciprocal
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; \mu) = \frac{1}{\mu} e^{-x / \mu} \]
+ *
+ * <p>for \( \mu &gt; 0 \) the mean and
+ * \( x \in [0, \infty) \).
+ *
+ * <p>This implementation uses the scale parameter \( \mu \) which is the mean of the distribution.
+ * A common alternative parameterization uses the rate parameter \( \lambda \) which is the reciprocal
  * of the mean.
  */
 public final class ExponentialDistribution extends AbstractContinuousDistribution {

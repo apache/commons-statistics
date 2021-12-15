@@ -22,6 +22,14 @@ import org.apache.commons.numbers.gamma.RegularizedGamma;
 
 /**
  * This class implements the <a href="http://en.wikipedia.org/wiki/Nakagami_distribution">Nakagami distribution</a>.
+ *
+ * <p>The probability density function of \( X \) is:
+ *
+ * <p>\[ f(x; \mu, \Omega) = \frac{2\mu^\mu}{\Gamma(\mu)\Omega^\mu}x^{2\mu-1}\exp\left(-\frac{\mu}{\Omega}x^2\right) \]
+ *
+ * <p>for \( \mu &gt; 0 \) the shape,
+ * \( \Omega &gt; 0 \) the scale, and
+ * \( x \in (0, \infty) \).
  */
 public final class NakagamiDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
