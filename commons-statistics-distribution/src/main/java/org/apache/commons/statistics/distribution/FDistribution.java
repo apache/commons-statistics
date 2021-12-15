@@ -190,7 +190,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
         final double n = numeratorDegreesOfFreedom;
         final double m = denominatorDegreesOfFreedom;
 
-        // Comute the complement of the regularized beta function
+        // Compute the complement of the regularized beta function
         // with direct computation of 1 - z:
         // 1 - I(z, a, b) = I(1 - z, b, a)
         return RegularizedBeta.value(m / (m + n * x),
