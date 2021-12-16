@@ -269,15 +269,39 @@ abstract class AbstractContinuousDistribution
             }
         }
 
+        // Here the bracket [lower, upper] uses finite values. If the support
+        // is infinite the bracket can truncate the distribution and the target
+        // probability can be outside the range of [lower, upper].
+        if (upperBound == Double.MAX_VALUE) {
+            if (complement) {
+                if (survivalProbability(upperBound) > q) {
+                    return Double.POSITIVE_INFINITY;
+                }
+            } else if (cumulativeProbability(upperBound) < p) {
+                return Double.POSITIVE_INFINITY;
+            }
+        }
+        if (lowerBound == -Double.MAX_VALUE) {
+            if (complement) {
+                if (survivalProbability(lowerBound) < q) {
+                    return Double.NEGATIVE_INFINITY;
+                }
+            } else if (cumulativeProbability(lowerBound) > p) {
+                return Double.NEGATIVE_INFINITY;
+            }
+        }
+
         final DoubleUnaryOperator fun = complement ?
             arg -> survivalProbability(arg) - q :
             arg -> cumulativeProbability(arg) - p;
+        // Note the initial value is robust to overflow.
+        // Do not use 0.5 * (lowerBound + upperBound).
         final double x = new BrentSolver(SOLVER_RELATIVE_ACCURACY,
                                          SOLVER_ABSOLUTE_ACCURACY,
                                          SOLVER_FUNCTION_VALUE_ACCURACY)
             .findRoot(fun,
                       lowerBound,
-                      0.5 * (lowerBound + upperBound),
+                      lowerBound + 0.5 * (upperBound - lowerBound),
                       upperBound);
 
         if (!isSupportConnected()) {
@@ -331,8 +355,10 @@ abstract class AbstractContinuousDistribution
      * @return the infimum y
      */
     private double searchPlateau(boolean complement, double lower, final double x) {
-        /* Test for plateau. Lower the value x if the probability is the same. */
-        final double dx = SOLVER_ABSOLUTE_ACCURACY;
+        // Test for plateau. Lower the value x if the probability is the same.
+        // Ensure the step is robust to the solver accuracy being less
+        // than 1 ulp of x (e.g. dx=0 will infinite loop)
+        final double dx = Math.max(SOLVER_ABSOLUTE_ACCURACY, Math.ulp(x));
         if (x - dx >= lower) {
             final DoubleUnaryOperator fun = complement ?
                 this::survivalProbability :

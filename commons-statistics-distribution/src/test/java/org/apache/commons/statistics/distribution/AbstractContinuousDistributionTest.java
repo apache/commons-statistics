@@ -371,4 +371,113 @@ class AbstractContinuousDistributionTest {
         Assertions.assertEquals(10 - x, distribution.inverseSurvivalProbability(0.25), tolerance, "Inverse SF");
         Assertions.assertEquals(Double.POSITIVE_INFINITY, distribution.inverseSurvivalProbability(0), "Inverse CDF");
     }
+
+    /**
+     * Create a distribution near positive infinity so that it is truncated by MAX_VALUE.
+     */
+    @Test
+    void testTruncatedDistributionAtPositiveInfinity() {
+        final double mean = Double.MAX_VALUE;
+        final double width = Double.MAX_VALUE / 2;
+        final CentredUniformDistribution dist = new CentredUniformDistribution(mean, width);
+        final double x = mean - width / 2;
+        Assertions.assertEquals(0, dist.cumulativeProbability(x));
+        Assertions.assertTrue(dist.cumulativeProbability(Math.nextUp(x)) > 0);
+        Assertions.assertEquals(0.25, dist.cumulativeProbability(mean - width / 4));
+        Assertions.assertEquals(0.5, dist.cumulativeProbability(mean));
+
+        // Truncated
+        Assertions.assertEquals(1.0, dist.cumulativeProbability(Math.nextUp(mean)));
+
+        // Inversion should be robust to return the upper infinite bound
+        Assertions.assertEquals(mean, dist.inverseCumulativeProbability(0.5));
+        Assertions.assertEquals(mean, dist.inverseSurvivalProbability(0.5));
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.inverseCumulativeProbability(0.75));
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.inverseSurvivalProbability(0.25));
+    }
+
+    /**
+     * Create a distribution near negative infinity so that it is truncated by -MAX_VALUE.
+     */
+    @Test
+    void testTruncatedDistributionAtNegativeInfinity() {
+        final double mean = -Double.MAX_VALUE;
+        final double width = Double.MAX_VALUE / 2;
+        final CentredUniformDistribution dist = new CentredUniformDistribution(mean, width);
+        final double x = mean + width / 2;
+        Assertions.assertEquals(1, dist.cumulativeProbability(x));
+        Assertions.assertTrue(dist.cumulativeProbability(Math.nextDown(x)) < 1);
+        Assertions.assertEquals(0.75, dist.cumulativeProbability(mean + width / 4));
+        Assertions.assertEquals(0.5, dist.cumulativeProbability(mean));
+
+        // Truncated
+        Assertions.assertEquals(0.0, dist.cumulativeProbability(Math.nextDown(mean)));
+
+        // Inversion should be robust to return the lower infinite bound
+        Assertions.assertEquals(mean, dist.inverseCumulativeProbability(0.5));
+        Assertions.assertEquals(mean, dist.inverseSurvivalProbability(0.5));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.inverseCumulativeProbability(0.25));
+        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.inverseSurvivalProbability(0.75));
+    }
+
+    /**
+     * Uniform distribution described with a centre and width.
+     * This can be use to place the centre of the distribution at the limit of a finite double
+     * value so that the distribution is truncated.
+     */
+    static final class CentredUniformDistribution extends AbstractContinuousDistribution {
+        private final double mean;
+        private final double width;
+        private final double density;
+        private final double lo;
+        private final double hi;
+
+        /**
+         * @param mean Mean
+         * @param width Width
+         */
+        CentredUniformDistribution(double mean, double width) {
+            this.mean = mean;
+            this.width = width;
+            density = 1 / width;
+            lo = mean - width / 2;
+            hi = mean + width / 2;
+        }
+
+        @Override
+        public double density(double x) {
+            return density;
+        }
+
+        @Override
+        public double cumulativeProbability(double x) {
+            if (x <= lo) {
+                return 0;
+            }
+            if (x >= hi) {
+                return 1;
+            }
+            return 0.5 + density * (x - mean);
+        }
+
+        @Override
+        public double getMean() {
+            return mean;
+        }
+
+        @Override
+        public double getVariance() {
+            return width * width / 12;
+        }
+
+        @Override
+        public double getSupportLowerBound() {
+            return lo;
+        }
+
+        @Override
+        public double getSupportUpperBound() {
+            return hi;
+        }
+    }
 }
