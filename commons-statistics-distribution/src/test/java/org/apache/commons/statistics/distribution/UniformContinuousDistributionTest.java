@@ -48,6 +48,10 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
         return new Object[][] {
             {0.0, 0.0},
             {1.0, 0.0},
+            // Range not finite
+            {-Double.MAX_VALUE, Double.MAX_VALUE},
+            {Double.NaN, 1.0},
+            {0.0, Double.NaN},
         };
     }
 
@@ -69,6 +73,11 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
         dist = UniformContinuousDistribution.of(-1.5, 0.6);
         Assertions.assertEquals(-0.45, dist.getMean());
         Assertions.assertEquals(0.3675, dist.getVariance());
+
+        // Overflow of 0.5 * (lower + upper)
+        dist = UniformContinuousDistribution.of(Double.MAX_VALUE / 2, Double.MAX_VALUE);
+        Assertions.assertEquals(Double.MAX_VALUE - Double.MAX_VALUE / 4, dist.getMean());
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
     }
 
     /**

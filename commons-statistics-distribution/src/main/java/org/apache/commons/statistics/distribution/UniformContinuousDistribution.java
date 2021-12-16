@@ -54,13 +54,17 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
      * @param lower Lower bound of this distribution (inclusive).
      * @param upper Upper bound of this distribution (inclusive).
      * @return the distribution
-     * @throws IllegalArgumentException if {@code lower >= upper}.
+     * @throws IllegalArgumentException if {@code lower >= upper} or the range between the bounds
+     * is not finite
      */
     public static UniformContinuousDistribution of(double lower,
                                                    double upper) {
         if (lower >= upper) {
             throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH,
                                             lower, upper);
+        }
+        if (!Double.isFinite(upper - lower)) {
+            throw new DistributionException("Range %s is not finite", upper - lower);
         }
         return new UniformContinuousDistribution(lower, upper);
     }
@@ -150,19 +154,20 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
     /**
      * {@inheritDoc}
      *
-     * <p>For lower bound {@code lower} and upper bound {@code upper}, the mean is
-     * {@code 0.5 * (lower + upper)}.
+     * <p>For lower bound {@code a} and upper bound {@code b}, the mean is
+     * {@code 0.5 * (a + b)}.
      */
     @Override
     public double getMean() {
-        return 0.5 * (lower + upper);
+        // Avoid overflow
+        return 0.5 * lower + 0.5 * upper;
     }
 
     /**
      * {@inheritDoc}
      *
-     * <p>For lower bound {@code lower} and upper bound {@code upper}, the
-     * variance is {@code (upper - lower)^2 / 12}.
+     * <p>For lower bound {@code a} and upper bound {@code b}, the
+     * variance is {@code (b - a)^2 / 12}.
      */
     @Override
     public double getVariance() {
