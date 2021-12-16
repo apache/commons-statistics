@@ -94,7 +94,7 @@ class AbstractContinuousDistributionTest {
             }
 
             @Override
-            public boolean isSupportConnected() {
+            boolean isSupportConnected() {
                 // This is deliberately false; the functionality is the subject of this test
                 return false;
             }
@@ -200,7 +200,7 @@ class AbstractContinuousDistributionTest {
             }
 
             @Override
-            public boolean isSupportConnected() {
+            boolean isSupportConnected() {
                 // This is deliberately false; the functionality is the subject of this test
                 return false;
             }

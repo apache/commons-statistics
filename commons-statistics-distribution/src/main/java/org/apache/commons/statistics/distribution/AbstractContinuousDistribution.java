@@ -377,7 +377,7 @@ abstract class AbstractContinuousDistribution
      * @return whether the support is connected.
      * @see <a href="https://issues.apache.org/jira/browse/MATH-699">MATH-699</a>
      */
-    protected boolean isSupportConnected() {
+    boolean isSupportConnected() {
         return true;
     }
 
