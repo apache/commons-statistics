@@ -371,7 +371,7 @@ abstract class AbstractContinuousDistribution
      * <p>Any plateau with a width in x smaller than the inverse absolute accuracy will
      * not be searched.
      *
-     * <p>Note: This method was public in commons math. It has been reduced to protected
+     * <p>Note: This method was public in commons math. It has been reduced to package private
      * in commons statistics as it is an implementation detail.
      *
      * @return whether the support is connected.
