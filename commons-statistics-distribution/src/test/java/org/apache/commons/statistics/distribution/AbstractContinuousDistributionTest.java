@@ -374,12 +374,32 @@ class AbstractContinuousDistributionTest {
 
     /**
      * Create a distribution near positive infinity so that it is truncated by MAX_VALUE.
+     * This distribution reports the upper bound as infinite.
      */
     @Test
     void testTruncatedDistributionAtPositiveInfinity() {
+        assertTruncatedDistributionAtPositiveInfinity(false);
+    }
+
+    /**
+     * Create a distribution near positive infinity so that it is truncated by MAX_VALUE.
+     * This distribution reports the upper bound as finite.
+     */
+    @Test
+    void testTruncatedDistributionAtPositiveInfinity2() {
+        assertTruncatedDistributionAtPositiveInfinity(true);
+    }
+
+    private static void assertTruncatedDistributionAtPositiveInfinity(boolean finiteBound) {
         final double mean = Double.MAX_VALUE;
         final double width = Double.MAX_VALUE / 2;
-        final CentredUniformDistribution dist = new CentredUniformDistribution(mean, width);
+        final double bound = finiteBound ? Double.MAX_VALUE : Double.POSITIVE_INFINITY;
+        final CentredUniformDistribution dist = new CentredUniformDistribution(mean, width) {
+            @Override
+            public double getSupportUpperBound() {
+                return bound;
+            }
+        };
         final double x = mean - width / 2;
         Assertions.assertEquals(0, dist.cumulativeProbability(x));
         Assertions.assertTrue(dist.cumulativeProbability(Math.nextUp(x)) > 0);
@@ -392,18 +412,38 @@ class AbstractContinuousDistributionTest {
         // Inversion should be robust to return the upper infinite bound
         Assertions.assertEquals(mean, dist.inverseCumulativeProbability(0.5));
         Assertions.assertEquals(mean, dist.inverseSurvivalProbability(0.5));
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.inverseCumulativeProbability(0.75));
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.inverseSurvivalProbability(0.25));
+        Assertions.assertEquals(bound, dist.inverseCumulativeProbability(0.75));
+        Assertions.assertEquals(bound, dist.inverseSurvivalProbability(0.25));
     }
 
     /**
      * Create a distribution near negative infinity so that it is truncated by -MAX_VALUE.
+     * This distribution reports the lower bound as infinite.
      */
     @Test
     void testTruncatedDistributionAtNegativeInfinity() {
+        assertTruncatedDistributionAtNegativeInfinity(false);
+    }
+
+    /**
+     * Create a distribution near negative infinity so that it is truncated by -MAX_VALUE.
+     * This distribution reports the lower bound as finite.
+     */
+    @Test
+    void testTruncatedDistributionAtNegativeInfinity2() {
+        assertTruncatedDistributionAtNegativeInfinity(true);
+    }
+
+    private static void assertTruncatedDistributionAtNegativeInfinity(boolean finiteBound) {
         final double mean = -Double.MAX_VALUE;
         final double width = Double.MAX_VALUE / 2;
-        final CentredUniformDistribution dist = new CentredUniformDistribution(mean, width);
+        final double bound = finiteBound ? -Double.MAX_VALUE : Double.NEGATIVE_INFINITY;
+        final CentredUniformDistribution dist = new CentredUniformDistribution(mean, width) {
+            @Override
+            public double getSupportLowerBound() {
+                return bound;
+            }
+        };
         final double x = mean + width / 2;
         Assertions.assertEquals(1, dist.cumulativeProbability(x));
         Assertions.assertTrue(dist.cumulativeProbability(Math.nextDown(x)) < 1);
@@ -416,8 +456,8 @@ class AbstractContinuousDistributionTest {
         // Inversion should be robust to return the lower infinite bound
         Assertions.assertEquals(mean, dist.inverseCumulativeProbability(0.5));
         Assertions.assertEquals(mean, dist.inverseSurvivalProbability(0.5));
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.inverseCumulativeProbability(0.25));
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, dist.inverseSurvivalProbability(0.75));
+        Assertions.assertEquals(bound, dist.inverseCumulativeProbability(0.25));
+        Assertions.assertEquals(bound, dist.inverseSurvivalProbability(0.75));
     }
 
     /**
@@ -425,7 +465,7 @@ class AbstractContinuousDistributionTest {
      * This can be use to place the centre of the distribution at the limit of a finite double
      * value so that the distribution is truncated.
      */
-    static final class CentredUniformDistribution extends AbstractContinuousDistribution {
+    static class CentredUniformDistribution extends AbstractContinuousDistribution {
         private final double mean;
         private final double width;
         private final double density;

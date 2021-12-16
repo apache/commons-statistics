@@ -228,45 +228,11 @@ abstract class AbstractContinuousDistribution
                                          ArgumentUtils.isFiniteStrictlyPositive(sig);
 
         if (lowerBound == Double.NEGATIVE_INFINITY) {
-            if (chebyshevApplies) {
-                lowerBound = mu - sig * Math.sqrt(q / p);
-            }
-            // Bound may have been set as infinite
-            if (lowerBound == Double.NEGATIVE_INFINITY) {
-                lowerBound = Math.min(-1, upperBound);
-                if (complement) {
-                    while (survivalProbability(lowerBound) < q) {
-                        lowerBound *= 2;
-                    }
-                } else {
-                    while (cumulativeProbability(lowerBound) >= p) {
-                        lowerBound *= 2;
-                    }
-                }
-                // Ensure finite
-                lowerBound = Math.max(lowerBound, -Double.MAX_VALUE);
-            }
+            lowerBound = createFiniteLowerBound(p, q, complement, upperBound, mu, sig, chebyshevApplies);
         }
 
         if (upperBound == Double.POSITIVE_INFINITY) {
-            if (chebyshevApplies) {
-                upperBound = mu + sig * Math.sqrt(p / q);
-            }
-            // Bound may have been set as infinite
-            if (upperBound == Double.POSITIVE_INFINITY) {
-                upperBound = Math.max(1, lowerBound);
-                if (complement) {
-                    while (survivalProbability(upperBound) >= q) {
-                        upperBound *= 2;
-                    }
-                } else {
-                    while (cumulativeProbability(upperBound) < p) {
-                        upperBound *= 2;
-                    }
-                }
-                // Ensure finite
-                upperBound = Math.min(upperBound, Double.MAX_VALUE);
-            }
+            upperBound = createFiniteUpperBound(p, q, complement, lowerBound, mu, sig, chebyshevApplies);
         }
 
         // Here the bracket [lower, upper] uses finite values. If the support
@@ -275,19 +241,19 @@ abstract class AbstractContinuousDistribution
         if (upperBound == Double.MAX_VALUE) {
             if (complement) {
                 if (survivalProbability(upperBound) > q) {
-                    return Double.POSITIVE_INFINITY;
+                    return getSupportUpperBound();
                 }
             } else if (cumulativeProbability(upperBound) < p) {
-                return Double.POSITIVE_INFINITY;
+                return getSupportUpperBound();
             }
         }
         if (lowerBound == -Double.MAX_VALUE) {
             if (complement) {
                 if (survivalProbability(lowerBound) < q) {
-                    return Double.NEGATIVE_INFINITY;
+                    return getSupportLowerBound();
                 }
             } else if (cumulativeProbability(lowerBound) > p) {
-                return Double.NEGATIVE_INFINITY;
+                return getSupportLowerBound();
             }
         }
 
@@ -310,6 +276,81 @@ abstract class AbstractContinuousDistribution
         return x;
     }
 
+    /**
+     * Create a finite lower bound. Assumes the current lower bound is negative infinity.
+     *
+     * @param p Cumulative probability.
+     * @param q Survival probability.
+     * @param complement Set to true to compute the inverse survival probability
+     * @param upperBound Current upper bound
+     * @param mu Mean
+     * @param sig Standard deviation
+     * @param chebyshevApplies True if the Chebyshev inequality applies (mean is finite and {@code sig > 0}}
+     * @return the finite lower bound
+     */
+    private double createFiniteLowerBound(final double p, final double q, boolean complement,
+        double upperBound, final double mu, final double sig, final boolean chebyshevApplies) {
+        double lowerBound;
+        if (chebyshevApplies) {
+            lowerBound = mu - sig * Math.sqrt(q / p);
+        } else {
+            lowerBound = Double.NEGATIVE_INFINITY;
+        }
+        // Bound may have been set as infinite
+        if (lowerBound == Double.NEGATIVE_INFINITY) {
+            lowerBound = Math.min(-1, upperBound);
+            if (complement) {
+                while (survivalProbability(lowerBound) < q) {
+                    lowerBound *= 2;
+                }
+            } else {
+                while (cumulativeProbability(lowerBound) >= p) {
+                    lowerBound *= 2;
+                }
+            }
+            // Ensure finite
+            lowerBound = Math.max(lowerBound, -Double.MAX_VALUE);
+        }
+        return lowerBound;
+    }
+
+    /**
+     * Create a finite upper bound. Assumes the current upper bound is positive infinity.
+     *
+     * @param p Cumulative probability.
+     * @param q Survival probability.
+     * @param complement Set to true to compute the inverse survival probability
+     * @param lowerBound Current lower bound
+     * @param mu Mean
+     * @param sig Standard deviation
+     * @param chebyshevApplies True if the Chebyshev inequality applies (mean is finite and {@code sig > 0}}
+     * @return the finite lower bound
+     */
+    private double createFiniteUpperBound(final double p, final double q, boolean complement,
+        double lowerBound, final double mu, final double sig, final boolean chebyshevApplies) {
+        double upperBound;
+        if (chebyshevApplies) {
+            upperBound = mu + sig * Math.sqrt(p / q);
+        } else {
+            upperBound = Double.POSITIVE_INFINITY;
+        }
+        // Bound may have been set as infinite
+        if (upperBound == Double.POSITIVE_INFINITY) {
+            upperBound = Math.max(1, lowerBound);
+            if (complement) {
+                while (survivalProbability(upperBound) >= q) {
+                    upperBound *= 2;
+                }
+            } else {
+                while (cumulativeProbability(upperBound) < p) {
+                    upperBound *= 2;
+                }
+            }
+            // Ensure finite
+            upperBound = Math.min(upperBound, Double.MAX_VALUE);
+        }
+        return upperBound;
+    }
 
     /**
      * Indicates whether the support is connected, i.e. whether all values between the
