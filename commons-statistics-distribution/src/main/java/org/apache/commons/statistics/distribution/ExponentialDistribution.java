@@ -186,7 +186,7 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
 
     /** {@inheritDoc} */
     @Override
-    protected double getMedian() {
+    double getMedian() {
         // Overridden for the probability(double, double) method.
         // This is intentionally not a public method.
         // ln(2) / rate = mean * ln(2)

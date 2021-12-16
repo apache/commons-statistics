@@ -222,7 +222,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
 
         /** {@inheritDoc} */
         @Override
-        protected double getMedian() {
+        double getMedian() {
             // Overridden for the probability(double, double) method.
             // This is intentionally not a public method.
             return 0;

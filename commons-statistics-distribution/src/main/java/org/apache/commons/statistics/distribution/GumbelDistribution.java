@@ -196,7 +196,7 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    protected double getMedian() {
+    double getMedian() {
         // Overridden for the probability(double, double) method.
         // This is intentionally not a public method.
         // u - beta * ln(ln(2))

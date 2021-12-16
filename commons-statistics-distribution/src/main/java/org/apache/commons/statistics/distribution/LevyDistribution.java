@@ -216,7 +216,7 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
 
     /** {@inheritDoc} */
     @Override
-    protected double getMedian() {
+    double getMedian() {
         // Overridden for the probability(double, double) method.
         // This is intentionally not a public method.
         // u + c / 2(erfc^-1 (0.5))^2
