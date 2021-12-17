@@ -16,9 +16,12 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.math.BigDecimal;
 import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 /**
  * Test cases for {@link ExponentialDistribution}.
@@ -75,5 +78,16 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
         final ExponentialDistribution d1 = ExponentialDistribution.of(1);
         Assertions.assertEquals(0.0, d1.inverseCumulativeProbability(0.0));
         Assertions.assertEquals(0.0, d1.inverseCumulativeProbability(-0.0));
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "exppdf.csv")
+    void testPDF(double mean, double x, BigDecimal expected) {
+        final double e = expected.doubleValue();
+        final double a = ExponentialDistribution.of(mean).density(x);
+        // Require high precision.
+        // This has max error of 3 ulp if using exp(logDensity(x)).
+        Assertions.assertEquals(e, a, Math.ulp(e),
+            () -> "ULP error: " + expected.subtract(new BigDecimal(a)).doubleValue() / Math.ulp(e));
     }
 }

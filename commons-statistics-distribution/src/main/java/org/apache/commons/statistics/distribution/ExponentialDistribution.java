@@ -70,17 +70,18 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
-        return Math.exp(logDensity(x));
+        if (x < SUPPORT_LO) {
+            return 0;
+        }
+        return Math.exp(-x / mean) / mean;
     }
 
     /** {@inheritDoc} **/
     @Override
     public double logDensity(double x) {
-        if (x < SUPPORT_LO ||
-            x >= SUPPORT_HI) {
+        if (x < SUPPORT_LO) {
             return Double.NEGATIVE_INFINITY;
         }
-
         return -x / mean - logMean;
     }
 
@@ -99,7 +100,6 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
         if (x <= SUPPORT_LO) {
             return 0;
         }
-
         return -Math.expm1(-x / mean);
     }
 
@@ -109,7 +109,6 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
         if (x <= SUPPORT_LO) {
             return 1;
         }
-
         return Math.exp(-x / mean);
     }
 
