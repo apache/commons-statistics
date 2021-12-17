@@ -211,8 +211,10 @@ public final class FDistribution extends AbstractContinuousDistribution {
      * <p>For denominator degrees of freedom parameter {@code b}, the mean is
      * <ul>
      *  <li>if {@code b > 2} then {@code b / (b - 2)},</li>
-     *  <li>else undefined ({@code Double.NaN}).
+     *  <li>else undefined ({@code NaN}).
      * </ul>
+     *
+     * @return the mean, or {@code NaN} if it is not defined.
      */
     @Override
     public double getMean() {
@@ -235,8 +237,10 @@ public final class FDistribution extends AbstractContinuousDistribution {
      *    if {@code b > 4} then
      *    {@code [2 * b^2 * (a + b - 2)] / [a * (b - 2)^2 * (b - 4)]},
      *  </li>
-     *  <li>else undefined ({@code Double.NaN}).
+     *  <li>else undefined ({@code NaN}).
      * </ul>
+     *
+     * @return the variance, or {@code NaN} if it is not defined.
      */
     @Override
     public double getVariance() {

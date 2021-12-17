@@ -138,14 +138,14 @@ public interface ContinuousDistribution {
     /**
      * Gets the mean of this distribution.
      *
-     * @return the mean, or {@code Double.NaN} if it is not defined.
+     * @return the mean.
      */
     double getMean();
 
     /**
      * Gets the variance of this distribution.
      *
-     * @return the variance, or {@code Double.NaN} if it is not defined.
+     * @return the variance.
      */
     double getVariance();
 

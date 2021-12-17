@@ -156,7 +156,7 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
      *
      * <p>The mean is always undefined no matter the parameters.
      *
-     * @return mean (always Double.NaN)
+     * @return NaN
      */
     @Override
     public double getMean() {
@@ -168,7 +168,7 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
      *
      * <p>The variance is always undefined no matter the parameters.
      *
-     * @return variance (always Double.NaN)
+     * @return NaN
      */
     @Override
     public double getVariance() {

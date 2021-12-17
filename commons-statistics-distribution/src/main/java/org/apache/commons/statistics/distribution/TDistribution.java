@@ -208,8 +208,10 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
          * <p>For degrees of freedom parameter {@code df}, the mean is
          * <ul>
          *  <li>zero if {@code df > 1}, and</li>
-         *  <li>undefined ({@code Double.NaN}) otherwise.</li>
+         *  <li>undefined ({@code NaN}) otherwise.</li>
          * </ul>
+         *
+         * @return the mean, or {@code NaN} if it is not defined.
          */
         @Override
         public double getMean() {
@@ -222,9 +224,11 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
          * <p>For degrees of freedom parameter {@code df}, the variance is
          * <ul>
          *  <li>{@code df / (df - 2)} if {@code df > 2},</li>
-         *  <li>infinite ({@code Double.POSITIVE_INFINITY}) if {@code 1 < df <= 2}, and</li>
-         *  <li>undefined ({@code Double.NaN}) otherwise.</li>
+         *  <li>positive infinity if {@code 1 < df <= 2}, and</li>
+         *  <li>undefined ({@code NaN}) otherwise.</li>
          * </ul>
+         *
+         * @return the mean, or {@code NaN} if it is not defined.
          */
         @Override
         public double getVariance() {
