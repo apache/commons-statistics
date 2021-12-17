@@ -18,7 +18,7 @@
 package org.apache.commons.statistics.distribution;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Hypergeometric_distribution">hypergeometric distribution</a>.
+ * Implementation of the hypergeometric distribution.
  *
  * <p>The probability mass function of \( X \) is:
  *
@@ -32,6 +32,9 @@ package org.apache.commons.statistics.distribution;
  * <p>\[ \binom{a}{b} = \frac{a!}{b! \, (a-b)!} \]
  *
  * <p>is the binomial coefficient.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Hypergeometric_distribution">Hypergeometric distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/HypergeometricDistribution.html">Hypergeometric distribution (MathWorld)</a>
  */
 public final class HypergeometricDistribution extends AbstractDiscreteDistribution {
     /** The number of successes in the population. */

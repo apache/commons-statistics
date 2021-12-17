@@ -24,7 +24,7 @@ import org.apache.commons.rng.sampling.distribution.SharedStateContinuousSampler
 import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>.
+ * Implementation of the Poisson distribution.
  *
  * <p>The probability mass function of \( X \) is:
  *
@@ -32,6 +32,9 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  *
  * <p>for \( \lambda \in (0, \infty) \) the mean and
  * \( k \in \{0, 1, 2, \dots\} \) the number of events.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/PoissonDistribution.html">Poisson distribution (MathWorld)</a>
  */
 public final class PoissonDistribution extends AbstractDiscreteDistribution {
     /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */

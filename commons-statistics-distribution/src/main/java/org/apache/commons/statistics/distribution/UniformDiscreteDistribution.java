@@ -21,8 +21,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(discrete)">
- * uniform integer distribution</a>.
+ * Implementation of the uniform discrete distribution.
  *
  * <p>The probability mass function of \( X \) is:
  *
@@ -30,6 +29,11 @@ import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
  *
  * <p>for integer \( a, b \) and \( a \le b \) and
  * \( k \in [a, b] \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(discrete)">
+ * Uniform distribution (discrete) (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/DiscreteUniformDistribution.html">
+ * Discrete uniform distribution (MathWorld)</a>
  */
 public final class UniformDiscreteDistribution extends AbstractDiscreteDistribution {
     /** Lower bound (inclusive) of this distribution. */

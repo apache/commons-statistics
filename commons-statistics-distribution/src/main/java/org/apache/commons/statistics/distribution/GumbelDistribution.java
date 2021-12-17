@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 /**
- * This class implements the <a href="http://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution</a>.
+ * Implementation of the Gumbel distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -28,6 +28,9 @@ package org.apache.commons.statistics.distribution;
  * <p>for \( \mu \) the location,
  * \( \beta &gt; 0 \) the scale, and
  * \( x \in (-\infty, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Gumbel_distribution">Gumbel distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/GumbelDistribution.html">Gumbel distribution (MathWorld)</a>
  */
 public final class GumbelDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
@@ -158,7 +161,7 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
      * {@inheritDoc}
      *
      * <p>The mean is {@code mu + gamma * beta}, where {@code gamma} is
-     * <a href="http://mathworld.wolfram.com/Euler-MascheroniConstantApproximations.html">
+     * <a href="https://mathworld.wolfram.com/Euler-MascheroniConstantApproximations.html">
      * Euler's constant</a>
      */
     @Override

@@ -38,8 +38,8 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * <li>\( k = 2 \) is the Rayleigh distribution with scale \( \sigma = \frac {\lambda}{\sqrt{2}} \)
  * </ul>
  *
- * @see <a href="http://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution (Wikipedia)</a>
- * @see <a href="http://mathworld.wolfram.com/WeibullDistribution.html">Weibull distribution (MathWorld)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/WeibullDistribution.html">Weibull distribution (MathWorld)</a>
  */
 public final class WeibullDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */

@@ -22,14 +22,17 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.AhrensDieterMarsagliaTsangGammaSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Gamma_distribution">gamma distribution</a>.
+ * Implementation of the gamma distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
- * <p>\[ f(x;k,\theta) =  \frac{x^{k-1}e^{-x/\theta}}{\theta^k\Gamma(k)} \]
+ * <p>\[ f(x;k,\theta) = \frac{x^{k-1}e^{-x/\theta}}{\theta^k\Gamma(k)} \]
  *
  * <p>for \( k &gt; 0 \) the shape, \( \theta &gt; 0 \) the scale, \( \Gamma(k) \) is the gamma function
  * and \( x \in (0, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Gamma_distribution">Gamma distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/GammaDistribution.html">Gamma distribution (MathWorld)</a>
  */
 public final class GammaDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
@@ -157,7 +160,7 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
      * <p>The implementation of this method is based on:
      * <ul>
      *  <li>
-     *   <a href="http://mathworld.wolfram.com/Chi-SquaredDistribution.html">
+     *   <a href="https://mathworld.wolfram.com/Chi-SquaredDistribution.html">
      *    Chi-Squared Distribution</a>, equation (9).
      *  </li>
      *  <li>Casella, G., &amp; Berger, R. (1990). <i>Statistical Inference</i>.

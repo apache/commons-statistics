@@ -21,7 +21,7 @@ import org.apache.commons.numbers.gamma.LogGamma;
 import org.apache.commons.numbers.gamma.RegularizedGamma;
 
 /**
- * This class implements the <a href="http://en.wikipedia.org/wiki/Nakagami_distribution">Nakagami distribution</a>.
+ * Implementation of the Nakagami distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -30,6 +30,8 @@ import org.apache.commons.numbers.gamma.RegularizedGamma;
  * <p>for \( \mu &gt; 0 \) the shape,
  * \( \Omega &gt; 0 \) the scale, and
  * \( x \in (0, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Nakagami_distribution">Nakagami distribution (Wikipedia)</a>
  */
 public final class NakagamiDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */

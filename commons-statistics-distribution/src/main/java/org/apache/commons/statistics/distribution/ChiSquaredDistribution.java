@@ -19,7 +19,7 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.rng.UniformRandomProvider;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Chi-squared_distribution">chi-squared distribution</a>.
+ * Implementation of the chi-squared distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -28,6 +28,9 @@ import org.apache.commons.rng.UniformRandomProvider;
  * <p>for \( k &gt; 0 \) the degrees of freedom,
  * \( \Gamma(k/2) \) is the gamma function, and
  * \( x \in [0, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-squared distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/Chi-SquaredDistribution.html">Chi-squared distribution (MathWorld)</a>
  */
 public final class ChiSquaredDistribution extends AbstractContinuousDistribution {
     /** Internal Gamma distribution. */

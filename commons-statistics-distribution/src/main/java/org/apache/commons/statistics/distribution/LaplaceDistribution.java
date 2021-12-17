@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 /**
- * This class implements the Laplace distribution.
+ * Implementation of the Laplace distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -27,7 +27,8 @@ package org.apache.commons.statistics.distribution;
  * \( b &gt; 0 \) the scale, and
  * \( x \in (-\infty, \infty) \).
  *
- * @see <a href="http://en.wikipedia.org/wiki/Laplace_distribution">Laplace distribution (Wikipedia)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Laplace_distribution">Laplace distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/LaplaceDistribution.html">Laplace distribution (MathWorld)</a>
  */
 public final class LaplaceDistribution extends AbstractContinuousDistribution {
     /** The location parameter. */

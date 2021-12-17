@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Logistic_distribution">logistic distribution</a>.
+ * Implementation of the logistic distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -26,6 +26,9 @@ package org.apache.commons.statistics.distribution;
  * <p>for \( \mu \) the location,
  * \( s &gt; 0 \) the scale, and
  * \( x \in (-\infty, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Logistic_distribution">Logistic distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/LogisticDistribution.html">Logistic distribution (MathWorld)</a>
  */
 public final class LogisticDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */

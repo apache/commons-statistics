@@ -20,7 +20,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Exponential_distribution">exponential distribution</a>.
+ * Implementation of the exponential distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -32,6 +32,9 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * <p>This implementation uses the scale parameter \( \mu \) which is the mean of the distribution.
  * A common alternative parameterization uses the rate parameter \( \lambda \) which is the reciprocal
  * of the mean.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Exponential_distribution">Exponential distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/ExponentialDistribution.html">Exponential distribution (MathWorld)</a>
  */
 public final class ExponentialDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
@@ -85,16 +88,7 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
         return -x / mean - logMean;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The implementation of this method is based on:
-     * <ul>
-     * <li>
-     * <a href="http://mathworld.wolfram.com/ExponentialDistribution.html">
-     * Exponential Distribution</a>, equation (1).</li>
-     * </ul>
-     */
+    /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x)  {
         if (x <= SUPPORT_LO) {

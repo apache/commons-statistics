@@ -19,7 +19,7 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.gamma.RegularizedBeta;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Binomial_distribution">binomial distribution</a>.
+ * Implementation of the binomial distribution.
  *
  * <p>The probability mass function of \( X \) is:
  *
@@ -32,6 +32,9 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  * <p>\[ \binom{n}{k} = \frac{n!}{k! \, (n-k)!} \]
  *
  * <p>is the binomial coefficient.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Binomial_distribution">Binomial distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/BinomialDistribution.html">Binomial distribution (MathWorld)</a>
  */
 public final class BinomialDistribution extends AbstractDiscreteDistribution {
     /** The number of trials. */

@@ -30,8 +30,8 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  * <p>for \( d_1, d_2 &gt; 0 \) the degrees of freedom, \( \operatorname{B}(d_1 / 2, d_2 / 2) \) is the beta function,
  * and \( x \in [0, \infty) \).
  *
- * @see <a href="http://en.wikipedia.org/wiki/F-distribution">F-distribution (Wikipedia)</a>
- * @see <a href="http://mathworld.wolfram.com/F-Distribution.html">F-distribution (MathWorld)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/F-distribution">F-distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/F-Distribution.html">F-distribution (MathWorld)</a>
  */
 public final class FDistribution extends AbstractContinuousDistribution {
     /** Support lower bound. */
@@ -164,7 +164,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
      * <p>The implementation of this method is based on
      * <ul>
      *  <li>
-     *   <a href="http://mathworld.wolfram.com/F-Distribution.html">
+     *   <a href="https://mathworld.wolfram.com/F-Distribution.html">
      *   F-Distribution</a>, equation (4).
      *  </li>
      * </ul>

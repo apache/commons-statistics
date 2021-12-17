@@ -21,18 +21,18 @@ import org.apache.commons.numbers.combinatorics.LogBinomialCoefficient;
 import org.apache.commons.numbers.gamma.RegularizedBeta;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Negative_binomial_distribution">Pascal distribution.</a>
+ * Implementation of the Pascal distribution.
  *
- * <p>The Pascal distribution is a special case of the Negative Binomial distribution
+ * <p>The Pascal distribution is a special case of the negative binomial distribution
  * where the number of successes parameter is an integer.
  *
  * <p>There are various ways to express the probability mass and distribution
  * functions for the Pascal distribution. The present implementation represents
  * the distribution of the number of failures before \( r \) successes occur.
  * This is the convention adopted in e.g.
- * <a href="http://mathworld.wolfram.com/NegativeBinomialDistribution.html">MathWorld</a>,
+ * <a href="https://mathworld.wolfram.com/NegativeBinomialDistribution.html">MathWorld</a>,
  * but <em>not</em> in
- * <a href="http://en.wikipedia.org/wiki/Negative_binomial_distribution">Wikipedia</a>.
+ * <a href="https://en.wikipedia.org/wiki/Negative_binomial_distribution">Wikipedia</a>.
  *
  * <p>The probability mass function of \( X \) is:
  *
@@ -55,6 +55,9 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  * <p>\[ P(X \leq k) = I(p, r, k + 1) \]
  *
  * <p>where \( I \) is the regularized incomplete beta function.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Negative_binomial_distribution">Negative binomial distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/NegativeBinomialDistribution.html">Negative binomial distribution (MathWorld)</a>
  */
 public final class PascalDistribution extends AbstractDiscreteDistribution {
     /** The number of successes. */

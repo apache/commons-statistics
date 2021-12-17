@@ -25,7 +25,7 @@ import org.apache.commons.rng.sampling.distribution.GaussianSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Normal_distribution">normal (Gaussian) distribution</a>.
+ * Implementation of the normal (Gaussian) distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -34,6 +34,9 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * <p>for \( \mu \) the mean,
  * \( \sigma &gt; 0 \) the standard deviation, and
  * \( x \in (-\infty, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Normal_distribution">Normal distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/NormalDistribution.html">Normal distribution (MathWorld)</a>
  */
 public final class NormalDistribution extends AbstractContinuousDistribution {
     /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */

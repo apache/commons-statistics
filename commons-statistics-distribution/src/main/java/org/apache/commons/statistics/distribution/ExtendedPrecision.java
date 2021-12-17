@@ -227,7 +227,7 @@ final class ExtendedPrecision {
      * @param ly Low part of second factor.
      * @param xy Product of the factors.
      * @return <code>lx * ly - (((xy - hx * hy) - lx * hy) - hx * ly)</code>
-     * @see <a href="http://www-2.cs.cmu.edu/afs/cs/project/quake/public/papers/robust-arithmetic.ps">
+     * @see <a href="https://www-2.cs.cmu.edu/afs/cs/project/quake/public/papers/robust-arithmetic.ps">
      * Shewchuk (1997) Theorum 18</a>
      */
     private static double productLow(double hx, double lx, double hy, double ly, double xy) {

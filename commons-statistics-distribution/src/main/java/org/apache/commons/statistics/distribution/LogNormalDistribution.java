@@ -24,7 +24,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Log-normal_distribution">log-normal distribution</a>.
+ * Implementation of the log-normal distribution.
  *
  * <p>\( X \) is log-normally distributed if its natural logarithm \( \ln(x) \)
  * is normally distributed. The probability density function of \( X \) is:
@@ -35,6 +35,9 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * \( \sigma &gt; 0 \) the standard deviation of the normally distributed natural logarithm of this
  * distribution, and
  * \( x \in (0, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">Log-normal distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/LogNormalDistribution.html">Log-normal distribution (MathWorld)</a>
  */
 public final class LogNormalDistribution extends AbstractContinuousDistribution {
     /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */

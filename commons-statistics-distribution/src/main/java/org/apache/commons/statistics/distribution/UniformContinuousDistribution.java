@@ -21,7 +21,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">uniform distribution</a>.
+ * Implementation of the uniform distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -29,6 +29,11 @@ import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
  *
  * <p>for \( -\infty \lt a \lt b \lt \infty \) and
  * \( x \in [a, b] \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">
+ * Uniform distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/UniformDistribution.html">
+ * Uniform distribution (MathWorld)</a>
  */
 public final class UniformContinuousDistribution extends AbstractContinuousDistribution {
     /** Lower bound of this distribution (inclusive). */

@@ -22,7 +22,7 @@ import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
 import org.apache.commons.rng.sampling.distribution.RejectionInversionZipfSampler;
 
 /**
- * Implementation of the <a href="https://en.wikipedia.org/wiki/Zipf's_law">Zipf distribution</a>.
+ * Implementation of the Zipf distribution.
  *
  * <p>The probability mass function of \( X \) is:
  *
@@ -34,6 +34,8 @@ import org.apache.commons.rng.sampling.distribution.RejectionInversionZipfSample
  * \( H_{N,s} \) is the normalizing constant which corresponds to the
  * <a href="https://en.wikipedia.org/wiki/Harmonic_number#Generalized_harmonic_numbers">
  * generalized harmonic number</a> of order N of s.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Zipf's_law">Zipf distribution (Wikipedia)</a>
  */
 public final class ZipfDistribution extends AbstractDiscreteDistribution {
     /** Number of elements. */
@@ -197,7 +199,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
 
     /**
      * Calculates the Nth generalized harmonic number. See
-     * <a href="http://mathworld.wolfram.com/HarmonicSeries.html">Harmonic
+     * <a href="https://mathworld.wolfram.com/HarmonicSeries.html">Harmonic
      * Series</a>.
      *
      * <p>Assumes {@code exponent > 0} to arrange the terms to sum from small to large.

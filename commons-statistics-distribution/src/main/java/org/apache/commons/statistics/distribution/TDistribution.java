@@ -21,7 +21,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.numbers.gamma.LogGamma;
 
 /**
- * Implementation of <a href='http://en.wikipedia.org/wiki/Student&apos;s_t-distribution'>Student's t-distribution</a>.
+ * Implementation of Student's t-distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -30,6 +30,9 @@ import org.apache.commons.numbers.gamma.LogGamma;
  * <p>for \( v &gt; 0 \) the degrees of freedom,
  * \( \Gamma \) is the gamma function, and
  * \( x \in (-\infty, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's t-distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/Studentst-Distribution.html">Student's t-distribution (MathWorld)</a>
  */
 public abstract class TDistribution extends AbstractContinuousDistribution {
     /** A standard normal distribution used for calculations.

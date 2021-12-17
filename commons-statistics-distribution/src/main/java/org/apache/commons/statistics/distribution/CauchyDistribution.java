@@ -20,7 +20,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.StableSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy distribution</a>.
+ * Implementation of the Cauchy distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -29,6 +29,9 @@ import org.apache.commons.rng.sampling.distribution.StableSampler;
  * <p>for \( x_0 \) the location,
  * \( \gamma &gt; 0 \) the scale, and
  * \( x \in (-\infty, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Cauchy_distribution">Cauchy distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/CauchyDistribution.html">Cauchy distribution (MathWorld)</a>
  */
 public final class CauchyDistribution extends AbstractContinuousDistribution {
     /** The location of this distribution. */

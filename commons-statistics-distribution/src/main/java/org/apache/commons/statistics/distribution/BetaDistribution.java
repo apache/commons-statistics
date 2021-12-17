@@ -22,7 +22,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.ChengBetaSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Beta_distribution">Beta distribution</a>.
+ * Implementation of the beta distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -36,8 +36,10 @@ import org.apache.commons.rng.sampling.distribution.ChengBetaSampler;
  *
  * <p>where \( \Gamma \) is the gamma function.
  *
- * <p>
- * \( \alpha \) and \( \beta \) are <em>shape</em> parameters.
+ * <p>\( \alpha \) and \( \beta \) are <em>shape</em> parameters.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Beta_distribution">Beta distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/BetaDistribution.html">Beta distribution (MathWorld)</a>
  */
 public final class BetaDistribution extends AbstractContinuousDistribution {
     /** First shape parameter. */

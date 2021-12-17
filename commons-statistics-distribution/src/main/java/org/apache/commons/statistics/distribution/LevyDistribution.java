@@ -24,8 +24,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.LevySampler;
 
 /**
- * This class implements the <a href="http://en.wikipedia.org/wiki/L%C3%A9vy_distribution">
- * L&eacute;vy distribution</a>.
+ * Implementation of the L&eacute;vy distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -34,6 +33,9 @@ import org.apache.commons.rng.sampling.distribution.LevySampler;
  * <p>for \( \mu \) the location,
  * \( c &gt; 0 \) the scale, and
  * \( x \in [\mu, \infty) \).
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/L%C3%A9vy_distribution">L&eacute;vy distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/LevyDistribution.html">L&eacute;vy distribution (MathWorld)</a>
  */
 public final class LevyDistribution extends AbstractContinuousDistribution {
     /** 1 / 2(erfc^-1 (0.5))^2. Computed using Matlab's VPA to 30 digits. */

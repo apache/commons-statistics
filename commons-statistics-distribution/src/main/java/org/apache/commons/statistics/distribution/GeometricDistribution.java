@@ -21,7 +21,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.GeometricSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Geometric_distribution">geometric distribution</a>.
+ * Implementation of the geometric distribution.
  *
  * <p>The probability mass function of \( X \) is:
  *
@@ -32,6 +32,9 @@ import org.apache.commons.rng.sampling.distribution.GeometricSampler;
  *
  * <p>This parameterization is used to model the number of failures until
  * the first success.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Geometric_distribution">Geometric distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/GeometricDistribution.html">Geometric distribution (MathWorld)</a>
  */
 public final class GeometricDistribution extends AbstractDiscreteDistribution {
     /** 1/2. */

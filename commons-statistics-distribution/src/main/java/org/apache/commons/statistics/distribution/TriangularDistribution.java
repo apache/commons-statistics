@@ -31,8 +31,8 @@ package org.apache.commons.statistics.distribution;
  * <p>for \( -\infty \lt a \le c \le b \lt \infty \) and
  * \( x \in [a, b] \).
  *
- * @see <a href="http://en.wikipedia.org/wiki/Triangular_distribution">
- * Triangular distribution (Wikipedia)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Triangular_distribution">Triangular distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/TriangularDistribution.html">Triangular distribution (MathWorld)</a>
  */
 public final class TriangularDistribution extends AbstractContinuousDistribution {
     /** Lower limit of this distribution (inclusive). */

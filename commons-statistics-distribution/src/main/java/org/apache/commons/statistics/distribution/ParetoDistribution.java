@@ -22,7 +22,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.InverseTransformParetoSampler;
 
 /**
- * Implementation of the <a href="http://en.wikipedia.org/wiki/Pareto_distribution">Pareto (Type I) distribution</a>.
+ * Implementation of the Pareto (Type I) distribution.
  *
  * <p>The probability density function of \( X \) is:
  *
@@ -34,6 +34,9 @@ import org.apache.commons.rng.sampling.distribution.InverseTransformParetoSample
  *
  * <p>\( k \) is a <em>scale</em> parameter: this is the minimum possible value of \( X \).
  * <br>\( \alpha \) is a <em>shape</em> parameter: this is the Pareto index.
+ *
+ * @see  <a href="https://en.wikipedia.org/wiki/Pareto_distribution">Pareto distribution (Wikipedia)</a>
+ * @see  <a href="https://mathworld.wolfram.com/ParetoDistribution.html">Pareto distribution (MathWorld)</a>
  */
 public final class ParetoDistribution extends AbstractContinuousDistribution {
     /** The minimum value for the shape parameter when computing when computing the variance. */

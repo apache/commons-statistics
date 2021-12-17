@@ -19,7 +19,7 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.numbers.gamma.RegularizedBeta;
 
 /**
- * Utilities for the <a href="http://mathworld.wolfram.com/RegularizedBetaFunction.html">
+ * Utilities for the <a href="https://mathworld.wolfram.com/RegularizedBetaFunction.html">
  * Regularized Beta function</a> {@code I(x, a, b)}.
  */
 final class RegularizedBetaUtils {
