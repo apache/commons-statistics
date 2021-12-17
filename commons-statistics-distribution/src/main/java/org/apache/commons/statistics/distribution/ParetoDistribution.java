@@ -270,7 +270,7 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
      * <p>
      * The lower bound of the support is equal to the scale parameter {@code k}.
      *
-     * @return lower bound of the support
+     * @return scale.
      */
     @Override
     public double getSupportLowerBound() {
@@ -280,9 +280,9 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      * <p>
-     * The upper bound of the support is always positive infinity no matter the parameters.
+     * The upper bound of the support is always positive infinity.
      *
-     * @return upper bound of the support (always {@code Double.POSITIVE_INFINITY})
+     * @return positive infinity.
      */
     @Override
     public double getSupportUpperBound() {

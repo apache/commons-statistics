@@ -182,6 +182,8 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
      * {@inheritDoc}
      *
      * <p>The mean is equal to positive infinity.
+     *
+     * @return positive infinity.
      */
     @Override
     public double getMean() {
@@ -192,6 +194,8 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
      * {@inheritDoc}
      *
      * <p>The variance is equal to positive infinity.
+     *
+     * @return positive infinity.
      */
     @Override
     public double getVariance() {
@@ -203,7 +207,7 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
      *
      * <p>The lower bound of the support is the {@link #getLocation() location}.
      *
-     * @return lower bound of the support
+     * @return location.
      */
     @Override
     public double getSupportLowerBound() {
@@ -213,11 +217,9 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is always positive infinity
-     * no matter the parameters.
+     * <p>The upper bound of the support is always positive infinity.
      *
-     * @return upper bound of the support (always
-     * {@code Double.POSITIVE_INFINITY})
+     * @return positive infinity.
      */
     @Override
     public double getSupportUpperBound() {

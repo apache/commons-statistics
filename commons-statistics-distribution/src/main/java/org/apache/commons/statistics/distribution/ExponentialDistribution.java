@@ -138,11 +138,7 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
         return 0 - mean * Math.log(p);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @return the mean
-     */
+    /** {@inheritDoc} */
     @Override
     public double getMean() {
         return mean;
@@ -152,7 +148,6 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
      * {@inheritDoc}
      *
      * <p>For mean {@code k}, the variance is {@code k^2}.
-     * @return the variance
      */
     @Override
     public double getVariance() {
@@ -162,9 +157,9 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
     /**
      * {@inheritDoc}
      *
-     * <p>The lower bound of the support is always 0 no matter the mean parameter.
+     * <p>The lower bound of the support is always 0.
      *
-     * @return lower bound of the support (always 0)
+     * @return 0.
      */
     @Override
     public double getSupportLowerBound() {
@@ -174,10 +169,9 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is always positive infinity
-     * no matter the mean parameter.
+     * <p>The upper bound of the support is always positive infinity.
      *
-     * @return upper bound of the support (always Double.POSITIVE_INFINITY)
+     * @return positive infinity.
      */
     @Override
     public double getSupportUpperBound() {

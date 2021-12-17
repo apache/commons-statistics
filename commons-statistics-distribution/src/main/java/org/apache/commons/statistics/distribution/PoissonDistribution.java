@@ -127,9 +127,9 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The lower bound of the support is always 0 no matter the mean parameter.
+     * <p>The lower bound of the support is always 0.
      *
-     * @return lower bound of the support (always 0)
+     * @return 0.
      */
     @Override
     public int getSupportLowerBound() {
@@ -139,12 +139,9 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is positive infinity,
-     * regardless of the parameter values. There is no integer infinity,
-     * so this method returns {@code Integer.MAX_VALUE}.
+     * <p>The upper bound of the support is always positive infinity.
      *
-     * @return upper bound of the support (always {@code Integer.MAX_VALUE} for
-     * positive infinity)
+     * @return {@code Integer.MAX_VALUE}
      */
     @Override
     public int getSupportUpperBound() {

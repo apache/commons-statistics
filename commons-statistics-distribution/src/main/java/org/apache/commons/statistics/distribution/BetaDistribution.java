@@ -202,9 +202,9 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The lower bound of the support is always 0 no matter the parameters.
+     * <p>The lower bound of the support is always 0.
      *
-     * @return lower bound of the support (always 0)
+     * @return 0.
      */
     @Override
     public double getSupportLowerBound() {
@@ -214,9 +214,9 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is always 1 no matter the parameters.
+     * <p>The upper bound of the support is always 1.
      *
-     * @return upper bound of the support (always 1)
+     * @return 1.
      */
     @Override
     public double getSupportUpperBound() {

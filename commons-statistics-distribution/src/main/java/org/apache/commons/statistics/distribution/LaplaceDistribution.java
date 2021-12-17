@@ -163,11 +163,9 @@ public final class LaplaceDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The lower bound of the support is always negative infinity
-     * no matter the parameters.
+     * <p>The lower bound of the support is always negative infinity.
      *
-     * @return lower bound of the support (always
-     * {@code Double.NEGATIVE_INFINITY})
+     * @return negative infinity.
      */
     @Override
     public double getSupportLowerBound() {
@@ -177,11 +175,9 @@ public final class LaplaceDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is always positive infinity
-     * no matter the parameters.
+     * <p>The upper bound of the support is always positive infinity.
      *
-     * @return upper bound of the support (always
-     * {@code Double.POSITIVE_INFINITY})
+     * @return positive infinity.
      */
     @Override
     public double getSupportUpperBound() {

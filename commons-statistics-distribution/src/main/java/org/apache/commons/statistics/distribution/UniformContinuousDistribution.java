@@ -191,8 +191,6 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
      *
      * <p>The lower bound of the support is equal to the lower bound parameter
      * of the distribution.
-     *
-     * @return lower bound of the support
      */
     @Override
     public double getSupportLowerBound() {
@@ -204,8 +202,6 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
      *
      * <p>The upper bound of the support is equal to the upper bound parameter
      * of the distribution.
-     *
-     * @return upper bound of the support
      */
     @Override
     public double getSupportUpperBound() {

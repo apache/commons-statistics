@@ -229,7 +229,7 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
      *
      * <p>The lower bound of the support is always 0.
      *
-     * @return lower bound of the support (always 0)
+     * @return 0.
      */
     @Override
     public int getSupportLowerBound() {
@@ -242,7 +242,7 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
      * <p>The upper bound of the support is positive infinity except for the
      * probability parameter {@code p = 1.0}.
      *
-     * @return upper bound of the support ({@code Integer.MAX_VALUE} or 0)
+     * @return {@code Integer.MAX_VALUE} or 0.
      */
     @Override
     public int getSupportUpperBound() {

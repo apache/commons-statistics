@@ -249,8 +249,6 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
      *
      * <p>The lower bound of the support is equal to the lower limit parameter
      * {@code a} of the distribution.
-     *
-     * @return lower bound of the support
      */
     @Override
     public double getSupportLowerBound() {
@@ -262,8 +260,6 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
      *
      * <p>The upper bound of the support is equal to the upper limit parameter
      * {@code b} of the distribution.
-     *
-     * @return upper bound of the support
      */
     @Override
     public double getSupportUpperBound() {

@@ -138,10 +138,9 @@ public final class ChiSquaredDistribution extends AbstractContinuousDistribution
     /**
      * {@inheritDoc}
      *
-     * <p>The lower bound of the support is always 0 no matter the
-     * degrees of freedom.
+     * <p>The lower bound of the support is always 0.
      *
-     * @return zero.
+     * @return 0.
      */
     @Override
     public double getSupportLowerBound() {
@@ -151,10 +150,9 @@ public final class ChiSquaredDistribution extends AbstractContinuousDistribution
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is always positive infinity no matter the
-     * degrees of freedom.
+     * <p>The upper bound of the support is always positive infinity.
      *
-     * @return {@code Double.POSITIVE_INFINITY}.
+     * @return positive infinity.
      */
     @Override
     public double getSupportUpperBound() {

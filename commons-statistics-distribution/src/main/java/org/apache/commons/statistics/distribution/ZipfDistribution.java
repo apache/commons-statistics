@@ -245,9 +245,9 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The lower bound of the support is always 1 no matter the parameters.
+     * <p>The lower bound of the support is always 1.
      *
-     * @return lower bound of the support (always 1)
+     * @return 1.
      */
     @Override
     public int getSupportLowerBound() {
@@ -259,7 +259,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
      *
      * <p>The upper bound of the support is the number of elements.
      *
-     * @return upper bound of the support
+     * @return number of elements.
      */
     @Override
     public int getSupportUpperBound() {

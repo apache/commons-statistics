@@ -162,7 +162,7 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
      * <p>The lower bound of the support is always 0 except for the probability
      * parameter {@code p = 1}.
      *
-     * @return lower bound of the support (0 or the number of trials)
+     * @return 0 or the number of trials.
      */
     @Override
     public int getSupportLowerBound() {
@@ -175,7 +175,7 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
      * <p>The upper bound of the support is the number of trials except for the
      * probability parameter {@code p = 0}.
      *
-     * @return upper bound of the support (number of trials or 0)
+     * @return number of trials or 0.
      */
     @Override
     public int getSupportUpperBound() {

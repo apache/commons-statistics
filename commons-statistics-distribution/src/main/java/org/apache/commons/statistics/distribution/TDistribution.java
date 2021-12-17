@@ -298,10 +298,9 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The lower bound of the support is always negative infinity..
+     * <p>The lower bound of the support is always negative infinity.
      *
-     * @return lower bound of the support (always
-     * {@code Double.NEGATIVE_INFINITY})
+     * @return negative infinity.
      */
     @Override
     public double getSupportLowerBound() {
@@ -313,8 +312,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return upper bound of the support (always
-     * {@code Double.POSITIVE_INFINITY})
+     * @return positive infinity.
      */
     @Override
     public double getSupportUpperBound() {

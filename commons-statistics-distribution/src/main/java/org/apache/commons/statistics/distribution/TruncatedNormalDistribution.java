@@ -247,13 +247,23 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         return variance(a, b) * s * s;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The lower bound of the support is equal to the lower bound parameter
+     * of the distribution.
+     */
     @Override
     public double getSupportLowerBound() {
         return lower;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The upper bound of the support is equal to the upper bound parameter
+     * of the distribution.
+     */
     @Override
     public double getSupportUpperBound() {
         return upper;

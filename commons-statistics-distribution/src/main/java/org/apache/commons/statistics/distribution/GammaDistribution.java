@@ -205,8 +205,6 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
      *
      * <p>For shape parameter {@code alpha} and scale parameter {@code beta}, the
      * variance is {@code alpha * beta^2}.
-     *
-     * @return {@inheritDoc}
      */
     @Override
     public double getVariance() {
@@ -216,9 +214,9 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The lower bound of the support is always 0 no matter the parameters.
+     * <p>The lower bound of the support is always 0.
      *
-     * @return lower bound of the support (always 0)
+     * @return 0.
      */
     @Override
     public double getSupportLowerBound() {
@@ -228,10 +226,9 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The upper bound of the support is always positive infinity
-     * no matter the parameters.
+     * <p>The upper bound of the support is always positive infinity.
      *
-     * @return upper bound of the support (always Double.POSITIVE_INFINITY)
+     * @return positive infinity.
      */
     @Override
     public double getSupportUpperBound() {
