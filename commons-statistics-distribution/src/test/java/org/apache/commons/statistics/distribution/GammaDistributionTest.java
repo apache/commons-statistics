@@ -55,6 +55,11 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {"Shape", "Scale"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-15;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

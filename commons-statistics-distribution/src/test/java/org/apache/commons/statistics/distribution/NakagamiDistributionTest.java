@@ -33,8 +33,7 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        // Limited by the inverse CDF
-        return 1e-8;
+        return 5e-15;
     }
 
     @Override

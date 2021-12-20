@@ -47,8 +47,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        // Limited by the inverse SF mapping
-        return 5e-9;
+        return 5e-14;
     }
 
     @Override
@@ -163,7 +162,8 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
 
                 final double gT = gTest(betaDistribution, observed);
                 Assertions.assertFalse(gT < level,
-                    () -> "G goodness-of-fit (" + gT + ") test rejected null at alpha = " + level);
+                    () -> String.format("Beta(%s, %s): G goodness-of-fit (%s) test rejected null at alpha = %s",
+                                        alpha, beta, gT, level));
             }
         }
     }
@@ -171,22 +171,30 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
     private static double gTest(final ContinuousDistribution expectedDistribution, final double[] values) {
         final int numBins = values.length / 30;
         final double[] breaks = new double[numBins];
-        for (int b = 0; b < breaks.length; b++) {
-            breaks[b] = expectedDistribution.inverseCumulativeProbability((double) b / numBins);
+        for (int b = 0; b < numBins; b++) {
+            breaks[b] = expectedDistribution.inverseCumulativeProbability((double) (b + 1) / numBins);
         }
 
         final long[] observed = new long[numBins];
         for (final double value : values) {
-            int b = 0;
-            do {
-                b++;
-            } while (b < numBins && value >= breaks[b]);
-
-            observed[b - 1]++;
+            int b = Arrays.binarySearch(breaks, value);
+            if (b < 0) {
+                b = -(b + 1);
+            }
+            observed[b]++;
         }
 
         final double[] expected = new double[numBins];
-        Arrays.fill(expected, (double) values.length / numBins);
+        // This is not uniform for extreme parameterisations.
+        // E.g. beta(1000, 0.1).cdf(0.9999999999999999) = 0.94676.
+        // This is below the 29/30 = 0.96667 for the penultimate bin.
+        // So fill the expected using the CDF.
+        double x0 = 0;
+        for (int b = 0; b < numBins; b++) {
+            final double x1 = breaks[b];
+            expected[b] = expectedDistribution.probability(x0, x1);
+            x0 = x1;
+        }
 
         return new GTest().gTest(expected, observed);
     }

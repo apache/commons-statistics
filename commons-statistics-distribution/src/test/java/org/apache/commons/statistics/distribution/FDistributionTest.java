@@ -46,6 +46,11 @@ class FDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {"NumeratorDegreesOfFreedom", "DenominatorDegreesOfFreedom"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-14;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

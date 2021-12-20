@@ -43,6 +43,11 @@ class ChiSquaredDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {"DegreesOfFreedom"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 5e-15;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @Test

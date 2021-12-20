@@ -43,6 +43,11 @@ class TDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {"DegreesOfFreedom"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-15;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     /**
