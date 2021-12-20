@@ -91,5 +91,6 @@
 
   <modules>
     <module>examples-distribution</module>
+    <module>examples-jmh</module>
   </modules>
 </project>

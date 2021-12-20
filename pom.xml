@@ -178,7 +178,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-math3</artifactId>
         <version>${statistics.commons.math3.version}</version>
-        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.junit</groupId>
@@ -257,7 +256,8 @@
           <!-- Output the detected violations to the console (for checkstyle:check). -->
           <logViolationsToConsole>true</logViolationsToConsole>
           <failOnViolation>true</failOnViolation>
-          <resourceExcludes>NOTICE,LICENSE,**/maven-archiver/pom.properties</resourceExcludes>
+          <resourceExcludes>NOTICE,LICENSE,**/pom.properties,**/resolver-status.properties,**/sha512.properties</resourceExcludes>
+          <excludes>**/**generated/**.java</excludes>
         </configuration>
         <executions>
           <execution>
@@ -422,6 +422,7 @@
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <logViolationsToConsole>false</logViolationsToConsole>
           <resourceExcludes>NOTICE,LICENSE,**/maven-archiver/pom.properties</resourceExcludes>
+          <excludes>**/**generated/**.java</excludes>
         </configuration>
         <reportSets>
           <reportSet>
