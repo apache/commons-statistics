@@ -151,20 +151,17 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
             }
         }
 
-        /** {@inheritDoc} */
         @Override
         public double density(double x) {
             return Math.exp(logDensity(x));
         }
 
-        /** {@inheritDoc} */
         @Override
         public double logDensity(double x) {
             final double nPlus1Over2 = dofOver2 + 0.5;
             return factor - nPlus1Over2 * Math.log1p(x * x / getDegreesOfFreedom());
         }
 
-        /** {@inheritDoc} */
         @Override
         public double cumulativeProbability(double x) {
             if (x == 0) {
@@ -202,40 +199,16 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
                 1 - 0.5 * p;
         }
 
-        /**
-         * {@inheritDoc}
-         *
-         * <p>For degrees of freedom parameter {@code df}, the mean is
-         * <ul>
-         *  <li>zero if {@code df > 1}, and</li>
-         *  <li>undefined ({@code NaN}) otherwise.</li>
-         * </ul>
-         *
-         * @return the mean, or {@code NaN} if it is not defined.
-         */
         @Override
         public double getMean() {
             return mean;
         }
 
-        /**
-         * {@inheritDoc}
-         *
-         * <p>For degrees of freedom parameter {@code df}, the variance is
-         * <ul>
-         *  <li>{@code df / (df - 2)} if {@code df > 2},</li>
-         *  <li>positive infinity if {@code 1 < df <= 2}, and</li>
-         *  <li>undefined ({@code NaN}) otherwise.</li>
-         * </ul>
-         *
-         * @return the mean, or {@code NaN} if it is not defined.
-         */
         @Override
         public double getVariance() {
             return variance;
         }
 
-        /** {@inheritDoc} */
         @Override
         double getMedian() {
             // Overridden for the probability(double, double) method.
@@ -294,6 +267,34 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
         // Exploit symmetry
         return -inverseCumulativeProbability(p);
     }
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For degrees of freedom parameter {@code df}, the mean is
+     * <ul>
+     *  <li>zero if {@code df > 1}, and</li>
+     *  <li>undefined ({@code NaN}) otherwise.</li>
+     * </ul>
+     *
+     * @return the mean, or {@code NaN} if it is not defined.
+     */
+    @Override
+    public abstract double getMean();
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For degrees of freedom parameter {@code df}, the variance is
+     * <ul>
+     *  <li>{@code df / (df - 2)} if {@code df > 2},</li>
+     *  <li>positive infinity if {@code 1 < df <= 2}, and</li>
+     *  <li>undefined ({@code NaN}) otherwise.</li>
+     * </ul>
+     *
+     * @return the variance, or {@code NaN} if it is not defined.
+     */
+    @Override
+    public abstract double getVariance();
 
     /**
      * {@inheritDoc}
