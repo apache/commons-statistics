@@ -53,6 +53,10 @@ public final class FDistribution extends AbstractContinuousDistribution {
     private final double mhalfLogm;
     /** LogBeta(n/2, n/2) with n = numerator DF. */
     private final double logBetaNhalfNhalf;
+    /** Cached value for inverse probability function. */
+    private final double mean;
+    /** Cached value for inverse probability function. */
+    private final double variance;
 
     /**
      * @param numeratorDegreesOfFreedom Numerator degrees of freedom.
@@ -67,6 +71,22 @@ public final class FDistribution extends AbstractContinuousDistribution {
         nhalfLogn = nhalf * Math.log(numeratorDegreesOfFreedom);
         mhalfLogm = mhalf * Math.log(denominatorDegreesOfFreedom);
         logBetaNhalfNhalf = LogBeta.value(nhalf, mhalf);
+
+        if (denominatorDegreesOfFreedom > MIN_DENOMINATOR_DF_FOR_MEAN) {
+            mean = denominatorDegreesOfFreedom / (denominatorDegreesOfFreedom - 2);
+        } else {
+            mean = Double.NaN;
+        }
+        if (denominatorDegreesOfFreedom > MIN_DENOMINATOR_DF_FOR_VARIANCE) {
+            final double denomDFMinusTwo = denominatorDegreesOfFreedom - 2;
+
+            variance = (2 * (denominatorDegreesOfFreedom * denominatorDegreesOfFreedom) *
+                            (numeratorDegreesOfFreedom + denominatorDegreesOfFreedom - 2)) /
+                       (numeratorDegreesOfFreedom * (denomDFMinusTwo * denomDFMinusTwo) *
+                            (denominatorDegreesOfFreedom - 4));
+        } else {
+            variance = Double.NaN;
+        }
     }
 
     /**
@@ -218,13 +238,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getMean() {
-        final double denominatorDF = getDenominatorDegreesOfFreedom();
-
-        if (denominatorDF > MIN_DENOMINATOR_DF_FOR_MEAN) {
-            return denominatorDF / (denominatorDF - 2);
-        }
-
-        return Double.NaN;
+        return mean;
     }
 
     /**
@@ -244,17 +258,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getVariance() {
-        final double denominatorDF = getDenominatorDegreesOfFreedom();
-
-        if (denominatorDF > MIN_DENOMINATOR_DF_FOR_VARIANCE) {
-            final double numeratorDF = getNumeratorDegreesOfFreedom();
-            final double denomDFMinusTwo = denominatorDF - 2;
-
-            return (2 * (denominatorDF * denominatorDF) * (numeratorDF + denominatorDF - 2)) /
-                   (numeratorDF * (denomDFMinusTwo * denomDFMinusTwo) * (denominatorDF - 4));
-        }
-
-        return Double.NaN;
+        return variance;
     }
 
     /**

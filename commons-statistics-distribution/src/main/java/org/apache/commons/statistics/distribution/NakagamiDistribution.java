@@ -49,6 +49,10 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     private final double densityPrefactor;
     /** Log density prefactor. */
     private final double logDensityPrefactor;
+    /** Cached value for inverse probability function. */
+    private final double mean;
+    /** Cached value for inverse probability function. */
+    private final double variance;
 
     /**
      * @param mu Shape parameter.
@@ -60,6 +64,9 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
         this.omega = omega;
         densityPrefactor = 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu));
         logDensityPrefactor = LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu;
+        mean = Gamma.value(mu + 0.5) / Gamma.value(mu) * Math.sqrt(omega / mu);
+        final double v = Gamma.value(mu + 0.5) / Gamma.value(mu);
+        variance = omega * (1 - 1 / mu * v * v);
     }
 
     /**
@@ -149,14 +156,13 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double getMean() {
-        return Gamma.value(mu + 0.5) / Gamma.value(mu) * Math.sqrt(omega / mu);
+        return mean;
     }
 
     /** {@inheritDoc} */
     @Override
     public double getVariance() {
-        final double v = Gamma.value(mu + 0.5) / Gamma.value(mu);
-        return omega * (1 - 1 / mu * v * v);
+        return variance;
     }
 
     /**

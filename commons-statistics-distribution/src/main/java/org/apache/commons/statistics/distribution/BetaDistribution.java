@@ -48,6 +48,10 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     private final double beta;
     /** Normalizing factor used in density computations.*/
     private final double z;
+    /** Cached value for inverse probability function. */
+    private final double mean;
+    /** Cached value for inverse probability function. */
+    private final double variance;
 
     /**
      * @param alpha First shape parameter (must be positive).
@@ -58,6 +62,9 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
         this.alpha = alpha;
         this.beta = beta;
         z = LogGamma.value(alpha) + LogGamma.value(beta) - LogGamma.value(alpha + beta);
+        final double alphabetasum = alpha + beta;
+        mean = alpha / alphabetasum;
+        variance = (alpha * beta) / ((alphabetasum * alphabetasum) * (alphabetasum + 1));
     }
 
     /**
@@ -180,8 +187,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getMean() {
-        final double a = getAlpha();
-        return a / (a + getBeta());
+        return mean;
     }
 
     /**
@@ -193,10 +199,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getVariance() {
-        final double a = getAlpha();
-        final double b = getBeta();
-        final double alphabetasum = a + b;
-        return (a * b) / ((alphabetasum * alphabetasum) * (alphabetasum + 1));
+        return variance;
     }
 
     /**

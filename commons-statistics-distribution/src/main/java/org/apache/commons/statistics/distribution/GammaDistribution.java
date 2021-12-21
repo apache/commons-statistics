@@ -46,6 +46,10 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
     private final double scale;
     /** Precomputed term for the log density: {@code -log(gamma(shape)) - log(scale)}. */
     private final double minusLogGammaShapeMinusLogScale;
+    /** Cached value for inverse probability function. */
+    private final double mean;
+    /** Cached value for inverse probability function. */
+    private final double variance;
 
     /**
      * @param shape Shape parameter.
@@ -56,6 +60,8 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
         this.shape = shape;
         this.scale = scale;
         this.minusLogGammaShapeMinusLogScale = -LogGamma.value(shape) - Math.log(scale);
+        mean = shape * scale;
+        variance = shape * scale * scale;
     }
 
     /**
@@ -197,7 +203,7 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getMean() {
-        return shape * scale;
+        return mean;
     }
 
     /**
@@ -208,7 +214,7 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double getVariance() {
-        return shape * scale * scale;
+        return variance;
     }
 
     /**
