@@ -87,7 +87,7 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
         final double a = ExponentialDistribution.of(mean).density(x);
         // Require high precision.
         // This has max error of 3 ulp if using exp(logDensity(x)).
-        Assertions.assertEquals(e, a, Math.ulp(e),
+        Assertions.assertEquals(e, a, 2 * Math.ulp(e),
             () -> "ULP error: " + expected.subtract(new BigDecimal(a)).doubleValue() / Math.ulp(e));
     }
 }
