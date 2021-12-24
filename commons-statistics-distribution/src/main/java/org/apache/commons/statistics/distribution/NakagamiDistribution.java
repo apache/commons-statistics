@@ -20,6 +20,9 @@ import org.apache.commons.numbers.gamma.Gamma;
 import org.apache.commons.numbers.gamma.GammaRatio;
 import org.apache.commons.numbers.gamma.LogGamma;
 import org.apache.commons.numbers.gamma.RegularizedGamma;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.AhrensDieterMarsagliaTsangGammaSampler;
+import org.apache.commons.rng.sampling.distribution.SharedStateContinuousSampler;
 
 /**
  * Implementation of the Nakagami distribution.
@@ -188,5 +191,16 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     @Override
     public double getSupportUpperBound() {
         return SUPPORT_HI;
+    }
+
+    @Override
+    public Sampler createSampler(UniformRandomProvider rng) {
+        // Generate using a related Gamma distribution
+        // See https://en.wikipedia.org/wiki/Nakagami_distribution#Generation
+        final double shape = mu;
+        final double scale = omega / mu;
+        final SharedStateContinuousSampler sampler =
+            AhrensDieterMarsagliaTsangGammaSampler.of(rng, shape, scale);
+        return () -> Math.sqrt(sampler.sample());
     }
 }
