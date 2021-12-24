@@ -18,6 +18,8 @@ package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link NakagamiDistribution}.
@@ -52,6 +54,38 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
     }
 
     //-------------------- Additional test cases -------------------------------
+
+    /**
+     * Test additional moments.
+     * Includes cases where {@code gamma(mu + 0.5) / gamma(mu)} is not computable
+     * directly due to overflow of the gamma function.
+     */
+    @ParameterizedTest
+    @CsvSource({
+        // Generated using matlab
+        "175, 0.75, 0.86540703592357171, 0.0010706621739778321",
+        "175, 1, 0.99928597029814059, 0.0014275495653037762",
+        "175, 1.25, 1.1172356792742391, 0.0017844369566297202",
+        "175, 3.75, 1.9351089605317091, 0.0053533108698891607",
+        "205.25, 0.75, 0.86549814380218737, 0.00091296307496802065",
+        "205.25, 1, 0.99939117261462862, 0.0012172840999573609",
+        "205.25, 1.25, 1.1173532990397681, 0.0015216051249467011",
+        "205.25, 3.75, 1.9353126839415795, 0.0045648153748401032",
+        "305.25, 0.75, 0.865670838787722, 0.00061399887256183283",
+        "305.25, 1.75, 1.32233404855355, 0.0014326640359776099",
+        "305.25, 3.75, 1.9356988416686078, 0.0030699943628091642",
+        "305.25, 12.75, 3.5692523053388152, 0.010437980833551158",
+        "305.25, 25.25, 5.0228805186490098, 0.020671295376248372",
+    })
+    void testAdditionalMoments(double mu, double omega, double mean, double variance) {
+        // Note:
+        // The relative error of the variance is much greater than the mean.
+        // Accuracy of Matlab data requires verification with another source.
+        // Use a moderate threshold.
+        final DoubleTolerance tolerance = DoubleTolerances.relative(2e-10);
+        final NakagamiDistribution dist = NakagamiDistribution.of(mu, omega);
+        testMoments(dist, mean, variance, tolerance);
+    }
 
     @Test
     void testExtremeLogDensity() {

@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.Gamma;
+import org.apache.commons.numbers.gamma.GammaRatio;
 import org.apache.commons.numbers.gamma.LogGamma;
 import org.apache.commons.numbers.gamma.RegularizedGamma;
 
@@ -64,9 +65,9 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
         this.omega = omega;
         densityPrefactor = 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu));
         logDensityPrefactor = LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu;
-        mean = Gamma.value(mu + 0.5) / Gamma.value(mu) * Math.sqrt(omega / mu);
-        final double v = Gamma.value(mu + 0.5) / Gamma.value(mu);
-        variance = omega * (1 - 1 / mu * v * v);
+        final double v = GammaRatio.delta(mu, 0.5);
+        mean = Math.sqrt(omega / mu) / v;
+        variance = omega - mean * mean;
     }
 
     /**
