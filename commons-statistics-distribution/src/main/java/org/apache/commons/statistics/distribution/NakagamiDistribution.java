@@ -59,7 +59,7 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     private final double variance;
 
     /**
-     * @param mu Shape parameter.
+     * @param mu Shape parameter (must be positive).
      * @param omega Scale parameter (must be positive). Controls the spread of the distribution.
      */
     private NakagamiDistribution(double mu,
@@ -76,10 +76,10 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     /**
      * Creates a Nakagami distribution.
      *
-     * @param mu Shape parameter.
+     * @param mu Shape parameter (must be positive).
      * @param omega Scale parameter (must be positive). Controls the spread of the distribution.
      * @return the distribution
-     * @throws IllegalArgumentException  if {@code mu < 0.5} or if
+     * @throws IllegalArgumentException  if {@code mu <= 0} or if
      * {@code omega <= 0}.
      */
     public static NakagamiDistribution of(double mu,
