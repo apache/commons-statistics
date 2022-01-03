@@ -80,9 +80,46 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
     void testAdditionalMoments(double mu, double omega, double mean, double variance) {
         // Note:
         // The relative error of the variance is much greater than the mean.
-        // Accuracy of Matlab data requires verification with another source.
+        //   variance = omega - mean^2; omega > 0; x > 0; mean > 0
+        // This computation is subject to cancellation due to subtraction of two large
+        // values to approach a result of zero.
         // Use a moderate threshold.
         final DoubleTolerance tolerance = DoubleTolerances.relative(2e-10);
+        final NakagamiDistribution dist = NakagamiDistribution.of(mu, omega);
+        testMoments(dist, mean, variance, tolerance);
+    }
+
+    /**
+     * Repeat test of additional moments with alternative source for the expected result.
+     */
+    @ParameterizedTest
+    @CsvSource({
+        // Generated using 128-bit quad precision implementation using Boost C++:
+        // #include <boost/multiprecision/float128.hpp>
+        // #include <boost/math/special_functions/gamma.hpp>
+        // #define quad boost::multiprecision::float128
+        // T v = boost::math::tgamma_delta_ratio(mu, T(0.5));
+        // T mean = sqrt(omega / mu) / v;
+        // T var = omega - (omega / mu) / v / v;
+        "175, 0.75, 0.865407035923572335404337637742305354, 0.00107066217397678136642741884083229635",
+        "175, 1, 0.999285970298141244170512691211913862, 0.0014275495653023751552365584544430618",
+        "175, 1.25, 1.11723567927423980521693795242933784, 0.00178443695662796894404569806805382725",
+        "175, 3.75, 1.93510896053171023839534780723184735, 0.00535331086988390683213709420416109656",
+        "205.25, 0.75, 0.865498143802251959479795150977083271, 0.000912963074856388060643895128688537674",
+        "205.25, 1, 0.999391172614703197622376095323984551, 0.0012172840998085174141918601715848132",
+        "205.25, 1.25, 1.11735329903985129515900415713529348, 0.00152160512476064676773982521448079983",
+        "205.25, 3.75, 1.93531268394172368161190235734322469, 0.00456481537428194030321947564344316985",
+        "305.25, 0.75, 0.865670838787713729127832304174216151, 0.000613998872576147383115881187594898943",
+        "305.25, 1.75, 1.32233404855353739372707758901129787, 0.00143266403601101056060372277105460371",
+        "305.25, 3.75, 1.93569884166858953645398412102636382, 0.00306999436288073691557940593797382064",
+        "305.25, 12.75, 3.56925230533878138370667203279492999, 0.010437980833794505512969980189112608",
+        "305.25, 25.25, 5.02288051864896241877391197174369638, 0.0206712953767302952315679999823609879",
+    })
+    void testAdditionalMoments2(double mu, double omega, double mean, double variance) {
+        // The mean is within 2 ULP.
+        // The variance is closer than the matlab result but the effect of cancellation
+        // prevents high accuracy.
+        final DoubleTolerance tolerance = DoubleTolerances.relative(1e-12);
         final NakagamiDistribution dist = NakagamiDistribution.of(mu, omega);
         testMoments(dist, mean, variance, tolerance);
     }

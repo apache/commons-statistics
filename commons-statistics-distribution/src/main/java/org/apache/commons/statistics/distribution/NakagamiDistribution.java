@@ -70,7 +70,7 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
         logDensityPrefactor = LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu;
         final double v = GammaRatio.delta(mu, 0.5);
         mean = Math.sqrt(omega / mu) / v;
-        variance = omega - mean * mean;
+        variance = omega - (omega / mu) / v / v;
     }
 
     /**
