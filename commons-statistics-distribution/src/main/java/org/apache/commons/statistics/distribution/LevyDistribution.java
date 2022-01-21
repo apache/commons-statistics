@@ -93,20 +93,12 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
         return c;
     }
 
-    /** {@inheritDoc}
-    * <p>
-    * From Wikipedia: The probability density function of the L&eacute;vy distribution
-    * over the domain is
-    * </p>
-    * <div style="white-space: pre"><code>
-    * f(x; &mu;, c) = &radic;(c / 2&pi;) * e<sup>-c / 2 (x - &mu;)</sup> / (x - &mu;)<sup>3/2</sup>
-    * </code></div>
-    * <p>
-    * For this distribution, {@code X}, this method returns {@code P(X < x)}.
-    * If {@code x} is less than location parameter &mu;, {@code 0} is
-    * returned, as in these cases the distribution is not defined.
-    * </p>
-    */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>If {@code x} is less than the location parameter then {@code 0} is
+     * returned, as in these cases the distribution is not defined.
+     */
     @Override
     public double density(final double x) {
         if (x <= mu) {
@@ -122,10 +114,7 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
         return Math.sqrt(f / Math.PI) * Math.exp(-f) / delta;
     }
 
-    /** {@inheritDoc}
-     *
-     * <p>See documentation of {@link #density(double)} for computation details.
-     */
+    /** {@inheritDoc} */
     @Override
     public double logDensity(double x) {
         if (x <= mu) {
@@ -137,14 +126,7 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
         return 0.5 * Math.log(f / Math.PI) - f - Math.log(delta);
     }
 
-    /** {@inheritDoc}
-     * <p>
-     * From Wikipedia: the cumulative distribution function is
-     * </p>
-     * <pre>
-     * f(x; u, c) = erfc (&radic; (c / 2 (x - u )))
-     * </pre>
-     */
+    /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(final double x) {
         if (x <= mu) {
