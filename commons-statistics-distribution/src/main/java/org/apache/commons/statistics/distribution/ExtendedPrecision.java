@@ -54,6 +54,12 @@ final class ExtendedPrecision {
     private static final double SQRT2PI_L;
     /** Round-off from sqrt(2 pi) as a double. */
     private static final double SQRT2PI_R;
+    /** X-value where {@code exp(-0.5*x*x)} cannot increase accuracy using the round-off
+     * from x squared. */
+    private static final int EXP_M_HALF_XX_MIN_VALUE = 2;
+    /** Approximate x-value where {@code exp(-0.5*x*x) == 0}. This is above
+     * {@code -2 * ln(2^-1074)} due to rounding performed within the exp function. */
+    private static final int EXP_M_HALF_XX_MAX_VALUE = 1491;
 
     static {
         // Initialise constants
@@ -180,6 +186,72 @@ final class ExtendedPrecision {
     }
 
     /**
+     * Compute {@code exp(-0.5*x*x)} with high accuracy. This is performed using information in the
+     * round-off from {@code x*x}.
+     *
+     * <p>This is accurate at large x to 1 ulp until exp(-0.5*x*x) is close to sub-normal. For very
+     * small exp(-0.5*x*x) the adjustment is sub-normal and bits can be lost in the adjustment for a
+     * max observed error of {@code < 2} ulp.
+     *
+     * <p>At small x the accuracy cannot be improved over using exp(-0.5*x*x). This occurs at
+     * {@code x <= sqrt(2)}.
+     *
+     * @param x Value
+     * @return exp(-0.5*x*x)
+     * @see <a href="https://issues.apache.org/jira/browse/STATISTICS-52">STATISTICS-52</a>
+     */
+    static double expmhxx(double x) {
+        final double z = x * x;
+        if (z <= EXP_M_HALF_XX_MIN_VALUE) {
+            return Math.exp(-0.5 * z);
+        } else if (z >= EXP_M_HALF_XX_MAX_VALUE) {
+            // exp(-745.5) == 0
+            return 0;
+        }
+        // Split the number
+        final double hx = highPartUnscaled(x);
+        final double lx = x - hx;
+        // Compute the round-off
+        final double zz = squareLow(hx, lx, z);
+        return expxx(-0.5 * z, -0.5 * zz);
+    }
+
+    /**
+     * Compute {@code exp(a+b)} with high accuracy assuming {@code a+b = a}.
+     *
+     * <p>This is accurate at large positive a to 1 ulp. If a is negative and exp(a) is close to
+     * sub-normal a bit of precision may be lost when adjusting result as the adjustment is sub-normal
+     * (max observed error {@code < 2} ulp). For the use case of multiplication of a number less than
+     * 1 by exp(-x*x), a = -x*x, the result will be sub-normal and the rounding error is lost.
+     *
+     * <p>At small |a| the accuracy cannot be improved over using exp(a) as the round-off is too small
+     * to create terms that can adjust the standard result by more than 0.5 ulp. This occurs at
+     * {@code |a| <= 1}.
+     *
+     * @param a High bits of a split number
+     * @param b Low bits of a split number
+     * @return exp(a+b)
+     * @see <a href="https://issues.apache.org/jira/projects/NUMBERS/issues/NUMBERS-177">
+     * Numbers-177: Accurate scaling by exp(z*z)</a>
+     */
+    private static double expxx(double a, double b) {
+        // exp(a+b) = exp(a) * exp(b)
+        // = exp(a) * (exp(b) - 1) + exp(a)
+        // Assuming:
+        // 1. -746 < a < 710 for no under/overflow of exp(a)
+        // 2. a+b = a
+        // As b -> 0 then exp(b) -> 1; expm1(b) -> b
+        // The round-off b is limited to ~ 0.5 * ulp(746) ~ 5.68e-14
+        // and we can use an approximation for expm1 (x/1! + x^2/2! + ...)
+        // The second term is required for the expm1 result but the
+        // bits are not significant to change the product with exp(a)
+
+        final double ea = Math.exp(a);
+        // b ~ expm1(b)
+        return ea * b + ea;
+    }
+
+    /**
      * Implement Dekker's method to split a value into two parts. Multiplying by (2^s + 1) creates
      * a big value from which to derive the two split parts.
      * <pre>
@@ -237,5 +309,23 @@ final class ExtendedPrecision {
         // err3 = err2 - hx * ly
         // low = lx * ly - err3
         return lx * ly - (((xy - hx * hy) - lx * hy) - hx * ly);
+    }
+
+    /**
+     * Compute the low part of the double length number {@code (z,zz)} for the exact
+     * square of {@code x} using Dekker's mult12 algorithm. The standard precision product
+     * {@code x*x} must be provided. The number {@code x} should already be split into low
+     * and high parts.
+     *
+     * <p>Note: This is a specialisation of
+     * {@link #productLow(double, double, double, double, double)}.
+     *
+     * @param hx High part of factor.
+     * @param lx Low part of factor.
+     * @param xx Square of the factor.
+     * @return <code>lx * lx - (((xx - hx * hx) - lx * hx) - hx * lx)</code>
+     */
+    private static double squareLow(double hx, double lx, double xx) {
+        return lx * lx - ((xx - hx * hx) - 2 * lx * hx);
     }
 }

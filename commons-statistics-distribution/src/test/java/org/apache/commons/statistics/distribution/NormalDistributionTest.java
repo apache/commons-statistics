@@ -177,13 +177,41 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
         }
     }
 
+    /**
+     * Test the PDF using high-accuracy uniform x data.
+     *
+     * <p>This dataset uses uniformly spaced machine representable x values that have no
+     * round-off component when squared. If the density is implemented using
+     * {@code exp(logDensity(x))} the test will fail. Using the log density requires a
+     * tolerance of approximately 53 ULP to pass the test of larger x values.
+     */
     @ParameterizedTest
     @CsvFileSource(resources = "normpdf.csv")
     void testPDF(double x, BigDecimal expected) {
+        assertPDF(x, expected, 2);
+    }
+
+    /**
+     * Test the PDF using high-accuracy random x data.
+     *
+     * <p>This dataset uses random x values with full usage of the 52-bit mantissa to ensure
+     * that there is a round-off component when squared. It requires a high precision exponential
+     * function using the round-off to compute {@code exp(-0.5*x*x)} accurately.
+     * Using a standard precision computation requires a tolerance of approximately 383 ULP
+     * to pass the test of larger x values.
+     *
+     * <p>See STATISTICS-52.
+     */
+    @ParameterizedTest
+    @CsvFileSource(resources = "normpdf2.csv")
+    void testPDF2(double x, BigDecimal expected) {
+        assertPDF(x, expected, 3);
+    }
+
+    private static void assertPDF(double x, BigDecimal expected, int ulpTolerance) {
         final double e = expected.doubleValue();
         final double a = STANDARD_NORMAL.density(x);
-        // Require high precision. Currently this does not work at 1 ULP.
-        Assertions.assertEquals(e, a, Math.ulp(e) * 2,
+        Assertions.assertEquals(e, a, Math.ulp(e) * ulpTolerance,
             () -> "ULP error: " + expected.subtract(new BigDecimal(a)).doubleValue() / Math.ulp(e));
     }
 }

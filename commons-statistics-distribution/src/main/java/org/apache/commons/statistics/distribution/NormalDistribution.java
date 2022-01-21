@@ -110,9 +110,8 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double density(double x) {
-        final double x0 = x - mean;
-        final double x1 = x0 / standardDeviation;
-        return Math.exp(-0.5 * x1 * x1) / sdSqrt2pi;
+        final double z = (x - mean) / standardDeviation;
+        return ExtendedPrecision.expmhxx(z) / sdSqrt2pi;
     }
 
     /** {@inheritDoc} */
@@ -131,9 +130,8 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
     /** {@inheritDoc} */
     @Override
     public double logDensity(double x) {
-        final double x0 = x - mean;
-        final double x1 = x0 / standardDeviation;
-        return -0.5 * x1 * x1 - logStandardDeviationPlusHalfLog2Pi;
+        final double z = (x - mean) / standardDeviation;
+        return -0.5 * z * z - logStandardDeviationPlusHalfLog2Pi;
     }
 
     /** {@inheritDoc} */

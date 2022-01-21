@@ -42,6 +42,10 @@ class ExtendedPrecisionTest {
     private static final RMS SQRT2XX_RMS2 = new RMS();
     /** The sum of the squared ULP error for the first computation for x * sqrt(2 pi). */
     private static final RMS XSQRT2PI_RMS = new RMS();
+    /** The sum of the squared ULP error for the first computation for exp(-0.5*x*x). */
+    private static final RMS EXPMHXX_RMS1 = new RMS();
+    /** The sum of the squared ULP error for the second computation for exp(-0.5*x*x). */
+    private static final RMS EXPMHXX_RMS2 = new RMS();
 
     /**
      * Class to compute the root mean squared error (RMS).
@@ -184,6 +188,46 @@ class ExtendedPrecisionTest {
     void testXsqrt2piPrecision() {
         // Typical result:   max   1.1397  rms   0.5368
         assertPrecision(XSQRT2PI_RMS, 1.2, 0.6);
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {0, 0.5, 1, 2, 3, 4, 5, 38.5, Double.MAX_VALUE, Double.POSITIVE_INFINITY, Double.NaN})
+    void testExpmhxxEdgeCases(double x) {
+        final double expected = Math.exp(-0.5 * x * x);
+        Assertions.assertEquals(expected, ExtendedPrecision.expmhxx(x));
+        Assertions.assertEquals(expected, ExtendedPrecision.expmhxx(-x));
+    }
+
+    /**
+     * Test the extended precision {@code exp(-0.5 * x * x)}. The expected result
+     * is an extended precision computation. For comparison ulp errors are collected for
+     * the standard precision computation.
+     *
+     * @param x Value x
+     * @param expected Expected result of {@code exp(-0.5 * x * x)}.
+     */
+    @ParameterizedTest
+    @Order(1)
+    @CsvFileSource(resources = "expmhxx.csv")
+    void testExpmhxx(double x, BigDecimal expected) {
+        final double e = expected.doubleValue();
+        final double actual = ExtendedPrecision.expmhxx(x);
+        Assertions.assertEquals(e, actual, Math.ulp(e) * 2);
+        // Compute errors
+        addError(actual, expected, e, EXPMHXX_RMS1);
+        addError(Math.exp(-0.5 * x * x), expected, e, EXPMHXX_RMS2);
+    }
+
+    @Test
+    void testExpmhxxHighPrecision() {
+        // Typical result:   max    0.9727  rms   0.3481
+        assertPrecision(EXPMHXX_RMS1, 1.5, 0.5);
+    }
+
+    @Test
+    void testExpmhxxStandardPrecision() {
+        // Typical result:   max   385.7193  rms   50.7769
+        assertPrecision(EXPMHXX_RMS2, 400, 60);
     }
 
     private static void assertPrecision(RMS rms, double maxError, double rmsError) {
