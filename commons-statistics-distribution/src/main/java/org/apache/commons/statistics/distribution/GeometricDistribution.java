@@ -89,7 +89,7 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Access the probability of success for this distribution.
+     * Gets the probability of success parameter of this distribution.
      *
      * @return the probability of success.
      */

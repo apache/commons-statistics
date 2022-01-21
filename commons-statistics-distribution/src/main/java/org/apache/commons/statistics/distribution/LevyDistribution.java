@@ -76,18 +76,18 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Gets the location parameter of the distribution.
+     * Gets the location parameter of this distribution.
      *
-     * @return location parameter of the distribution
+     * @return the location parameter.
      */
     public double getLocation() {
         return mu;
     }
 
     /**
-     * Gets the scale parameter of the distribution.
+     * Gets the scale parameter of this distribution.
      *
-     * @return scale parameter of the distribution
+     * @return the scale parameter.
      */
     public double getScale() {
         return c;

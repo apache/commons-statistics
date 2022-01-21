@@ -84,18 +84,18 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Returns the shape parameter of {@code this} distribution.
+     * Gets the shape parameter of this distribution.
      *
-     * @return the shape parameter
+     * @return the shape parameter.
      */
     public double getShape() {
         return shape;
     }
 
     /**
-     * Returns the scale parameter of {@code this} distribution.
+     * Gets the scale parameter of this distribution.
      *
-     * @return the scale parameter
+     * @return the scale parameter.
      */
     public double getScale() {
         return scale;

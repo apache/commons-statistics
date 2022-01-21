@@ -87,7 +87,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the first shape parameter, {@code alpha}.
+     * Gets the first shape parameter of this distribution.
      *
      * @return the first shape parameter.
      */
@@ -96,7 +96,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the second shape parameter, {@code beta}.
+     * Gets the second shape parameter of this distribution.
      *
      * @return the second shape parameter.
      */

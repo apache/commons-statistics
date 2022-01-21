@@ -82,18 +82,18 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Get the number of elements (e.g. corpus size) for the distribution.
+     * Gets the number of elements parameter of this distribution.
      *
-     * @return the number of elements
+     * @return the number of elements.
      */
     public int getNumberOfElements() {
         return numberOfElements;
     }
 
     /**
-     * Get the exponent characterizing the distribution.
+     * Gets the exponent parameter of this distribution.
      *
-     * @return the exponent
+     * @return the exponent.
      */
     public double getExponent() {
         return exponent;

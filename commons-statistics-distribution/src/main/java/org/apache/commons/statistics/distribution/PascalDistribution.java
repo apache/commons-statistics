@@ -109,7 +109,7 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Access the number of successes for this distribution.
+     * Gets the number of successes parameter of this distribution.
      *
      * @return the number of successes.
      */
@@ -118,7 +118,7 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Access the probability of success for this distribution.
+     * Gets the probability of success parameter of this distribution.
      *
      * @return the probability of success.
      */

@@ -111,20 +111,20 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Returns the scale parameter of this distribution.
+     * Gets the scale parameter of this distribution.
      * This is the minimum possible value of X.
      *
-     * @return the scale parameter
+     * @return the scale parameter.
      */
     public double getScale() {
         return scale;
     }
 
     /**
-     * Returns the shape parameter of this distribution.
+     * Gets the shape parameter of this distribution.
      * This is the Pareto index.
      *
-     * @return the shape parameter
+     * @return the shape parameter.
      */
     public double getShape() {
         return shape;

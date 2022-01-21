@@ -133,7 +133,7 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     }
 
     /**
-     * Access the population size.
+     * Gets the population size parameter of this distribution.
      *
      * @return the population size.
      */
@@ -142,7 +142,7 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     }
 
     /**
-     * Access the number of successes.
+     * Gets the number of successes parameter of this distribution.
      *
      * @return the number of successes.
      */
@@ -151,7 +151,7 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     }
 
     /**
-     * Access the sample size.
+     * Gets the sample size parameter of this distribution.
      *
      * @return the sample size.
      */

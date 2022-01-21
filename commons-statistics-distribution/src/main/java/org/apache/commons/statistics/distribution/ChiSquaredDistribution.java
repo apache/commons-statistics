@@ -55,7 +55,7 @@ public final class ChiSquaredDistribution extends AbstractContinuousDistribution
     }
 
     /**
-     * Access the number of degrees of freedom.
+     * Gets the degrees of freedom parameter of this distribution.
      *
      * @return the degrees of freedom.
      */

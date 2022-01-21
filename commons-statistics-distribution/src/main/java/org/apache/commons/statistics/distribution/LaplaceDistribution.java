@@ -66,7 +66,7 @@ public final class LaplaceDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the location parameter, {@code mu}.
+     * Gets the location parameter of this distribution.
      *
      * @return the location parameter.
      */
@@ -75,7 +75,7 @@ public final class LaplaceDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the scale parameter, {@code beta}.
+     * Gets the scale parameter of this distribution.
      *
      * @return the scale parameter.
      */

@@ -99,9 +99,9 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the standard deviation.
+     * Gets the standard deviation parameter of this distribution.
      *
-     * @return the standard deviation for this distribution.
+     * @return the standard deviation.
      */
     public double getStandardDeviation() {
         return standardDeviation;

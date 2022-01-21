@@ -112,7 +112,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the numerator degrees of freedom.
+     * Gets the numerator degrees of freedom parameter of this distribution.
      *
      * @return the numerator degrees of freedom.
      */
@@ -121,7 +121,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the denominator degrees of freedom.
+     * Gets the denominator degrees of freedom parameter of this distribution.
      *
      * @return the denominator degrees of freedom.
      */

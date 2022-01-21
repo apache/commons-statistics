@@ -89,18 +89,18 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the shape parameter, {@code alpha}.
+     * Gets the shape parameter of this distribution.
      *
-     * @return the shape parameter, {@code alpha}.
+     * @return the shape parameter.
      */
     public double getShape() {
         return shape;
     }
 
     /**
-     * Access the scale parameter, {@code beta}.
+     * Gets the scale parameter of this distribution.
      *
-     * @return the scale parameter, {@code beta}.
+     * @return the scale parameter.
      */
     public double getScale() {
         return scale;

@@ -94,7 +94,7 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the shape parameter, {@code mu}.
+     * Gets the shape parameter of this distribution.
      *
      * @return the shape parameter.
      */
@@ -103,7 +103,7 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the scale parameter, {@code omega}.
+     * Gets the scale parameter of this distribution.
      *
      * @return the scale parameter.
      */

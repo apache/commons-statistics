@@ -85,22 +85,22 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
     }
 
     /**
-     * Returns the mu parameter of this distribution.
+     * Gets the {@code mu} parameter of this distribution.
      * This is the mean of the natural logarithm of the distribution values,
      * not the mean of distribution.
      *
-     * @return the mu parameter
+     * @return the mu parameter.
      */
     public double getMu() {
         return mu;
     }
 
     /**
-     * Returns the sigma parameter of this distribution.
+     * Gets the {@code sigma} parameter of this distribution.
      * This is the standard deviation of the natural logarithm of the distribution values,
      * not the standard deviation of distribution.
      *
-     * @return the sigma parameter
+     * @return the sigma parameter.
      */
     public double getSigma() {
         return sigma;

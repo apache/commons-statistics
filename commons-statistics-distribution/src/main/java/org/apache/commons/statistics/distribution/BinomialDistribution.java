@@ -72,7 +72,7 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Access the number of trials for this distribution.
+     * Gets the number of trials parameter of this distribution.
      *
      * @return the number of trials.
      */
@@ -81,7 +81,7 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Access the probability of success for this distribution.
+     * Gets the probability of success parameter of this distribution.
      *
      * @return the probability of success.
      */

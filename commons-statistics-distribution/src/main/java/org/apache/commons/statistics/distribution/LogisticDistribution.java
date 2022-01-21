@@ -73,7 +73,7 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Gets the location parameter.
+     * Gets the location parameter of this distribution.
      *
      * @return the location parameter.
      */
@@ -82,7 +82,7 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Gets the scale parameter.
+     * Gets the scale parameter of this distribution.
      *
      * @return the scale parameter.
      */

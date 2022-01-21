@@ -72,18 +72,18 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the location.
+     * Gets the location parameter of this distribution.
      *
-     * @return the location for this distribution.
+     * @return the location parameter.
      */
     public double getLocation() {
         return location;
     }
 
     /**
-     * Access the scale parameter.
+     * Gets the scale parameter of this distribution.
      *
-     * @return the scale parameter for this distribution.
+     * @return the scale parameter.
      */
     public double getScale() {
         return scale;

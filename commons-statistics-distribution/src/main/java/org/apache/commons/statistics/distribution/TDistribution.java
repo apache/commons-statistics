@@ -246,7 +246,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     }
 
     /**
-     * Access the degrees of freedom.
+     * Gets the degrees of freedom parameter of this distribution.
      *
      * @return the degrees of freedom.
      */

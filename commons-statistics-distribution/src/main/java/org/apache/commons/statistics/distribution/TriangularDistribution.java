@@ -96,9 +96,9 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
     }
 
     /**
-     * Gets the mode.
+     * Gets the mode parameter of this distribution.
      *
-     * @return the mode of the distribution.
+     * @return the mode.
      */
     public double getMode() {
         return c;
