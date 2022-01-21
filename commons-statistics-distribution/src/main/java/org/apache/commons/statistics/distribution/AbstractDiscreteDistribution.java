@@ -164,8 +164,8 @@ abstract class AbstractDiscreteDistribution
         // cdf(x) >= p
         // sf(x)  <= q
         final IntUnaryOperator fun = complement ?
-            x -> Double.compare(q, checkedProbability(survivalProbability(x))) :
-            x -> Double.compare(checkedProbability(cumulativeProbability(x)), p);
+            x -> Double.compare(q, survivalProbability(x)) :
+            x -> Double.compare(cumulativeProbability(x), p);
 
         if (lower == Integer.MIN_VALUE) {
             if (fun.applyAsInt(lower) >= 0) {
@@ -236,26 +236,6 @@ abstract class AbstractDiscreteDistribution
             }
         }
         return (int) upper;
-    }
-
-    /**
-     * Checks the probability function result for {@code NaN}.
-     * Throws {@code IllegalStateException} if the cumulative
-     * probability function returns {@code NaN}.
-     *
-     * <p>TODO: Q. Is this required? The bisection search will
-     * eventually return if NaN is computed. Check the origin
-     * of this in Commons Math. Its origins may be for debugging.
-     *
-     * @param result Probability
-     * @return the probability.
-     * @throws IllegalStateException if the probability is {@code NaN}.
-     */
-    private static double checkedProbability(double result) {
-        if (Double.isNaN(result)) {
-            throw new IllegalStateException("Internal error");
-        }
-        return result;
     }
 
     /** {@inheritDoc} */
