@@ -192,39 +192,6 @@ class AbstractDiscreteDistributionTest {
         Assertions.assertEquals(dist.getSupportUpperBound(), dist.inverseSurvivalProbability(0.0));
     }
 
-    @Test
-    void testInverseProbabilityWithNaN() {
-        final DiscreteDistribution dist = new AbstractDiscreteDistribution() {
-            @Override
-            public double probability(int x) {
-                return 0;
-            }
-            @Override
-            public double cumulativeProbability(int x) {
-                // NaN is not allowed
-                return Double.NaN;
-            }
-            @Override
-            public double getMean() {
-                return 0;
-            }
-            @Override
-            public double getVariance() {
-                return 0;
-            }
-            @Override
-            public int getSupportLowerBound() {
-                return Integer.MIN_VALUE;
-            }
-            @Override
-            public int getSupportUpperBound() {
-                return Integer.MAX_VALUE;
-            }
-        };
-        Assertions.assertThrows(IllegalStateException.class, () -> dist.inverseCumulativeProbability(0.5));
-        Assertions.assertThrows(IllegalStateException.class, () -> dist.inverseSurvivalProbability(0.5));
-    }
-
     /**
      * Simple distribution modeling a 6-sided die
      */
