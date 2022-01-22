@@ -108,8 +108,9 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
         /** 2. */
         private static final double TWO = 2;
         /** Number of degrees of freedom above which to use the normal distribution.
-         * This is used to check the CDF when the degrees of freedom is large. */
-        private static final double DOF_THRESHOLD_NORMAL = 2.99e6;
+         * This is used to check the CDF when the degrees of freedom is large.
+         * Set to 1 / machine epsilon, 2^52, or 4.50e15. */
+        private static final double DOF_THRESHOLD_NORMAL = 0x1.0p52;
 
         /** degreesOfFreedom / 2. */
         private final double dofOver2;
@@ -167,36 +168,33 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
             if (x == 0) {
                 return 0.5;
             }
-            final double df = getDegreesOfFreedom();
-            if (df > DOF_THRESHOLD_NORMAL) {
+            final double v = getDegreesOfFreedom();
+
+            // This threshold may no longer be required.
+            // See STATISTICS-25.
+            if (v > DOF_THRESHOLD_NORMAL) {
                 return STANDARD_NORMAL.cumulativeProbability(x);
             }
-            final double x2 = x * x;
-            // z = 1 / (1 + x^2/df)
-            // Simplify by multiplication by df
-            final double z = df / (df + x2);
 
-            // The RegularizedBeta has the complement:
-            //   I(z, a, b) = 1 - I(1 - z, a, b)
-            // This is used when z > (a + 1) / (2 + b + a).
-            // Detect this condition and directly use the complement.
-            if (z > (dofOver2 + 1) / (2.5 + dofOver2)) {
-                // zc = 1 - z; pc = 1 - p
-                final double zc = x2 / (df + x2);
-                final double pc = RegularizedBeta.value(zc, 0.5, dofOver2);
+            // cdf(t) = 1 - 0.5 * I_x(t)(v/2, 1/2)
+            // where x(t) = v / (v + t^2)
+            //
+            // When t^2 << v using the regularized beta results
+            // in loss of precision. Use the complement instead:
+            // I[x](a,b) = 1 - I[1-x](b,a)
+            // x   = v   / (v + t^2)
+            // 1-x = t^2 / (v + t^2)
+            // Use the threshold documented in the Boost t-distribution:
+            // https://www.boost.org/doc/libs/1_78_0/libs/math/doc/html/math_toolkit/dist_ref/dists/students_t_dist.html
 
-                return x < 0 ?
-                    // 0.5 * p == 0.5 * (1 - pc) = 0.5 - 0.5 * pc
-                    0.5 - 0.5 * pc :
-                    // 1 - 0.5 * p == 1 - 0.5 * (1 - pc) = 0.5 + 0.5 * pc
-                    0.5 + 0.5 * pc;
+            final double t2 = x * x;
+            double z;
+            if (v < 2 * t2) {
+                z = RegularizedBeta.value(v / (v + t2), dofOver2, 0.5) / 2;
+            } else {
+                z = RegularizedBeta.complement(t2 / (v + t2), 0.5, dofOver2) / 2;
             }
-
-            final double p = RegularizedBeta.value(z, dofOver2, 0.5);
-
-            return x < 0 ?
-                0.5 * p :
-                1 - 0.5 * p;
+            return x > 0 ? 1 - z : z;
         }
 
         @Override
