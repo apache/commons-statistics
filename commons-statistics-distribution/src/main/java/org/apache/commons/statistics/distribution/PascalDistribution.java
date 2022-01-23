@@ -178,8 +178,8 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
             return 1.0;
         }
         // Use a helper function to compute the complement of the cumulative probability
-        return RegularizedBetaUtils.complement(probabilityOfSuccess,
-                                               numberOfSuccesses, x + 1.0);
+        return RegularizedBeta.complement(probabilityOfSuccess,
+                                          numberOfSuccesses, x + 1.0);
     }
 
     /**
