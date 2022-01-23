@@ -49,7 +49,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        return 1e-14;
+        return 8e-15;
     }
 
     @Override
