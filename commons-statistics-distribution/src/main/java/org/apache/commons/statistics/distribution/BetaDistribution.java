@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.RegularizedBeta;
-import org.apache.commons.numbers.gamma.LogGamma;
+import org.apache.commons.numbers.gamma.LogBeta;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.ChengBetaSampler;
 
@@ -46,8 +46,8 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     private final double alpha;
     /** Second shape parameter. */
     private final double beta;
-    /** Normalizing factor used in density computations.*/
-    private final double z;
+    /** Normalizing factor used in log density computations. log(beta(a, b)). */
+    private final double logBeta;
     /** Cached value for inverse probability function. */
     private final double mean;
     /** Cached value for inverse probability function. */
@@ -61,7 +61,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
                              double beta) {
         this.alpha = alpha;
         this.beta = beta;
-        z = LogGamma.value(alpha) + LogGamma.value(beta) - LogGamma.value(alpha + beta);
+        logBeta = LogBeta.value(alpha, beta);
         final double alphabetasum = alpha + beta;
         mean = alpha / alphabetasum;
         variance = (alpha * beta) / ((alphabetasum * alphabetasum) * (alphabetasum + 1));
@@ -111,7 +111,10 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double density(double x) {
-        return Math.exp(logDensity(x));
+        if (x < 0 || x > 1) {
+            return 0;
+        }
+        return RegularizedBeta.derivative(x, alpha, beta);
     }
 
     /** {@inheritDoc}
@@ -133,7 +136,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
             }
             // Special case of cancellation: x^(a-1) (1-x)^(b-1) / B(a, b)
             if (alpha == 1) {
-                return -z;
+                return -logBeta;
             }
             return Double.NEGATIVE_INFINITY;
         } else if (x == 1) {
@@ -145,13 +148,13 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
             }
             // Special case of cancellation: x^(a-1) (1-x)^(b-1) / B(a, b)
             if (beta == 1) {
-                return -z;
+                return -logBeta;
             }
             return Double.NEGATIVE_INFINITY;
         } else {
             final double logX = Math.log(x);
             final double log1mX = Math.log1p(-x);
-            return (alpha - 1) * logX + (beta - 1) * log1mX - z;
+            return (alpha - 1) * logX + (beta - 1) * log1mX - logBeta;
         }
     }
 
