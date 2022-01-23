@@ -18,7 +18,8 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.RegularizedBeta;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.numbers.gamma.LogGamma;
+import org.apache.commons.numbers.gamma.Beta;
+import org.apache.commons.numbers.gamma.LogBeta;
 
 /**
  * Implementation of Student's t-distribution.
@@ -111,14 +112,19 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
          * This is used to check the CDF when the degrees of freedom is large.
          * Set to 1 / machine epsilon, 2^52, or 4.50e15. */
         private static final double DOF_THRESHOLD_NORMAL = 0x1.0p52;
+        /** The threshold for the density function where the
+         * power function base minus 1 is close to zero. */
+        private static final double CLOSE_TO_ZERO = 0.25;
 
-        /** degreesOfFreedom / 2. */
-        private final double dofOver2;
-        /** Cached value. */
-        private final double factor;
-        /** Cached value. */
+        /** -(v + 1) / 2, where v = degrees of freedom. */
+        private final double mvp1Over2;
+        /** Density normalisation factor, sqrt(v) * beta(1/2, v/2), where v = degrees of freedom. */
+        private final double densityNormalisation;
+        /** Log density normalisation term, 0.5 * log(v) + log(beta(1/2, v/2)), where v = degrees of freedom. */
+        private final double logDensityNormalisation;
+        /** Cached value for inverse probability function. */
         private final double mean;
-        /** Cached value. */
+        /** Cached value for inverse probability function. */
         private final double variance;
 
         /**
@@ -128,12 +134,11 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
         StudentsTDistribution(double degreesOfFreedom, double variance) {
             super(degreesOfFreedom);
 
-            dofOver2 = 0.5 * degreesOfFreedom;
-            factor = LogGamma.value(dofOver2 + 0.5) -
-                     0.5 * (Math.log(Math.PI) + Math.log(degreesOfFreedom)) -
-                     LogGamma.value(dofOver2);
-            this.variance = variance;
+            mvp1Over2 = -0.5 * (degreesOfFreedom + 1);
+            densityNormalisation = Math.sqrt(degreesOfFreedom) * Beta.value(0.5, degreesOfFreedom / 2);
+            logDensityNormalisation = 0.5 * Math.log(degreesOfFreedom) + LogBeta.value(0.5, degreesOfFreedom / 2);
             mean = degreesOfFreedom > 1 ? 0 : Double.NaN;
+            this.variance = variance;
         }
 
         /**
@@ -154,13 +159,21 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
 
         @Override
         public double density(double x) {
-            return Math.exp(logDensity(x));
+            //          1                       -(v+1)/2
+            // ------------------- * (1 + t^2/v)
+            // sqrt(v) B(1/2, v/2)
+
+            final double t2OverV = x * x / getDegreesOfFreedom();
+            if (t2OverV < CLOSE_TO_ZERO) {
+                // Avoid power function when the base is close to 1
+                return Math.exp(Math.log1p(t2OverV) * mvp1Over2) / densityNormalisation;
+            }
+            return Math.pow(1 + t2OverV, mvp1Over2) / densityNormalisation;
         }
 
         @Override
         public double logDensity(double x) {
-            final double nPlus1Over2 = dofOver2 + 0.5;
-            return factor - nPlus1Over2 * Math.log1p(x * x / getDegreesOfFreedom());
+            return Math.log1p(x * x / getDegreesOfFreedom()) * mvp1Over2 - logDensityNormalisation;
         }
 
         @Override
@@ -190,9 +203,9 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
             final double t2 = x * x;
             double z;
             if (v < 2 * t2) {
-                z = RegularizedBeta.value(v / (v + t2), dofOver2, 0.5) / 2;
+                z = RegularizedBeta.value(v / (v + t2), v / 2, 0.5) / 2;
             } else {
-                z = RegularizedBeta.complement(t2 / (v + t2), 0.5, dofOver2) / 2;
+                z = RegularizedBeta.complement(t2 / (v + t2), 0.5, v / 2) / 2;
             }
             return x > 0 ? 1 - z : z;
         }
