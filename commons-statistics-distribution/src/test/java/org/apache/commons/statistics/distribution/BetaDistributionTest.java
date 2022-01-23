@@ -24,6 +24,8 @@ import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.inference.GTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link BetaDistribution}.
@@ -47,7 +49,7 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        return 5e-14;
+        return 1e-14;
     }
 
     @Override
@@ -115,16 +117,15 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
             () -> "survival function not precise at " + value + " for a=" + alpha + " & b=" + beta);
     }
 
-    @Test
-    void testLogDensityPrecondition1() {
-        final BetaDistribution dist = BetaDistribution.of(0.5, 3);
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.logDensity(0.0));
-    }
-
-    @Test
-    void testLogDensityPrecondition2() {
-        final BetaDistribution dist = BetaDistribution.of(2, 0.5);
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.logDensity(1.0));
+    @ParameterizedTest
+    @CsvSource({
+        "0.5, 3, 0, Infinity",
+        "2, 0.5, 1, Infinity",
+    })
+    void testLogDensityPrecondition(double a, double b, double x, double expected) {
+        final BetaDistribution dist = BetaDistribution.of(a, b);
+        Assertions.assertEquals(expected, dist.density(x));
+        Assertions.assertEquals(Math.log(expected), dist.logDensity(x));
     }
 
     @Test
