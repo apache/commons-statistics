@@ -16,7 +16,7 @@
    See the License for the specific language governing permissions and
    limitations under the License.
   -->
-  
+
 <?xml-stylesheet type="text/xsl" href="./xdoc.xsl"?>
 <document url="index.html">
   <properties>
@@ -25,7 +25,7 @@
 
   <body>
     <section name="Table of Contents" href="toc">
-        
+
       <ul>
 
         <li>
@@ -35,7 +35,7 @@
       </ul>
 
     </section>
-    
+
   </body>
-  
+
 </document>

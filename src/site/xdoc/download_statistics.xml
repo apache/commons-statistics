@@ -27,9 +27,9 @@ limitations under the License.
  +======================================================================+
  |                                                                      |
  | 1) Re-generate using: mvn commons:download-page                      |
- 
+
  Do NOT re-generate before an actual release can be downloaded.
- 
+
  |                                                                      |
  | 2) Set the following properties in the component's pom:              |
  |    - commons.componentid (required, alphabetic, lower case)          |
