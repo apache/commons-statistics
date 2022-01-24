@@ -18,6 +18,7 @@ package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.numbers.gamma.RegularizedBeta;
 import org.apache.commons.rng.UniformRandomProvider;
+import java.util.function.DoubleUnaryOperator;
 import org.apache.commons.numbers.gamma.Beta;
 import org.apache.commons.numbers.gamma.LogBeta;
 
@@ -52,6 +53,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      * allowed to provide access to the degrees of freedom used during construction.
      */
     private static class NormalTDistribution extends TDistribution {
+
         /**
          * @param degreesOfFreedom Degrees of freedom.
          */
@@ -226,6 +228,104 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
             // This is intentionally not a public method.
             return 0;
         }
+
+        @Override
+        public Sampler createSampler(UniformRandomProvider rng) {
+            // TODO: Move sampler to Commons RNG
+            return new TSampler(rng, getDegreesOfFreedom());
+        }
+
+        /**
+         * Sampling from a T-distribution.
+         * <blockquote>
+         * Bailey, R. W. (1994)
+         * Polar Generation of Random Variates with the t-Distribution.
+         * Mathematics of Computation 62, 779-781.
+         * </blockquote>
+         * @see <a href="https://doi.org/10.2307/2153537">Mathematics of Computation, 62, 779-781</a>
+         */
+        private static class TSampler implements Sampler {
+            /** Threshold for large degrees of freedom. */
+            private static final double LARGE_DF = 25;
+            /** The multiplier to convert the least significant 53-bits of a {@code long} to a
+             * uniform {@code double}. */
+            private static final double DOUBLE_MULTIPLIER = 0x1.0p-53;
+
+            /** Source of randomness. */
+            private final UniformRandomProvider rng;
+            /** Degrees of freedom. */
+            private final double df;
+            /** Function to compute pow(x, -2/v) - 1, where v = degrees of freedom. */
+            private final DoubleUnaryOperator powm1;
+
+            /**
+             * @param rng Source of randomness.
+             * @param v Degrees of freedom.
+             */
+            TSampler(UniformRandomProvider rng, double v) {
+                this.rng = rng;
+                df = v;
+
+                // The sampler requires pow(w, -2/v) - 1 with
+                // 0 <= w <= 1; Expected(w) = sqrt(0.5).
+                // When the exponent is small then pow(x, y) -> 1.
+                // This affects large degrees of freedom.
+                final double exponent = -2 / v;
+                powm1 = v > LARGE_DF ?
+                    x -> Math.expm1(Math.log(x) * exponent) :
+                    x -> Math.pow(x, exponent) - 1;
+            }
+
+            @Override
+            public double sample() {
+                // Require u and v in [0, 1] and a random sign.
+                // Create u in (0, 1] to avoid generating nan
+                // from u*u/w (0/0) or r2*c2 (inf*0).
+                final double u = makeNonZeroDouble(rng.nextLong());
+                final double v = makeSignedDouble(rng.nextLong());
+                final double w = u * u + v * v;
+                if (w > 1) {
+                    // Rejection frequency = 1 - pi/4 = 0.215.
+                    // Recursion will generate stack overflow given a broken RNG
+                    // and avoids an infinite loop.
+                    return sample();
+                }
+                // Sidestep a square-root calculation.
+                final double c2 = u * u / w;
+                final double r2 = df * powm1.applyAsDouble(w);
+                // Choose sign at random from the sign of v.
+                return Math.copySign(Math.sqrt(r2 * c2), v);
+            }
+
+            /**
+             * Creates a {@code double} in the interval {@code (0, 1]} from a {@code long} value.
+             *
+             * @param v Number.
+             * @return {@code (0, 1]}.
+             */
+            private static double makeNonZeroDouble(long v) {
+                // This matches the method in o.a.c.rng.core.util.NumberFactory.makeDouble(long)
+                // but shifts the range from [0, 1) to (0, 1].
+                return ((v >>> 11) + 1L) * DOUBLE_MULTIPLIER;
+            }
+
+            /**
+             * Creates a signed double in the range {@code [-1, 1)}.
+             *
+             * <p>Note: This method will not return samples for both -0.0 and 0.0.
+             *
+             * @param bits the bits
+             * @return {@code [-1, 1)}.
+             */
+            private static double makeSignedDouble(long bits) {
+                // As per o.a.c.rng.core.utils.NumberFactory.makeDouble(long) but using a signed
+                // shift of 10 in place of an unsigned shift of 11.
+                // Use the upper 54 bits on the assumption they are more random.
+                // The sign bit is maintained by the signed shift.
+                // The next 53 bits generates a magnitude in the range [0, 2^53) or [-2^53, 0).
+                return (bits >> 10) * DOUBLE_MULTIPLIER;
+            }
+        }
     }
 
     /**
@@ -278,6 +378,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
         // Exploit symmetry
         return -inverseCumulativeProbability(p);
     }
+
     /**
      * {@inheritDoc}
      *
