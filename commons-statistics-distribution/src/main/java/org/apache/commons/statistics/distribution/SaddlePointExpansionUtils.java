@@ -87,7 +87,7 @@ final class SaddlePointExpansionUtils {
      * <p>Note: This function has been modified for integer {@code z}.</p>
      *
      * @param z Value at which the function is evaluated.
-     * @return the Striling's series error.
+     * @return the Stirling's series error.
      */
     static double getStirlingError(int z) {
         if (z <= STIRLING_ERROR_THRESHOLD) {
