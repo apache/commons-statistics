@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test for {@link RegularizedBetaUtils}.
+ * Test for {@link ArgumentUtils}.
  */
 class ArgumentUtilsTest {
     @Test
@@ -38,7 +38,7 @@ class ArgumentUtilsTest {
 
     @Test
     void testCheckProbability() {
-        // Current this allows -0.0
+        // Currently this allows -0.0
         final double[] good = {-0.0, 0.0, Double.MIN_VALUE, 1 - 0x1.0p-53, 1};
         final double[] bad = {-Double.MIN_VALUE, -0.1, -1, -2, Math.nextUp(1.0), 1.1, -Double.MAX_VALUE,
             Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN};
