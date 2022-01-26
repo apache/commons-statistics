@@ -25,9 +25,11 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  *
  * <p>The probability density function of \( X \) is:
  *
- * <p>\[ f(x; d_1, d_2) = \frac{1}{\operatorname{B}\left(\frac{d_1}{2},\frac{d_2}{2}\right)} \left(\frac{d_1}{d_2}\right)^{d_1/2} x^{d_1/2 - 1} \left(1+\frac{d_1}{d_2} \, x \right)^{-(d_1+d_2)/2} \]
+ * <p>\[ \begin{aligned}
+ *       f(x; n, m) &amp;= \frac{1}{\operatorname{B}\left(\frac{n}{2},\frac{m}{2}\right)} \left(\frac{n}{m}\right)^{n/2} x^{n/2 - 1} \left(1+\frac{n}{m} \, x \right)^{-(n+m)/2} \\
+ *                  &amp;= \frac{n^{\frac n 2} m^{\frac m 2} x^{\frac{n}{2}-1} }{ (nx+m)^{\frac{(n+m)}{2}} \operatorname{B}\left(\frac{n}{2},\frac{m}{2}\right)}   \end{aligned} \]
  *
- * <p>for \( d_1, d_2 &gt; 0 \) the degrees of freedom, \( \operatorname{B}(d_1 / 2, d_2 / 2) \) is the beta function,
+ * <p>for \( n, m &gt; 0 \) the degrees of freedom, \( \operatorname{B}(a, b) \) is the beta function,
  * and \( x \in [0, \infty) \).
  *
  * @see <a href="https://en.wikipedia.org/wiki/F-distribution">F-distribution (Wikipedia)</a>
@@ -47,12 +49,10 @@ public final class FDistribution extends AbstractContinuousDistribution {
     private final double numeratorDegreesOfFreedom;
     /** The denominator degrees of freedom. */
     private final double denominatorDegreesOfFreedom;
-    /** n/2 * log(n) with n = numerator DF. */
-    private final double nhalfLogn;
-    /** m/2 * log(m) with m = denominator DF. */
-    private final double mhalfLogm;
+    /** n/2 * log(n) + m/2 * log(m) with n = numerator DF and m = denominator DF. */
+    private final double nHalfLogNmHalfLogM;
     /** LogBeta(n/2, n/2) with n = numerator DF. */
-    private final double logBetaNhalfNhalf;
+    private final double logBetaNhalfMhalf;
     /** Cached value for inverse probability function. */
     private final double mean;
     /** Cached value for inverse probability function. */
@@ -68,9 +68,9 @@ public final class FDistribution extends AbstractContinuousDistribution {
         this.denominatorDegreesOfFreedom = denominatorDegreesOfFreedom;
         final double nhalf = numeratorDegreesOfFreedom / 2;
         final double mhalf = denominatorDegreesOfFreedom / 2;
-        nhalfLogn = nhalf * Math.log(numeratorDegreesOfFreedom);
-        mhalfLogm = mhalf * Math.log(denominatorDegreesOfFreedom);
-        logBetaNhalfNhalf = LogBeta.value(nhalf, mhalf);
+        nHalfLogNmHalfLogM = nhalf * Math.log(numeratorDegreesOfFreedom) +
+                             mhalf * Math.log(denominatorDegreesOfFreedom);
+        logBetaNhalfMhalf = LogBeta.value(nhalf, mhalf);
 
         if (denominatorDegreesOfFreedom > MIN_DENOMINATOR_DF_FOR_MEAN) {
             mean = denominatorDegreesOfFreedom / (denominatorDegreesOfFreedom - 2);
@@ -141,7 +141,32 @@ public final class FDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double density(double x) {
-        return Math.exp(logDensity(x));
+        if (x <= SUPPORT_LO ||
+            x >= SUPPORT_HI) {
+            // Special case x=0:
+            // PDF reduces to the term x^(df1 / 2 - 1) multiplied by a scaling factor
+            if (x == SUPPORT_LO && numeratorDegreesOfFreedom <= 2) {
+                return numeratorDegreesOfFreedom == 2 ?
+                    1 :
+                    Double.POSITIVE_INFINITY;
+            }
+            return 0;
+        }
+
+        // Keep the z argument to the regularized beta well away from 1 to avoid rounding error.
+        // See: https://www.boost.org/doc/libs/1_78_0/libs/math/doc/html/math_toolkit/dist_ref/dists/f_dist.html
+
+        final double n = numeratorDegreesOfFreedom;
+        final double m = denominatorDegreesOfFreedom;
+        final double nx = n * x;
+        final double z = m + nx;
+        final double y = n * m / (z * z);
+        if (nx > m) {
+            return y * RegularizedBeta.derivative(m / z,
+                                                  m / 2, n / 2);
+        }
+        return y * RegularizedBeta.derivative(nx / z,
+                                              n / 2, m / 2);
     }
 
     /** {@inheritDoc}
@@ -168,14 +193,12 @@ public final class FDistribution extends AbstractContinuousDistribution {
             return Double.NEGATIVE_INFINITY;
         }
 
-        final double nhalf = numeratorDegreesOfFreedom / 2;
-        final double mhalf = denominatorDegreesOfFreedom / 2;
-        final double logx = Math.log(x);
-        final double lognxm = Math.log(numeratorDegreesOfFreedom * x +
-                denominatorDegreesOfFreedom);
-        return nhalfLogn + nhalf * logx - logx +
-               mhalfLogm - nhalf * lognxm - mhalf * lognxm -
-               logBetaNhalfNhalf;
+        final double n = numeratorDegreesOfFreedom;
+        final double m = denominatorDegreesOfFreedom;
+
+        // This may suffer cancellation effects due to summation of opposing terms.
+        return nHalfLogNmHalfLogM + (n / 2 - 1) * Math.log(x) - logBetaNhalfMhalf -
+            ((n + m) / 2) * Math.log(n * x + m);
     }
 
     /**
@@ -200,9 +223,18 @@ public final class FDistribution extends AbstractContinuousDistribution {
         final double n = numeratorDegreesOfFreedom;
         final double m = denominatorDegreesOfFreedom;
 
-        return RegularizedBeta.value((n * x) / (m + n * x),
-                                     0.5 * n,
-                                     0.5 * m);
+        // Keep the z argument to the regularized beta well away from 1 to avoid rounding error.
+        // See: https://www.boost.org/doc/libs/1_78_0/libs/math/doc/html/math_toolkit/dist_ref/dists/f_dist.html
+        // Note the logic in the Boost documentation for pdf and cdf is contradictory.
+        // This order will keep the argument far from 1.
+
+        final double nx = n * x;
+        if (nx > m) {
+            return RegularizedBeta.complement(m / (m + nx),
+                                              m / 2, n / 2);
+        }
+        return RegularizedBeta.value(nx / (m + nx),
+                                     n / 2, m / 2);
     }
 
     /** {@inheritDoc} */
@@ -217,12 +249,15 @@ public final class FDistribution extends AbstractContinuousDistribution {
         final double n = numeratorDegreesOfFreedom;
         final double m = denominatorDegreesOfFreedom;
 
-        // Compute the complement of the regularized beta function
-        // with direct computation of 1 - z:
-        // 1 - I(z, a, b) = I(1 - z, b, a)
-        return RegularizedBeta.value(m / (m + n * x),
-                                     0.5 * m,
-                                     0.5 * n);
+        // Do the opposite of the CDF
+
+        final double nx = n * x;
+        if (nx > m) {
+            return RegularizedBeta.value(m / (m + nx),
+                                         m / 2, n / 2);
+        }
+        return RegularizedBeta.complement(nx / (m + nx),
+                                          n / 2, m / 2);
     }
 
     /**
