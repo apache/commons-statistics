@@ -884,7 +884,7 @@ abstract class BaseDiscreteDistributionTest
             // the CDF is 1.0 as they may be truncated.
             Assertions.assertEquals(1.0, dist.cumulativeProbability(hi), "cdf(upper)");
             Assertions.assertEquals(0.0, dist.survivalProbability(hi), "sf(upper)");
-            TestUtils.assertEquals(dist.probability(hi), dist.survivalProbability(hi - 1), tolerance, "sf(upper - 1)");
+            TestUtils.assertEquals(dist.probability(hi), dist.survivalProbability(hi - 1), tolerance, () -> "pmf(upper - 1) != sf(upper - 1) for " + hi);
 
             final int above = hi + 1;
             Assertions.assertEquals(0.0, dist.probability(above), "pmf(x > upper)");
@@ -894,10 +894,36 @@ abstract class BaseDiscreteDistributionTest
         }
 
         // Test the logProbability at the support bound. This hits edge case coverage for logProbability.
+        assertPmfAndLogPmfAtBound(dist, lo, tolerance, "lower");
+        assertPmfAndLogPmfAtBound(dist, hi, tolerance, "upper");
+    }
+
+    /**
+     * Assert the PMF and log PMF are consistent at the named point.
+     * This method asserts either:
+     * <pre>
+     * log(pmf) == logpmf
+     * pmf      == exp(logpmf)
+     * </pre>
+     *
+     * @param dist Distribution
+     * @param x Point
+     * @param tolerance Test tolerance
+     * @param name Point name
+     */
+    private static void assertPmfAndLogPmfAtBound(DiscreteDistribution dist, int x,
+                                                  DoubleTolerance tolerance, String name) {
         // It is assumed the log probability may support a value when the plain probability will be zero.
-        // So do not test Math.log(dist.probability(x)) == dist.logProbability(x)
-        TestUtils.assertEquals(dist.probability(lo), Math.exp(dist.logProbability(lo)), tolerance, "pmf(lower) != exp(logpmf(lower))");
-        TestUtils.assertEquals(dist.probability(hi), Math.exp(dist.logProbability(hi)), tolerance, "pmf(upper) != exp(logpmf(upper))");
+        // Only assert Math.log(dist.probability(x)) == dist.logProbability(x) for normal values.
+        final double p = dist.probability(x);
+        final double logp = dist.logProbability(x);
+        if (p > Double.MIN_NORMAL) {
+            TestUtils.assertEquals(Math.log(p), logp, tolerance,
+                () -> String.format("%s: log(pmf(%d)) != logpmf(%d)", name, x, x));
+        } else {
+            TestUtils.assertEquals(p, Math.exp(logp), tolerance,
+                () -> String.format("%s: pmf(%d) != exp(logpmf(%d))", name, x, x));
+        }
     }
 
     /**
