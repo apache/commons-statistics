@@ -155,14 +155,16 @@ final class SaddlePointExpansionUtils {
     static double logBinomialProbability(int x, int n, double p, double q) {
         if (x == 0) {
             if (p < ONE_TENTH) {
-                return -getDeviancePart(n, n * q) - n * p;
+                // Subtract from 0 avoids returning -0.0 for p=0.0
+                return 0.0 - getDeviancePart(n, n * q) - n * p;
             } else if (n == 0) {
                 return 0;
             }
             return n * Math.log(q);
         } else if (x == n) {
             if (q < ONE_TENTH) {
-                return -getDeviancePart(n, n * p) - n * q;
+                // Subtract from 0 avoids returning -0.0 for p=1.0
+                return 0.0 - getDeviancePart(n, n * p) - n * q;
             }
             return n * Math.log(p);
         }

@@ -37,10 +37,17 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  * @see <a href="https://mathworld.wolfram.com/BinomialDistribution.html">Binomial distribution (MathWorld)</a>
  */
 public final class BinomialDistribution extends AbstractDiscreteDistribution {
+    /** 1/2. */
+    private static final float HALF = 0.5f;
+
     /** The number of trials. */
     private final int numberOfTrials;
     /** The probability of success. */
     private final double probabilityOfSuccess;
+    /** Cached value for pmf(x=0). */
+    private final double pmf0;
+    /** Cached value for pmf(x=n). */
+    private final double pmfn;
 
     /**
      * @param trials Number of trials.
@@ -50,6 +57,16 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
                                  double p) {
         probabilityOfSuccess = p;
         numberOfTrials = trials;
+        // Special pmf cases where the power function is more accurate:
+        //   (n choose k) == 1 for k=0, k=n
+        //   pmf = p^k (1-p)^(n-k)
+        // Note: This handles the edge case of n=0: pmf(k=0) = 1, else 0
+        if (probabilityOfSuccess >= HALF) {
+            pmf0 = Math.pow(1 - probabilityOfSuccess, numberOfTrials);
+        } else {
+            pmf0 = Math.exp(numberOfTrials * Math.log1p(-probabilityOfSuccess));
+        }
+        pmfn = Math.pow(probabilityOfSuccess, numberOfTrials);
     }
 
     /**
@@ -68,7 +85,8 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
                                             trials);
         }
         ArgumentUtils.checkProbability(p);
-        return new BinomialDistribution(trials, p);
+        // Avoid p = -0.0 to avoid returning -0.0 for some probability computations.
+        return new BinomialDistribution(trials, Math.abs(p));
     }
 
     /**
@@ -92,7 +110,16 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public double probability(int x) {
-        return Math.exp(logProbability(x));
+        if (x < 0 || x > numberOfTrials) {
+            return 0;
+        } else if (x == 0) {
+            return pmf0;
+        } else if (x == numberOfTrials) {
+            return pmfn;
+        }
+        return Math.exp(SaddlePointExpansionUtils.logBinomialProbability(x,
+                        numberOfTrials, probabilityOfSuccess,
+                        1.0 - probabilityOfSuccess));
     }
 
     /** {@inheritDoc} **/
@@ -103,6 +130,8 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
         } else if (x < 0 || x > numberOfTrials) {
             return Double.NEGATIVE_INFINITY;
         }
+        // Special cases for x=0, x=n
+        // are handled in the saddle point expansion
         return SaddlePointExpansionUtils.logBinomialProbability(x,
                 numberOfTrials, probabilityOfSuccess,
                 1.0 - probabilityOfSuccess);
@@ -115,6 +144,8 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
             return 0.0;
         } else if (x >= numberOfTrials) {
             return 1.0;
+        } else if (x == 0) {
+            return pmf0;
         }
         return RegularizedBeta.complement(probabilityOfSuccess,
                                           x + 1.0, (double) numberOfTrials - x);
@@ -127,6 +158,8 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
             return 1.0;
         } else if (x >= numberOfTrials) {
             return 0.0;
+        } else if (x == numberOfTrials - 1) {
+            return pmfn;
         }
         return RegularizedBeta.value(probabilityOfSuccess,
                                      x + 1.0, (double) numberOfTrials - x);
