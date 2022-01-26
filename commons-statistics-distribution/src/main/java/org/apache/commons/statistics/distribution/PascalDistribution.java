@@ -155,8 +155,7 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
             // overflow
             return Double.NEGATIVE_INFINITY;
         }
-        return LogBinomialCoefficient.value(x +
-              numberOfSuccesses - 1, numberOfSuccesses - 1) +
+        return LogBinomialCoefficient.value(n, numberOfSuccesses - 1) +
               logProbabilityOfSuccessByNumOfSuccesses +
               log1mProbabilityOfSuccess * x;
     }
@@ -177,7 +176,6 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
         if (x < 0) {
             return 1.0;
         }
-        // Use a helper function to compute the complement of the cumulative probability
         return RegularizedBeta.complement(probabilityOfSuccess,
                                           numberOfSuccesses, x + 1.0);
     }
