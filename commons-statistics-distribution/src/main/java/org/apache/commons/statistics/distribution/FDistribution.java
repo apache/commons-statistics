@@ -152,21 +152,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
             }
             return 0;
         }
-
-        // Keep the z argument to the regularized beta well away from 1 to avoid rounding error.
-        // See: https://www.boost.org/doc/libs/1_78_0/libs/math/doc/html/math_toolkit/dist_ref/dists/f_dist.html
-
-        final double n = numeratorDegreesOfFreedom;
-        final double m = denominatorDegreesOfFreedom;
-        final double nx = n * x;
-        final double z = m + nx;
-        final double y = n * m / (z * z);
-        if (nx > m) {
-            return y * RegularizedBeta.derivative(m / z,
-                                                  m / 2, n / 2);
-        }
-        return y * RegularizedBeta.derivative(nx / z,
-                                              n / 2, m / 2);
+        return computeDensity(x, false);
     }
 
     /** {@inheritDoc}
@@ -192,13 +178,45 @@ public final class FDistribution extends AbstractContinuousDistribution {
             }
             return Double.NEGATIVE_INFINITY;
         }
+        return computeDensity(x, true);
+    }
+
+    /**
+     * Compute the density at point x. Assumes x is within the support bound.
+     *
+     * @param x Value
+     * @param log true to compute the log density
+     * @return pdf(x) or logpdf(x)
+     */
+    private double computeDensity(double x, boolean log) {
+        // The log computation may suffer cancellation effects due to summation of large
+        // opposing terms. Use it when the standard PDF result is not normal.
+
+        // Keep the z argument to the regularized beta well away from 1 to avoid rounding error.
+        // See: https://www.boost.org/doc/libs/1_78_0/libs/math/doc/html/math_toolkit/dist_ref/dists/f_dist.html
 
         final double n = numeratorDegreesOfFreedom;
         final double m = denominatorDegreesOfFreedom;
-
-        // This may suffer cancellation effects due to summation of opposing terms.
-        return nHalfLogNmHalfLogM + (n / 2 - 1) * Math.log(x) - logBetaNhalfMhalf -
-            ((n + m) / 2) * Math.log(n * x + m);
+        final double nx = n * x;
+        final double z = m + nx;
+        final double y = n * m / (z * z);
+        double p;
+        if (nx > m) {
+            p = y * RegularizedBeta.derivative(m / z,
+                                               m / 2, n / 2);
+        } else {
+            p = y * RegularizedBeta.derivative(nx / z,
+                                               n / 2, m / 2);
+        }
+        // RegularizedBeta.derivative can have intermediate overflow before normalisation
+        // with small y. Check the result for a normal finite number.
+        if (p <= Double.MAX_VALUE && p >= Double.MIN_NORMAL) {
+            return log ? Math.log(p) : p;
+        }
+        // Fall back to the log computation
+        p = nHalfLogNmHalfLogM + (n / 2 - 1) * Math.log(x) - logBetaNhalfMhalf -
+                ((n + m) / 2) * Math.log(z);
+        return log ? p : Math.exp(p);
     }
 
     /**
