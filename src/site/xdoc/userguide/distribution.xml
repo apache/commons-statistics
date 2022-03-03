@@ -54,9 +54,9 @@
           Continuous distributions also implement <code>f.probability(x1, x2)</code> for computing
           <code>P(x1 &lt;= X &lt;= x2)</code>.
         </p>
-<source>TDistribution t = new TDistribution(29);
-double lowerTail = t.cumulativeProbability(-2.656);     // P(T(29) &lt;= -2.656)
-double upperTail = 1.0 - t.cumulativeProbability(2.75); // P(T(29) &gt;= 2.75)</source>
+<source class="prettyprint">TDistribution t = TDistribution.of(29);
+double lowerTail = t.cumulativeProbability(-2.656);   // P(T(29) &lt;= -2.656)
+double upperTail = t.survivalProbability(2.75);       // P(T(29) &gt;= 2.75)</source>
         <p>
           All distributions implement a <code>createSampler(UniformRandomProvider rng)</code>
           method to support random sampling from the distribution, where <code>UniformRandomProvider</code>
