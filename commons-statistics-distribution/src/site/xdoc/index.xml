@@ -20,27 +20,40 @@
 <document>
 
   <properties>
-    <title>Commons Statistics</title>
+    <title>Commons Statistics Distribution</title>
   </properties>
 
   <body>
 
-    <section name="Apache Commons Statistics" href="summary">
+    <section name="Apache Commons Statistics: Distribution" href="summary">
       <p>
         Commons Statistics provides a framework and implementations for commonly used
         probability distributions.
       </p>
 
-    </section>
+      <p>
+        Continuous univariate distributions are represented by the
+        <a href="apidocs/org/apache/commons/statistics/distribution/ContinuousDistribution.html">ContinuousDistribution</a>
+        interface.  Discrete distributions implement
+        <a href="apidocs/org/apache/commons/statistics/distribution/DiscreteDistribution.html">DiscreteDistribution</a>
+        (values must be mapped to integers).
+      </p>
 
-    <section name="Download Apache Commons Statistics">
-      <subsection name="Releases">
-        <p>
-          Download the
-          <a href="https://commons.apache.org/statistics/download_statistics.cgi">
-            latest release</a> of Apache Commons Statistics.
-        </p>
-      </subsection>
+      <p>
+        Example:
+      </p>
+
+<source class="prettyprint">import org.apache.commons.statistics.distribution.TDistribution;
+
+double degreesOfFreedom = 29;
+TDistribution t = TDistribution.of(degreesOfFreedom);
+double lowerTail = t.cumulativeProbability(-2.656);   // P(T(29) &lt;= -2.656)
+double upperTail = t.survivalProbability(2.75);       // P(T(29) &gt;= 2.75)
+</source>
+
+      <p>
+        Browse the <a href="apidocs/index.html">Javadoc</a> for more information.
+      </p>
     </section>
 
   </body>
