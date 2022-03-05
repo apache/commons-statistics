@@ -20,14 +20,14 @@
 <document>
 
   <properties>
-    <title>Commons Statistics Distribution</title>
+    <title>Apache Commons Statistics Distribution</title>
   </properties>
 
   <body>
 
     <section name="Apache Commons Statistics: Distribution" href="summary">
       <p>
-        Commons Statistics provides a framework and implementations for commonly used
+        Apache Commons Statistics provides a framework and implementations for commonly used
         probability distributions.
       </p>
 
@@ -48,7 +48,7 @@
 double degreesOfFreedom = 29;
 TDistribution t = TDistribution.of(degreesOfFreedom);
 double lowerTail = t.cumulativeProbability(-2.656);   // P(T(29) &lt;= -2.656)
-double upperTail = t.survivalProbability(2.75);       // P(T(29) &gt;= 2.75)
+double upperTail = t.survivalProbability(2.75);       // P(T(29) &gt; 2.75)
 </source>
 
       <p>

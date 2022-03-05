@@ -20,20 +20,306 @@
 <?xml-stylesheet type="text/xsl" href="./xdoc.xsl"?>
 <document url="index.html">
   <properties>
-    <title>The Commons Statistics User Guide - Table of Contents</title>
+    <title>Apache Commons Statistics User Guide</title>
   </properties>
 
   <body>
-    <section name="Table of Contents" href="toc">
 
+    <h1>Apache Commons Statistics User Guide</h1>
+    <section name="Contents" id="toc">
       <ul>
-
         <li>
-          <a href="distribution.html">
-          1. Distributions</a>
+          <a href="#overview">Overview</a>
+        </li>
+        <li>
+          <a href="#example-modules">Example Modules</a>
+        </li>
+        <li>
+          <a href="#distributions">Probability Distributions</a>
+          <ul>
+            <li>
+              <a href="#dist_overview">Overview</a>
+            </li>
+            <li>
+              <a href="#dist_api">API</a>
+            </li>
+            <li>
+              <a href="#dist_imp_details">Implementation Details</a>
+            </li>
+            <li>
+              <a href="#dist_complements">Complementary Probabilities</a>
+            </li>
+          </ul>
+        </li>
+
+      </ul>
+    </section>
+
+    <section name="Overview" id="overview">
+      <p>
+        Apache Commons Statistics provides utilities for statistical applications. The code
+        originated in the <code><a href="https://commons.apache.org/proper/commons-math/">
+        commons-math</a></code> project but was pulled out into a separate project for better
+        maintainability and has since undergone numerous improvements.
+      </p>
+
+      <p>
+        Commons Statistics is divided into a number of submodules.
+      </p>
+      <ul>
+        <li>
+          <code><a href="../commons-statistics-distribution/index.html">
+          commons-statistics-distribution</a></code> - Provides interfaces
+          and classes for probability distributions.
         </li>
       </ul>
+    </section>
 
+    <section name="Example Modules" id="example-modules">
+      <p>
+        In addition to the modules above, the Commons Statistics
+        <a href="https://commons.apache.org/statistics/download_statistics.cgi">source distribution</a>
+        contains example code demonstrating library functionality and/or providing useful
+        development utilities. These modules are not part of the public API of the library and no
+        guarantees are made concerning backwards compatibility. The
+        <a href="../commons-statistics-examples/modules.html">example module parent page</a>
+        contains a listing of available modules.
+      </p>
+    </section>
+
+    <section name="Probability Distributions" id="distributions">
+      <subsection name="Overview" id="dist_overview">
+        <p>
+          The distributions package provides a framework and implementations for some commonly used
+          probability distributions. Continuous univariate distributions are represented by
+          implementations of the
+          <a href="../commons-statistics-distribution/apidocs/org/apache/commons/statistics/distribution/ContinuousDistribution.html">ContinuousDistribution</a>
+          interface.  Discrete distributions implement
+          <a href="../commons-statistics-distribution/apidocs/org/apache/commons/statistics/distribution/DiscreteDistribution.html">DiscreteDistribution</a>
+          (values must be mapped to integers).
+        </p>
+      </subsection>
+      <subsection name="API" id="dist_api">
+        <p>
+          The distribution framework provides the means to compute probability density,
+          probability mass and cumulative probability functions for several well-known
+          discrete (integer-valued) and continuous probability distributions.
+          The API also allows for the computation of inverse cumulative probabilities
+          and sampling from distributions.
+        </p>
+        <p>
+          For an instance <code>f</code> of a distribution <code>F</code>,
+          and a domain value, <code>x</code>, <code>f.cumulativeProbability(x)</code>
+          computes <code>P(X &lt;= x)</code> where <code>X</code> is a random variable distributed
+          as <code>F</code>. The complement of the cumulative probability,
+          <code>f.survivalProbability(x)</code> computes <code>P(X &gt; x)</code>. Note that
+          the survival probability is approximately equal to <code>1 - P(X &lt;= x)</code> but
+          does not suffer from cancellation error as the cumulative probability approaches 1.
+          The cancellation error may cause a (total) loss of accuracy when
+          <code>P(X &lt;= x) ~ 1</code>
+          (see <a href="#complements">complementary probabilities</a>).
+        </p>
+<source class="prettyprint">
+TDistribution t = TDistribution.of(29);
+double lowerTail = t.cumulativeProbability(-2.656);   // P(T(29) &lt;= -2.656)
+double upperTail = t.survivalProbability(2.75);       // P(T(29) &gt; 2.75)
+</source>
+        <p>
+          For <a href="../commons-statistics-distribution/apidocs/org/apache/commons/statistics/distribution/DiscreteDistribution.html">discrete</a>
+          <code>F</code>, the probability mass function is given by <code>f.probability(x)</code>.
+          For <a href="../commons-statistics-distribution/apidocs/org/apache/commons/statistics/distribution/ContinuousDistribution.html">continuous</a>
+          <code>F</code>, the probability density function is given by <code>f.density(x)</code>.
+          Distributions also implement <code>f.probability(x1, x2)</code> for computing
+          <code>P(x1 &lt;= X &lt;= x2)</code> for continuous or <code>P(x1 &lt; X &lt;= x2)</code>
+          for discrete distributions.
+        </p>
+<source class="prettyprint">
+PoissonDistribution pd = PoissonDistribution.of(1.23);
+double p1 = pd.probability(5);
+double p2 = pd.probability(5, 5);
+double p3 = pd.probability(4, 5);
+// p2 == 0
+// p1 == p3
+</source>
+        <p>
+          Inverse distribution functions can be computed using the
+          <code>inverseCumulativeProbability</code> and <code>inverseSurvivalProbability</code>
+          methods. For continuous <code>f</code> and <code>p</code> a probability,
+          <code>f.inverseCumulativeProbability(p)</code> returns
+        </p>
+        <ul>
+          <li><code>inf{x in R | P(X &le; x) &ge; p} for 0 &lt; p &le; 1</code>,</li>
+          <li><code>inf{x in R | P(X &le; x) &gt; 0} for p = 0</code></li>
+        </ul>
+        <p>
+          where <code>X</code> is distributed as <code>F</code>.<br/>
+          Likewise <code>f.inverseSurvivalProbability(p)</code> returns
+        </p>
+        <ul>
+          <li><code>inf{x in R | P(X &ge; x) &le; p} for 0 &le; p &lt; 1</code>,</li>
+          <li><code>inf{x in R | P(X &ge; x) &lt; 1} for p = 1</code>.</li>
+        </ul>
+<source class="prettyprint">
+NormalDistribution n = NormalDistribution.of(0, 1);
+double x1 = n.inverseCumulativeProbability(1e-300);
+double x2 = n.inverseSurvivalProbability(1e-300);
+// x1 == -x2 ~ -37.0471
+</source>
+        <p>
+          For discrete <code>F</code>, the definition is the same, with <code>Z</code>
+          (the integers) in place of <code>R</code> (but note that, in the discrete case,
+          the &ge; in the definition can make a difference when <code>p</code> is an attained
+          svalue of the distribution).
+        </p>
+        <p>
+          All distributions provide accessors for the parameters used to create the distribution,
+          and a mean and variance. The return value when the mean or variance
+          is undefined is noted in the class javadoc.
+        </p>
+<source class="prettyprint">
+ChiSquaredDistribution chi2 = ChiSquaredDistribution.of(42);
+double df = chi2.getDegreesOfFreedom();    // 42
+double mean = chi2.getMean();              // 42
+double var = chi2.getVariance();           // 84
+
+CauchyDistribution cauchy = CauchyDistribution.of(1.23, 4.56);
+double location = cauchy.getLocation();    // 1.23
+double scale = cauchy.getScale();          // 4.56
+double undefined1 = cauchy.getMean();      // NaN
+double undefined2 = cauchy.getVariance();  // NaN
+</source>
+        <p>
+          The supported domain of the distribution is provided by the
+          <code>getSupportLowerBound</code> and <code>getSupportUpperBound</code> methods.
+        </p>
+<source class="prettyprint">
+BinomialDistribution b = BinomialDistribution.of(13, 0.15);
+int lower = b.getSupportLowerBound();  // 0
+int upper = b.getSupportUpperBound();  // 13
+</source>
+        <p>
+          All distributions implement a <code>createSampler(UniformRandomProvider rng)</code>
+          method to support random sampling from the distribution, where <code>UniformRandomProvider</code>
+          is an interface defined in <a href="https://commons.apache.org/rng">Commons RNG</a>.
+          The sampler is a functional interface with a single <code>sample()</code> method
+          suitable for use as a <code>DoubleSupplier</code> or <code>IntSupplier</code> to
+          generate samples.
+        </p>
+<source class="prettyprint">
+// From Commons RNG Simple
+UniformRandomProvider rng = RandomSource.KISS.create(123L);
+
+NormalDistribution n = NormalDistribution.of(0, 1);
+double x = n.createSampler(rng).sample();
+
+// Generate a number of samples
+GeometricDistribution g = GeometricDistribution.of(0.75);
+int[] k = IntStream.generate(g.createSampler(rng)::sample).limit(100).toArray();
+// k.length == 100
+</source>
+        <p>
+          Note that even when distributions are immutable, the sampler is not immutable as it
+          depends on the instance of the mutable <code>UniformRandomProvider</code>. Generation of
+          many samples in a multi-threaded application should use a separate instance of
+          <code>UniformRandomProvider</code> per thread. Any synchronization should be avoided
+          for best performance.
+        </p>
+      </subsection>
+      <subsection name="Implementation Details" id="dist_imp_details">
+        <p>
+          Instances are constructed using factory methods, typically a static method in the
+          distribution class named <code>of</code>. This allows the returned instance
+          to be specialised to the distribution parameters.
+        </p>
+        <p>
+          Exceptions will be raised by the factory method when constructing the distribution
+          using invalid parameters. See the class javadoc for exception conditions.
+        </p>
+        <p>
+          Unless otherwise noted, distribution instances are immutable. This allows sharing
+          an instance between threads for computations.
+        </p>
+        <p>
+          Exceptions will not be raised by distributions for an invalid <code>x</code> argument
+          to probability functions. Typically the cumulative probability functions will return
+          0 or 1 for an out-of-domain argument, depending on which the side of the domain bound
+          the argument falls, and the density or probability mass functions return 0.
+          Return values for <code>x</code> arguments when the result is
+          undefined should be documented in the class javadoc. For example the beta distribution
+          is undefined for <code>x = 0, alpha &lt; 1</code> or <code>x = 1, beta &lt; 1</code>.
+          Note: This out-of-domain behaviour may be different from distributions in the
+          <code>org.apache.commons.math3.distribution</code> package. Users upgrading from
+          <code><a href="https://commons.apache.org/proper/commons-math/">commons-math</a></code>
+          should check the appropriate class javadoc.
+        </p>
+        <p>
+          An exception will be raised by distributions for an invalid <code>p</code> argument
+          to inverse probability functions. The argument must be in the range <code>[0, 1]</code>.
+        </p>
+      </subsection>
+      <subsection name="Complementary Probabilities" id="dist_complements">
+        <p>
+          The distributions provide the cumulative probability <code>p</code> and its complement,
+          the survival probability, <code>q = 1 - p</code>. When the probability
+          <code>q</code> is small use of the cumulative probability to compute <code>q</code> can
+          result in dramatic loss of accuracy. This is due to the distribution of floating-point
+          numbers having a
+          <a href="https://en.wikipedia.org/wiki/Reciprocal_distribution">log-uniform</a>
+          distribution as the limiting distribution. There are far more
+          representable numbers as the probability value approaches zero than when it approaches
+          one.
+        </p>
+        <p>
+          The difference is illustrated with the result of computing the upper tail of a
+          probability distribution.
+        </p>
+<source class="prettyprint">
+ChiSquaredDistribution chi2 = ChiSquaredDistribution.of(42);
+double q1 = 1 - chi2.cumulativeProbability(168);
+double q2 = chi2.survivalProbability(168);
+// q1 == 0
+// q2 != 0
+</source>
+        <p>
+          In this case the value <code>1 - p</code> has only a single bit of information as
+          <code>x</code> approaches 168. For example the value <code>1 - p(x=167)</code>
+          is <code>2<sup>-53</sup></code> (or approximately <code>1.11e-16</code>).
+          The complement <code>q</code> retains information
+          much further into the long tail as shown in the following table:
+        </p>
+        <table border="1" style="width: auto">
+          <tr><th colspan="3"><font size="+1">Chi-squared distribution, 42 degrees of freedom</font></th></tr>
+          <tr><th>x</th><th>1 - p</th><th>q</th></tr>
+          <tr><td>166</td><td>1.11e-16</td><td>1.16e-16</td></tr>
+          <tr><td>167</td><td>1.11e-16</td><td>7.96e-17</td></tr>
+          <tr><td>168</td><td>0</td><td>5.43e-17</td></tr>
+          <tr><td>200</td><td>0</td><td>1.91e-22</td></tr>
+        </table>
+        <p>
+          Probability computations should use the appropriate cumulative or survival function
+          to calculate the lower or upper tail resepectively. The same care should be applied
+          when inverting probability distributions. It is preferred to compute either
+          <code>p &le; 0.5</code> or <code>q &le; 0.5</code> without loss of accuracy and then
+          invert respectively the cumulative probability using <code>p</code> or the survival
+          probabilty using <code>q</code> to obtain <code>x</code>.
+        </p>
+<source class="prettyprint">
+ChiSquaredDistribution chi2 = ChiSquaredDistribution.of(42);
+double q = 5.43e-17;
+// Incorrect: p = 1 - q == 1.0 !!!
+double x1 = chi2.inverseCumulativeProbability(1 - q);
+// Correct: invert q
+double x2 = chi2.inverseSurvivalProbability(q);
+// x1 == +infinity
+// x2 ~ 168.0
+</source>
+        <p>
+          Note: The survival probability functions were not present in the
+          <code>org.apache.commons.math3.distribution</code> package. Users upgrading from
+          <code><a href="https://commons.apache.org/proper/commons-math/">commons-math</a></code>
+          should update usage of the cumulative probability functions where appropirate.
+        </p>
+      </subsection>
     </section>
 
   </body>

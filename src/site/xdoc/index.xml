@@ -20,15 +20,32 @@
 <document>
 
   <properties>
-    <title>Commons Statistics</title>
+    <title>Apache Commons Statistics</title>
   </properties>
 
   <body>
 
     <section name="Apache Commons Statistics" href="summary">
       <p>
-        Commons Statistics provides a framework and implementations for commonly used
-        probability distributions.
+        Apache Commons Statistics provides utilities for statistical applications.
+      </p>
+
+      <p>
+        Support is provided for commonly used continuous and discrete distributions,
+        for example:
+      </p>
+
+<source class="prettyprint">
+TDistribution t = TDistribution.of(29);
+double lowerTail = t.cumulativeProbability(-2.656);   // P(T(29) &lt;= -2.656)
+double upperTail = t.survivalProbability(2.75);       // P(T(29) &gt; 2.75)
+
+PoissonDistribution p = PoissonDistribution.of(4.56);
+int x = p.inverseCumulativeProbability(0.99);
+</source>
+
+      <p>
+        For more examples and advanced usage, see the <a href="userguide/index.html">userguide</a>.
       </p>
 
     </section>

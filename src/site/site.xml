@@ -44,7 +44,10 @@
     </menu>
 
     <menu name="User Guide">
-      <item name="Contents" href="/userguide/index.html"/>
+      <item name="Contents" href="/userguide/index.html#toc"/>
+      <item name="Overview" href="/userguide/index.html#overview"/>
+      <item name="Example Modules" href="/userguide/index.html#example-modules"/>
+      <item name="Probability Distributions" href="/userguide/index.html#distributions"/>
     </menu>
   </body>
 
