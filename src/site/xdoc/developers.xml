@@ -40,122 +40,120 @@
       </p>
       <subsection name="Contributing">
         <p><strong>Getting Started</strong></p>
-        <p>
-          <ol>
-            <li>
-              Download the Commons Statistics source code.  Follow the instructions
-              under the heading "Repository Checkout" on the
-              <a href="https://gitbox.apache.org/">Git at the ASF page</a>.
-              The git url for the current development sources of Commons Statistics
-              is <source>http://gitbox.apache.org/repos/asf/commons-statistics.git</source>
-              for anonymous read-only access and
-              <source>https://apacheid@gitbox.apache.org/repos/asf/commons-statistics.git</source>
-              (where apacheid should be replaced by each committer Apache ID) for committers
-              read-write access.
-            </li>
-            <li>
-              Like most commons components, Commons Statistics uses Apache Maven as our
-              build tool.
-              To build Commons Statistics using Maven, you can follow the instructions for
-              <a href="http://maven.apache.org/run-maven/index.html">Building a
-              project with Maven</a>.
-              Launch Maven from the top-level directory
-              in the checkout of Commons Statistics trunk. No special setup is required,
-              except that currently to build the site (i.e. to execute Maven's
-              "site" goal), you may need to increase the default memory allocation
-              (e.g. <code>export MAVEN_OPTS=-Xmx512m</code>) before launching
-              Maven.
-            </li>
-            <li>
-              Be sure to join the commons-dev and commons-user
-              <a href="mail-lists.html">
-                email lists</a> and use them appropriately (make sure the string
-                "[Statistics]" starts the Subject line of all your postings).
-                Make any proposals here where the group can comment on them.
-            </li>
-            <li>
-              <a href="https://issues.apache.org/jira/secure/Signup!default.jspa">
-                Setup an account on JIRA
-              </a>
-              and use it to submit patches and
-              identify bugs. Read the
-              <a href="https://issues.apache.org/bugwritinghelp.html">
-              directions</a>
-              for submitting bugs and search the database to
-              determine if an issue exists or has already been dealt with.
-              <br/>
-              See the <a href="https://commons.apache.org/statistics/issue-tracking.html">
-              Commons Statistics Issue Tracking Page</a>
-              for more information on how to
-              search for or submit bugs or enhancement requests.
-            </li>
-            <li>
-              Generating patches: The requested format for generating patches is
-              the Unified Diff format, which can be easily generated using the git
-              client or various IDEs.
-              <source>git diff -p > patch </source>
-              Run this command from the top-level project directory (where pom.xml
-              resides).
-            </li>
-            <li>
-              Pull Requests: We accept pull requests (PRs) via the GitHub repository mirror.
-              The Commons Statistics repository can be forked and changes merged via a PR.
-              See <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests">
-              collaborating with pull requests</a> for more information on pull requests.
-            </li>
-          </ol>
-        </p>
+        <ol>
+          <li>
+            Download the Commons Statistics source code.  Follow the instructions
+            under the heading "Repository Checkout" on the
+            <a href="https://gitbox.apache.org/">Git at the ASF page</a>.
+            The git url for the current development sources of Commons Statistics
+            is <source>http://gitbox.apache.org/repos/asf/commons-statistics.git</source>
+            for anonymous read-only access and
+            <source>https://apacheid@gitbox.apache.org/repos/asf/commons-statistics.git</source>
+            (where apacheid should be replaced by each committer Apache ID) for committers
+            read-write access.
+          </li>
+          <li>
+            Like most commons components, Commons Statistics uses Apache Maven as our
+            build tool.
+            To build Commons Statistics using Maven, you can follow the instructions for
+            <a href="http://maven.apache.org/run-maven/index.html">Building a
+            project with Maven</a>.
+            Launch Maven from the top-level directory
+            in the checkout of Commons Statistics trunk. No special setup is required,
+            except that currently to build the site (i.e. to execute Maven's
+            "site" goal), you may need to increase the default memory allocation
+            (e.g. <code>export MAVEN_OPTS=-Xmx512m</code>) before launching
+            Maven.
+          </li>
+          <li>
+            Be sure to join the commons-dev and commons-user
+            <a href="mail-lists.html">
+              email lists</a> and use them appropriately (make sure the string
+              "[Statistics]" starts the Subject line of all your postings).
+              Make any proposals here where the group can comment on them.
+          </li>
+          <li>
+            <a href="https://issues.apache.org/jira/secure/Signup!default.jspa">
+              Setup an account on JIRA
+            </a>
+            and use it to submit patches and
+            identify bugs. Read the
+            <a href="https://issues.apache.org/bugwritinghelp.html">
+            directions</a>
+            for submitting bugs and search the database to
+            determine if an issue exists or has already been dealt with.
+            <br/>
+            See the <a href="https://commons.apache.org/statistics/issue-tracking.html">
+            Commons Statistics Issue Tracking Page</a>
+            for more information on how to
+            search for or submit bugs or enhancement requests.
+          </li>
+          <li>
+            Generating patches: The requested format for generating patches is
+            the Unified Diff format, which can be easily generated using the git
+            client or various IDEs.
+            <source>git diff -p > patch </source>
+            Run this command from the top-level project directory (where pom.xml
+            resides).
+          </li>
+          <li>
+            Pull Requests: We accept pull requests (PRs) via the GitHub repository mirror.
+            The Commons Statistics repository can be forked and changes merged via a PR.
+            See <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests">
+            collaborating with pull requests</a> for more information on pull requests.
+          </li>
+        </ol>
         <p><strong>Contributing ideas and code</strong></p>
         <p>
           Follow the steps below when making suggestions for additions or
           enhancements to Commons Statistics. This will make it easier for the community
           to comment on your ideas and for the committers to keep track of them.
           Thanks in advance!
-          <ol>
-            <li>Start with a post to the commons-dev mailing list, with [Statistics] at
-            the beginning of the subject line, followed by a short title
-            describing the new feature or enhancement;  for example, "[Statistics]
-            New univariate distribution".
-            The body of the post should include each of the following items
-            (but be <strong>as brief as possible</strong>):
-            <ul>
-              <li>A concise description of the new feature / enhancement</li>
-              <li>References to definitions and algorithms. Using standard
-              definitions and algorithms makes communication much easier and will
-              greatly increase the chances that we will accept the code / idea</li>
-              <li>Some indication of why the addition / enhancement is practically
-              useful</li>
-            </ul></li>
-            <li>Assuming a generally favorable response to the idea on commons-dev,
-            the next step is to file a report on the issue-tracking system (JIRA).
-            Create a JIRA ticket using the the feature title as the short
-            description. Incorporate feedback from the initial posting in the
-            description. Add a reference to the discussion thread.
-            </li>
-            <li>Submit code as:
-            <ul>
-              <li>Attachments to the JIRA ticket.  Please use one
-              ticket for each feature, adding multiple patches to the ticket
-              as necessary.  Use the git diff command to generate your patches as
-              diffs.  Please do not submit modified copies of existing java files.
-              </li>
-              <li>A pull request (PR) via GitHub.
-              To link the PR to a corresponding JIRA ticket prefix the PR title with
-              <code>STATISTICS-xxx:</code> where <code>xxx</code> is the issue number.<br/>
-              Please include quality commit messages with a single line title of about 50
-              characters, followed by a blank line, followed by a more detailed explanation
-              of the changeset. The title should be prefixed with the JIRA ticket number if
-              applicable, e.g. <code>STATISTICS-xxx: New univariate distribution</code>.
-              See <a href="https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project">
-              contributing to a project</a> in the git book for guidelines on commit messages.
-              </li>
-            </ul>
-            Be patient (but not <strong>too</strong> patient) with  committers reviewing
-            patches/PRs. Post a *nudge* message to commons-dev with a reference to the
-            ticket if a submission goes more than a few days with no comment or commit.
-            </li>
-          </ol>
         </p>
+        <ol>
+          <li>Start with a post to the commons-dev mailing list, with [Statistics] at
+          the beginning of the subject line, followed by a short title
+          describing the new feature or enhancement;  for example, "[Statistics]
+          New univariate distribution".
+          The body of the post should include each of the following items
+          (but be <strong>as brief as possible</strong>):
+          <ul>
+            <li>A concise description of the new feature / enhancement</li>
+            <li>References to definitions and algorithms. Using standard
+            definitions and algorithms makes communication much easier and will
+            greatly increase the chances that we will accept the code / idea</li>
+            <li>Some indication of why the addition / enhancement is practically
+            useful</li>
+          </ul></li>
+          <li>Assuming a generally favorable response to the idea on commons-dev,
+          the next step is to file a report on the issue-tracking system (JIRA).
+          Create a JIRA ticket using the the feature title as the short
+          description. Incorporate feedback from the initial posting in the
+          description. Add a reference to the discussion thread.
+          </li>
+          <li>Submit code as:
+          <ul>
+            <li>Attachments to the JIRA ticket.  Please use one
+            ticket for each feature, adding multiple patches to the ticket
+            as necessary.  Use the git diff command to generate your patches as
+            diffs.  Please do not submit modified copies of existing java files.
+            </li>
+            <li>A pull request (PR) via GitHub.
+            To link the PR to a corresponding JIRA ticket prefix the PR title with
+            <code>STATISTICS-xxx:</code> where <code>xxx</code> is the issue number.<br/>
+            Please include quality commit messages with a single line title of about 50
+            characters, followed by a blank line, followed by a more detailed explanation
+            of the changeset. The title should be prefixed with the JIRA ticket number if
+            applicable, e.g. <code>STATISTICS-xxx: New univariate distribution</code>.
+            See <a href="https://git-scm.com/book/en/v2/Distributed-Git-Contributing-to-a-Project">
+            contributing to a project</a> in the git book for guidelines on commit messages.
+            </li>
+          </ul>
+          Be patient (but not <strong>too</strong> patient) with  committers reviewing
+          patches/PRs. Post a *nudge* message to commons-dev with a reference to the
+          ticket if a submission goes more than a few days with no comment or commit.
+          </li>
+        </ol>
       </subsection>
 
       <subsection name='Coding Style'>
