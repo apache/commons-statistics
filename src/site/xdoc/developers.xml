@@ -56,7 +56,7 @@
             Like most commons components, Commons Statistics uses Apache Maven as our
             build tool.
             To build Commons Statistics using Maven, you can follow the instructions for
-            <a href="http://maven.apache.org/run-maven/index.html">Building a
+            <a href="https://maven.apache.org/run-maven/index.html">Building a
             project with Maven</a>.
             Launch Maven from the top-level directory
             in the checkout of Commons Statistics trunk. No special setup is required,
