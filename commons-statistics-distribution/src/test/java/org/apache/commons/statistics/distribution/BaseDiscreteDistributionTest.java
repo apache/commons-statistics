@@ -446,9 +446,7 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSupport() {
-        return data.stream().map(d -> {
-            return Arguments.of(namedDistribution(d.getParameters()), d.getLower(), d.getUpper());
-        });
+        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), d.getLower(), d.getUpper()));
     }
 
     /**
@@ -458,9 +456,7 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testMoments() {
-        return data.stream().map(d -> {
-            return Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(), createTestTolerance(d));
-        });
+        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(), createTestTolerance(d)));
     }
 
     /**
@@ -469,9 +465,7 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testMedian() {
-        return data.stream().map(d -> {
-            return Arguments.of(namedDistribution(d.getParameters()));
-        });
+        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters())));
     }
 
     //------------------------ Tests -----------------------------

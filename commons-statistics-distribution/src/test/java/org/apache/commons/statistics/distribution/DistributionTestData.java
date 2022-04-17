@@ -686,7 +686,6 @@ abstract class DistributionTestData {
      *
      * @param props Properties
      * @param key Key
-     * @param defaultValue Default value
      * @return the value
      * @throws IllegalArgumentException if the parameter is not a boolean.
      */
@@ -823,8 +822,8 @@ abstract class DistributionTestData {
     /**
      * Validate a pair of point-value arrays have the same length if they are both non-zero length.
      *
-     * @param p Length 1
-     * @param v Length 2
+     * @param l1 Length 1
+     * @param l2 Length 2
      * @param name Name of the pair
      */
     private static void validatePair(int l1, int l2, String name) {

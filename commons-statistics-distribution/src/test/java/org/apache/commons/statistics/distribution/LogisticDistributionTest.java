@@ -89,7 +89,7 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
         Assertions.assertEquals(0.0, dist.density(x));
         // Log computation
         final double expected = -x / scale - 2 * Math.log1p(Math.exp(-x / scale));
-        Assertions.assertNotEquals(Double.NEGATIVE_INFINITY, expected, () -> "Density is zero but log density should not be -infinity");
+        Assertions.assertNotEquals(Double.NEGATIVE_INFINITY, expected, "Density is zero but log density should not be -infinity");
         Assertions.assertEquals(expected, dist.logDensity(x), Math.abs(expected) * 1e-15);
     }
 }
