@@ -34,7 +34,7 @@ class UserGuideTest {
         double upperTail = t.survivalProbability(2.75);       // P(T(29) &gt; 2.75)
 
         Assertions.assertTrue(lowerTail > upperTail,
-            () -> String.format("Since 2.75 > |-2.656|, expected %s > %s", lowerTail > upperTail));
+            () -> String.format("Since 2.75 > |-2.656|, expected %s > %s", lowerTail, upperTail));
     }
 
     @Test
