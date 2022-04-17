@@ -66,7 +66,7 @@ class ExtendedPrecisionTest {
             n++;
             // Absolute error when detecting the maximum
             x = Math.abs(x);
-            max = max < x ? x : max;
+            max = Math.max(max, x);
         }
 
         /**

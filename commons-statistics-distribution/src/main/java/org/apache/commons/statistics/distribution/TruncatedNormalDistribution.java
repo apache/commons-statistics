@@ -292,7 +292,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         if (x <= lower) {
             return lower;
         }
-        return x < upper ? x : upper;
+        return Math.min(x, upper);
     }
 
     // Calculation of variance and mean can suffer from cancellation.
