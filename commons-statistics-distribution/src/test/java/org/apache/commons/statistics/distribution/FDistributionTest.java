@@ -103,11 +103,6 @@ class FDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Test
-    void test() {
-        FDistribution.of(1e-100, 1).logDensity(1e-300);
-    }
-
-    @Test
     void testAdditionalLogDensity() {
         // Computed using Boost multiprecision to 100 digits (output 25 digits).
 
