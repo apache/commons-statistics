@@ -482,21 +482,21 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         // variance = m2 - m1*m1
         // rearrange x^2 - y^2 as (x-y)(x+y)
         m2 = Math.sqrt(m2);
-        final double var = (m2 - m1) * (m2 + m1);
+        final double variance = (m2 - m1) * (m2 + m1);
 
         // Detect floating-point error.
-        if (var >= 1) {
+        if (variance >= 1) {
             // Note:
             // Extreme truncations in the tails can compute a variance above 1,
             // for example if m2 is infinite: m2 - m1*m1 > 1
             // Detect no truncation as the terms a and b lie far either side of zero;
             // otherwise return 0 to indicate very small unknown variance.
             return a < -1 && b > 1 ? 1 : 0;
-        } else if (var <= 0) {
+        } else if (variance <= 0) {
             // Floating-point error can create negative variance so return 0.
             return 0;
         }
 
-        return var;
+        return variance;
     }
 }
