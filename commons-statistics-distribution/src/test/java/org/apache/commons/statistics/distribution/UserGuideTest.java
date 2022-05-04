@@ -116,9 +116,10 @@ class UserGuideTest {
         Assertions.assertNotEquals(0, q2);
 
         // For the table
-        Assertions.assertEquals(0x1.0p-53, 1.110223e-16, 1e-3);
-        Assertions.assertEquals(0x1.0p-53, 1 - chi2.cumulativeProbability(166));
-        Assertions.assertEquals(0x1.0p-53, 1 - chi2.cumulativeProbability(167));
+        final double eps = Math.pow(2, -53);
+        Assertions.assertEquals(1.110223e-16, eps, 1e-3);
+        Assertions.assertEquals(eps, 1 - chi2.cumulativeProbability(166));
+        Assertions.assertEquals(eps, 1 - chi2.cumulativeProbability(167));
         Assertions.assertEquals(0, 1 - chi2.cumulativeProbability(168));
         Assertions.assertEquals(0, 1 - chi2.cumulativeProbability(200));
         Assertions.assertEquals(1.16583e-16, chi2.survivalProbability(166), 1e-3);
