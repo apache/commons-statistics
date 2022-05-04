@@ -293,7 +293,7 @@ double q2 = chi2.survivalProbability(168);
           <tr><td>166</td><td>1.11e-16</td><td>1.16e-16</td></tr>
           <tr><td>167</td><td>1.11e-16</td><td>7.96e-17</td></tr>
           <tr><td>168</td><td>0</td><td>5.43e-17</td></tr>
-          <tr><td>200</td><td>0</td><td>1.91e-22</td></tr>
+          <tr><td>200</td><td>0</td><td>1.19e-22</td></tr>
         </table>
         <p>
           Probability computations should use the appropriate cumulative or survival function
