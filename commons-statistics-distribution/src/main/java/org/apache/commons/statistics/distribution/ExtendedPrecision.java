@@ -52,10 +52,10 @@ final class ExtendedPrecision {
     private static final double SQRT2PI_H;
     /** Lower bits of sqrt(2 pi). */
     private static final double SQRT2PI_L;
-    /** X-value where {@code exp(-0.5*x*x)} cannot increase accuracy using the round-off
+    /** X squared value where {@code exp(-0.5*x*x)} cannot increase accuracy using the round-off
      * from x squared. */
     private static final int EXP_M_HALF_XX_MIN_VALUE = 2;
-    /** Approximate x-value where {@code exp(-0.5*x*x) == 0}. This is above
+    /** Approximate x squared value where {@code exp(-0.5*x*x) == 0}. This is above
      * {@code -2 * ln(2^-1074)} due to rounding performed within the exp function. */
     private static final int EXP_M_HALF_XX_MAX_VALUE = 1491;
 
