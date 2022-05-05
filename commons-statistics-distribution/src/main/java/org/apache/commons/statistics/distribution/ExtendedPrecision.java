@@ -16,8 +16,6 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import java.math.BigDecimal;
-
 /**
  * Computes extended precision floating-point operations.
  *
@@ -29,8 +27,12 @@ import java.math.BigDecimal;
  * <p>Adapted from {@code org.apache.commons.numbers.core.ExtendedPrecion}.
  */
 final class ExtendedPrecision {
-    /** sqrt(2 pi). Computed to 64-digits. */
-    private static final String SQRT_TWO_PI = "2.506628274631000502415765284811045253006986740609938316629923576";
+    /** sqrt(2 pi) as a double. Computed to 64-digits precision and converted to double. */
+    static final double SQRT2PI = 2.5066282746310007;
+    /** Round-off from sqrt(2 pi) as a double.
+     * Computed from the value sqrt(2 pi) to 64-digits precision minus {@link #SQRT2PI}. */
+    static final double SQRT2PI_R = -1.8328579980459167e-16;
+
     /**
      * The multiplier used to split the double value into high and low parts. From
      * Dekker (1971): "The constant should be chosen equal to 2^(p - p/2) + 1,
@@ -46,14 +48,10 @@ final class ExtendedPrecision {
     private static final double SCALE_UP = 0x1.0p600;
     /** Scale down by 2^600. */
     private static final double SCALE_DOWN = 0x1.0p-600;
-    /** sqrt(2 pi) as a double. */
-    private static final double SQRT2PI;
     /** Upper bits of sqrt(2 pi). */
     private static final double SQRT2PI_H;
     /** Lower bits of sqrt(2 pi). */
     private static final double SQRT2PI_L;
-    /** Round-off from sqrt(2 pi) as a double. */
-    private static final double SQRT2PI_R;
     /** X-value where {@code exp(-0.5*x*x)} cannot increase accuracy using the round-off
      * from x squared. */
     private static final int EXP_M_HALF_XX_MIN_VALUE = 2;
@@ -63,12 +61,6 @@ final class ExtendedPrecision {
 
     static {
         // Initialise constants
-        final BigDecimal sqrt2pi = new BigDecimal(SQRT_TWO_PI);
-
-        // Use a 106-bit number as:
-        // (SQRT2PI, SQRT2PI_R)
-        SQRT2PI = sqrt2pi.doubleValue();
-        SQRT2PI_R = sqrt2pi.subtract(new BigDecimal(SQRT2PI)).doubleValue();
 
         // Split the upper 53-bits for extended precision multiplication
         SQRT2PI_H = highPartUnscaled(SQRT2PI);

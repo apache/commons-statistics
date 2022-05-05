@@ -34,8 +34,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 class ExtendedPrecisionTest {
     /** sqrt(2). */
     private static final double ROOT2 = Math.sqrt(2.0);
-    /** sqrt(2 * pi) to 64 digits. This is 1 ULP different from Math.sqrt(2 * Math.PI). */
-    private static final double ROOT2PI = 2.506628274631000502415765284811045253006986740609938316629923576;
+    /** sqrt(2 pi) as a String. Computed to 64-digits. */
+    private static final String SQRT_TWO_PI = "2.506628274631000502415765284811045253006986740609938316629923576";
+    /** sqrt(2 pi) as a double. Note: This is 1 ULP different from Math.sqrt(2 * Math.PI). */
+    private static final double ROOT2PI = Double.parseDouble(SQRT_TWO_PI);
     /** The sum of the squared ULP error for the first standard computation for sqrt(2 * x * x). */
     private static final RMS SQRT2XX_RMS1 = new RMS();
     /** The sum of the squared ULP error for the second standard computation for sqrt(2 * x * x). */
@@ -94,6 +96,24 @@ class ExtendedPrecisionTest {
         double getRMS() {
             return Math.sqrt(ss / n);
         }
+    }
+
+    @Test
+    void testSqrt2PiConstants() {
+        final BigDecimal sqrt2pi = new BigDecimal(SQRT_TWO_PI);
+
+        // Use a 106-bit number as:
+        // (value, roundOff)
+        final double value = sqrt2pi.doubleValue();
+        final double roundOff = sqrt2pi.subtract(new BigDecimal(value)).doubleValue();
+        // Adding the round-off does not change the value
+        Assertions.assertEquals(ExtendedPrecision.SQRT2PI,
+                                ExtendedPrecision.SQRT2PI + ExtendedPrecision.SQRT2PI_R, "value + round-off");
+        // Check constants
+        Assertions.assertEquals(value, ExtendedPrecision.SQRT2PI, "sqrt(2 pi)");
+        Assertions.assertEquals(roundOff, ExtendedPrecision.SQRT2PI_R, "sqrt(2 pi) round-off");
+        // Sanity check against JDK Math
+        Assertions.assertEquals(value, Math.sqrt(2 * Math.PI), Math.ulp(value), "Math.sqrt(2 pi)");
     }
 
     @Test
