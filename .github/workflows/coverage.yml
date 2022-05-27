@@ -47,5 +47,4 @@ jobs:
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        files: >
-          ./commons-statistics-distribution/target/site/jacoco/jacoco.xml
+        files: ./commons-statistics-distribution/target/site/jacoco/jacoco.xml
