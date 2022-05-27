@@ -16,13 +16,10 @@
  */
 
 /**
- * <h3>Distributions test application</h3>
+ * Distributions test application.
  *
- * <p>
- * This package contains an application for computing functions of probability distributions.
+ * <p>This package contains an application for computing functions of probability distributions.
  * The following functions can be evaluated: PDF, CDF, Survival function, Inverse CDF and
  * Inverse survival function.
- * </p>
  */
-
 package org.apache.commons.statistics.examples.distribution;

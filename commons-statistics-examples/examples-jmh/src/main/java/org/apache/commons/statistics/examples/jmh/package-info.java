@@ -16,11 +16,9 @@
  */
 
 /**
- * <h3>Performance benchmarks</h3>
+ * Performance benchmarks.
  *
- * <p>
- * This package contains code to perform a
+ * <p>This package contains code to perform a
  * <a href="https://openjdk.java.net/projects/code-tools/jmh">JMH</a> run.
- * </p>
  */
 package org.apache.commons.statistics.examples.jmh;
