@@ -96,7 +96,7 @@
     <statistics.pmd.dep.version>6.14.0</statistics.pmd.dep.version>
     <statistics.spotbugs.version>4.4.2</statistics.spotbugs.version>
     <statistics.checkstyle.version>3.0.0</statistics.checkstyle.version>
-    <statistics.checkstyle.dep.version>8.20</statistics.checkstyle.dep.version>
+    <statistics.checkstyle.dep.version>8.29</statistics.checkstyle.dep.version>
     <statistics.clirr.version>2.8</statistics.clirr.version>
     <statistics.junit.bom.version>5.8.0</statistics.junit.bom.version>
     <statistics.antrun.version>1.8</statistics.antrun.version>
