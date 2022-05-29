@@ -71,6 +71,7 @@
     <project.mainClass>org.openjdk.jmh.Main</project.mainClass>
     <!-- Disable analysis for benchmarking code. -->
     <pmd.skip>true</pmd.skip>
+    <spotbugs.skip>true</spotbugs.skip>
     <!-- Disable JDK compatibility check for benchmarking code. -->
     <animal.sniffer.skip>true</animal.sniffer.skip>
   </properties>
