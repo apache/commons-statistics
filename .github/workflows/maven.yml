@@ -41,9 +41,6 @@ jobs:
       with:
         distribution: adopt
         java-version: ${{ matrix.java }}
-    - name: Build with Maven
+    - name: Build with Maven including examples
       # Use the default goal
-      run: mvn -V --no-transfer-progress
-    - name: Build examples with Maven
-      working-directory: ./commons-statistics-examples
-      run: mvn -V --no-transfer-progress
+      run: mvn -V --no-transfer-progress -P examples
