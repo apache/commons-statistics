@@ -43,8 +43,8 @@
 Apache Commons Statistics
 ===================
 
-[![Build Status](https://travis-ci.org/apache/commons-statistics.svg?branch=master)](https://travis-ci.org/apache/commons-statistics)
-[![Coverage Status](https://coveralls.io/repos/apache/commons-statistics/badge.svg?branch=master)](https://coveralls.io/r/apache/commons-statistics)
+[![Build Status](https://github.com/apache/commons-statistics/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-statistics/actions/workflows/maven.yml)
+[![Coverage Status](https://codecov.io/gh/apache/commons-statistics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-statistics)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-distribution/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-distribution/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 

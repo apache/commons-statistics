@@ -43,8 +43,8 @@
 Apache Commons Statistics Regression
 ===================
 
-[![Build Status](https://travis-ci.org/apache/commons-statistics-regression.svg?branch=master)](https://travis-ci.org/apache/commons-statistics-regression)
-[![Coverage Status](https://coveralls.io/repos/apache/commons-statistics-regression/badge.svg?branch=master)](https://coveralls.io/r/apache/commons-statistics-regression)
+[![Build Status](https://github.com/apache/commons-statistics/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-statistics/actions/workflows/maven.yml)
+[![Coverage Status](https://codecov.io/gh/apache/commons-statistics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-statistics)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-regression/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-regression/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
