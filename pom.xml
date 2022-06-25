@@ -105,8 +105,7 @@
 
     <!-- Increase from commons-parent -->
     <commons.jacoco.methodRatio>1.00</commons.jacoco.methodRatio>
-    <!-- Set to true when coverage goals are achieved -->
-    <commons.jacoco.haltOnFailure>false</commons.jacoco.haltOnFailure>
+    <commons.jacoco.haltOnFailure>true</commons.jacoco.haltOnFailure>
 
     <commons.site.path>statistics</commons.site.path>
     <commons.scmPubUrl>https://svn.apache.org/repos/infra/websites/production/commons/content/proper/commons-statistics</commons.scmPubUrl>
