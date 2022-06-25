@@ -27,5 +27,7 @@
   <suppress checks="MultipleStringLiterals" files=".*[/\\]test[/\\].*" />
   <suppress checks="DesignForExtension" files=".*[/\\]test[/\\].*" />
   <suppress checks="LineLength" files=".*[/\\]test[/\\].*" />
+  <suppress checks="UnnecessaryParentheses" files=".*[/\\]test[/\\].*" />
+  <suppress checks="LineLength" files=".*[/\\]test.*.properties" />
   <suppress checks="LocalFinalVariableName" files=".*[/\\]HypergeometricDistributionTest.java" />
 </suppressions>

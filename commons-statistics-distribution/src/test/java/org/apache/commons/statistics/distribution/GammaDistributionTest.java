@@ -191,7 +191,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
          * double Gamma.logGamma(double)
          * prior to MATH-849
          */
-        if (Double.isNaN(x) || (x <= 0.0)) {
+        if (Double.isNaN(x) || x <= 0.0) {
             return Double.NaN;
         }
         final double sum = LanczosApproximation.value(x);
