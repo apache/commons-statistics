@@ -97,7 +97,6 @@
     <statistics.spotbugs.version>4.4.2</statistics.spotbugs.version>
     <statistics.checkstyle.version>3.1.2</statistics.checkstyle.version>
     <statistics.checkstyle.dep.version>8.45</statistics.checkstyle.dep.version>
-    <statistics.clirr.version>2.8</statistics.clirr.version>
     <statistics.junit.bom.version>5.8.0</statistics.junit.bom.version>
     <statistics.antrun.version>1.8</statistics.antrun.version>
     <!-- Workaround to avoid duplicating config files. -->
@@ -461,15 +460,6 @@
             </reports>
           </reportSet>
         </reportSets>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>clirr-maven-plugin</artifactId>
-        <version>${statistics.clirr.version}</version>
-        <configuration>
-          <minSeverity>${minSeverity}</minSeverity>
-          <ignoredDifferencesFile>${statistics.parent.dir}/src/main/resources/clirr/clirr-ignored.xml</ignoredDifferencesFile>
-        </configuration>
       </plugin>
       <!--  MathJax -->
       <plugin>
