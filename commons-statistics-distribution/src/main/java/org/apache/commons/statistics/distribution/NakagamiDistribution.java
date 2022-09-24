@@ -197,10 +197,9 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     public Sampler createSampler(UniformRandomProvider rng) {
         // Generate using a related Gamma distribution
         // See https://en.wikipedia.org/wiki/Nakagami_distribution#Generation
-        final double shape = mu;
         final double scale = omega / mu;
         final SharedStateContinuousSampler sampler =
-            AhrensDieterMarsagliaTsangGammaSampler.of(rng, shape, scale);
+            AhrensDieterMarsagliaTsangGammaSampler.of(rng, mu, scale);
         return () -> Math.sqrt(sampler.sample());
     }
 }
