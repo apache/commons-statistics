@@ -339,8 +339,8 @@
           </excludes>
         </configuration>
       </plugin>
-      <!-- MathJax -->
       <plugin>
+        <!-- NOTE: javadoc config must also be set under <reporting> -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
@@ -349,6 +349,7 @@
           <links combine.self="override">
           </links>
           <failOnWarnings>true</failOnWarnings>
+          <!-- Enable MathJax -->
           <additionalOptions>${doclint.javadoc.qualifier} ${allowscript.javadoc.qualifier} -header '&lt;script type="text/javascript" async src="${statistics.mathjax.url}"&gt;&lt;/script&gt;'</additionalOptions>
         </configuration>
       </plugin>
@@ -465,12 +466,17 @@
           </reportSet>
         </reportSets>
       </plugin>
-      <!--  MathJax -->
       <plugin>
+        <!-- NOTE: javadoc config must also be set under <build> -->
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
+          <!-- Java API links configured in commons-parent create redirect warnings on JDK 17
+            and fail the build. The links are not required as detectJavaApiLink=true (default). -->
+          <links combine.self="override">
+          </links>
           <failOnWarnings>true</failOnWarnings>
+          <!-- Enable MathJax -->
           <additionalOptions>${doclint.javadoc.qualifier} ${allowscript.javadoc.qualifier} -header '&lt;script type="text/javascript" async src="${statistics.mathjax.url}"&gt;&lt;/script&gt;'</additionalOptions>
         </configuration>
       </plugin>
