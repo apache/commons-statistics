@@ -394,7 +394,7 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSampling() {
-        return streamDistrbution(ContinuousDistributionTestData::isDisableSample, "sampling");
+        return streamDistribution(ContinuousDistributionTestData::isDisableSample, "sampling");
     }
 
     /**
@@ -747,7 +747,7 @@ abstract class BaseContinuousDistributionTest
      * expected values and the CDF outside the support returns consistent values.
      */
     @ParameterizedTest
-    @MethodSource(value = "streamDistrbution")
+    @MethodSource(value = "streamDistribution")
     final void testOutsideSupport(ContinuousDistribution dist) {
         // Test various quantities when the variable is outside the support.
         final double lo = dist.getSupportLowerBound();
@@ -788,7 +788,7 @@ abstract class BaseContinuousDistributionTest
      * or a range where {@code p1 <= p2}.
      */
     @ParameterizedTest
-    @MethodSource(value = "streamDistrbution")
+    @MethodSource(value = "streamDistribution")
     final void testInvalidProbabilities(ContinuousDistribution dist) {
         final double lo = dist.getSupportLowerBound();
         final double hi = dist.getSupportUpperBound();

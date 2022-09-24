@@ -24,7 +24,7 @@ package org.apache.commons.statistics.distribution;
  * Dekker (1971) A floating-point technique for extending the available precision</a>
  * Numer. Math. 18, 224-242.
  *
- * <p>Adapted from {@code org.apache.commons.numbers.core.ExtendedPrecion}.
+ * <p>Adapted from {@code org.apache.commons.numbers.core.ExtendedPrecision}.
  */
 final class ExtendedPrecision {
     /** sqrt(2 pi) as a double. Computed to 64-digits precision and converted to double. */

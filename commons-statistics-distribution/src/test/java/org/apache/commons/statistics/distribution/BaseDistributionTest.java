@@ -523,7 +523,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      *
      * @return the stream
      */
-    Stream<Arguments> streamDistrbution() {
+    Stream<Arguments> streamDistribution() {
         return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters())));
     }
 
@@ -534,8 +534,8 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @param name Name of the function under test
      * @return the stream
      */
-    Stream<Arguments> streamDistrbution(Predicate<D> filter,
-                                        String name) {
+    Stream<Arguments> streamDistribution(Predicate<D> filter,
+                                         String name) {
         final Builder<Arguments> b = Stream.builder();
         final int[] size = {0};
         data.forEach(d -> {
