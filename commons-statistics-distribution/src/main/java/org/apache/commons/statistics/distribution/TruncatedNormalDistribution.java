@@ -17,9 +17,12 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.function.DoubleSupplier;
 import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.numbers.gamma.Erfcx;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
  * Implementation of the truncated normal distribution.
@@ -56,6 +59,16 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
     private static final double ROOT_2_PI = 0.797884560802865405726436165423365309;
     /** Normalisation constant sqrt(2 pi) / 2 = sqrt(pi / 2). */
     private static final double ROOT_PI_2 = 1.253314137315500251207882642405522626;
+
+    /**
+     * The threshold to switch to a rejection sampler. When the truncated
+     * distribution covers more than this fraction of the CDF then rejection
+     * sampling will be more efficient than inverse CDF sampling. Performance
+     * benchmarks indicate that a normalized Gaussian sampler is up to 10 times
+     * faster than inverse transform sampling using a fast random generator. See
+     * STATISTICS-55.
+     */
+    private static final double REJECTION_THRESHOLD = 0.2;
 
     /** Parent normal distribution. */
     private final NormalDistribution parentNormal;
@@ -215,6 +228,53 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         // Linearly map p to the range [lower, upper]
         final double x = parentNormal.inverseSurvivalProbability(sfBeta + p * cdfDelta);
         return clipToRange(x);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Sampler createSampler(UniformRandomProvider rng) {
+        // If the truncation covers a reasonable amount of the normal distribution
+        // then a rejection sampler can be used.
+        double threshold = REJECTION_THRESHOLD;
+        // If the truncation is entirely in the upper or lower half then adjust the
+        // threshold as twice the samples can be used
+        if (lower >= 0 || upper <= 0) {
+            threshold *= 0.5;
+        }
+
+        if (cdfDelta > threshold) {
+            // Create the rejection sampler
+            final ZigguratSampler.NormalizedGaussian sampler = ZigguratSampler.NormalizedGaussian.of(rng);
+            DoubleSupplier gen;
+            // Use mirroring if possible
+            if (lower >= 0) {
+                // Return the upper-half of the Gaussian
+                gen = () -> Math.abs(sampler.sample());
+            } else if (upper <= 0) {
+                // Return the lower-half of the Gaussian
+                gen = () -> -Math.abs(sampler.sample());
+            } else {
+                // Return the full range of the Gaussian
+                gen = sampler::sample;
+            }
+            // Map the bounds to a standard normal distribution
+            final double u = parentNormal.getMean();
+            final double s = parentNormal.getStandardDeviation();
+            final double a = (lower - u) / s;
+            final double b = (upper - u) / s;
+            // Sample in [a, b] using rejection
+            return () -> {
+                double x = gen.getAsDouble();
+                while (x < a || x > b) {
+                    x = gen.getAsDouble();
+                }
+                // Avoid floating-point error when mapping back
+                return clipToRange(u + x * s);
+            };
+        }
+
+        // Default to an inverse CDF sampler
+        return super.createSampler(rng);
     }
 
     /**
