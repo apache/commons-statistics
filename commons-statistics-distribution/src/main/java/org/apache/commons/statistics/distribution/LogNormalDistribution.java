@@ -21,6 +21,7 @@ import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.numbers.gamma.Erfc;
 import org.apache.commons.numbers.gamma.InverseErfc;
 import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.LogNormalSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
 
 /**
@@ -261,8 +262,6 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Log normal distribution sampler.
         final ZigguratSampler.NormalizedGaussian gaussian = ZigguratSampler.NormalizedGaussian.of(rng);
-        // TODO: Replace with LogNormalSampler in Commons RNG when
-        // the version supporting negative mu has been released.
-        return () -> Math.exp(mu + sigma * gaussian.sample());
+        return LogNormalSampler.of(gaussian, mu, sigma)::sample;
     }
 }
