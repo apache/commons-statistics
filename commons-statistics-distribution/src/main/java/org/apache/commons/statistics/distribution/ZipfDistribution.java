@@ -18,7 +18,6 @@
 package org.apache.commons.statistics.distribution;
 
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
 import org.apache.commons.rng.sampling.distribution.RejectionInversionZipfSampler;
 
 /**
@@ -269,11 +268,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        if (exponent > 0) {
-            // Zipf distribution sampler.
-            return RejectionInversionZipfSampler.of(rng, numberOfElements, exponent)::sample;
-        }
-        // Special case when exponent is zero then the sample is uniform
-        return DiscreteUniformSampler.of(rng, 1, numberOfElements)::sample;
+        // Zipf distribution sampler.
+        return RejectionInversionZipfSampler.of(rng, numberOfElements, exponent)::sample;
     }
 }
