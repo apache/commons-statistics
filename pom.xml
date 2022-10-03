@@ -125,7 +125,8 @@
         Temporary workaround?
     -->
     <commons.release.name>commons-statistics-${project.version}</commons.release.name>
-    <statistics.commons.rng.version>1.4</statistics.commons.rng.version>
+    <!-- TODO: Release dependency Commons RNG -->
+    <statistics.commons.rng.version>1.5-SNAPSHOT</statistics.commons.rng.version>
     <!-- TODO: Release dependency Commons Numbers -->
     <statistics.commons.numbers.version>1.1-SNAPSHOT</statistics.commons.numbers.version>
     <statistics.commons.math3.version>3.6.1</statistics.commons.math3.version>
@@ -139,18 +140,10 @@
     <dependencies>
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-rng-client-api</artifactId>
+        <artifactId>commons-rng-bom</artifactId>
         <version>${statistics.commons.rng.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-rng-simple</artifactId>
-        <version>${statistics.commons.rng.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-rng-sampling</artifactId>
-        <version>${statistics.commons.rng.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
