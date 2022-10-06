@@ -411,7 +411,7 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSamplingQuartiles() {
-        return streamDistrbution(DiscreteDistributionTestData::isDisableSample, "sampling quartiles");
+        return streamDistribution(DiscreteDistributionTestData::isDisableSample, "sampling quartiles");
     }
 
     /**
@@ -925,7 +925,7 @@ abstract class BaseDiscreteDistributionTest
      * or a range where {@code p1 <= p2}.
      */
     @ParameterizedTest
-    @MethodSource(value = "streamDistrbution")
+    @MethodSource(value = "streamDistribution")
     final void testInvalidProbabilities(DiscreteDistribution dist) {
         final int lo = dist.getSupportLowerBound();
         final int hi = dist.getSupportUpperBound();
