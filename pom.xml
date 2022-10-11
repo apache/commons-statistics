@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-parent</artifactId>
-    <version>52</version>
+    <version>54</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -42,6 +42,11 @@
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/commons-statistics.git</developerConnection>
     <url>https://gitbox.apache.org/repos/asf?p=commons-statistics.git</url>
   </scm>
+
+  <ciManagement>
+    <system>GitHub</system>
+    <url>https://github.com/apache/commons-statistics/actions</url>
+  </ciManagement>
 
   <distributionManagement>
     <site>
@@ -84,6 +89,8 @@
     <commons.module.name>org.apache.commons.statistics</commons.module.name>
     <!-- OSGi -->
     <commons.osgi.export>org.apache.commons.statistics</commons.osgi.export>
+    <!-- This flag should only be true in the dist-archive module. -->
+    <commons.release.isDistModule>false</commons.release.isDistModule>
     <!-- do not use snapshot suffix here -->
     <commons.release.version>1.0</commons.release.version>
     <commons.release.desc>(requires Java 8)</commons.release.desc>
@@ -104,6 +111,8 @@
     <statistics.antrun.version>1.8</statistics.antrun.version>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
+    <!-- Multi-module support fixed in commons-parent 55 -->
+    <cyclonedx.skip>true</cyclonedx.skip>
 
     <!-- Increase from commons-parent -->
     <commons.jacoco.methodRatio>1.00</commons.jacoco.methodRatio>
@@ -331,6 +340,8 @@
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
             <exclude>src/site/resources/txt/userguide/stress/**</exclude>
             <exclude>dist-archive/**</exclude>
+            <!-- Moved to commons-parent 55 -->
+            <exclude>.gitattributes</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -377,6 +388,8 @@
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
             <exclude>src/site/resources/txt/userguide/stress/**</exclude>
             <exclude>dist-archive/**</exclude>
+            <!-- Moved to commons-parent 55 -->
+            <exclude>.gitattributes</exclude>
           </excludes>
         </configuration>
       </plugin>

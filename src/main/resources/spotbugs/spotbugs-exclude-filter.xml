@@ -45,4 +45,21 @@
     <Bug pattern="FE_FLOATING_POINT_EQUALITY" />
   </Match>
 
+  <!-- Intentional use of floating-point loop counters -->
+  <Match>
+    <Class name="org.apache.commons.statistics.distribution.AbstractContinuousDistribution" />
+    <Method name="searchPlateau" />
+    <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS" />
+  </Match>
+  <Match>
+    <Class name="org.apache.commons.statistics.distribution.SaddlePointExpansionUtils" />
+    <Method name="getDeviancePart" />
+    <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS" />
+  </Match>
+  <Match>
+    <Class name="org.apache.commons.statistics.distribution.TruncatedNormalDistribution" />
+    <Method name="lambda$createSampler$2" />
+    <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS" />
+  </Match>
+
 </FindBugsFilter>
