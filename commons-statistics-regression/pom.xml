@@ -39,6 +39,7 @@
     <commons.osgi.export>org.apache.commons.statistics.regression</commons.osgi.export>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
+    <statistics.jira.component>regression</statistics.jira.component>
   </properties>
 
   <dependencies>
