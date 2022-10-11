@@ -104,7 +104,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <statistics.checkstyle.version>3.1.2</statistics.checkstyle.version>
     <statistics.checkstyle.dep.version>8.45</statistics.checkstyle.dep.version>
-    <statistics.antrun.version>1.8</statistics.antrun.version>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
     <!-- Multi-module support fixed in commons-parent 55 -->
@@ -515,7 +514,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>${statistics.antrun.version}</version>
             <executions>
               <!-- For multi-module builds, only the parent directory requires a site checkout.
                    This task will create an empty directory as the site checkout is missing. -->
@@ -575,7 +573,6 @@ This is avoided by creating an empty directory when svn is not available.
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
-            <version>${statistics.antrun.version}</version>
             <executions>
               <execution>
                 <id>remove-checkout</id>
