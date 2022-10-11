@@ -56,8 +56,10 @@ If the output is not quite correct, check for invisible trailing spaces!
     <release version="1.0-beta1" date="2020-04-30" description="
 This is the first release of Apache Commons Statistics.
 
-Apache Commons Statistics 1.0-beta1 contains the following modules:
-  commons-statistics-distribution (requires Java 8)
+Contains the following modules:
+  commons-statistics-distribution.
+
+Requires Java 8.
 ">
     </release>
 
