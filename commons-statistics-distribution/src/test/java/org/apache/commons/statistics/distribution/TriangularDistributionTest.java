@@ -63,7 +63,7 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
         "1, 2, 3",
         "0.12, 3.45, 12.56",
     })
-    void testParameterAccessors(double lower, double mode, double upper) {
+    void testAdditionalParameterAccessors(double lower, double mode, double upper) {
         final TriangularDistribution dist = TriangularDistribution.of(lower, mode, upper);
         Assertions.assertEquals(lower, dist.getSupportLowerBound());
         Assertions.assertEquals(mode, dist.getMode());

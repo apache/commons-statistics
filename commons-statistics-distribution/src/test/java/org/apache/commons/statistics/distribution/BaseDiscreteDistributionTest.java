@@ -411,7 +411,7 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSamplingQuartiles() {
-        return streamDistribution(DiscreteDistributionTestData::isDisableSample, "sampling quartiles");
+        return streamDistributionWithFilter(DiscreteDistributionTestData::isDisableSample, "sampling quartiles");
     }
 
     /**

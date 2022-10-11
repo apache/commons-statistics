@@ -104,7 +104,6 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <statistics.checkstyle.version>3.1.2</statistics.checkstyle.version>
     <statistics.checkstyle.dep.version>8.45</statistics.checkstyle.dep.version>
-    <statistics.junit.bom.version>5.8.0</statistics.junit.bom.version>
     <statistics.antrun.version>1.8</statistics.antrun.version>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
@@ -177,13 +176,6 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-math3</artifactId>
         <version>${statistics.commons.math3.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.junit</groupId>
-        <artifactId>junit-bom</artifactId>
-        <version>${statistics.junit.bom.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>

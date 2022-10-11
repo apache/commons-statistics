@@ -394,7 +394,7 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSampling() {
-        return streamDistribution(ContinuousDistributionTestData::isDisableSample, "sampling");
+        return streamDistributionWithFilter(ContinuousDistributionTestData::isDisableSample, "sampling");
     }
 
     /**

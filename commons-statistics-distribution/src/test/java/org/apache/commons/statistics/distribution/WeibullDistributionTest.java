@@ -68,7 +68,7 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
         "1, 2",
         "0.1, 2.34",
     })
-    void testParameterAccessors(double shape, double scale) {
+    void testAdditionalParameterAccessors(double shape, double scale) {
         final WeibullDistribution dist = WeibullDistribution.of(shape, scale);
         Assertions.assertEquals(shape, dist.getShape());
         Assertions.assertEquals(scale, dist.getScale());
