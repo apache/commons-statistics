@@ -241,7 +241,6 @@
           <logViolationsToConsole>true</logViolationsToConsole>
           <failOnViolation>true</failOnViolation>
           <resourceExcludes>NOTICE,LICENSE,**/pom.properties,**/resolver-status.properties,**/sha512.properties</resourceExcludes>
-          <excludes>**/**generated/**.java</excludes>
         </configuration>
         <executions>
           <execution>
@@ -393,7 +392,6 @@
           <includeTestSourceDirectory>true</includeTestSourceDirectory>
           <logViolationsToConsole>false</logViolationsToConsole>
           <resourceExcludes>NOTICE,LICENSE,**/maven-archiver/pom.properties</resourceExcludes>
-          <excludes>**/**generated/**.java</excludes>
         </configuration>
         <reportSets>
           <reportSet>
