@@ -102,7 +102,6 @@
     <commons.encoding>UTF-8</commons.encoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <statistics.spotbugs.version>4.4.2</statistics.spotbugs.version>
     <statistics.checkstyle.version>3.1.2</statistics.checkstyle.version>
     <statistics.checkstyle.dep.version>8.45</statistics.checkstyle.dep.version>
     <statistics.junit.bom.version>5.8.0</statistics.junit.bom.version>
@@ -272,7 +271,6 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>${statistics.spotbugs.version}</version>
         <configuration>
           <threshold>Normal</threshold>
           <effort>Default</effort>
@@ -432,7 +430,6 @@
       <plugin>
         <groupId>com.github.spotbugs</groupId>
         <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>${statistics.spotbugs.version}</version>
         <configuration>
           <threshold>Normal</threshold>
           <effort>Default</effort>
