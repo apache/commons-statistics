@@ -102,8 +102,6 @@
     <commons.encoding>UTF-8</commons.encoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <statistics.checkstyle.version>3.1.2</statistics.checkstyle.version>
-    <statistics.checkstyle.dep.version>8.45</statistics.checkstyle.dep.version>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
     <!-- Multi-module support fixed in commons-parent 55 -->
@@ -229,14 +227,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${statistics.checkstyle.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>com.puppycrawl.tools</groupId>
-            <artifactId>checkstyle</artifactId>
-            <version>${statistics.checkstyle.dep.version}</version>
-          </dependency>
-        </dependencies>
         <configuration>
           <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
           <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
@@ -399,7 +389,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${statistics.checkstyle.version}</version>
         <configuration>
           <configLocation>${statistics.parent.dir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
           <headerLocation>${statistics.parent.dir}/src/main/resources/checkstyle/license-header.txt</headerLocation>
