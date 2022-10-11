@@ -102,8 +102,6 @@
     <commons.encoding>UTF-8</commons.encoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <statistics.pmd.version>3.12.0</statistics.pmd.version>
-    <statistics.pmd.dep.version>6.14.0</statistics.pmd.dep.version>
     <statistics.spotbugs.version>4.4.2</statistics.spotbugs.version>
     <statistics.checkstyle.version>3.1.2</statistics.checkstyle.version>
     <statistics.checkstyle.dep.version>8.45</statistics.checkstyle.dep.version>
@@ -291,19 +289,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>${statistics.pmd.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-core</artifactId>
-            <version>${statistics.pmd.dep.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-java</artifactId>
-            <version>${statistics.pmd.dep.version}</version>
-          </dependency>
-        </dependencies>
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
           <skipEmptyReport>false</skipEmptyReport>
@@ -456,7 +441,6 @@
       </plugin>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>${statistics.pmd.version}</version>
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
           <skipEmptyReport>false</skipEmptyReport>

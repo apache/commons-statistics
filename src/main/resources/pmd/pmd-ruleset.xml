@@ -73,14 +73,14 @@
   <rule ref="category/java/bestpractices.xml/ArrayIsStoredDirectly">
     <properties>
       <!-- Array is generated internally in this case. -->
-      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[@Image='DistributionException']"/>
+      <property name="violationSuppressXPath" value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='DistributionException']"/>
     </properties>
   </rule>
 
   <rule ref="category/java/codestyle.xml/ShortMethodName">
     <properties>
       <!-- Allow 'of' for factory constructors. -->
-      <property name="violationSuppressXPath" value="//ClassOrInterfaceType[matches(@Image, '^.*Distribution$')]"/>
+      <property name="violationSuppressXPath" value="//ClassOrInterfaceDeclaration[matches(@SimpleName, '^.*Distribution$')]"/>
     </properties>
   </rule>
 
@@ -94,7 +94,7 @@
   <rule ref="category/java/design.xml/NPathComplexity">
     <properties>
       <property name="violationSuppressXPath"
-        value="//ClassOrInterfaceDeclaration[@Image='AbstractContinuousDistribution']"/>
+        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='AbstractContinuousDistribution']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/CyclomaticComplexity">
@@ -106,14 +106,22 @@
   <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts">
     <properties>
       <property name="violationSuppressXPath"
-        value="//ClassOrInterfaceDeclaration[@Image='AbstractContinuousDistribution']"/>
+        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='AbstractContinuousDistribution']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/ExcessiveMethodLength">
     <properties>
       <!-- Method length is due to comments. -->
       <property name="violationSuppressXPath"
-        value="//ClassOrInterfaceDeclaration[@Image='AbstractContinuousDistribution']"/>
+        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='AbstractContinuousDistribution']"/>
+    </properties>
+  </rule>
+  <rule ref="category/java/design.xml/CognitiveComplexity">
+    <properties>
+      <!-- Methods AbstractContinuousDistribution inverseProbability (21) and
+        searchPlateau (26) exceed threshold of 15. -->
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='AbstractContinuousDistribution']"/>
     </properties>
   </rule>
 

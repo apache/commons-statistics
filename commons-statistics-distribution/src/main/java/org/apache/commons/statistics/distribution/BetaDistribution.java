@@ -124,8 +124,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
      */
     @Override
     public double logDensity(double x) {
-        if (x < 0 ||
-            x > 1) {
+        if (x < 0 || x > 1) {
             return Double.NEGATIVE_INFINITY;
         } else if (x == 0) {
             if (alpha < 1) {
@@ -134,7 +133,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
                 // Do not raise an exception and return the limit.
                 return Double.POSITIVE_INFINITY;
             }
-            // Special case of cancellation: x^(a-1) (1-x)^(b-1) / B(a, b)
+            // Special case of cancellation: x^(a-1) (1-x)^(b-1) / B(a, b) = 1 / B(a, b)
             if (alpha == 1) {
                 return -logBeta;
             }
@@ -146,16 +145,17 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
                 // Do not raise an exception and return the limit.
                 return Double.POSITIVE_INFINITY;
             }
-            // Special case of cancellation: x^(a-1) (1-x)^(b-1) / B(a, b)
+            // Special case of cancellation: x^(a-1) (1-x)^(b-1) / B(a, b) = 1 / B(a, b)
             if (beta == 1) {
                 return -logBeta;
             }
             return Double.NEGATIVE_INFINITY;
-        } else {
-            final double logX = Math.log(x);
-            final double log1mX = Math.log1p(-x);
-            return (alpha - 1) * logX + (beta - 1) * log1mX - logBeta;
         }
+
+        // Log computation
+        final double logX = Math.log(x);
+        final double log1mX = Math.log1p(-x);
+        return (alpha - 1) * logX + (beta - 1) * log1mX - logBeta;
     }
 
     /** {@inheritDoc} */
