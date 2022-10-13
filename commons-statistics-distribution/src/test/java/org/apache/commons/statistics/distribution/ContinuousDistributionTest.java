@@ -16,9 +16,12 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test default implementations in the {@link ContinuousDistribution} interface.
@@ -84,5 +87,57 @@ class ContinuousDistributionTest {
             Assertions.assertEquals(dist.inverseCumulativeProbability(1 - p),
                                     dist.inverseSurvivalProbability(p));
         }
+    }
+
+    /**
+     * Test the {@link ContinuousDistribution.Sampler} default stream methods.
+     *
+     * @param streamSize Number of values to generate.
+     */
+    @ParameterizedTest
+    @ValueSource(longs = {0, 1, 13})
+    void testSamplerStreamMethods(long streamSize) {
+        final double seed = ThreadLocalRandom.current().nextDouble();
+        final ContinuousDistribution.Sampler s1 = createIncrementSampler(seed);
+        final ContinuousDistribution.Sampler s2 = createIncrementSampler(seed);
+        final ContinuousDistribution.Sampler s3 = createIncrementSampler(seed);
+        // Get the reference output from the sample() method
+        final double[] x = new double[(int) streamSize];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = s1.sample();
+        }
+        // Test default stream methods
+        Assertions.assertArrayEquals(x, s2.samples().limit(streamSize).toArray(), "samples()");
+        Assertions.assertArrayEquals(x, s3.samples(streamSize).toArray(), "samples(long)");
+    }
+
+    /**
+     * Test the {@link ContinuousDistribution.Sampler} default stream method with a bad stream size.
+     *
+     * @param streamSize Number of values to generate.
+     */
+    @ParameterizedTest
+    @ValueSource(longs = {-1, -6576237846822L})
+    void testSamplerStreamMethodsThrow(long streamSize) {
+        final ContinuousDistribution.Sampler s = createIncrementSampler(42);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> s.samples(streamSize));
+    }
+
+    /**
+     * Creates the sampler with a given seed value.
+     * Each successive output sample will increment this value by 1.
+     *
+     * @param seed Seed value.
+     * @return the sampler
+     */
+    private static ContinuousDistribution.Sampler createIncrementSampler(double seed) {
+        return new ContinuousDistribution.Sampler() {
+            private double x = seed;
+
+            @Override
+            public double sample() {
+                return x += 1;
+            }
+        };
     }
 }

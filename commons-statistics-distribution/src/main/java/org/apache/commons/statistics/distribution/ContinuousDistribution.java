@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.DoubleStream;
 import org.apache.commons.rng.UniformRandomProvider;
 
 /**
@@ -188,5 +189,31 @@ public interface ContinuousDistribution {
          * @return a random value.
          */
         double sample();
+
+        /**
+         * Returns an effectively unlimited stream of {@code double} sample values.
+         *
+         * <p>The default implementation produces a sequential stream that repeatedly
+         * calls {@link #sample sample}().
+         *
+         * @return a stream of {@code double} values.
+         */
+        default DoubleStream samples() {
+            return DoubleStream.generate(this::sample).sequential();
+        }
+
+        /**
+         * Returns a stream producing the given {@code streamSize} number of {@code double}
+         * sample values.
+         *
+         * <p>The default implementation produces a sequential stream that repeatedly
+         * calls {@link #sample sample}(); the stream is limited to the given {@code streamSize}.
+         *
+         * @param streamSize Number of values to generate.
+         * @return a stream of {@code double} values.
+         */
+        default DoubleStream samples(long streamSize) {
+            return samples().limit(streamSize);
+        }
     }
 }

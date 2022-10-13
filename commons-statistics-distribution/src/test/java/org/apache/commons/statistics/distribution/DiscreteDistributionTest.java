@@ -16,9 +16,12 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.concurrent.ThreadLocalRandom;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test default implementations in the {@link DiscreteDistribution} interface.
@@ -143,6 +146,58 @@ class DiscreteDistributionTest {
         Assertions.assertEquals(0.0, dist.probability(max, max));
         Assertions.assertEquals(min + 1, dist.probability(min, min + 1));
         Assertions.assertEquals(max, dist.probability(max - 1, max));
+    }
+
+    /**
+     * Test the {@link DiscreteDistribution.Sampler} default stream methods.
+     *
+     * @param streamSize Number of values to generate.
+     */
+    @ParameterizedTest
+    @ValueSource(longs = {0, 1, 13})
+    void testSamplerStreamMethods(long streamSize) {
+        final int seed = ThreadLocalRandom.current().nextInt();
+        final DiscreteDistribution.Sampler s1 = createIncrementSampler(seed);
+        final DiscreteDistribution.Sampler s2 = createIncrementSampler(seed);
+        final DiscreteDistribution.Sampler s3 = createIncrementSampler(seed);
+        // Get the reference output from the sample() method
+        final int[] x = new int[(int) streamSize];
+        for (int i = 0; i < x.length; i++) {
+            x[i] = s1.sample();
+        }
+        // Test default stream methods
+        Assertions.assertArrayEquals(x, s2.samples().limit(streamSize).toArray(), "samples()");
+        Assertions.assertArrayEquals(x, s3.samples(streamSize).toArray(), "samples(long)");
+    }
+
+    /**
+     * Test the {@link DiscreteDistribution.Sampler} default stream method with a bad stream size.
+     *
+     * @param streamSize Number of values to generate.
+     */
+    @ParameterizedTest
+    @ValueSource(longs = {-1, -6576237846822L})
+    void testSamplerStreamMethodsThrow(long streamSize) {
+        final DiscreteDistribution.Sampler s = createIncrementSampler(42);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> s.samples(streamSize));
+    }
+
+    /**
+     * Creates the sampler with a given seed value.
+     * Each successive output sample will increment this value by 1.
+     *
+     * @param seed Seed value.
+     * @return the sampler
+     */
+    private static DiscreteDistribution.Sampler createIncrementSampler(int seed) {
+        return new DiscreteDistribution.Sampler() {
+            private int x = seed;
+
+            @Override
+            public int sample() {
+                return x += 1;
+            }
+        };
     }
 
     /**
