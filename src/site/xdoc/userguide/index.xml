@@ -26,7 +26,10 @@
 
   <body>
 
-    <h1>Apache Commons Statistics User Guide</h1>
+    <section name="" id="page_title">
+      <h1>Apache Commons Statistics User Guide</h1>
+    </section>
+
     <section name="Contents" id="toc">
       <ul>
         <li>
@@ -86,6 +89,7 @@
         <a href="../commons-statistics-examples/modules.html">example module parent page</a>
         contains a listing of available modules.
       </p>
+      <hr/>
     </section>
 
     <section name="Probability Distributions" id="distributions">
