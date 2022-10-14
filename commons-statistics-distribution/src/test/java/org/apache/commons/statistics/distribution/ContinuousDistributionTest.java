@@ -124,6 +124,16 @@ class ContinuousDistributionTest {
     }
 
     /**
+     * Test the {@link ContinuousDistribution.Sampler} default stream methods are not parallel.
+     */
+    @Test
+    void testSamplerStreamMethodsNotParallel() {
+        final ContinuousDistribution.Sampler s = createIncrementSampler(42);
+        Assertions.assertFalse(s.samples().isParallel(), "samples() should not be parallel");
+        Assertions.assertFalse(s.samples(11).isParallel(), "samples(long) should not be parallel");
+    }
+
+    /**
      * Creates the sampler with a given seed value.
      * Each successive output sample will increment this value by 1.
      *
