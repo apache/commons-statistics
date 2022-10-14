@@ -200,9 +200,10 @@ int upper = b.getSupportUpperBound();  // 13
           All distributions implement a <code>createSampler(UniformRandomProvider rng)</code>
           method to support random sampling from the distribution, where <code>UniformRandomProvider</code>
           is an interface defined in <a href="https://commons.apache.org/rng">Commons RNG</a>.
-          The sampler is a functional interface with a single <code>sample()</code> method
-          suitable for use as a <code>DoubleSupplier</code> or <code>IntSupplier</code> to
-          generate samples.
+          The sampler is a functional interface whose functional method is <code>sample()</code>,
+          suitable for generation of <code>double</code> or <code>int</code> samples.
+          Default <code>samples()</code> methods are provided to create a
+          <code>DoubleStream</code> or <code>IntStream</code>.
         </p>
 <source class="prettyprint">
 // From Commons RNG Simple
@@ -213,7 +214,7 @@ double x = n.createSampler(rng).sample();
 
 // Generate a number of samples
 GeometricDistribution g = GeometricDistribution.of(0.75);
-int[] k = IntStream.generate(g.createSampler(rng)::sample).limit(100).toArray();
+int[] k = g.createSampler(rng).samples(100).toArray();
 // k.length == 100
 </source>
         <p>
@@ -221,7 +222,8 @@ int[] k = IntStream.generate(g.createSampler(rng)::sample).limit(100).toArray();
           depends on the instance of the mutable <code>UniformRandomProvider</code>. Generation of
           many samples in a multi-threaded application should use a separate instance of
           <code>UniformRandomProvider</code> per thread. Any synchronization should be avoided
-          for best performance.
+          for best performance. By default the streams returned from the <code>samples()</code>
+          methods are sequential.
         </p>
       </subsection>
       <subsection name="Implementation Details" id="dist_imp_details">
