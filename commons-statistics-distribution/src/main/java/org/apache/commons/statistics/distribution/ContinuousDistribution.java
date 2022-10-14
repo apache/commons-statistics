@@ -182,6 +182,7 @@ public interface ContinuousDistribution {
     /**
      * Sampling functionality.
      */
+    @FunctionalInterface
     interface Sampler {
         /**
          * Generates a random value sampled from this distribution.
