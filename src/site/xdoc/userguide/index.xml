@@ -17,7 +17,9 @@
    limitations under the License.
   -->
 
-<document url="index.html">
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
   <properties>
     <title>Apache Commons Statistics User Guide</title>
   </properties>
