@@ -104,6 +104,8 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}</statistics.parent.dir>
+    <!-- MathJax configuration also includes the prerequisite polyfill.min.js script.
+         See the maven-javadoc-plugin plugin. -->
     <statistics.mathjax.url>https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js</statistics.mathjax.url>
     <!-- Multi-module support fixed in commons-parent 55 -->
     <cyclonedx.skip>true</cyclonedx.skip>
@@ -325,7 +327,7 @@
           </links>
           <failOnWarnings>true</failOnWarnings>
           <!-- Enable MathJax -->
-          <additionalOptions>${doclint.javadoc.qualifier} ${allowscript.javadoc.qualifier} -header '&lt;script type="text/javascript" async src="${statistics.mathjax.url}"&gt;&lt;/script&gt;'</additionalOptions>
+          <additionalOptions>${doclint.javadoc.qualifier} ${allowscript.javadoc.qualifier} -header '&lt;script src="https://polyfill.io/v3/polyfill.min.js?features=es6"&gt;&lt;/script&gt;&lt;script type="text/javascript" async src="${statistics.mathjax.url}"&gt;&lt;/script&gt;'</additionalOptions>
         </configuration>
       </plugin>
       <plugin>
@@ -442,7 +444,7 @@
           </links>
           <failOnWarnings>true</failOnWarnings>
           <!-- Enable MathJax -->
-          <additionalOptions>${doclint.javadoc.qualifier} ${allowscript.javadoc.qualifier} -header '&lt;script type="text/javascript" async src="${statistics.mathjax.url}"&gt;&lt;/script&gt;'</additionalOptions>
+          <additionalOptions>${doclint.javadoc.qualifier} ${allowscript.javadoc.qualifier} -header '&lt;script src="https://polyfill.io/v3/polyfill.min.js?features=es6"&gt;&lt;/script&gt;&lt;script type="text/javascript" async src="${statistics.mathjax.url}"&gt;&lt;/script&gt;'</additionalOptions>
         </configuration>
       </plugin>
     </plugins>
