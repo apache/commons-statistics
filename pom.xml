@@ -136,8 +136,7 @@
 
     <!-- Dependency versions -->
     <statistics.commons.rng.version>1.5</statistics.commons.rng.version>
-    <!-- TODO: Release dependency Commons Numbers -->
-    <statistics.commons.numbers.version>1.1-SNAPSHOT</statistics.commons.numbers.version>
+    <statistics.commons.numbers.version>1.1</statistics.commons.numbers.version>
     <statistics.commons.math3.version>3.6.1</statistics.commons.math3.version>
 
     <!-- Workaround to avoid the SVN site checkout in all modules.
@@ -159,23 +158,10 @@
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
-        <artifactId>commons-numbers-core</artifactId>
+        <artifactId>commons-numbers-bom</artifactId>
         <version>${statistics.commons.numbers.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-numbers-combinatorics</artifactId>
-        <version>${statistics.commons.numbers.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-numbers-gamma</artifactId>
-        <version>${statistics.commons.numbers.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-numbers-rootfinder</artifactId>
-        <version>${statistics.commons.numbers.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>
