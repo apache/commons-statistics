@@ -56,7 +56,7 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {"SupportLowerBound", "Mode", "SupportUpperBound"};
     }
 
-    //-------------- Implementations for abstract methods ----------------------
+    //-------------------- Additional test cases -------------------------------
 
     @ParameterizedTest
     @CsvSource({
