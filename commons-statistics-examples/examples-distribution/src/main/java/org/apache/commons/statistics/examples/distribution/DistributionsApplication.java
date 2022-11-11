@@ -88,6 +88,7 @@ public final class DistributionsApplication {
                  PascalCommand.class,
                  PoissonCommand.class,
                  TCommand.class,
+                 TrapezoidalCommand.class,
                  TriangularCommand.class,
                  TruncatedNormalCommand.class,
                  UniformContinuousCommand.class,
