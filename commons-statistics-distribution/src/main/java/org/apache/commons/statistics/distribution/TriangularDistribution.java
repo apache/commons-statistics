@@ -104,18 +104,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
         return c;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>For lower limit {@code a}, upper limit {@code b} and mode {@code c}, the
-     * PDF is given by
-     * <ul>
-     * <li>{@code 2 * (x - a) / [(b - a) * (c - a)]} if {@code a <= x < c},</li>
-     * <li>{@code 2 / (b - a)} if {@code x = c},</li>
-     * <li>{@code 2 * (b - x) / [(b - a) * (b - c)]} if {@code c < x <= b},</li>
-     * <li>{@code 0} otherwise.
-     * </ul>
-     */
+    /** {@inheritDoc} */
     @Override
     public double density(double x) {
         if (x < a) {
@@ -135,19 +124,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
         return 0;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>For lower limit {@code a}, upper limit {@code b} and mode {@code c}, the
-     * CDF is given by
-     * <ul>
-     * <li>{@code 0} if {@code x < a},</li>
-     * <li>{@code (x - a)^2 / [(b - a) * (c - a)]} if {@code a <= x < c},</li>
-     * <li>{@code (c - a) / (b - a)} if {@code x = c},</li>
-     * <li>{@code 1 - (b - x)^2 / [(b - a) * (b - c)]} if {@code c < x <= b},</li>
-     * <li>{@code 1} if {@code x > b}.</li>
-     * </ul>
-     */
+    /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x)  {
         if (x <= a) {
@@ -226,7 +203,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
      * {@inheritDoc}
      *
      * <p>For lower limit {@code a}, upper limit {@code b}, and mode {@code c},
-     * the mean is {@code (a + b + c) / 3}.
+     * the mean is \( (a + b + c) / 3 \).
      */
     @Override
     public double getMean() {
@@ -237,7 +214,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
      * {@inheritDoc}
      *
      * <p>For lower limit {@code a}, upper limit {@code b}, and mode {@code c},
-     * the variance is {@code (a^2 + b^2 + c^2 - a * b - a * c - b * c) / 18}.
+     * the variance is \( (a^2 + b^2 + c^2 - ab - ac - bc) / 18 \).
      */
     @Override
     public double getVariance() {
