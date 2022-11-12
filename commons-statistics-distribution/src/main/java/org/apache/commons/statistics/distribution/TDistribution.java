@@ -110,10 +110,6 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     private static class StudentsTDistribution extends TDistribution {
         /** 2. */
         private static final double TWO = 2;
-        /** Number of degrees of freedom above which to use the normal distribution.
-         * This is used to check the CDF when the degrees of freedom is large.
-         * Set to 1 / machine epsilon, 2^52, or 4.50e15. */
-        private static final double DOF_THRESHOLD_NORMAL = 0x1.0p52;
         /** The threshold for the density function where the
          * power function base minus 1 is close to zero. */
         private static final double CLOSE_TO_ZERO = 0.25;
@@ -184,12 +180,6 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
                 return 0.5;
             }
             final double v = getDegreesOfFreedom();
-
-            // This threshold may no longer be required.
-            // See STATISTICS-25.
-            if (v > DOF_THRESHOLD_NORMAL) {
-                return STANDARD_NORMAL.cumulativeProbability(x);
-            }
 
             // cdf(t) = 1 - 0.5 * I_x(t)(v/2, 1/2)
             // where x(t) = v / (v + t^2)
