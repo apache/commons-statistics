@@ -33,8 +33,8 @@ import org.apache.commons.numbers.gamma.LogBeta;
  * \( \Gamma \) is the gamma function, and
  * \( x \in (-\infty, \infty) \).
  *
- * @see <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student's t-distribution (Wikipedia)</a>
- * @see <a href="https://mathworld.wolfram.com/Studentst-Distribution.html">Student's t-distribution (MathWorld)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">Student&#39;s t-distribution (Wikipedia)</a>
+ * @see <a href="https://mathworld.wolfram.com/Studentst-Distribution.html">Student&#39;s t-distribution (MathWorld)</a>
  */
 public abstract class TDistribution extends AbstractContinuousDistribution {
     /** A standard normal distribution used for calculations.
