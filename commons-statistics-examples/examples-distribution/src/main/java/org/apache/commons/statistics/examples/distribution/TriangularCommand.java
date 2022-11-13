@@ -58,16 +58,16 @@ class TriangularCommand extends AbstractDistributionCommand {
             private double[] lower = {-4, -1};
 
             /** The distribution mode. */
-            @Option(names = {"-b", "--mode"},
-                    paramLabel = "b",
+            @Option(names = {"-c", "--mode"},
+                    paramLabel = "c",
                     arity = "1..*",
                     split = ",",
                     description = {"mode (default: ${DEFAULT-VALUE})."})
             private double[] mode = {2.5, 2};
 
             /** The distribution upper limit. */
-            @Option(names = {"-c", "--upper"},
-                    paramLabel = "c",
+            @Option(names = {"-b", "--upper"},
+                    paramLabel = "b",
                     arity = "1..*",
                     split = ",",
                     description = {"upper bound (default: ${DEFAULT-VALUE})."})
@@ -98,7 +98,7 @@ class TriangularCommand extends AbstractDistributionCommand {
             final ArrayList<Distribution<ContinuousDistribution>> list = new ArrayList<>();
             for (int i = 0; i < n; i++) {
                 final ContinuousDistribution d = TriangularDistribution.of(lower[i], mode[i], upper[i]);
-                list.add(new Distribution<>(d, "a=" + lower[i] + ",b=" + upper[i] + ",c=" + upper[i]));
+                list.add(new Distribution<>(d, "a=" + lower[i] + ",b=" + upper[i] + ",c=" + mode[i]));
             }
             return list;
         }
