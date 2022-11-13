@@ -81,7 +81,6 @@
     <plugins>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>${statistics.pmd.version}</version>
         <configuration>
           <failOnViolation>false</failOnViolation>
         </configuration>
