@@ -73,31 +73,16 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
      * Precision tests for verifying that CDF calculates accurately in cases
      * where 1-cdf(x) is inaccurately 1.
      */
-    @Test
-    void testCumulativePrecision() {
+    @ParameterizedTest
+    @CsvSource({
         // Calculated using WolframAlpha
-        checkCumulativePrecision(5.0, 5.0, 0.0001, 1.2595800539968654e-18);
-        checkCumulativePrecision(4.0, 5.0, 0.00001, 6.999776002800025e-19);
-        checkCumulativePrecision(5.0, 4.0, 0.0001, 5.598600119996539e-19);
-        checkCumulativePrecision(6.0, 2.0, 0.001, 6.994000000000028e-18);
-        checkCumulativePrecision(2.0, 6.0, 1e-9, 2.0999999930000014e-17);
-    }
-
-    /**
-     * Precision tests for verifying that survival function calculates accurately in cases
-     * where 1-sf(x) is inaccurately 1.
-     */
-    @Test
-    void testSurvivalPrecision() {
-        // Calculated using WolframAlpha
-        checkSurvivalPrecision(5.0, 5.0, 0.9999, 1.2595800539961496e-18);
-        checkSurvivalPrecision(4.0, 5.0, 0.9999, 5.598600119993397e-19);
-        checkSurvivalPrecision(5.0, 4.0, 0.99998, 1.1199283217964632e-17);
-        checkSurvivalPrecision(6.0, 2.0, 0.999999999, 2.0999998742158932e-17);
-        checkSurvivalPrecision(2.0, 6.0, 0.999, 6.994000000000077e-18);
-    }
-
-    private static void checkCumulativePrecision(double alpha, double beta, double value, double expected) {
+        "5.0, 5.0, 0.0001, 1.2595800539968654e-18",
+        "4.0, 5.0, 0.00001, 6.999776002800025e-19",
+        "5.0, 4.0, 0.0001, 5.598600119996539e-19",
+        "6.0, 2.0, 0.001, 6.994000000000028e-18",
+        "2.0, 6.0, 1e-9, 2.0999999930000014e-17",
+    })
+    void testCumulativePrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
         final BetaDistribution dist = BetaDistribution.of(alpha, beta);
         Assertions.assertEquals(
@@ -107,7 +92,20 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
             () -> "cumulative probability not precise at " + value + " for a=" + alpha + " & b=" + beta);
     }
 
-    private static void checkSurvivalPrecision(double alpha, double beta, double value, double expected) {
+    /**
+     * Precision tests for verifying that survival function calculates accurately in cases
+     * where 1-sf(x) is inaccurately 1.
+     */
+    @ParameterizedTest
+    @CsvSource({
+        // Calculated using WolframAlpha
+        "5.0, 5.0, 0.9999, 1.2595800539961496e-18",
+        "4.0, 5.0, 0.9999, 5.598600119993397e-19",
+        "5.0, 4.0, 0.99998, 1.1199283217964632e-17",
+        "6.0, 2.0, 0.999999999, 2.0999998742158932e-17",
+        "2.0, 6.0, 0.999, 6.994000000000077e-18",
+    })
+    void testSurvivalPrecision(double alpha, double beta, double value, double expected) {
         final double tolerance = 1e-22;
         final BetaDistribution dist = BetaDistribution.of(alpha, beta);
         Assertions.assertEquals(

@@ -17,37 +17,37 @@
 package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test for {@link ArgumentUtils}.
  */
 class ArgumentUtilsTest {
-    @Test
-    void testIsFiniteStrictlyPositive() {
-        final double[] good = {Double.MIN_VALUE, 1, 2, 3, Double.MAX_VALUE};
-        final double[] bad = {0, -0.0, -Double.MIN_VALUE, -Double.MAX_VALUE,
-            Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN};
-        for (final double x : good) {
-            Assertions.assertTrue(ArgumentUtils.isFiniteStrictlyPositive(x), () -> Double.toString(x));
-        }
-        for (final double x : bad) {
-            Assertions.assertFalse(ArgumentUtils.isFiniteStrictlyPositive(x), () -> Double.toString(x));
-        }
+    @ParameterizedTest
+    @ValueSource(doubles = {Double.MIN_VALUE, 1, 2, 3, Double.MAX_VALUE})
+    void testIsFiniteStrictlyPositiveTrue(double x) {
+        Assertions.assertTrue(ArgumentUtils.isFiniteStrictlyPositive(x), () -> Double.toString(x));
     }
 
-    @Test
-    void testCheckProbability() {
-        // Currently this allows -0.0
-        final double[] good = {-0.0, 0.0, Double.MIN_VALUE, 1 - 0x1.0p-53, 1};
-        final double[] bad = {-Double.MIN_VALUE, -0.1, -1, -2, Math.nextUp(1.0), 1.1, -Double.MAX_VALUE,
-            Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN};
-        for (final double p : good) {
-            Assertions.assertDoesNotThrow(() -> ArgumentUtils.checkProbability(p), () -> Double.toString(p));
-        }
-        for (final double p : bad) {
-            Assertions.assertThrows(IllegalArgumentException.class,
-                () -> ArgumentUtils.checkProbability(p), () -> Double.toString(p));
-        }
+    @ParameterizedTest
+    @ValueSource(doubles = {0, -0.0, -Double.MIN_VALUE, -Double.MAX_VALUE,
+        Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN})
+    void testIsFiniteStrictlyPositiveFalse(double x) {
+        Assertions.assertFalse(ArgumentUtils.isFiniteStrictlyPositive(x), () -> Double.toString(x));
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {-0.0, 0.0, Double.MIN_VALUE, 1 - 0x1.0p-53, 1})
+    void testCheckProbability(double p) {
+        Assertions.assertDoesNotThrow(() -> ArgumentUtils.checkProbability(p), () -> Double.toString(p));
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {-Double.MIN_VALUE, -0.1, -1, -2, 1.0 + 0x1.0p-52, 1.1, -Double.MAX_VALUE,
+        Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN})
+    void testCheckProbabilityThrows(double p) {
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> ArgumentUtils.checkProbability(p), () -> Double.toString(p));
     }
 }
