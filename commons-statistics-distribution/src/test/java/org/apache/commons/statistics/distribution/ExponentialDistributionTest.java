@@ -46,6 +46,11 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {"Mean"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 5e-15;
+    }
+
     //------------ Additional tests -------------------------------------------
 
     @Test
