@@ -17,11 +17,14 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.Stream;
 import org.apache.commons.math3.util.MathArrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link UniformDiscreteDistribution}.
@@ -52,18 +55,18 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    /** Test mean/variance. */
-    @Test
-    void testAdditionalMoments() {
-        UniformDiscreteDistribution dist;
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(int lower, int upper, double mean, double variance) {
+        final UniformDiscreteDistribution dist = UniformDiscreteDistribution.of(lower, upper);
+        testMoments(dist, mean, variance, DoubleTolerances.equals());
+    }
 
-        dist = UniformDiscreteDistribution.of(0, 5);
-        Assertions.assertEquals(2.5, dist.getMean());
-        Assertions.assertEquals(35 / 12.0, dist.getVariance());
-
-        dist = UniformDiscreteDistribution.of(0, 1);
-        Assertions.assertEquals(0.5, dist.getMean());
-        Assertions.assertEquals(3 / 12.0, dist.getVariance());
+    static Stream<Arguments> testAdditionalMoments() {
+        return Stream.of(
+            Arguments.of(0, 5, 2.5, 35 / 12.0),
+            Arguments.of(0, 1, 0.5, 3 / 12.0)
+        );
     }
 
     // MATH-1396

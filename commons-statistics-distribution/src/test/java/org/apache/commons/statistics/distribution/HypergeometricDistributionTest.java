@@ -17,10 +17,14 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.Stream;
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link HypergeometricDistribution}.
@@ -54,23 +58,21 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    @Test
-    void testAdditionalMoments() {
-        HypergeometricDistribution dist;
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(int populationSize,
+                               int numberOfSuccesses,
+                               int sampleSize,
+                               double mean, double variance) {
+        final HypergeometricDistribution dist = HypergeometricDistribution.of(populationSize, numberOfSuccesses, sampleSize);
+        testMoments(dist, mean, variance, DoubleTolerances.ulps(1));
+    }
 
-        final DoubleTolerance tol = DoubleTolerances.ulps(1);
-
-        dist = HypergeometricDistribution.of(1500, 40, 100);
-        TestUtils.assertEquals(40d * 100d / 1500d,
-            dist.getMean(), tol);
-        TestUtils.assertEquals((100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d)),
-            dist.getVariance(), tol);
-
-        dist = HypergeometricDistribution.of(3000, 55, 200);
-        TestUtils.assertEquals(55d * 200d / 3000d,
-            dist.getMean(), tol);
-        TestUtils.assertEquals((200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)),
-            dist.getVariance(), tol);
+    static Stream<Arguments> testAdditionalMoments() {
+        return Stream.of(
+            Arguments.of(1500, 40, 100, 40d * 100d / 1500d, (100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d))),
+            Arguments.of(3000, 55, 200, 55d * 200d / 3000d, (200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)))
+        );
     }
 
     @Test
@@ -107,8 +109,8 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     private static void testHypergeometricDistributionProbabilities(int populationSize, int sampleSize,
-        int numberOfSucceses, double[][] data) {
-        final HypergeometricDistribution dist = HypergeometricDistribution.of(populationSize, numberOfSucceses, sampleSize);
+        int numberOfSuccesses, double[][] data) {
+        final HypergeometricDistribution dist = HypergeometricDistribution.of(populationSize, numberOfSuccesses, sampleSize);
         for (int i = 0; i < data.length; ++i) {
             final int x = (int)data[i][0];
             final double pmf = data[i][1];

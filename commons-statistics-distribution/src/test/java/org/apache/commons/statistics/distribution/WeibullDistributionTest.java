@@ -17,11 +17,14 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.Stream;
 import org.apache.commons.numbers.gamma.LogGamma;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link WeibullDistribution}.
@@ -53,14 +56,27 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    @Test
-    void testInverseCumulativeProbabilitySmallPAccuracy() {
-        final WeibullDistribution dist = WeibullDistribution.of(2, 3);
-        final double t = dist.inverseCumulativeProbability(1e-17);
-        // Analytically, answer is solution to 1e-17 = 1-exp(-(x/3)^2)
-        // x = sqrt(-9*log(1-1e-17))
-        // If we're not careful, answer will be 0. Answer below is computed with care in Octave:
-        Assertions.assertEquals(9.48683298050514e-9, t, 1e-17);
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(double shape, double scale, double mean, double variance) {
+        final WeibullDistribution dist = WeibullDistribution.of(shape, scale);
+        testMoments(dist, mean, variance, DoubleTolerances.absolute(1e-9));
+    }
+
+    static Stream<Arguments> testAdditionalMoments() {
+        // In R: 3.5*gamma(1+(1/2.5)) (or empirically: mean(rweibull(10000, 2.5, 3.5)))
+        double mu1 = 3.5 * Math.exp(LogGamma.value(1 + (1 / 2.5)));
+        double mu2 = 2.222 * Math.exp(LogGamma.value(1 + (1 / 10.4)));
+        return Stream.of(
+            Arguments.of(2.5, 3.5, mu1,
+                (3.5 * 3.5) *
+                Math.exp(LogGamma.value(1 + (2 / 2.5))) -
+                (mu1 * mu1)),
+            Arguments.of(10.4, 2.222, mu2,
+                (2.222 * 2.222) *
+                Math.exp(LogGamma.value(1 + (2 / 10.4))) -
+                (mu2 * mu2))
+        );
     }
 
     @ParameterizedTest
@@ -75,21 +91,12 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Test
-    void testAdditionalMoments() {
-        final double tol = 1e-9;
-        WeibullDistribution dist;
-
-        dist = WeibullDistribution.of(2.5, 3.5);
-        // In R: 3.5*gamma(1+(1/2.5)) (or empirically: mean(rweibull(10000, 2.5, 3.5)))
-        Assertions.assertEquals(3.5 * Math.exp(LogGamma.value(1 + (1 / 2.5))), dist.getMean(), tol);
-        Assertions.assertEquals((3.5 * 3.5) *
-            Math.exp(LogGamma.value(1 + (2 / 2.5))) -
-            (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
-
-        dist = WeibullDistribution.of(10.4, 2.222);
-        Assertions.assertEquals(2.222 * Math.exp(LogGamma.value(1 + (1 / 10.4))), dist.getMean(), tol);
-        Assertions.assertEquals((2.222 * 2.222) *
-            Math.exp(LogGamma.value(1 + (2 / 10.4))) -
-            (dist.getMean() * dist.getMean()), dist.getVariance(), tol);
+    void testInverseCumulativeProbabilitySmallPAccuracy() {
+        final WeibullDistribution dist = WeibullDistribution.of(2, 3);
+        final double t = dist.inverseCumulativeProbability(1e-17);
+        // Analytically, answer is solution to 1e-17 = 1-exp(-(x/3)^2)
+        // x = sqrt(-9*log(1-1e-17))
+        // If we're not careful, answer will be 0. Answer below is computed with care in Octave:
+        Assertions.assertEquals(9.48683298050514e-9, t, 1e-17);
     }
 }

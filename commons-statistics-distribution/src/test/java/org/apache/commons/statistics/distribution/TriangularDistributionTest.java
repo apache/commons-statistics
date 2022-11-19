@@ -17,10 +17,12 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link TriangularDistribution}.
@@ -59,6 +61,21 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
     //-------------------- Additional test cases -------------------------------
 
     @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(double a, double b, double c, double mean, double variance) {
+        final TriangularDistribution dist = TriangularDistribution.of(a, b, c);
+        testMoments(dist, mean, variance, DoubleTolerances.equals());
+    }
+
+    static Stream<Arguments> testAdditionalMoments() {
+        return Stream.of(
+            Arguments.of(0, 0.5, 1.0, 0.5, 1 / 24.0),
+            Arguments.of(0, 1, 1, 2 / 3.0, 1 / 18.0),
+            Arguments.of(-3, 2, 12, 3 + (2 / 3.0), 175 / 18.0)
+        );
+    }
+
+    @ParameterizedTest
     @CsvSource({
         "1, 2, 3",
         "0.12, 3.45, 12.56",
@@ -68,22 +85,5 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
         Assertions.assertEquals(lower, dist.getSupportLowerBound());
         Assertions.assertEquals(mode, dist.getMode());
         Assertions.assertEquals(upper, dist.getSupportUpperBound());
-    }
-
-    @Test
-    void testAdditionalMoments() {
-        TriangularDistribution dist;
-
-        dist = TriangularDistribution.of(0, 0.5, 1.0);
-        Assertions.assertEquals(0.5, dist.getMean());
-        Assertions.assertEquals(1 / 24.0, dist.getVariance());
-
-        dist = TriangularDistribution.of(0, 1, 1);
-        Assertions.assertEquals(2 / 3.0, dist.getMean());
-        Assertions.assertEquals(1 / 18.0, dist.getVariance());
-
-        dist = TriangularDistribution.of(-3, 2, 12);
-        Assertions.assertEquals(3 + (2 / 3.0), dist.getMean());
-        Assertions.assertEquals(175 / 18.0, dist.getVariance());
     }
 }

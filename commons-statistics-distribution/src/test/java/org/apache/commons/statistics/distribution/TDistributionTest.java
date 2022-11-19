@@ -16,10 +16,13 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link TDistribution}.
@@ -52,6 +55,21 @@ class TDistributionTest extends BaseContinuousDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(double df, double mean, double variance) {
+        final TDistribution dist = TDistribution.of(df);
+        testMoments(dist, mean, variance, DoubleTolerances.equals());
+    }
+
+    static Stream<Arguments> testAdditionalMoments() {
+        return Stream.of(
+            Arguments.of(1.5, 0, Double.POSITIVE_INFINITY),
+            Arguments.of(2.1, 0, 2.1 / (2.1 - 2.0)),
+            Arguments.of(12.1, 0, 12.1 / (12.1 - 2.0))
+        );
+    }
+
     /**
      * @see <a href="https://issues.apache.orgg/bugzilla/show_bug.cgi?id=27243">
      *      Bug report that prompted this unit test.</a>
@@ -63,23 +81,6 @@ class TDistributionTest extends BaseContinuousDistributionTest {
             td.cumulativeProbability(.1);
             td.cumulativeProbability(.01);
         });
-    }
-
-    @Test
-    void testAdditionalMoments() {
-        TDistribution dist;
-
-        dist = TDistribution.of(1.5);
-        Assertions.assertEquals(0, dist.getMean());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
-
-        dist = TDistribution.of(2.1);
-        Assertions.assertEquals(0, dist.getMean());
-        Assertions.assertEquals(2.1 / (2.1 - 2.0), dist.getVariance());
-
-        dist = TDistribution.of(12.1);
-        Assertions.assertEquals(0, dist.getMean());
-        Assertions.assertEquals(12.1 / (12.1 - 2.0), dist.getVariance());
     }
 
     /*

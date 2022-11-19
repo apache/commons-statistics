@@ -75,11 +75,9 @@ class TrapezoidalDistributionTest extends BaseContinuousDistributionTest {
 
     @ParameterizedTest
     @MethodSource
-    void testAdditionalMoments(double a, double b, double c, double d, double mean, double var) {
+    void testAdditionalMoments(double a, double b, double c, double d, double mean, double variance) {
         final TrapezoidalDistribution dist = TrapezoidalDistribution.of(a, b, c, d);
-        final DoubleTolerance tol = DoubleTolerances.ulps(8);
-        TestUtils.assertEquals(mean, dist.getMean(), tol);
-        TestUtils.assertEquals(var, dist.getVariance(), tol);
+        testMoments(dist, mean, variance, DoubleTolerances.ulps(8));
     }
 
     static Stream<Arguments> testAdditionalMoments() {

@@ -17,6 +17,7 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.ContinuousSampler;
 import org.apache.commons.rng.sampling.distribution.ContinuousUniformSampler;
@@ -24,7 +25,9 @@ import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link UniformContinuousDistribution}.
@@ -62,22 +65,19 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    @Test
-    void testAdditionalMoments() {
-        UniformContinuousDistribution dist;
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(double lower, double upper, double mean, double variance) {
+        final UniformContinuousDistribution dist = UniformContinuousDistribution.of(lower, upper);
+        testMoments(dist, mean, variance, DoubleTolerances.equals());
+    }
 
-        dist = UniformContinuousDistribution.of(0, 1);
-        Assertions.assertEquals(0.5, dist.getMean());
-        Assertions.assertEquals(1 / 12.0, dist.getVariance());
-
-        dist = UniformContinuousDistribution.of(-1.5, 0.6);
-        Assertions.assertEquals(-0.45, dist.getMean());
-        Assertions.assertEquals(0.3675, dist.getVariance());
-
-        // Overflow of 0.5 * (lower + upper)
-        dist = UniformContinuousDistribution.of(Double.MAX_VALUE / 2, Double.MAX_VALUE);
-        Assertions.assertEquals(Double.MAX_VALUE - Double.MAX_VALUE / 4, dist.getMean());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance());
+    static Stream<Arguments> testAdditionalMoments() {
+        return Stream.of(
+            Arguments.of(0, 1, 0.5, 1 / 12.0),
+            Arguments.of(-1.5, 0.6, -0.45, 0.3675),
+            Arguments.of(Double.MAX_VALUE / 2, Double.MAX_VALUE, Double.MAX_VALUE - Double.MAX_VALUE / 4, Double.POSITIVE_INFINITY)
+        );
     }
 
     /**

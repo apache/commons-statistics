@@ -17,9 +17,12 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
@@ -48,6 +51,20 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     //-------------------- Additional test cases -------------------------------
+
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(double p, double mean, double variance) {
+        final GeometricDistribution dist = GeometricDistribution.of(p);
+        testMoments(dist, mean, variance, DoubleTolerances.ulps(1));
+    }
+
+    static Stream<Arguments> testAdditionalMoments() {
+        return Stream.of(
+            Arguments.of(0.5, (1.0 - 0.5) / 0.5, (1.0 - 0.5) / (0.5 * 0.5)),
+            Arguments.of(0.3, (1.0 - 0.3) / 0.3, (1.0 - 0.3) / (0.3 * 0.3))
+        );
+    }
 
     /**
      * Test the PMF is computed using the power function when p is above 0.5.
@@ -127,21 +144,6 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
         final GeometricDistribution dist = GeometricDistribution.of(p);
         final int[] x = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         testSurvivalProbabilityInverseMapping(dist, x);
-    }
-
-    @Test
-    void testAdditionalMoments() {
-        GeometricDistribution dist;
-
-        final DoubleTolerance tol = DoubleTolerances.ulps(1);
-
-        dist = GeometricDistribution.of(0.5);
-        TestUtils.assertEquals((1.0d - 0.5d) / 0.5d, dist.getMean(), tol);
-        TestUtils.assertEquals((1.0d - 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
-
-        dist = GeometricDistribution.of(0.3);
-        TestUtils.assertEquals((1.0d - 0.3d) / 0.3d, dist.getMean(), tol);
-        TestUtils.assertEquals((1.0d - 0.3d) / (0.3d * 0.3d), dist.getVariance(), tol);
     }
 
     /**

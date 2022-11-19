@@ -19,6 +19,8 @@ package org.apache.commons.statistics.distribution;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link ParetoDistribution}.
@@ -56,6 +58,16 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
+    @ParameterizedTest
+    @CsvSource({
+        "1, 1, Infinity, Infinity",
+        "2.2, 2.4, 3.771428571428, 14.816326530",
+    })
+    void testAdditionalMoments(double scale, double shape, double mean, double variance) {
+        final ParetoDistribution dist = ParetoDistribution.of(scale, shape);
+        testMoments(dist, mean, variance, DoubleTolerances.relative(1e-9));
+    }
+
     @Test
     void testHighPrecision() {
         final ParetoDistribution dist = ParetoDistribution.of(2.1, 1.4);
@@ -89,20 +101,6 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
         // BigDecimal: 1 - (scale/x).pow(2)
         final double[] values2 = {5.921189464667499E-16, 3.256654205567118E-15};
         testCumulativeProbabilityHighPrecision(dist2, x, values2, DoubleTolerances.absolute(8e-17));
-    }
-
-    @Test
-    void testAdditionalMoments() {
-        final double tol = 1e-9;
-        ParetoDistribution dist;
-
-        dist = ParetoDistribution.of(1, 1);
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getMean(), tol);
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, dist.getVariance(), tol);
-
-        dist = ParetoDistribution.of(2.2, 2.4);
-        Assertions.assertEquals(3.771428571428, dist.getMean(), tol);
-        Assertions.assertEquals(14.816326530, dist.getVariance(), tol);
     }
 
     /**

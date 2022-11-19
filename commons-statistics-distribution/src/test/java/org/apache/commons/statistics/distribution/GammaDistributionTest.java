@@ -21,10 +21,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.stream.Stream;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.commons.numbers.gamma.LanczosApproximation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link GammaDistribution}.
@@ -62,17 +66,18 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    @Test
-    void testAdditionalMoments() {
-        GammaDistribution dist;
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(double shape, double scale, double mean, double variance) {
+        final GammaDistribution dist = GammaDistribution.of(shape, scale);
+        testMoments(dist, mean, variance, DoubleTolerances.equals());
+    }
 
-        dist = GammaDistribution.of(1, 2);
-        Assertions.assertEquals(2, dist.getMean());
-        Assertions.assertEquals(4, dist.getVariance());
-
-        dist = GammaDistribution.of(1.1, 4.2);
-        Assertions.assertEquals(1.1 * 4.2, dist.getMean());
-        Assertions.assertEquals(1.1 * 4.2 * 4.2, dist.getVariance());
+    static Stream<Arguments> testAdditionalMoments() {
+        return Stream.of(
+            Arguments.of(1, 2, 2, 4),
+            Arguments.of(1.1, 4.2, 1.1 * 4.2, 1.1 * 4.2 * 4.2)
+        );
     }
 
     @Test

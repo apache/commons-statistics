@@ -16,7 +16,10 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link PascalDistribution}.
@@ -49,18 +52,17 @@ class PascalDistributionTest extends BaseDiscreteDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    @Test
-    void testAdditionalMoments() {
-        PascalDistribution dist;
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalMoments(int r, double p, double mean, double variance) {
+        final PascalDistribution dist = PascalDistribution.of(r, p);
+        testMoments(dist, mean, variance, DoubleTolerances.ulps(1));
+    }
 
-        DoubleTolerance tol = DoubleTolerances.ulps(1);
-
-        dist = PascalDistribution.of(10, 0.5);
-        TestUtils.assertEquals((10d * 0.5d) / 0.5, dist.getMean(), tol);
-        TestUtils.assertEquals((10d * 0.5d) / (0.5d * 0.5d), dist.getVariance(), tol);
-
-        dist = PascalDistribution.of(25, 0.7);
-        TestUtils.assertEquals((25d * 0.3d) / 0.7, dist.getMean(), tol);
-        TestUtils.assertEquals((25d * 0.3d) / (0.7d * 0.7d), dist.getVariance(), tol);
+    static Stream<Arguments> testAdditionalMoments() {
+        return Stream.of(
+            Arguments.of(10, 0.5, (10d * 0.5d) / 0.5, (10d * 0.5d) / (0.5d * 0.5d)),
+            Arguments.of(25, 0.7, (25d * 0.3d) / 0.7, (25d * 0.3d) / (0.7d * 0.7d))
+        );
     }
 }

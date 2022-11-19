@@ -57,6 +57,8 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {null, null, "SupportLowerBound", "SupportUpperBound"};
     }
 
+    //-------------------- Additional test cases -------------------------------
+
     /**
      * Hit the edge cases where the lower and upper bound are not infinite but the
      * CDF of the parent distribution is either 0 or 1. This is effectively no truncation.
@@ -73,7 +75,7 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
         "1.0, 2.0, -4, 6",
         "3.45, 6.78, -8, 10",
     })
-    void testEffectivelyNoTruncation(double mean, double sd, double lower, double upper) {
+    void testMomentsEffectivelyNoTruncation(double mean, double sd, double lower, double upper) {
         double inf = Double.POSITIVE_INFINITY;
         double max = Double.MAX_VALUE;
         TruncatedNormalDistribution dist1;
