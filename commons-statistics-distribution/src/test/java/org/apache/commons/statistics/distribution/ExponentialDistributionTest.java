@@ -17,7 +17,6 @@
 package org.apache.commons.statistics.distribution;
 
 import java.math.BigDecimal;
-import org.apache.commons.numbers.core.Precision;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -58,19 +57,20 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
     @Test
     void testAdditionalDensity() {
         final ExponentialDistribution d1 = ExponentialDistribution.of(1);
-        Assertions.assertTrue(Precision.equals(0.0, d1.density(-1e-9), 1));
-        Assertions.assertTrue(Precision.equals(1.0, d1.density(0.0), 1));
-        Assertions.assertTrue(Precision.equals(0.0, d1.density(1000.0), 1));
-        Assertions.assertTrue(Precision.equals(Math.exp(-1), d1.density(1.0), 1));
-        Assertions.assertTrue(Precision.equals(Math.exp(-2), d1.density(2.0), 1));
+        Assertions.assertEquals(0.0, d1.density(-1e-9));
+        Assertions.assertEquals(1.0, d1.density(0.0));
+        Assertions.assertEquals(0.0, d1.density(1000.0));
+        Assertions.assertEquals(Math.exp(-1), d1.density(1.0));
+        Assertions.assertEquals(Math.exp(-2), d1.density(2.0));
 
         final ExponentialDistribution d2 = ExponentialDistribution.of(3);
-        Assertions.assertTrue(Precision.equals(1 / 3.0, d2.density(0.0), 1));
-        // computed using  print(dexp(1, rate=1/3), digits=10) in R 2.5
-        Assertions.assertEquals(0.2388437702, d2.density(1.0), 1e-8);
+        Assertions.assertEquals(1 / 3.0, d2.density(0.0));
 
-        // computed using  print(dexp(2, rate=1/3), digits=10) in R 2.5
-        Assertions.assertEquals(0.1711390397, d2.density(2.0), 1e-8);
+        // computed using R 3.4.0: print(dexp(1, rate=1/3), digits=20)
+        Assertions.assertEquals(0.23884377019126309949, d2.density(1.0), 1e-15);
+
+        // computed using R 3.4.0: print(dexp(2, rate=1/3), digits=20)
+        Assertions.assertEquals(0.17113903967753066326, d2.density(2.0), 1e-15);
     }
 
     @Test
