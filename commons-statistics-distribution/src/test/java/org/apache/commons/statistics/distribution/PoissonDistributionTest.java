@@ -127,7 +127,7 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     @Test
-    void testLargeMeanHighPrecisionCumulativeProbabilities() {
+    void testAdditionalCumulativeProbabilityHighPrecision() {
         // computed using R version 3.4.4
         testCumulativeProbabilityHighPrecision(
                 PoissonDistribution.of(100),
