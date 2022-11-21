@@ -19,7 +19,6 @@ package org.apache.commons.statistics.distribution;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -138,14 +137,14 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
      * Test creation of a sampler with a large mean that computes valid probabilities.
      */
     @Test
-    @Disabled("Commons RNG does not allow truncated Poisson distribution")
     void testCreateSamplerWithLargeMean() {
         final int mean = Integer.MAX_VALUE;
         final PoissonDistribution dist = PoissonDistribution.of(mean);
         // The mean is roughly the median for large mean
         Assertions.assertEquals(0.5, dist.cumulativeProbability(mean), 0.05);
         final UniformRandomProvider rng = RandomSource.SPLIT_MIX_64.create();
-        Assertions.assertDoesNotThrow(() -> dist.createSampler(rng),
-                "This distribution can be computed so should allow sampling");
+        dist.createSampler(rng)
+            .samples(50)
+            .forEach(i -> Assertions.assertTrue(i >= 0, () -> "Bad sample: " + i));
     }
 }
