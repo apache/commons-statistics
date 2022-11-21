@@ -69,13 +69,18 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Test
-    void testHighPrecision() {
+    void testAdditionalCumulativeProbabilityHighPrecision() {
         final ParetoDistribution dist = ParetoDistribution.of(2.1, 1.4);
         testCumulativeProbabilityHighPrecision(
             dist,
             new double[] {2.100000000000001, 2.100000000000005},
             new double[] {6.217248937900875e-16, 3.2640556923979585e-15},
             createHighPrecisionTolerance());
+    }
+
+    @Test
+    void testAdditionalSurvivalProbabilityHighPrecision() {
+        final ParetoDistribution dist = ParetoDistribution.of(2.1, 1.4);
         testSurvivalProbabilityHighPrecision(
             dist,
             new double[] {42e11, 64e11},

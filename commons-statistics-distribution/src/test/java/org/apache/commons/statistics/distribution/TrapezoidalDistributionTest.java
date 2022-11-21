@@ -107,7 +107,7 @@ class TrapezoidalDistributionTest extends BaseContinuousDistributionTest {
      * probability is high precision.
      */
     @Test
-    void testHighPrecisionSurvivalProbabilities() {
+    void testAdditionalSurvivalProbabilityHighPrecision() {
         final double a = 0;
         final double b = 0;
         final double c = 1;

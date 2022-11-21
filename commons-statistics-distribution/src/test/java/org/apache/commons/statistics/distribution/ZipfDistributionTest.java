@@ -17,10 +17,14 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.Stream;
 import org.apache.commons.math3.util.MathArrays;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link ZipfDistribution}.
@@ -51,21 +55,28 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
 
     //-------------------- Additional test cases -------------------------------
 
-    @Test
-    void testHighPrecisionSurvivalProbabilities() {
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionlSurvivalProbabilityHighPrecision(int n, double e, int[] x, double[] expected, DoubleTolerance tol) {
+        testSurvivalProbabilityHighPrecision(ZipfDistribution.of(n, e), x, expected, tol);
+    }
+
+    static Stream<Arguments> testAdditionlSurvivalProbabilityHighPrecision() {
         // computed using scipy.stats (1.7.1) zipfian
-        testSurvivalProbabilityHighPrecision(ZipfDistribution.of(60, 10),
-            new int[] {57, 59},
-            new double[] {2.3189337454689757e-18, 1.6521739576668957e-18},
-            DoubleTolerances.absolute(1e-25));
-        testSurvivalProbabilityHighPrecision(ZipfDistribution.of(60, 50.5),
-            new int[] {57, 59},
-            new double[] {8.8488396450491320e-90, 1.5972093932264611e-90},
-            DoubleTolerances.absolute(1e-95));
-        testSurvivalProbabilityHighPrecision(ZipfDistribution.of(60, 100.5),
-            new int[] {57, 59},
-            new double[] {5.9632998443758656e-178, 1.9760564023408183e-179},
-            DoubleTolerances.absolute(1e-185));
+        return Stream.of(
+            Arguments.of(60, 10,
+                new int[] {57, 59},
+                new double[] {2.3189337454689757e-18, 1.6521739576668957e-18},
+                DoubleTolerances.absolute(1e-25)),
+            Arguments.of(60, 50.5,
+                new int[] {57, 59},
+                new double[] {8.8488396450491320e-90, 1.5972093932264611e-90},
+                DoubleTolerances.absolute(1e-95)),
+            Arguments.of(60, 100.5,
+                new int[] {57, 59},
+                new double[] {5.9632998443758656e-178, 1.9760564023408183e-179},
+                DoubleTolerances.absolute(1e-185))
+        );
     }
 
     /**
@@ -74,7 +85,7 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
      * it should be a complement to the CDF value.
      */
     @Test
-    void testHighPrecisionSurvivalProbabilitiesWithOverflow() {
+    void testAdditionalSurvivalAndCumulativeProbabilityComplement() {
         // Requires (x+1)^a to overflow
         final int n = 60;
         final double a = 200.5;

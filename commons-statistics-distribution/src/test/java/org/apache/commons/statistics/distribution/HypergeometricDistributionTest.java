@@ -180,7 +180,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     @Test
-    void testZeroTrial() {
+    void testZeroTrials() {
         final int n = 11; // population
         final int m = 4;  // successes in population
         final int s = 0;  // number of trials
@@ -221,7 +221,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     @Test
-    void testHighPrecisionCumulativeProbabilities() {
+    void testAdditionalCumulativeProbabilityHighPrecision() {
         // computed using R version 3.4.4
         testCumulativeProbabilityHighPrecision(
             HypergeometricDistribution.of(500, 70, 300),
@@ -231,7 +231,7 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     @Test
-    void testHighPrecisionSurvivalProbabilities() {
+    void testAdditionalSurvivalProbabilityHighPrecision() {
         // computed using R version 3.4.4
         testSurvivalProbabilityHighPrecision(
             HypergeometricDistribution.of(500, 70, 300),
