@@ -21,6 +21,8 @@ import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  * Test cases for {@link PoissonDistribution}.
@@ -84,19 +86,15 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
     /**
      * JIRA: MATH-282
      */
-    @Test
-    void testCumulativeProbabilitySpecial() {
-        PoissonDistribution dist;
-        dist = PoissonDistribution.of(9120);
-        checkProbability(dist, 9075);
-        checkProbability(dist, 9102);
-        dist = PoissonDistribution.of(5058);
-        checkProbability(dist, 5044);
-        dist = PoissonDistribution.of(6986);
-        checkProbability(dist, 6950);
-    }
-
-    private void checkProbability(PoissonDistribution dist, int x) {
+    @ParameterizedTest
+    @CsvSource({
+        "9120, 9075",
+        "9120, 9102",
+        "5058, 5044",
+        "6986, 6950",
+    })
+    void testCumulativeProbabilitySpecial(double mean, int x) {
+        final PoissonDistribution dist = PoissonDistribution.of(mean);
         final double p = dist.cumulativeProbability(x);
         Assertions.assertFalse(Double.isNaN(p), () -> "NaN cumulative probability returned for mean = " +
                 dist.getMean() + " x = " + x);
