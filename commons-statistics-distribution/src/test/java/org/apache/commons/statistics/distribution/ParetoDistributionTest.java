@@ -89,7 +89,7 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Test
-    void testAdditionalHighPrecision() {
+    void testAdditionalCumulativeProbabilityHighPrecision2() {
         final double[] x = {3.000000000000001, 3.000000000000005};
 
         // R and Wolfram alpha do not match for high precision CDF at small x.
