@@ -211,8 +211,10 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
     /**
      * {@inheritDoc}
      *
-     * <p>For {@code mu} and sigma {@code s}, the mean is
-     * {@code exp(m + s^2 / 2)}.
+     * <p>For \( \mu \) the mean of the normally distributed natural logarithm of
+     * this distribution, \( \sigma &gt; 0 \) the standard deviation of the normally
+     * distributed natural logarithm of this distribution, the mean is
+     * \( \exp(\mu + \frac{\sigma^2}{2}) \).
      */
     @Override
     public double getMean() {
@@ -223,8 +225,10 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
     /**
      * {@inheritDoc}
      *
-     * <p>For {@code mu} and sigma {@code s}, the variance is
-     * {@code (exp(s^2) - 1) * exp(2 * m + s^2)}.
+     * <p>For \( \mu \) the mean of the normally distributed natural logarithm of
+     * this distribution, \( \sigma &gt; 0 \) the standard deviation of the normally
+     * distributed natural logarithm of this distribution, the variance is
+     * \( [\exp(\sigma^2) - 1)]  \exp(2 \mu + \sigma^2) \).
      */
     @Override
     public double getVariance() {
