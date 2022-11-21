@@ -63,16 +63,17 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
         Assertions.assertEquals(Double.POSITIVE_INFINITY, Math.exp(-x0));
         Assertions.assertEquals(Double.NaN, Math.exp(-x0) / Math.pow(1 + Math.exp(-x0), 2.0));
 
-        // Computed using scipy.stats logistic
+        // Computed using scipy.stats logistic.
+        // These values of exp(x) will create overflow.
         final double[] x = {710, 720, 730, 740, 750};
         final double[] values = {4.47628622567513e-309,
             2.03223080241836e-313, 9.22631526816382e-318,
             4.19955798965060e-322, 0.00000000000000e+000};
-        for (int i = 0; i < x.length; i++) {
-            final double d = dist.density(x[i]);
-            Assertions.assertEquals(values[i], d, (values[i] - d) * 1e-16);
-            // Test symmetry. These values of x will create overflow.
-            Assertions.assertEquals(d, dist.density(-x[i]));
+        testDensity(dist, x, values, DoubleTolerances.equals());
+
+        // Test symmetry.
+        for (final double xi : x) {
+            Assertions.assertEquals(dist.density(xi), dist.density(-xi), () -> Double.toString(xi));
         }
     }
 
