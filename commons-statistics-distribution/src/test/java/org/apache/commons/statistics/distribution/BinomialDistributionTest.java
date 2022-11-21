@@ -224,14 +224,14 @@ class BinomialDistributionTest extends BaseDiscreteDistributionTest {
         // The next probability is accurate to the specified tolerance.
         final BigDecimal prob1 = binomialProbability(n, p, 1);
         final BigDecimal probn1 = binomialProbability(n, p, n - 1);
-        TestUtils.assertEquals(prob1.doubleValue(), dist.probability(1), DoubleTolerances.relative(eps1), "pmf(1)");
-        TestUtils.assertEquals(probn1.doubleValue(), dist.probability(n - 1), DoubleTolerances.relative(epsn1), "pmf(n-1)");
+        TestUtils.assertEquals(prob1.doubleValue(), dist.probability(1), createRelTolerance(eps1), "pmf(1)");
+        TestUtils.assertEquals(probn1.doubleValue(), dist.probability(n - 1), createRelTolerance(epsn1), "pmf(n-1)");
 
         // Check the cumulative functions
         final double cdf1 = prob0.add(prob1).doubleValue();
         final double sfn2 = probn.add(probn1).doubleValue();
-        TestUtils.assertEquals(cdf1, dist.cumulativeProbability(1), DoubleTolerances.relative(eps1), "cmf(1)");
-        TestUtils.assertEquals(sfn2, dist.survivalProbability(n - 2), DoubleTolerances.relative(epsn1), "sf(n-2)");
+        TestUtils.assertEquals(cdf1, dist.cumulativeProbability(1), createRelTolerance(eps1), "cmf(1)");
+        TestUtils.assertEquals(sfn2, dist.survivalProbability(n - 2), createRelTolerance(epsn1), "sf(n-2)");
     }
 
     /**

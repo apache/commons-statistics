@@ -60,7 +60,7 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
     @MethodSource
     void testAdditionalMoments(double shape, double scale, double mean, double variance) {
         final WeibullDistribution dist = WeibullDistribution.of(shape, scale);
-        testMoments(dist, mean, variance, DoubleTolerances.absolute(1e-9));
+        testMoments(dist, mean, variance, createRelTolerance(1e-15));
     }
 
     static Stream<Arguments> testAdditionalMoments() {

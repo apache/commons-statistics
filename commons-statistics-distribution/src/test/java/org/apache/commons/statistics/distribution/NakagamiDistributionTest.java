@@ -84,7 +84,7 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
         // This computation is subject to cancellation due to subtraction of two large
         // values to approach a result of zero.
         // Use a moderate threshold.
-        final DoubleTolerance tolerance = DoubleTolerances.relative(2e-10);
+        final DoubleTolerance tolerance = createRelTolerance(2e-10);
         final NakagamiDistribution dist = NakagamiDistribution.of(mu, omega);
         testMoments(dist, mean, variance, tolerance);
     }
@@ -119,7 +119,7 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
         // The mean is within 2 ULP.
         // The variance is closer than the matlab result but the effect of cancellation
         // prevents high accuracy.
-        final DoubleTolerance tolerance = DoubleTolerances.relative(1e-12);
+        final DoubleTolerance tolerance = createRelTolerance(1e-12);
         final NakagamiDistribution dist = NakagamiDistribution.of(mu, omega);
         testMoments(dist, mean, variance, tolerance);
     }

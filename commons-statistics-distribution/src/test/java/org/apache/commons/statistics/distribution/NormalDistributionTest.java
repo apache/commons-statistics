@@ -83,7 +83,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
 
     /**
      * Check to make sure top-coding of extreme values works correctly.
-     * Verifies fixes for JIRA MATH-167, MATH-414
+     * Verifies fixes for JIRA MATH-167, MATH-414.
      */
     @Test
     void testLowerTail() {
@@ -106,7 +106,7 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
 
     /**
      * Check to make sure top-coding of extreme values works correctly.
-     * Verifies fixes for JIRA MATH-167, MATH-414
+     * Verifies fixes for JIRA MATH-167, MATH-414.
      */
     @Test
     void testUpperTail() {

@@ -339,7 +339,7 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
             Assertions.assertTrue(var >= 0, () -> "Variance is not positive: " + var);
             Assertions.assertEquals(var, TruncatedNormalDistribution.variance(-upper, -lower));
             TestUtils.assertEquals(variance, var,
-                DoubleTolerances.relative(-varianceRelativeError).or(DoubleTolerances.absolute(1.5 * 0x1.0p-52)),
+                    createAbsOrRelTolerance(1.5 * 0x1.0p-52, -varianceRelativeError),
                 () -> String.format("variance(%s, %s)", lower, upper));
         } else {
             assertVariance(lower, upper, variance, varianceRelativeError);

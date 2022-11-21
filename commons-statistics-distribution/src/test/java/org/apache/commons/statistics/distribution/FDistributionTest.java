@@ -114,7 +114,7 @@ class FDistributionTest extends BaseContinuousDistributionTest {
                                   double[] points,
                                   double[] values) {
         testLogDensity(FDistribution.of(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom),
-            points, values, DoubleTolerances.relative(1e-15));
+            points, values, createRelTolerance(1e-15));
     }
 
     static Stream<Arguments> testAdditionalLogDensity() {
@@ -163,7 +163,7 @@ class FDistributionTest extends BaseContinuousDistributionTest {
                                double[] values,
                                double relativeError) {
         testDensity(FDistribution.of(numeratorDegreesOfFreedom, denominatorDegreesOfFreedom),
-            points, values, DoubleTolerances.relative(relativeError));
+            points, values, createRelTolerance(relativeError));
     }
 
     static Stream<Arguments> testAdditionalDensity() {

@@ -111,7 +111,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     @MethodSource
     void testAdditionalDensity(double alpha, double rate, double[] x, double[] expected) {
         final GammaDistribution dist = GammaDistribution.of(alpha, 1 / rate);
-        testDensity(dist, x, expected, DoubleTolerances.relative(1e-9));
+        testDensity(dist, x, expected, createRelTolerance(1e-9));
     }
 
     static Stream<Arguments> testAdditionalDensity() {
@@ -153,7 +153,7 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     @MethodSource
     void testAdditionalLogDensity(double alpha, double rate, double[] x, double[] expected) {
         final GammaDistribution dist = GammaDistribution.of(alpha, 1 / rate);
-        testLogDensity(dist, x, expected, DoubleTolerances.relative(1e-9));
+        testLogDensity(dist, x, expected, createRelTolerance(1e-9));
     }
 
     static Stream<Arguments> testAdditionalLogDensity() {

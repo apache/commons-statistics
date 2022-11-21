@@ -65,7 +65,7 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
     })
     void testAdditionalMoments(double scale, double shape, double mean, double variance) {
         final ParetoDistribution dist = ParetoDistribution.of(scale, shape);
-        testMoments(dist, mean, variance, DoubleTolerances.relative(1e-9));
+        testMoments(dist, mean, variance, createRelTolerance(1e-9));
     }
 
     @Test
@@ -100,12 +100,12 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
         final ParetoDistribution dist = ParetoDistribution.of(3, 0.5);
         // BigDecimal: 1 - (scale/x).sqrt()
         final double[] values = {1.480297366166875E-16, 8.141635513917804E-16};
-        testCumulativeProbabilityHighPrecision(dist, x, values, DoubleTolerances.absolute(2e-17));
+        testCumulativeProbabilityHighPrecision(dist, x, values, createAbsTolerance(2e-17));
 
         final ParetoDistribution dist2 = ParetoDistribution.of(3, 2);
         // BigDecimal: 1 - (scale/x).pow(2)
         final double[] values2 = {5.921189464667499E-16, 3.256654205567118E-15};
-        testCumulativeProbabilityHighPrecision(dist2, x, values2, DoubleTolerances.absolute(8e-17));
+        testCumulativeProbabilityHighPrecision(dist2, x, values2, createAbsTolerance(8e-17));
     }
 
     /**
