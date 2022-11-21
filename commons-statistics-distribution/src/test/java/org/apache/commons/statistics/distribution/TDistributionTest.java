@@ -89,20 +89,24 @@ class TDistributionTest extends BaseContinuousDistributionTest {
      * Have chosen tabulated results for degrees of freedom 2,10,30,100
      * Have chosen problevels from 0.10 to 0.001
      */
-    @Test
-    void nistData() {
-        final double[] prob = new double[]{0.10, 0.05, 0.025, 0.01, 0.005, 0.001};
-        final double[] args2 = new double[]{1.886, 2.920, 4.303, 6.965, 9.925, 22.327};
-        final double[] args10 = new double[]{1.372, 1.812, 2.228, 2.764, 3.169, 4.143};
-        final double[] args30 = new double[]{1.310, 1.697, 2.042, 2.457, 2.750, 3.385};
-        final double[] args100 = new double[]{1.290, 1.660, 1.984, 2.364, 2.626, 3.174};
+    @ParameterizedTest
+    @MethodSource
+    void testNistData(double t, double[] x, double[] expected) {
         // Data points are not very exact so use a low tolerance.
         final DoubleTolerance tolerance = createAbsTolerance(1e-4);
-        testSurvivalProbability(TDistribution.of(2), args2, prob, tolerance);
-        testSurvivalProbability(TDistribution.of(10), args10, prob, tolerance);
-        testSurvivalProbability(TDistribution.of(30), args30, prob, tolerance);
-        testSurvivalProbability(TDistribution.of(100), args100, prob, tolerance);
+        testSurvivalProbability(TDistribution.of(t), x, expected, tolerance);
     }
+
+    static Stream<Arguments> testNistData() {
+        final double[] prob = new double[]{0.10, 0.05, 0.025, 0.01, 0.005, 0.001};
+        return Stream.of(
+            Arguments.of(2, new double[] {1.886, 2.920, 4.303, 6.965, 9.925, 22.327}, prob),
+            Arguments.of(10, new double[]{1.372, 1.812, 2.228, 2.764, 3.169, 4.143}, prob),
+            Arguments.of(30, new double[]{1.310, 1.697, 2.042, 2.457, 2.750, 3.385}, prob),
+            Arguments.of(100, new double[]{1.290, 1.660, 1.984, 2.364, 2.626, 3.174}, prob)
+        );
+    }
+
 
     // See https://issues.apache.org/jira/browse/STATISTICS-25
     @ParameterizedTest
