@@ -114,7 +114,7 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
             while (p < .99) {
                 try {
                     final int ret = dist.inverseCumulativeProbability(p);
-                    // Verify that returned value satisties definition
+                    // Verify that returned value satisfies definition
                     Assertions.assertTrue(p <= dist.cumulativeProbability(ret));
                     Assertions.assertTrue(p > dist.cumulativeProbability(ret - 1));
                 } catch (final AssertionError ex) {
