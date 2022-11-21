@@ -858,6 +858,7 @@ abstract class BaseDiscreteDistributionTest
         // Test various quantities when the variable is outside the support.
         final int lo = dist.getSupportLowerBound();
         TestUtils.assertEquals(dist.probability(lo), dist.cumulativeProbability(lo), tolerance, () -> "pmf(lower) != cdf(lower) for " + lo);
+        Assertions.assertEquals(lo, dist.inverseCumulativeProbability(-0.0), "icdf(-0.0)");
         Assertions.assertEquals(lo, dist.inverseCumulativeProbability(0.0), "icdf(0.0)");
         Assertions.assertEquals(lo, dist.inverseSurvivalProbability(1.0), "isf(1.0)");
 
@@ -872,6 +873,7 @@ abstract class BaseDiscreteDistributionTest
         final int hi = dist.getSupportUpperBound();
         Assertions.assertTrue(lo <= hi, "lower <= upper");
         Assertions.assertEquals(hi, dist.inverseCumulativeProbability(1.0), "icdf(1.0)");
+        Assertions.assertEquals(hi, dist.inverseSurvivalProbability(-0.0), "isf(-0.0)");
         Assertions.assertEquals(hi, dist.inverseSurvivalProbability(0.0), "isf(0.0)");
         if (hi != Integer.MAX_VALUE) {
             // For distributions defined up to integer max value we cannot test that

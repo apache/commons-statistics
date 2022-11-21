@@ -752,6 +752,7 @@ abstract class BaseContinuousDistributionTest
         // Test various quantities when the variable is outside the support.
         final double lo = dist.getSupportLowerBound();
         Assertions.assertEquals(0.0, dist.cumulativeProbability(lo), "cdf(lower)");
+        Assertions.assertEquals(lo, dist.inverseCumulativeProbability(-0.0), "icdf(-0.0)");
         Assertions.assertEquals(lo, dist.inverseCumulativeProbability(0.0), "icdf(0.0)");
         Assertions.assertEquals(lo, dist.inverseSurvivalProbability(1.0), "isf(1.0)");
         // Test for rounding errors during inversion
@@ -770,6 +771,7 @@ abstract class BaseContinuousDistributionTest
         Assertions.assertEquals(1.0, dist.cumulativeProbability(hi), "cdf(upper)");
         Assertions.assertEquals(0.0, dist.survivalProbability(hi), "sf(upper)");
         Assertions.assertEquals(hi, dist.inverseCumulativeProbability(1.0), "icdf(1.0)");
+        Assertions.assertEquals(hi, dist.inverseSurvivalProbability(-0.0), "isf(-0.0)");
         Assertions.assertEquals(hi, dist.inverseSurvivalProbability(0.0), "isf(0.0)");
         // Test for rounding errors during inversion
         Assertions.assertTrue(hi >= dist.inverseCumulativeProbability(Math.nextDown(1.0)), "hi >= icdf(nextDown(1.0))");

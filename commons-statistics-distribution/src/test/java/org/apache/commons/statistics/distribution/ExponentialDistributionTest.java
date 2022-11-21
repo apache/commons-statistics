@@ -78,13 +78,6 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
         Assertions.assertEquals(0.17113903967753066326, d2.density(2.0), 1e-15);
     }
 
-    @Test
-    void testInverseCDFWithZero() {
-        final ExponentialDistribution d1 = ExponentialDistribution.of(1);
-        Assertions.assertEquals(0.0, d1.inverseCumulativeProbability(0.0));
-        Assertions.assertEquals(0.0, d1.inverseCumulativeProbability(-0.0));
-    }
-
     @ParameterizedTest
     @CsvFileSource(resources = "exppdf.csv")
     void testPDF(double mean, double x, BigDecimal expected) {
