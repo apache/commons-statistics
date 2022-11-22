@@ -111,11 +111,13 @@ public interface DiscreteDistribution {
     /**
      * Computes the quantile function of this distribution.
      * For a random variable {@code X} distributed according to this distribution,
-     * the returned value is
-     * <ul>
-     * <li>{@code inf{x in Z | P(X<=x) >= p}} for {@code 0 < p <= 1},</li>
-     * <li>{@code inf{x in Z | P(X<=x) > 0}} for {@code p = 0}.</li>
-     * </ul>
+     * the returned value is:
+     *
+     * <p>\[ x = \begin{cases}
+     *       \inf \{ x \in \mathbb Z : P(X \le x) \ge p\}   &amp; \text{for } 0 \lt p \le 1 \\
+     *       \inf \{ x \in \mathbb Z : P(X \le x) \gt 0 \}  &amp; \text{for } p = 0
+     *       \end{cases} \]
+     *
      * <p>If the result exceeds the range of the data type {@code int},
      * then {@code Integer.MIN_VALUE} or {@code Integer.MAX_VALUE} is returned.
      * In this case the result of {@link #cumulativeProbability(int)} called
@@ -131,11 +133,13 @@ public interface DiscreteDistribution {
     /**
      * Computes the inverse survival probability function of this distribution.
      * For a random variable {@code X} distributed according to this distribution,
-     * the returned value is
-     * <ul>
-     * <li>{@code inf{x in R | P(X>=x) <= p}} for {@code 0 <= p < 1},</li>
-     * <li>{@code inf{x in R | P(X>=x) < 1}} for {@code p = 1}.</li>
-     * </ul>
+     * the returned value is:
+     *
+     * <p>\[ x = \begin{cases}
+     *       \inf \{ x \in \mathbb Z : P(X \ge x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
+     *       \inf \{ x \in \mathbb Z : P(X \ge x) \lt 1 \}  &amp; \text{for } p = 1
+     *       \end{cases} \]
+     *
      * <p>If the result exceeds the range of the data type {@code int},
      * then {@code Integer.MIN_VALUE} or {@code Integer.MAX_VALUE} is returned.
      * In this case the result of {@link #survivalProbability(int)} called

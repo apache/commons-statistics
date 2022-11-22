@@ -102,11 +102,12 @@ public interface ContinuousDistribution {
     /**
      * Computes the quantile function of this distribution. For a random
      * variable {@code X} distributed according to this distribution, the
-     * returned value is
-     * <ul>
-     * <li>{@code inf{x in R | P(X<=x) >= p}} for {@code 0 < p <= 1},</li>
-     * <li>{@code inf{x in R | P(X<=x) > 0}} for {@code p = 0}.</li>
-     * </ul>
+     * returned value is:
+     *
+     * <p>\[ x = \begin{cases}
+     *       \inf \{ x \in \mathbb R : P(X \le x) \ge p\}   &amp; \text{for } 0 \lt p \le 1 \\
+     *       \inf \{ x \in \mathbb R : P(X \le x) \gt 0 \}  &amp; \text{for } p = 0
+     *       \end{cases} \]
      *
      * @param p Cumulative probability.
      * @return the smallest {@code p}-quantile of this distribution
@@ -118,11 +119,12 @@ public interface ContinuousDistribution {
     /**
      * Computes the inverse survival probability function of this distribution. For a random
      * variable {@code X} distributed according to this distribution, the
-     * returned value is
-     * <ul>
-     * <li>{@code inf{x in R | P(X>=x) <= p}} for {@code 0 <= p < 1},</li>
-     * <li>{@code inf{x in R | P(X>=x) < 1}} for {@code p = 1}.</li>
-     * </ul>
+     * returned value is:
+     *
+     * <p>\[ x = \begin{cases}
+     *       \inf \{ x \in \mathbb R : P(X \ge x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
+     *       \inf \{ x \in \mathbb R : P(X \ge x) \lt 1 \}  &amp; \text{for } p = 1
+     *       \end{cases} \]
      *
      * <p>By default, this is defined as {@code inverseCumulativeProbability(1 - p)}, but
      * the specific implementation may be more accurate.
