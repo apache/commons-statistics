@@ -22,7 +22,7 @@ package org.apache.commons.statistics.distribution;
  *
  * <p>The probability mass function of \( X \) is:
  *
- * <p>\[ f(k; n, p) = \frac{\binom{K}{k} \binom{N - K}{n-k}}{\binom{N}{n}} \]
+ * <p>\[ f(k; N, K, n) = \frac{\binom{K}{k} \binom{N - K}{n-k}}{\binom{N}{n}} \]
  *
  * <p>for \( N \in \{0, 1, 2, \dots\} \) the population size,
  * \( K \in \{0, 1, \dots, N\} \) the number of success states,
@@ -111,25 +111,27 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
      * Return the lowest domain value for the given hypergeometric distribution
      * parameters.
      *
-     * @param n Population size.
-     * @param m Number of successes in the population.
-     * @param k Sample size.
+     * @param nn Population size.
+     * @param k Number of successes in the population.
+     * @param n Sample size.
      * @return the lowest domain value of the hypergeometric distribution.
      */
-    private static int getLowerDomain(int n, int m, int k) {
-        return Math.max(0, m - (n - k));
+    private static int getLowerDomain(int nn, int k, int n) {
+        // Avoid overflow given N > n:
+        // n + K - N == K - (N - n)
+        return Math.max(0, k - (nn - n));
     }
 
     /**
      * Return the highest domain value for the given hypergeometric distribution
      * parameters.
      *
-     * @param m Number of successes in the population.
-     * @param k Sample size.
+     * @param k Number of successes in the population.
+     * @param n Sample size.
      * @return the highest domain value of the hypergeometric distribution.
      */
-    private static int getUpperDomain(int m, int k) {
-        return Math.min(k, m);
+    private static int getUpperDomain(int k, int n) {
+        return Math.min(n, k);
     }
 
     /**
@@ -248,10 +250,10 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     /**
      * {@inheritDoc}
      *
-     * <p>For population size \( N \), number of successes \( m \), and sample
+     * <p>For population size \( N \), number of successes \( K \), and sample
      * size \( n \), the mean is:
      *
-     * <p>\[ n \frac{m}{N} \]
+     * <p>\[ n \frac{K}{N} \]
      */
     @Override
     public double getMean() {
@@ -261,25 +263,24 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     /**
      * {@inheritDoc}
      *
-     * <p>For population size \( N \), number of successes \( m \), and sample
+     * <p>For population size \( N \), number of successes \( K \), and sample
      * size \( n \), the variance is:
      *
-     * <p>\[ n \frac{m}{N} \frac{N-m}{N} \frac{N-n}{N-1} \]
+     * <p>\[ n \frac{K}{N} \frac{N-K}{N} \frac{N-n}{N-1} \]
      */
     @Override
     public double getVariance() {
         final double N = getPopulationSize();
-        final double m = getNumberOfSuccesses();
+        final double K = getNumberOfSuccesses();
         final double n = getSampleSize();
-        return (n * m * (N - m) * (N - n)) / (N * N * (N - 1));
+        return (n * K * (N - K) * (N - n)) / (N * N * (N - 1));
     }
 
     /**
      * {@inheritDoc}
      *
-     * <p>For population size {@code N}, number of successes {@code m}, and sample
-     * size {@code n}, the lower bound of the support is
-     * {@code max(0, n + m - N)}.
+     * <p>For population size \( N \), number of successes \( K \), and sample
+     * size \( n \), the lower bound of the support is \( \max \{ 0, n + K - N \} \).
      *
      * @return lower bound of the support
      */
@@ -291,8 +292,8 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     /**
      * {@inheritDoc}
      *
-     * <p>For number of successes {@code m} and sample size {@code n}, the upper
-     * bound of the support is {@code min(m, n)}.
+     * <p>For number of successes \( K \), and sample
+     * size \( n \), the upper bound of the support is \( \min \{ K, n \} \).
      *
      * @return upper bound of the support
      */
