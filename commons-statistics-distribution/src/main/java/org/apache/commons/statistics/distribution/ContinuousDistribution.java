@@ -156,7 +156,7 @@ public interface ContinuousDistribution {
      * Gets the lower bound of the support.
      * It must return the same value as
      * {@code inverseCumulativeProbability(0)}, i.e.
-     * {@code inf {x in R | P(X <= x) > 0}}.
+     * \( \inf \{ x \in \mathbb R : P(X \le x) \gt 0 \} \).
      *
      * @return the lower bound of the support.
      */
@@ -166,7 +166,7 @@ public interface ContinuousDistribution {
      * Gets the upper bound of the support.
      * It must return the same
      * value as {@code inverseCumulativeProbability(1)}, i.e.
-     * {@code inf {x in R | P(X <= x) = 1}}.
+     * \( \inf \{ x \in \mathbb R : P(X \le x) = 1 \} \).
      *
      * @return the upper bound of the support.
      */

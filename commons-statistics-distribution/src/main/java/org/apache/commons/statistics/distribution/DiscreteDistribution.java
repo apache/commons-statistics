@@ -175,7 +175,7 @@ public interface DiscreteDistribution {
      * Gets the lower bound of the support.
      * This method must return the same value as
      * {@code inverseCumulativeProbability(0)}, i.e.
-     * {@code inf {x in Z | P(X <= x) > 0}}.
+     * \( \inf \{ x \in \mathbb Z : P(X \le x) \gt 0 \} \).
      * By convention, {@code Integer.MIN_VALUE} should be substituted
      * for negative infinity.
      *
@@ -187,7 +187,7 @@ public interface DiscreteDistribution {
      * Gets the upper bound of the support.
      * This method must return the same value as
      * {@code inverseCumulativeProbability(1)}, i.e.
-     * {@code inf {x in Z | P(X <= x) = 1}}.
+     * \( \inf \{ x \in \mathbb Z : P(X \le x) = 1 \} \).
      * By convention, {@code Integer.MAX_VALUE} should be substituted
      * for positive infinity.
      *
