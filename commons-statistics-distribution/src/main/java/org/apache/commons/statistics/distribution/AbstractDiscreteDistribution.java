@@ -197,10 +197,6 @@ abstract class AbstractDiscreteDistribution
             }
         }
 
-        // TODO
-        // Improve the simple bisection to use a faster search,
-        // e.g. a BrentSolver.
-
         return solveInverseProbability(fun, lower, upper);
     }
 
