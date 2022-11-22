@@ -75,31 +75,61 @@ class TrapezoidalDistributionTest extends BaseContinuousDistributionTest {
 
     @ParameterizedTest
     @MethodSource
-    void testAdditionalMoments(double a, double b, double c, double d, double mean, double variance) {
+    void testAdditionalMoments(double a, double b, double c, double d, double mean, double variance, int ulps) {
         final TrapezoidalDistribution dist = TrapezoidalDistribution.of(a, b, c, d);
-        testMoments(dist, mean, variance, DoubleTolerances.ulps(8));
+        testMoments(dist, mean, variance, DoubleTolerances.ulps(ulps));
     }
 
     static Stream<Arguments> testAdditionalMoments() {
         return Stream.of(
             // Computed using scipy.stats.trapezoid
             // Up slope, then flat
-            Arguments.of(0, 0.1,   1, 1, 0.5245614035087719, 0.07562480763311791),
-            Arguments.of(0, 1e-3,  1, 1, 0.5002499583124894, 0.08325006249999839),
-            Arguments.of(0, 1e-6,  1, 1, 0.5000002499999582, 0.08333325000006259),
-            Arguments.of(0, 1e-9,  1, 1, 0.50000000025,      0.08333333324999997),
-            Arguments.of(0, 1e-12, 1, 1, 0.50000000000025,   0.08333333333324999),
-            Arguments.of(0, 1e-15, 1, 1, 0.5000000000000003, 0.0833333333333332),
-            Arguments.of(0, 0,     1, 1, 0.5,                0.08333333333333331),
+            Arguments.of(0, 0.1,   1, 1, 0.5245614035087719, 0.07562480763311791, 8),
+            Arguments.of(0, 1e-3,  1, 1, 0.5002499583124894, 0.08325006249999839, 8),
+            Arguments.of(0, 1e-6,  1, 1, 0.5000002499999582, 0.08333325000006259, 8),
+            Arguments.of(0, 1e-9,  1, 1, 0.50000000025,      0.08333333324999997, 4),
+            Arguments.of(0, 1e-12, 1, 1, 0.50000000000025,   0.08333333333324999, 4),
+            Arguments.of(0, 1e-15, 1, 1, 0.5000000000000003, 0.0833333333333332, 4),
+            Arguments.of(0, 0,     1, 1, 0.5,                0.08333333333333331, 1),
             // Flat, then down slope
-            Arguments.of(0, 0, 0.9,               1, 0.47543859649122816, 0.07562480763311777),
-            Arguments.of(0, 0, 0.999,             1, 0.49975004168751025, 0.08325006249999842),
-            Arguments.of(0, 0, 0.999999,          1, 0.4999997500000417,  0.08333325000006248),
-            Arguments.of(0, 0, 0.999999999,       1, 0.49999999975000003, 0.08333333325000003),
-            Arguments.of(0, 0, 0.999999999999,    1, 0.49999999999975003, 0.08333333333324999),
-            Arguments.of(0, 0, 0.999999999999999, 1, 0.4999999999999998,  0.08333333333333326),
-            Arguments.of(0, 0, 1,                 1, 0.5,                 0.08333333333333331)
+            Arguments.of(0, 0, 0.9,               1, 0.47543859649122816, 0.07562480763311777, 4),
+            Arguments.of(0, 0, 0.999,             1, 0.49975004168751025, 0.08325006249999842, 4),
+            Arguments.of(0, 0, 0.999999,          1, 0.4999997500000417,  0.08333325000006248, 2),
+            Arguments.of(0, 0, 0.999999999,       1, 0.49999999975000003, 0.08333333325000003, 1),
+            Arguments.of(0, 0, 0.999999999999,    1, 0.49999999999975003, 0.08333333333324999, 1),
+            Arguments.of(0, 0, 0.999999999999999, 1, 0.4999999999999998,  0.08333333333333326, 1),
+            Arguments.of(0, 0, 1,                 1, 0.5,                 0.08333333333333331, 1),
+            // Computed
+            moments(-3, 1, 4, 12, 10),
+            moments(1, 2, 3, 4, 4),
+            moments(11, 15, 22, 30, 4),
+            moments(0, 1, 9, 10, 4),
+            moments(-12, -10, -2, -1, 8)
         );
+    }
+
+    /**
+     * Compute the mean and variance and return the arguments: [a, b, c, d, mean, variance, ulps].
+     * The ulps are the expected units of least precision error for the test. This is typically
+     * limited by the variance as it depends on accuracy of the mean squared.
+     */
+    private static Arguments moments(double a, double b, double c, double d, int ulps) {
+        final BigDecimal aa = new BigDecimal(a);
+        final BigDecimal bb = new BigDecimal(b);
+        final BigDecimal cc = new BigDecimal(c);
+        final BigDecimal dd = new BigDecimal(d);
+        final MathContext mc = MathContext.DECIMAL128;
+        // Mean
+        BigDecimal divisor = dd.add(cc).subtract(aa).subtract(bb).multiply(BigDecimal.valueOf(3));
+        BigDecimal dc = dd.pow(3).subtract(cc.pow(3)).divide(dd.subtract(cc), mc);
+        BigDecimal ba = bb.pow(3).subtract(aa.pow(3)).divide(bb.subtract(aa), mc);
+        final BigDecimal mu = dc.subtract(ba).divide(divisor, mc);
+        // Variance
+        divisor = divisor.multiply(BigDecimal.valueOf(2));
+        dc = dd.pow(4).subtract(cc.pow(4)).divide(dd.subtract(cc), mc);
+        ba = bb.pow(4).subtract(aa.pow(4)).divide(bb.subtract(aa), mc);
+        final BigDecimal var = dc.subtract(ba).divide(divisor, mc).subtract(mu.pow(2));
+        return Arguments.of(a, b, c, d, mu.doubleValue(), var.doubleValue(), ulps);
     }
 
     /**
