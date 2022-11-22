@@ -102,9 +102,9 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
         // This also ensures exp(z) is between 1 and 0 and avoids
         // overflow for large negative values of (x - mu).
         // Exploits the reciprocal relation: exp(-x) == 1 / exp(x)
-        //     exp(-z)                   1                     exp(z)
-        // --------------- = -------------------------- = --------------
-        // (1 + exp(-z))^2    exp(z) (1 + 1 / exp(z))^2   (1 + exp(z))^2
+        //     exp(-z)                   1                exp(z)     exp(z)
+        // --------------- = -------------------------- * ------ = --------------
+        // (1 + exp(-z))^2    exp(z) (1 + 1 / exp(z))^2   exp(z)   (1 + exp(z))^2
         final double z = -Math.abs(x - mu) / scale;
         final double v = Math.exp(z);
         return v / ((1 + v) * (1 + v)) / scale;
