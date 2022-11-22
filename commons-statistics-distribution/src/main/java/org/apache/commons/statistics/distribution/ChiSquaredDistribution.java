@@ -118,7 +118,7 @@ public final class ChiSquaredDistribution extends AbstractContinuousDistribution
     /**
      * {@inheritDoc}
      *
-     * <p>For {@code k} degrees of freedom, the mean is {@code k}.
+     * <p>For \( k \) degrees of freedom, the mean is \( k \).
      */
     @Override
     public double getMean() {
@@ -128,7 +128,7 @@ public final class ChiSquaredDistribution extends AbstractContinuousDistribution
     /**
      * {@inheritDoc}
      *
-     * @return {@code 2 * k}, where {@code k} is the number of degrees of freedom.
+     * <p>For \( k \) degrees of freedom, the variance is \( 2k \).
      */
     @Override
     public double getVariance() {

@@ -282,6 +282,15 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      *
      * <p>Represents the true mean of the truncated normal distribution rather
      * than the parent normal distribution mean.
+     *
+     * <p>For \( \mu \) mean of the parent normal distribution,
+     * \( \sigma \) standard deviation of the parent normal distribution, and
+     * \( a \lt b \) the truncation interval, the mean is:
+     *
+     * <p>\[ \mu + \frac{\phi(a)-\phi(b)}{\Phi(b) - \Phi(a)}\sigma \]
+     *
+     * <p>where \( \phi \) is the probability density function of the standard normal distribution
+     * and \( \Phi \) is its cumulative distribution function.
      */
     @Override
     public double getMean() {
@@ -297,6 +306,16 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      *
      * <p>Represents the true variance of the truncated normal distribution rather
      * than the parent normal distribution variance.
+     *
+     * <p>For \( \mu \) mean of the parent normal distribution,
+     * \( \sigma \) standard deviation of the parent normal distribution, and
+     * \( a \lt b \) the truncation interval, the variance is:
+     *
+     * <p>\[ \sigma^2 \left[1 + \frac{a\phi(a)-b\phi(b)}{\Phi(b) - \Phi(a)} -
+     *       \left( \frac{\phi(a)-\phi(b)}{\Phi(b) - \Phi(a)} \right)^2 \right] \]
+     *
+     * <p>where \( \phi \) is the probability density function of the standard normal distribution
+     * and \( \Phi \) is its cumulative distribution function.
      */
     @Override
     public double getVariance() {

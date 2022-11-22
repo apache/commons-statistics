@@ -171,7 +171,7 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For standard deviation parameter {@code s}, the variance is {@code s^2}.
+     * <p>For standard deviation parameter \( \sigma \), the variance is \( \sigma^2 \).
      */
     @Override
     public double getVariance() {

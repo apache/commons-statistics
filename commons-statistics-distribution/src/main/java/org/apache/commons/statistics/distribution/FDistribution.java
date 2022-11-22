@@ -79,7 +79,6 @@ public final class FDistribution extends AbstractContinuousDistribution {
         }
         if (denominatorDegreesOfFreedom > MIN_DENOMINATOR_DF_FOR_VARIANCE) {
             final double denomDFMinusTwo = denominatorDegreesOfFreedom - 2;
-
             variance = (2 * (denominatorDegreesOfFreedom * denominatorDegreesOfFreedom) *
                             (numeratorDegreesOfFreedom + denominatorDegreesOfFreedom - 2)) /
                        (numeratorDegreesOfFreedom * (denomDFMinusTwo * denomDFMinusTwo) *
@@ -281,11 +280,12 @@ public final class FDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For denominator degrees of freedom parameter {@code b}, the mean is
-     * <ul>
-     *  <li>if {@code b > 2} then {@code b / (b - 2)},</li>
-     *  <li>else undefined ({@code NaN}).
-     * </ul>
+     * <p>For denominator degrees of freedom parameter \( m \), the mean is:
+     *
+     * <p>\[ \operatorname{E}[X] = \begin{cases}
+     *       \frac{m}{m-2}    &amp; \text{for } m \gt 2 \\
+     *       \text{undefined} &amp; \text{otherwise}
+     *       \end{cases} \]
      *
      * @return the mean, or {@code NaN} if it is not defined.
      */
@@ -297,15 +297,13 @@ public final class FDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For numerator degrees of freedom parameter {@code a} and denominator
-     * degrees of freedom parameter {@code b}, the variance is
-     * <ul>
-     *  <li>
-     *    if {@code b > 4} then
-     *    {@code [2 * b^2 * (a + b - 2)] / [a * (b - 2)^2 * (b - 4)]},
-     *  </li>
-     *  <li>else undefined ({@code NaN}).
-     * </ul>
+     * <p>For numerator degrees of freedom parameter \( n \) and denominator
+     * degrees of freedom parameter \( m \), the variance is:
+     *
+     * <p>\[ \operatorname{var}[X] = \begin{cases}
+     *       \frac{2m^2 (n+m-2)}{n (m-2)^2 (m-4)} &amp; \text{for } m \gt 4 \\
+     *       \text{undefined}                     &amp; \text{otherwise}
+     *       \end{cases} \]
      *
      * @return the variance, or {@code NaN} if it is not defined.
      */

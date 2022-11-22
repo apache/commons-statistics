@@ -147,7 +147,7 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
     /**
      * {@inheritDoc}
      *
-     * <p>For mean {@code k}, the variance is {@code k^2}.
+     * <p>For mean \( \mu \), the variance is \( \mu^2 \).
      */
     @Override
     public double getVariance() {

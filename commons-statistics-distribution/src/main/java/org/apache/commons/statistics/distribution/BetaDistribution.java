@@ -185,8 +185,10 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For first shape parameter {@code alpha} and second shape parameter
-     * {@code beta}, the mean is {@code alpha / (alpha + beta)}.
+     * <p>For first shape parameter \( \alpha \) and second shape parameter
+     * \( \beta \), the mean is:
+     *
+     * <p>\[ \frac{\alpha}{\alpha + \beta} \]
      */
     @Override
     public double getMean() {
@@ -196,9 +198,10 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For first shape parameter {@code alpha} and second shape parameter
-     * {@code beta}, the variance is
-     * {@code (alpha * beta) / [(alpha + beta)^2 * (alpha + beta + 1)]}.
+     * <p>For first shape parameter \( \alpha \) and second shape parameter
+     * \( \beta \), the variance is:
+     *
+     * <p>\[ \frac{\alpha \beta}{(\alpha + \beta)^2 (\alpha + \beta + 1)} \].
      */
     @Override
     public double getVariance() {

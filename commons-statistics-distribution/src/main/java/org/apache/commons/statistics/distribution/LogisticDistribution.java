@@ -177,7 +177,9 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For scale parameter {@code s}, the variance is {@code s^2 * pi^2 / 3}.
+     * <p>For scale parameter \( s \), the variance is:
+     *
+     * <p>\[ \frac{s^2 \pi^2}{3} \].
      */
     @Override
     public double getVariance() {

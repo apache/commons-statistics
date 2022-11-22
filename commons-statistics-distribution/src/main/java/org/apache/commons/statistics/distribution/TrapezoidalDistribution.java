@@ -400,8 +400,8 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
     /**
      * {@inheritDoc}
      *
-     * <p>For lower limit {@code a}, start of the density constant region {@code b},
-     * end of the density constant region {@code c} and upper limit {@code d}, the
+     * <p>For lower limit \( a \), start of the density constant region \( b \),
+     * end of the density constant region \( c \) and upper limit \( d \), the
      * mean is:
      *
      * <p>\[ \frac{1}{3(d+c-b-a)}\left(\frac{d^3-c^3}{d-c}-\frac{b^3-a^3}{b-a}\right) \]
@@ -412,8 +412,8 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
     /**
      * {@inheritDoc}
      *
-     * <p>For lower limit {@code a}, start of the density constant region {@code b},
-     * end of the density constant region {@code c} and upper limit {@code d}, the
+     * <p>For lower limit \( a \), start of the density constant region \( b \),
+     * end of the density constant region \( c \) and upper limit \( d \), the
      * variance is:
      *
      * <p>\[ \frac{1}{6(d+c-b-a)}\left(\frac{d^4-c^4}{d-c}-\frac{b^4-a^4}{b-a}\right) - \mu^2 \]

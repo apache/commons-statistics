@@ -248,8 +248,10 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     /**
      * {@inheritDoc}
      *
-     * <p>For population size {@code N}, number of successes {@code m}, and sample
-     * size {@code n}, the mean is {@code n * m / N}.
+     * <p>For population size \( N \), number of successes \( m \), and sample
+     * size \( n \), the mean is:
+     *
+     * <p>\[ n \frac{m}{N} \]
      */
     @Override
     public double getMean() {
@@ -259,16 +261,17 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
     /**
      * {@inheritDoc}
      *
-     * <p>For population size {@code N}, number of successes {@code m}, and sample
-     * size {@code n}, the variance is
-     * {@code (n * m * (N - n) * (N - m)) / (N^2 * (N - 1))}.
+     * <p>For population size \( N \), number of successes \( m \), and sample
+     * size \( n \), the variance is:
+     *
+     * <p>\[ n \frac{m}{N} \frac{N-m}{N} \frac{N-n}{N-1} \]
      */
     @Override
     public double getVariance() {
         final double N = getPopulationSize();
         final double m = getNumberOfSuccesses();
         final double n = getSampleSize();
-        return (n * m * (N - n) * (N - m)) / (N * N * (N - 1));
+        return (n * m * (N - m) * (N - n)) / (N * N * (N - 1));
     }
 
     /**

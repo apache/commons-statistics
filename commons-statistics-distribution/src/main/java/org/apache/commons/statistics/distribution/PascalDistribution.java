@@ -183,8 +183,10 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For number of successes {@code r} and probability of success {@code p},
-     * the mean is {@code r * (1 - p) / p}.
+     * <p>For number of successes \( r \) and probability of success \( p \),
+     * the mean is:
+     *
+     * <p>\[ \frac{r (1 - p)}{p} \]
      */
     @Override
     public double getMean() {
@@ -196,8 +198,10 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For number of successes {@code r} and probability of success {@code p},
-     * the variance is {@code r * (1 - p) / p^2}.
+     * <p>For number of successes \( r \) and probability of success \( p \),
+     * the variance is:
+     *
+     * <p>\[ \frac{r (1 - p)}{p^2} \]
      */
     @Override
     public double getVariance() {

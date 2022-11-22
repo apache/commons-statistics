@@ -157,13 +157,25 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
         return RegularizedGamma.Q.value(mu, mu * x * x / omega);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For shape parameter \( \mu \) and scale parameter \( \Omega \), the mean is:
+     *
+     * <p>\[ \frac{\Gamma(m+\frac{1}{2})}{\Gamma(m)}\left(\frac{\Omega}{m}\right)^{1/2} \]
+     */
     @Override
     public double getMean() {
         return mean;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     *
+     * <p>For shape parameter \( \mu \) and scale parameter \( \Omega \), the variance is:
+     *
+     * <p>\[ \Omega\left(1-\frac{1}{m}\left(\frac{\Gamma(m+\frac{1}{2})}{\Gamma(m)}\right)^2\right) \]
+     */
     @Override
     public double getVariance() {
         return variance;

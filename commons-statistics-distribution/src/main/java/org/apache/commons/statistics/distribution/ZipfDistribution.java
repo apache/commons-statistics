@@ -156,12 +156,13 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For number of elements {@code N} and exponent {@code s}, the mean is
-     * {@code Hs1 / Hs}, where
-     * <ul>
-     *  <li>{@code Hs1 = generalizedHarmonic(N, s - 1)},</li>
-     *  <li>{@code Hs = generalizedHarmonic(N, s)}.</li>
-     * </ul>
+     * <p>For number of elements \( N \) and exponent \( s \), the mean is:
+     *
+     * <p>\[ \frac{H_{N,s-1}}{H_{N,s}} \]
+     *
+     * <p>where \( H_{N,k} \) is the
+     * <a href="https://en.wikipedia.org/wiki/Harmonic_number#Generalized_harmonic_numbers">
+     * generalized harmonic number</a> of order \( N \) of \( k \).
      */
     @Override
     public double getMean() {
@@ -176,13 +177,13 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For number of elements {@code N} and exponent {@code s}, the mean is
-     * {@code (Hs2 / Hs) - (Hs1^2 / Hs^2)}, where
-     * <ul>
-     *  <li>{@code Hs2 = generalizedHarmonic(N, s - 2)},</li>
-     *  <li>{@code Hs1 = generalizedHarmonic(N, s - 1)},</li>
-     *  <li>{@code Hs = generalizedHarmonic(N, s)}.</li>
-     * </ul>
+     * <p>For number of elements \( N \) and exponent \( s \), the variance is:
+     *
+     * <p>\[ \frac{H_{N,s-2}}{H_{N,s}} - \frac{H_{N,s-1}^2}{H_{N,s}^2} \]
+     *
+     * <p>where \( H_{N,k} \) is the
+     * <a href="https://en.wikipedia.org/wiki/Harmonic_number#Generalized_harmonic_numbers">
+     * generalized harmonic number</a> of order \( N \) of \( k \).
      */
     @Override
     public double getVariance() {

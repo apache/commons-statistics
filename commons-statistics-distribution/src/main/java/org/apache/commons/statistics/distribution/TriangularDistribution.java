@@ -23,7 +23,7 @@ package org.apache.commons.statistics.distribution;
  * <p>The probability density function of \( X \) is:
  *
  * <p>\[ f(x; a, b, c) = \begin{cases}
- *       \frac{2(x-a)}{(b-a)(c-a)} &amp; \text{for } a \le x \lt c  \\
+ *       \frac{2(x-a)}{(b-a)(c-a)} &amp; \text{for } a \le x \lt c \\
  *       \frac{2}{b-a}             &amp; \text{for } x = c \\
  *       \frac{2(b-x)}{(b-a)(b-c)} &amp; \text{for } c \lt x \le b \\
  *       \end{cases} \]
@@ -202,7 +202,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
     /**
      * {@inheritDoc}
      *
-     * <p>For lower limit {@code a}, upper limit {@code b}, and mode {@code c},
+     * <p>For lower limit \( a \), upper limit \( b \), and mode \( c \),
      * the mean is \( (a + b + c) / 3 \).
      */
     @Override
@@ -213,7 +213,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
     /**
      * {@inheritDoc}
      *
-     * <p>For lower limit {@code a}, upper limit {@code b}, and mode {@code c},
+     * <p>For lower limit \( a \), upper limit \( b \), and mode \( c \),
      * the variance is \( (a^2 + b^2 + c^2 - ab - ac - bc) / 18 \).
      */
     @Override

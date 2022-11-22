@@ -206,7 +206,9 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For probability parameter {@code p}, the mean is {@code (1 - p) / p}.
+     * <p>For probability parameter \( p \), the mean is:
+     *
+     * <p>\[ \frac{1 - p}{p} \]
      */
     @Override
     public double getMean() {
@@ -216,8 +218,9 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For probability parameter {@code p}, the variance is
-     * {@code (1 - p) / (p * p)}.
+     * <p>For probability parameter \( p \), the variance is:
+     *
+     * <p>\[ \frac{1 - p}{p^2} \]
      */
     @Override
     public double getVariance() {

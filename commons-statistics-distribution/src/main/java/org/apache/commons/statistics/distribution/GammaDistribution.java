@@ -198,8 +198,8 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For shape parameter {@code alpha} and scale parameter {@code beta}, the
-     * mean is {@code alpha * beta}.
+     * <p>For shape parameter \( k \) and scale parameter \( \theta \), the
+     * mean is \( k \theta \).
      */
     @Override
     public double getMean() {
@@ -209,8 +209,8 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For shape parameter {@code alpha} and scale parameter {@code beta}, the
-     * variance is {@code alpha * beta^2}.
+     * <p>For shape parameter \( k \) and scale parameter \( \theta \), the
+     * variance is \( k \theta^2 \).
      */
     @Override
     public double getVariance() {

@@ -280,11 +280,12 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For degrees of freedom parameter {@code df}, the mean is
-     * <ul>
-     *  <li>zero if {@code df > 1}, and</li>
-     *  <li>undefined ({@code NaN}) otherwise.</li>
-     * </ul>
+     * <p>For degrees of freedom parameter \( v \), the mean is:
+     *
+     * <p>\[ \operatorname{E}[X] = \begin{cases}
+     *       0                &amp; \text{for } v \gt 1 \\
+     *       \text{undefined} &amp; \text{otherwise}
+     *       \end{cases} \]
      *
      * @return the mean, or {@code NaN} if it is not defined.
      */
@@ -294,12 +295,13 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For degrees of freedom parameter {@code df}, the variance is
-     * <ul>
-     *  <li>{@code df / (df - 2)} if {@code df > 2},</li>
-     *  <li>positive infinity if {@code 1 < df <= 2}, and</li>
-     *  <li>undefined ({@code NaN}) otherwise.</li>
-     * </ul>
+     * <p>For degrees of freedom parameter \( v \), the variance is:
+     *
+     * <p>\[ \operatorname{var}[X] = \begin{cases}
+     *       \frac{v}{v - 2}  &amp; \text{for } v \gt 2 \\
+     *       \infty           &amp; \text{for } 1 \lt v \le 2 \\
+     *       \text{undefined} &amp; \text{otherwise}
+     *       \end{cases} \]
      *
      * @return the variance, or {@code NaN} if it is not defined.
      */

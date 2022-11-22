@@ -166,8 +166,7 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
     /**
      * {@inheritDoc}
      *
-     * <p>For lower bound {@code a} and upper bound {@code b}, the mean is
-     * {@code 0.5 * (a + b)}.
+     * <p>For lower bound \( a \) and upper bound \( b \), the mean is \( \frac{a + b}{2} \).
      */
     @Override
     public double getMean() {
@@ -178,8 +177,7 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
     /**
      * {@inheritDoc}
      *
-     * <p>For lower bound {@code a} and upper bound {@code b}, the
-     * variance is {@code (b - a)^2 / 12}.
+     * <p>For lower bound \( a \) and upper bound \( b \), the variance is \( \frac{(b - a)^2}{12} \).
      */
     @Override
     public double getVariance() {

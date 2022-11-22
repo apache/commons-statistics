@@ -234,8 +234,11 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The mean is {@code scale * Gamma(1 + (1 / shape))}, where {@code Gamma()}
-     * is the Gamma-function.
+     * <p>For shape parameter \( k \) and scale parameter \( \lambda \), the mean is:
+     *
+     * <p>\[ \lambda \, \Gamma(1+\frac{1}{k}) \]
+     *
+     * <p>where \( \Gamma \) is the Gamma-function.
      */
     @Override
     public double getMean() {
@@ -249,8 +252,12 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The variance is {@code scale^2 * Gamma(1 + (2 / shape)) - mean^2}
-     * where {@code Gamma()} is the Gamma-function.
+     * <p>For shape parameter \( k \) and scale parameter \( \lambda \), the variance is:
+     *
+     * <p>\[ \lambda^2 \left[ \Gamma\left(1+\frac{2}{k}\right) -
+     *                        \left(\Gamma\left(1+\frac{1}{k}\right)\right)^2 \right] \]
+     *
+     * <p>where \( \Gamma \) is the Gamma-function.
      */
     @Override
     public double getVariance() {

@@ -217,8 +217,7 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
     /**
      * {@inheritDoc}
      *
-     * <p>For lower bound {@code lower} and upper bound {@code upper}, the mean is
-     * {@code 0.5 * (lower + upper)}.
+     * <p>For lower bound \( a \) and upper bound \( b \), the mean is \( \frac{a + b}{2} \).
      */
     @Override
     public double getMean() {
@@ -229,8 +228,11 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
     /**
      * {@inheritDoc}
      *
-     * <p>For lower bound {@code lower} and upper bound {@code upper}, and
-     * {@code n = upper - lower + 1}, the variance is {@code (n^2 - 1) / 12}.
+     * <p>For lower bound \( a \) and upper bound \( b \), the variance is:
+     *
+     * <p>\[ \frac{n^2 - 1}{12} \]
+     *
+     * <p>where \( n = b - a + 1 \).
      */
     @Override
     public double getVariance() {

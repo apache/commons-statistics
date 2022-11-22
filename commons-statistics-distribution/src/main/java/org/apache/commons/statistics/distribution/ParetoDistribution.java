@@ -132,13 +132,13 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * For scale {@code k}, and shape {@code α} of this distribution, the PDF
-     * is given by
-     * <ul>
-     * <li>{@code 0} if {@code x < k},</li>
-     * <li>{@code α * k^α / x^(α + 1)} otherwise.</li>
-     * </ul>
+     *
+     * <p>For scale parameter \( k \) and shape parameter \( \alpha \), the PDF is:
+     *
+     * <p>\[ f(x; k, \alpha) = \begin{cases}
+     *       0                                       &amp; \text{for } x \lt k \\
+     *       \frac{\alpha  k^\alpha}{x^{\alpha + 1}} &amp; \text{for } x \ge k
+     *       \end{cases} \]
      */
     @Override
     public double density(double x) {
@@ -162,12 +162,13 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * For scale {@code k}, and shape {@code α} of this distribution, the CDF is given by
-     * <ul>
-     * <li>{@code 0} if {@code x < k},</li>
-     * <li>{@code 1 - (k / x)^α} otherwise.</li>
-     * </ul>
+     *
+     * <p>For scale parameter \( k \) and shape parameter \( \alpha \), the CDF is:
+     *
+     * <p>\[ F(x; k, \alpha) = \begin{cases}
+     *       0                                     &amp; \text{for } x \le k \\
+     *       1 - \left( \frac{k}{x} \right)^\alpha &amp; \text{for } x \gt k
+     *       \end{cases} \]
      */
     @Override
     public double cumulativeProbability(double x)  {
@@ -181,12 +182,13 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * For scale {@code k}, and shape {@code α} of this distribution, the survival function is given by
-     * <ul>
-     * <li>{@code 1} if {@code x < k},</li>
-     * <li>{@code (k / x)^α} otherwise.</li>
-     * </ul>
+     *
+     * <p>For scale parameter \( k \) and shape parameter \( \alpha \), the survival function is:
+     *
+     * <p>\[ S(x; k, \alpha) = \begin{cases}
+     *       1                                 &amp; \text{for } x \le k \\
+     *       \left( \frac{k}{x} \right)^\alpha &amp; \text{for } x \gt k
+     *       \end{cases} \]
      */
     @Override
     public double survivalProbability(double x)  {
@@ -224,12 +226,13 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * For scale {@code k} and shape {@code α}, the mean is given by
-     * <ul>
-     * <li>{@code ∞} if {@code α <= 1},</li>
-     * <li>{@code α * k / (α - 1)} otherwise.</li>
-     * </ul>
+     *
+     * <p>For scale parameter \( k \) and shape parameter \( \alpha \), the mean is:
+     *
+     * <p>\[ \operatorname{E}[X] = \begin{cases}
+     *       \infty                      &amp; \text{for } \alpha \le 1 \\
+     *       \frac{k \alpha}{(\alpha-1)} &amp; \text{for } \alpha \gt 1
+     *       \end{cases} \]
      */
     @Override
     public double getMean() {
@@ -244,12 +247,13 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
 
     /**
      * {@inheritDoc}
-     * <p>
-     * For scale {@code k} and shape {@code α}, the variance is given by
-     * <ul>
-     * <li>{@code ∞} if {@code 1 < α <= 2},</li>
-     * <li>{@code k^2 * α / ((α - 1)^2 * (α - 2))} otherwise.</li>
-     * </ul>
+     *
+     * <p>For scale parameter \( k \) and shape parameter \( \alpha \), the variance is:
+     *
+     * <p>\[ \operatorname{var}[X] = \begin{cases}
+     *       \infty                                     &amp; \text{for } \alpha \le 2 \\
+     *       \frac{k^2 \alpha}{(\alpha-1)^2 (\alpha-2)} &amp; \text{for } \alpha \gt 2
+     *       \end{cases} \]
      */
     @Override
     public double getVariance() {

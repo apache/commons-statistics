@@ -153,7 +153,7 @@ public final class LaplaceDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The variance is {@code 2 * beta^2}.
+     * <p>For scale parameter \( b \), the variance is \( 2 b^2 \).
      */
     @Override
     public double getVariance() {

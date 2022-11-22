@@ -168,8 +168,7 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For {@code n} trials and probability parameter {@code p}, the mean is
-     * {@code n * p}.
+     * <p>For number of trials \( n \) and probability of success \( p \), the mean is \( np \).
      */
     @Override
     public double getMean() {
@@ -179,8 +178,7 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For {@code n} trials and probability parameter {@code p}, the variance is
-     * {@code n * p * (1 - p)}.
+     * <p>For number of trials \( n \) and probability of success \( p \), the variance is \( np (1 - p) \).
      */
     @Override
     public double getVariance() {
