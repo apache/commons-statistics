@@ -82,7 +82,7 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
                 pdf = x -> Math.exp(logpdf.applyAsDouble(x));
             } else  {
                 // Assume Dirac function
-                logpdf = x -> x > scale ? -Double.POSITIVE_INFINITY : Double.POSITIVE_INFINITY;
+                logpdf = x -> x > scale ? Double.NEGATIVE_INFINITY : Double.POSITIVE_INFINITY;
                 // PDF has infinite value at lower bound
                 pdf = x -> x > scale ? 0 : Double.POSITIVE_INFINITY;
             }
@@ -103,7 +103,6 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
         if (scale <= 0 || scale == Double.POSITIVE_INFINITY) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE_FINITE, scale);
         }
-
         if (shape <= 0) {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
         }
@@ -297,6 +296,41 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Pareto distribution sampler.
-        return InverseTransformParetoSampler.of(rng, scale, shape)::sample;
+        // Commons RNG v1.5 uses nextDouble() for (1 - p) effectively sampling from p in (0, 1].
+        // Ensure sampling is concentrated at the lower / upper bound at extreme shapes:
+        // Large shape should sample using p in [0, 1)  (lower bound)
+        // Small shape should sample using p in (0, 1]  (upper bound)
+        // Note: For small shape the input RNG is also wrapped to use nextLong as the source of
+        // randomness; this ensures the nextDouble method uses the interface output of [0, 1).
+        final UniformRandomProvider wrappedRng = shape >= 1 ? new InvertedRNG(rng) : rng::nextLong;
+        return InverseTransformParetoSampler.of(wrappedRng, scale, shape)::sample;
+    }
+
+    /**
+     * Create a RNG that inverts the output from nextDouble() as (1 - nextDouble()).
+     */
+    private static class InvertedRNG implements UniformRandomProvider {
+        /** Source of randomness. */
+        private final UniformRandomProvider rng;
+
+        /**
+         * @param rng Source of randomness
+         */
+        InvertedRNG(UniformRandomProvider rng) {
+            this.rng = rng;
+        }
+
+        @Override
+        public long nextLong() {
+            // Delegate the source of randomness
+            return rng.nextLong();
+        }
+
+        @Override
+        public double nextDouble() {
+            // Return a value in (0, 1].
+            // This assumes the interface method outputs in [0, 1).
+            return 1 - UniformRandomProvider.super.nextDouble();
+        }
     }
 }
