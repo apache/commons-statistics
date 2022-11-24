@@ -16,10 +16,11 @@
  */
 package org.apache.commons.statistics.distribution;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link NakagamiDistribution}.
@@ -124,12 +125,49 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
         testMoments(dist, mean, variance, tolerance);
     }
 
-    @Test
-    void testExtremeLogDensity() {
-        // XXX: Verify with more test data from a reference distribution
-        final NakagamiDistribution dist = NakagamiDistribution.of(0.5, 1);
-        final double x = 50;
-        Assertions.assertEquals(0.0, dist.density(x));
-        Assertions.assertEquals(-1250.22579, dist.logDensity(x), 1e-4);
+    /**
+     * Test log density where the density is zero.
+     */
+    @ParameterizedTest
+    @MethodSource
+    void testAdditionalLogDensity(double mu, double omega, double[] x, double[] expected) {
+        final NakagamiDistribution dist = NakagamiDistribution.of(mu, omega);
+        testLogDensity(dist, x, expected, DoubleTolerances.relative(1e-15));
+    }
+
+    static Stream<Arguments> testAdditionalLogDensity() {
+        final double[] x = {50, 55, 60, 80, 120};
+        return Stream.of(
+            // scipy.stats 1.9.3  (no support for omega):
+            // nakagami.logpdf(x, 0.5)
+            Arguments.of(0.5, 1, x,
+                new double[]{-1250.2257913526448, -1512.7257913526448, -1800.2257913526448,
+                    -3200.2257913526446, -7200.225791352645}),
+            // nakagami.logpdf(x, 1.5)   (no support for omega)
+            Arguments.of(1.5, 1, x,
+                new double[]{-3740.7538269087863, -4528.063206549177, -5390.389183795199,
+                    -9589.813819650295, -21589.00288943408}),
+            // R nakagami 1.1.0 package:
+            // print(dnaka(x, 0.5, 2, log=TRUE), digits=17)
+            Arguments.of(0.5, 2, x,
+                new double[]{-625.57236494292476, -756.82236494292465, -900.57236494292465,
+                    -1600.57236494292442, -3600.57236494292420}),
+            // print(dnaka(x, 0.5, 0.75, log=TRUE), digits=17)
+            Arguments.of(0.5, 0.75, x,
+                new double[]{-1666.7486169830854, -2016.7486169830854, -2400.0819503164184,
+                    -4266.7486169830854, -9600.0819503164203}),
+            // print(dnaka(x, 1.5, 0.75, log=TRUE), digits=17)
+            Arguments.of(1.5, 0.75, x,
+                new double[]{-4990.3223038001088, -6040.1316834404988, -7189.9576606865212,
+                    -12789.3822965416184, -28788.5713663254028}),
+            // print(dnaka(x, 1.5, 1.75, log=TRUE), digits=17)
+            Arguments.of(1.5, 1.75, x,
+                new double[]{-2134.4503934478316, -2584.2597730882230, -3076.9428931913867,
+                    -5476.3675290464835, -12332.6994559731247}),
+            // print(dnaka(x, 1.5, 7.75, log=TRUE), digits=17)
+            Arguments.of(1.5, 7.75, x,
+                new double[]{-477.69633391576963, -579.11861678196749, -690.23491660863317,
+                    -1231.59503633469740, -2779.17120289267450})
+        );
     }
 }
