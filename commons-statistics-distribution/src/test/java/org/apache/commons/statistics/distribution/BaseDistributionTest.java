@@ -296,38 +296,6 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     }
 
     /**
-     * Creates the tolerance using an absolute error.
-     *
-     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
-     * is used.
-     *
-     * @param testData Test data
-     * @param tolerance Function to create the absolute tolerance
-     * @return the tolerance
-     */
-    DoubleTolerance createTestAbsTolerance(
-            D testData, ToDoubleFunction<D> tolerance) {
-        final double eps = tolerance == null ? 0 : tolerance.applyAsDouble(testData);
-        return createAbsTolerance(eps);
-    }
-
-    /**
-     * Creates the tolerance using a relative error.
-     *
-     * <p>If the relative tolerance is zero it is ignored and a tolerance of numerical equality
-     * is used.
-     *
-     * @param testData Test data
-     * @param tolerance Function to create the relative tolerance
-     * @return the tolerance
-     */
-    DoubleTolerance createTestRelTolerance(
-            D testData, ToDoubleFunction<D> tolerance) {
-        final double eps = tolerance == null ? 0 : tolerance.applyAsDouble(testData);
-        return createRelTolerance(eps);
-    }
-
-    /**
      * Creates the tolerance using an {@code Or} combination of absolute and relative error.
      *
      * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
