@@ -208,9 +208,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 abstract class BaseContinuousDistributionTest
     extends BaseDistributionTest<ContinuousDistribution, ContinuousDistributionTestData> {
 
-    /** Relative accuracy of the integrator result. */
-    private static final double INTEGRATOR_ABS_ACCURACY = 1e-10;
     /** Absolute accuracy of the integrator result. */
+    private static final double INTEGRATOR_ABS_ACCURACY = 1e-10;
+    /** Relative accuracy of the integrator result. */
     private static final double INTEGRATOR_REL_ACCURACY = 1e-12;
 
     @Override
