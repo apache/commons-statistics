@@ -84,7 +84,7 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
             dist,
             new double[] {2.100000000000001, 2.100000000000005},
             new double[] {6.217248937900875e-16, 3.2640556923979585e-15},
-            createHighPrecisionTolerance());
+            DoubleTolerances.relative(5e-14));
     }
 
     @Test
@@ -94,7 +94,7 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
             dist,
             new double[] {42e11, 64e11},
             new double[] {6.005622169907148e-18, 3.330082930386111e-18},
-            createHighPrecisionTolerance());
+            DoubleTolerances.relative(5e-14));
     }
 
     @Test

@@ -89,13 +89,11 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <li>Points for the PDF (and log PDF) can be specified. The default will use the CDF points.
  * Note: It is not expected that evaluation of the PDF will require different points to the CDF.
  * <li>Points and expected values for the inverse CDF can be specified. These are used in
- * addition to test the inverse mapping of the CDF values to the CDF test points. The
- * inverse mapping test can be disabled.
+ * addition to test the inverse mapping of the CDF values to the CDF test points.
  * <li>Expected values for the log PDF can be specified. The default will use
  * {@link Math#log(double)} on the PDF values.
  * <li>Points and expected values for the survival function can be specified. These are used in
- * addition to test the inverse mapping of the SF values to the SF test points. The
- * inverse mapping test can be disabled.
+ * addition to test the inverse mapping of the SF values to the SF test points.
  * The default will use the expected CDF values (SF = 1 - CDF).
  * <li>A tolerance for equality assertions. The default is set by {@link #getAbsoluteTolerance()}
  * and {@link #getRelativeTolerance()}.
@@ -103,9 +101,19 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * <p>If the distribution provides higher precision implementations of
  * cumulative probability and/or survival probability as the values approach zero, then test
- * points and expected values can be provided with a tolerance for equality assertions of
- * high-precision computations. The default is set by {@link #getHighPrecisionAbsoluteTolerance()}
- * and {@link #getHighPrecisionRelativeTolerance()}.
+ * points and expected values can be provided for high-precision computations. If the default
+ * absolute tolerance has been set to non-zero, then very small p-values will require the
+ * high-precision absolute tolerance is configured for the test to a suitable magnitude (see below).
+ *
+ * <p>Per-test configuration
+ *
+ * <p>Each test is identified with a {@link TestName} key in the properties file. This key
+ * can be used to set a per-test tolerance, or disable the test:
+ * <pre>
+ * cdf.hp.relative = 1e-14
+ * cdf.hp.absolute = 1e-50
+ * sampling.disable
+ * </pre>
  *
  * <p>Note: All properties files are read during test initialization. Any errors in a single
  * property file will throw an exception, invalidating the initialization and no tests
@@ -138,7 +146,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * <p>The properties file uses {@code key=value} pairs loaded using a
  * {@link java.util.Properties} object. Values will be read as String and then parsed to
- * numeric data, and data arrays. Multi-line values can use a {@code \} character.
+ * numeric data, and data arrays. Multi-line values can use a {@code \} character to join lines.
  * Data in the properties file will be converted to numbers using standard parsing
  * functions appropriate to the primitive type, e.g. {@link Double#parseDouble(String)}.
  * Special double values should use NaN, Infinity and -Infinity. As a convenience
@@ -159,10 +167,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * tolerance.relative = 1e-9
  * # optional (default 0.0 or over-ridden in getAbsoluteTolerance())
  * tolerance.absolute = 0.0
- * # optional (default 1e-12 or over-ridden in getHighPrecisionRelativeTolerance())
- * tolerance.relative.hp = 1e-10
- * # optional (default 0.0 or over-ridden in getHighPrecisionAbsoluteTolerance())
- * tolerance.absolute.hp = 1e-30
  * cdf.points = 0, 0.2
  * cdf.values = 0.0, 0.5
  * # optional (default uses cdf.points)
@@ -186,20 +190,10 @@ import org.junit.jupiter.params.provider.MethodSource;
  * # optional inverse CDF test (defaults to ignore)
  * isf.points = 1.0, 0.5
  * isf.values = 0.0, 0.2
- * # CDF inverse mapping test (default false)
- * disable.cdf.inverse = false
- * # SF inverse mapping test (default false)
- * disable.sf.inverse = false
- * # Sampling test (default false)
- * disable.sample = false
- * # PDF values test (default false)
- * disable.pdf = false
- * # Log PDF values test (default false)
- * disable.logpdf = false
- * # CDF values test (default false)
- * disable.cdf = false
- * # Survival function values test (default false)
- * disable.sf = false
+ * # Optional per-test tolerance and disable
+ * cdf.hp.relative = 1e-14
+ * cdf.hp.absolute = 1e-50
+ * sampling.disable = true
  * </pre>
  *
  * <p>See {@link NakagamiDistributionTest} for an example and the resource file {@code test.nakagami.1.properties}.
@@ -225,27 +219,15 @@ abstract class BaseContinuousDistributionTest
     // stream different arguments to the test case.
 
     /**
-     * Create a stream of arguments containing the distribution to test, the CDF
-     * test points and the test tolerance.
-     *
-     * @return the stream
-     */
-    Stream<Arguments> streamCdfTestPoints() {
-        return streamPoints(ContinuousDistributionTestData::getCdfPoints,
-                            this::createTestTolerance, "cdf test points");
-    }
-
-    /**
      * Create a stream of arguments containing the distribution to test, the PDF test points
      * and values, and the test tolerance.
      *
      * @return the stream
      */
     Stream<Arguments> testDensity() {
-        return stream(ContinuousDistributionTestData::isDisablePdf,
+        return stream(TestName.PDF,
                       ContinuousDistributionTestData::getPdfPoints,
-                      ContinuousDistributionTestData::getPdfValues,
-                      this::createTestTolerance, "pdf");
+                      ContinuousDistributionTestData::getPdfValues);
     }
 
     /**
@@ -255,10 +237,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testLogDensity() {
-        return stream(ContinuousDistributionTestData::isDisableLogPdf,
+        return stream(TestName.LOGPDF,
                       ContinuousDistributionTestData::getPdfPoints,
-                      ContinuousDistributionTestData::getLogPdfValues,
-                      this::createTestTolerance, "logpdf");
+                      ContinuousDistributionTestData::getLogPdfValues);
     }
 
     /**
@@ -268,10 +249,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testCumulativeProbability() {
-        return stream(ContinuousDistributionTestData::isDisableCdf,
+        return stream(TestName.CDF,
                       ContinuousDistributionTestData::getCdfPoints,
-                      ContinuousDistributionTestData::getCdfValues,
-                      this::createTestTolerance, "cdf");
+                      ContinuousDistributionTestData::getCdfValues);
     }
 
     /**
@@ -283,10 +263,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSurvivalProbability() {
-        return stream(ContinuousDistributionTestData::isDisableSf,
+        return stream(TestName.SF,
                       ContinuousDistributionTestData::getSfPoints,
-                      ContinuousDistributionTestData::getSfValues,
-                      this::createTestTolerance, "sf");
+                      ContinuousDistributionTestData::getSfValues);
     }
 
     /**
@@ -296,9 +275,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testCumulativeProbabilityHighPrecision() {
-        return stream(ContinuousDistributionTestData::getCdfHpPoints,
-                      ContinuousDistributionTestData::getCdfHpValues,
-                      this::createTestHighPrecisionTolerance, "cdf.hp");
+        return stream(TestName.CDF_HP,
+                      ContinuousDistributionTestData::getCdfHpPoints,
+                      ContinuousDistributionTestData::getCdfHpValues);
     }
 
     /**
@@ -308,9 +287,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSurvivalProbabilityHighPrecision() {
-        return stream(ContinuousDistributionTestData::getSfHpPoints,
-                      ContinuousDistributionTestData::getSfHpValues,
-                      this::createTestHighPrecisionTolerance, "sf.hp");
+        return stream(TestName.SF_HP,
+                      ContinuousDistributionTestData::getSfHpPoints,
+                      ContinuousDistributionTestData::getSfHpValues);
     }
 
     /**
@@ -320,9 +299,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testInverseCumulativeProbability() {
-        return stream(ContinuousDistributionTestData::getIcdfPoints,
-                      ContinuousDistributionTestData::getIcdfValues,
-                      this::createTestTolerance, "icdf");
+        return stream(TestName.ICDF,
+                      ContinuousDistributionTestData::getIcdfPoints,
+                      ContinuousDistributionTestData::getIcdfValues);
     }
 
     /**
@@ -332,9 +311,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testInverseSurvivalProbability() {
-        return stream(ContinuousDistributionTestData::getIsfPoints,
-                      ContinuousDistributionTestData::getIsfValues,
-                      this::createTestTolerance, "isf");
+        return stream(TestName.ISF,
+                      ContinuousDistributionTestData::getIsfPoints,
+                      ContinuousDistributionTestData::getIsfValues);
     }
 
     /**
@@ -345,9 +324,8 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testCumulativeProbabilityInverseMapping() {
-        return streamPoints(ContinuousDistributionTestData::isDisableCdfInverse,
-                            ContinuousDistributionTestData::getCdfPoints,
-                            this::createTestTolerance, "cdf test points");
+        return stream(TestName.CDF_MAPPING,
+                      ContinuousDistributionTestData::getCdfPoints);
     }
 
     /**
@@ -358,9 +336,8 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSurvivalProbabilityInverseMapping() {
-        return streamPoints(ContinuousDistributionTestData::isDisableSfInverse,
-                            ContinuousDistributionTestData::getSfPoints,
-                            this::createTestTolerance, "sf test points");
+        return stream(TestName.SF_MAPPING,
+                      ContinuousDistributionTestData::getSfPoints);
     }
 
     /**
@@ -370,9 +347,10 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSurvivalAndCumulativeProbabilityComplement() {
-        // This is not disabled based on isDisableCdf && isDisableSf.
+        // This is not disabled based on cdf.disable && sf.disable.
         // Those flags are intended to ignore tests against reference values.
-        return streamCdfTestPoints();
+        return stream(TestName.COMPLEMENT,
+                      ContinuousDistributionTestData::getCdfPoints);
     }
 
     /**
@@ -383,9 +361,10 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testConsistency() {
-        // This is not disabled based on isDisableCdf.
-        // That flags is intended to ignore tests against reference values.
-        return streamCdfTestPoints();
+        // This is not disabled based on cdf.disable.
+        // That flag is intended to ignore tests against reference values.
+        return stream(TestName.CONSISTENCY,
+                      ContinuousDistributionTestData::getCdfPoints);
     }
 
     /**
@@ -394,7 +373,7 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSampling() {
-        return streamDistributionWithFilter(ContinuousDistributionTestData::isDisableSample, "sampling");
+        return stream(TestName.SAMPLING);
     }
 
     /**
@@ -404,20 +383,17 @@ abstract class BaseContinuousDistributionTest
      * the underlying integrator (abs=1e-10, rel=1e-12).
      * Override this method to change the tolerance.
      *
-     * <p>This is disabled by {@link ContinuousDistributionTestData#isDisablePdf()}. If
-     * the distribution cannot compute the density to match reference values then it
-     * is assumed an integral of the PDF will fail to match reference CDF values.
-     *
      * @return the stream
      */
     Stream<Arguments> testDensityIntegrals() {
         // Create a tolerance suitable for the same thresholds used by the integrator.
         final Function<ContinuousDistributionTestData, DoubleTolerance> tolerance =
             d -> createAbsOrRelTolerance(INTEGRATOR_ABS_ACCURACY * 10, INTEGRATOR_REL_ACCURACY * 10);
-        return stream(ContinuousDistributionTestData::isDisablePdf,
+        final TestName name = TestName.INTEGRALS;
+        return stream(d -> d.isDisabled(name),
                       ContinuousDistributionTestData::getCdfPoints,
                       ContinuousDistributionTestData::getCdfValues,
-                      tolerance, "pdf integrals");
+                      tolerance, name.toString());
     }
 
     /**
@@ -427,7 +403,8 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSupport() {
-        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), d.getLower(), d.getUpper()));
+        return streamArguments(TestName.SUPPORT,
+            d -> Arguments.of(namedDistribution(d.getParameters()), d.getLower(), d.getUpper()));
     }
 
     /**
@@ -437,7 +414,10 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testMoments() {
-        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(), createTestTolerance(d)));
+        final TestName name = TestName.MOMENTS;
+        return streamArguments(name,
+            d -> Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(),
+                              createTestTolerance(d, name)));
     }
 
     /**
@@ -446,7 +426,9 @@ abstract class BaseContinuousDistributionTest
      * @return the stream
      */
     Stream<Arguments> testMedian() {
-        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), createTestTolerance(d)));
+        final TestName name = TestName.MEDIAN;
+        return streamArguments(name,
+            d -> Arguments.of(namedDistribution(d.getParameters()), createTestTolerance(d, name)));
     }
 
     //------------------------ Tests -----------------------------

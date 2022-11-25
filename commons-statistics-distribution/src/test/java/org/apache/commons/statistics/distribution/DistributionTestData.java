@@ -17,8 +17,13 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -35,10 +40,21 @@ abstract class DistributionTestData {
     static final String KEY_TOLERANCE_ABSOLUTE = "tolerance.absolute";
     /** The key for the relative tolerance value. */
     static final String KEY_TOLERANCE_RELATIVE = "tolerance.relative";
-    /** The key for the high-precision absolute tolerance value. */
-    static final String KEY_TOLERANCE_ABSOLUTE_HP = "tolerance.absolute.hp";
-    /** The key for the high-precision relative tolerance value. */
-    static final String KEY_TOLERANCE_RELATIVE_HP = "tolerance.relative.hp";
+
+    /** The key suffix to disable a test. */
+    private static final String SUFFIX_DISABLE = ".disable";
+    /** The key suffix for the absolute tolerance value. */
+    private static final String SUFFIX_TOLERANCE_ABSOLUTE = ".absolute";
+    /** The key suffix for the relative tolerance value. */
+    private static final String SUFFIX_TOLERANCE_RELATIVE = ".relative";
+    /** The index for the absolute tolerance value in the array of tolerances. */
+    private static final int INDEX_ABSOLUTE = 0;
+    /** The index for the relative tolerance value in the array of tolerances. */
+    private static final int INDEX_RELATIVE = 1;
+    /** The unset (default) value for the tolerance. */
+    private static final double UNSET_TOLERANCE = -1;
+    /** The unset (default) values for the array of tolerances. */
+    private static final double[] UNSET_TOLERANCES = {UNSET_TOLERANCE, UNSET_TOLERANCE};
 
     /** Regex to split delimited text data (e.g. arrays of numbers). */
     private static final Pattern PATTERN = Pattern.compile("[ ,]+");
@@ -47,10 +63,6 @@ abstract class DistributionTestData {
     protected final double[] pfValues;
     /** Expected log probability function values. */
     protected final double[] logPfValues;
-    /** Disable tests of the probability function method. */
-    protected final boolean disablePf;
-    /** Disable tests of the log probability function method. */
-    protected final boolean disableLogPf;
 
     /** Distribution parameters. */
     private final Object[] parameters;
@@ -58,14 +70,15 @@ abstract class DistributionTestData {
     private final double mean;
     /** Variance. */
     private final double variance;
+    /** Test tolerances. */
+    private final Map<TestName, double[]> tolerance;
+    /** Disabled tests. */
+    private final Set<TestName> disabled;
+
     /** Test absolute tolerance for calculations. */
     private final double absoluteTolerance;
     /** Test relative tolerance for calculations. */
     private final double relativeTolerance;
-    /** Test absolute tolerance for high-precision calculations.. */
-    private final double absoluteToleranceHp;
-    /** Test relative tolerance for high-precision calculations.. */
-    private final double relativeToleranceHp;
     /** Expected CDF values. */
     private final double[] cdfValues;
     /** Expected SF values for the survival function test points. */
@@ -74,19 +87,6 @@ abstract class DistributionTestData {
     private final double[] cdfHpValues;
     /** Expected CDF values for the high-precision survival function test points. */
     private final double[] sfHpValues;
-
-    // Flags to ignore required tests
-
-    /** Disable a {@code x = icdf(cdf(x))} mapping test. */
-    private final boolean disableCdfInverse;
-    /** Disable a {@code x = isf(sf(x))} mapping test. */
-    private final boolean disableSfInverse;
-    /** Disable tests of the sample method. */
-    private final boolean disableSample;
-    /** Disable tests of the cumulative probability function method. */
-    private final boolean disableCdf;
-    /** Disable tests of the survival probability function method. */
-    private final boolean disableSf;
 
     /**
      * Contains the data for the continuous distribution parameters, the expected properties
@@ -264,26 +264,6 @@ abstract class DistributionTestData {
         double[] getIsfValues() {
             return isfValues;
         }
-
-        /**
-         * Checks if a test of the PDF method is disabled.
-         *
-         * @return true if a PDF test is disabled.
-         * @see #getPdfValues()
-         */
-        boolean isDisablePdf() {
-            return disablePf;
-        }
-
-        /**
-         * Checks if a test of the log PDF method is disabled.
-         *
-         * @return true if a log PDF test is disabled.
-         * @see #getLogPdfValues()
-         */
-        boolean isDisableLogPdf() {
-            return disableLogPf;
-        }
     }
 
     /**
@@ -314,8 +294,6 @@ abstract class DistributionTestData {
         private final double[] isfPoints;
         /** Expected inverse SF values. */
         private final int[] isfValues;
-        /** Disable tests of the summation of the PMF verses the CDF. */
-        private final boolean disablePmfSum;
 
         /**
          * @param props Properties containing the test data
@@ -338,7 +316,6 @@ abstract class DistributionTestData {
             icdfValues = getAsIntArray(props, "icdf.values", null);
             isfPoints = getAsDoubleArray(props, "isf.points", null);
             isfValues = getAsIntArray(props, "isf.values", null);
-            disablePmfSum = getAsBoolean(props, "disable.pmf.sum", false);
             // Validation
             validatePair(cdfPoints, getCdfValues(), "cdf");
             validatePair(pmfPoints, getPmfValues(), "pmf");
@@ -465,36 +442,6 @@ abstract class DistributionTestData {
         int[] getIsfValues() {
             return isfValues;
         }
-
-        /**
-         * Checks if a test of the PMF method is disabled.
-         *
-         * @return true if a PMF test is disabled.
-         * @see #getPmfValues()
-         */
-        boolean isDisablePmf() {
-            return disablePf;
-        }
-
-        /**
-         * Checks if a test of the log PMF method is disabled.
-         *
-         * @return true if a log PMF test is disabled.
-         * @see #getLogPmfValues()
-         */
-        boolean isDisableLogPmf() {
-            return disableLogPf;
-        }
-
-        /**
-         * Checks if a test of the sum of the PMF verses the PDF is disabled.
-         *
-         * @return true the PMF sum test is disabled.
-         * @see #getSfValues()
-         */
-        boolean isDisablePmfSum() {
-            return disablePmfSum;
-        }
     }
 
     /**
@@ -507,9 +454,7 @@ abstract class DistributionTestData {
         mean = getAsDouble(props, "mean");
         variance = getAsDouble(props, "variance");
         absoluteTolerance = getAsDouble(props, KEY_TOLERANCE_ABSOLUTE);
-        absoluteToleranceHp = getAsDouble(props, KEY_TOLERANCE_ABSOLUTE_HP);
         relativeTolerance = getAsDouble(props, KEY_TOLERANCE_RELATIVE);
-        relativeToleranceHp = getAsDouble(props, KEY_TOLERANCE_RELATIVE_HP);
         // Required
         cdfValues = getAsDoubleArray(props, "cdf.values");
         final String pf = getProbabilityFunctionName();
@@ -527,13 +472,37 @@ abstract class DistributionTestData {
         sfValues = tmp;
         cdfHpValues = getAsDoubleArray(props, "cdf.hp.values", null);
         sfHpValues = getAsDoubleArray(props, "sf.hp.values", null);
-        disableCdfInverse = getAsBoolean(props, "disable.cdf.inverse", false);
-        disableSfInverse = getAsBoolean(props, "disable.sf.inverse", false);
-        disableSample = getAsBoolean(props, "disable.sample", false);
-        disablePf = getAsBoolean(props, "disable." + pf, false);
-        disableLogPf = getAsBoolean(props, "disable." + pf, false);
-        disableCdf = getAsBoolean(props, "disable.cdf", false);
-        disableSf = getAsBoolean(props, "disable.sf", false);
+
+        // Remove keys to prevent detection in when searching for test tolerances
+        props.remove(KEY_TOLERANCE_ABSOLUTE);
+        props.remove(KEY_TOLERANCE_RELATIVE);
+
+        // Store custom tolerances and disabled tests
+        EnumMap<TestName, double[]> map = new EnumMap<>(TestName.class);
+        EnumSet<TestName> set = EnumSet.noneOf(TestName.class);
+        props.stringPropertyNames().forEach(key -> {
+            if (key.endsWith(SUFFIX_DISABLE) && getAsBoolean(props, key, false)) {
+                final TestName name = TestName.fromString(key.substring(0, key.length() - SUFFIX_DISABLE.length()));
+                if (name != null) {
+                    set.add(name);
+                }
+            } else if (key.endsWith(SUFFIX_TOLERANCE_ABSOLUTE)) {
+                final TestName name = TestName.fromString(key.substring(0, key.length() - SUFFIX_TOLERANCE_ABSOLUTE.length()));
+                if (name != null) {
+                    final double[] tolerances = map.computeIfAbsent(name, k -> UNSET_TOLERANCES.clone());
+                    tolerances[INDEX_ABSOLUTE] = getAsDouble(props, key);
+                }
+            } else if (key.endsWith(SUFFIX_TOLERANCE_RELATIVE)) {
+                final TestName name = TestName.fromString(key.substring(0, key.length() - SUFFIX_TOLERANCE_RELATIVE.length()));
+                if (name != null) {
+                    final double[] tolerances = map.computeIfAbsent(name, k -> UNSET_TOLERANCES.clone());
+                    tolerances[INDEX_RELATIVE] = getAsDouble(props, key);
+                }
+            }
+        });
+
+        this.tolerance = map.isEmpty() ? Collections.emptyMap() : map;
+        this.disabled = set.isEmpty() ? Collections.emptySet() : set;
     }
 
     /**
@@ -678,22 +647,6 @@ abstract class DistributionTestData {
             return s == null ? defaultValue : parseInt(s);
         } catch (NumberFormatException ex) {
             throw new IllegalArgumentException("Invalid double: " + key, ex);
-        }
-    }
-
-    /**
-     * Gets the property as a boolean, or a default value if the property is missing.
-     *
-     * @param props Properties
-     * @param key Key
-     * @return the value
-     * @throws IllegalArgumentException if the parameter is not a boolean.
-     */
-    private static boolean getAsBoolean(Properties props, String key) {
-        try {
-            return Boolean.parseBoolean(props.getProperty(key));
-        } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException("Invalid boolean: " + key, ex);
         }
     }
 
@@ -863,6 +816,45 @@ abstract class DistributionTestData {
 
     /**
      * Gets the absolute tolerance used when comparing expected and actual results.
+     * If no tolerance exists for the named test then the default is returned.
+     *
+     * @param name Name of the test.
+     * @return the absolute tolerance
+     */
+    double getAbsoluteTolerance(TestName name) {
+        return getTolerance(name, INDEX_ABSOLUTE, absoluteTolerance);
+    }
+
+    /**
+     * Gets the relative tolerance used when comparing expected and actual results.
+     * If no tolerance exists for the named test then the default is returned.
+     *
+     * @param name Name of the test.
+     * @return the relative tolerance
+     */
+    double getRelativeTolerance(TestName name) {
+        return getTolerance(name, INDEX_RELATIVE, relativeTolerance);
+    }
+
+    /**
+     * Gets the specified tolerance for the named test.
+     * If no tolerance exists for the named test then the default is returned.
+     *
+     * @param name Name of the test.
+     * @param index Index of the tolerance.
+     * @param defaultValue Default value is the tolerance is unset.
+     * @return the relative tolerance
+     */
+    private double getTolerance(TestName name, int index, double defaultValue) {
+        final double[] tol = tolerance.get(name);
+        if (tol != null && tol[index] != UNSET_TOLERANCE) {
+            return tol[index];
+        }
+        return defaultValue;
+    }
+
+    /**
+     * Gets the default absolute tolerance used when comparing expected and actual results.
      *
      * @return the absolute tolerance
      */
@@ -871,7 +863,7 @@ abstract class DistributionTestData {
     }
 
     /**
-     * Gets the relative tolerance used when comparing expected and actual results.
+     * Gets the default relative tolerance used when comparing expected and actual results.
      *
      * @return the relative tolerance
      */
@@ -880,23 +872,23 @@ abstract class DistributionTestData {
     }
 
     /**
-     * Gets the absolute tolerance used when comparing expected and actual results
-     * of high-precision computations.
+     * Checks if the named test is disabled.
      *
-     * @return the high-precision absolute tolerance
+     * @param name Name of the test.
+     * @return true if test is disabled.
      */
-    double getHighPrecisionAbsoluteTolerance() {
-        return absoluteToleranceHp;
+    boolean isDisabled(TestName name) {
+        return disabled.contains(name);
     }
 
     /**
-     * Gets the relative tolerance used when comparing expected and actual results
-     * of high-precision computations.
+     * Checks if the named test is enabled.
      *
-     * @return the high-precision relative tolerance
+     * @param name Name of the test.
+     * @return true if test is enabled.
      */
-    double getHighPrecisionRelativeTolerance() {
-        return relativeToleranceHp;
+    boolean isEnabled(TestName name) {
+        return !isDisabled(name);
     }
 
     /**
@@ -948,62 +940,5 @@ abstract class DistributionTestData {
      * @return the inverse SF points
      */
     abstract double[] getIsfPoints();
-
-    /**
-     * Checks if a {@code x = icdf(cdf(x))} mapping test is disabled.
-     *
-     * <p>Note that this property disables a round-trip test of the points used to test
-     * the cumulative probability. The inverse cumulative probability can also be tested
-     * separately using the {@link #getIcdfPoints()} allowing the forward and reverse
-     * functions to target different data.
-     *
-     * @return true if a CDF inverse mapping test is disabled.
-     */
-    boolean isDisableCdfInverse() {
-        return disableCdfInverse;
-    }
-
-    /**
-     * Checks if a {@code x = isf(sf(x))} mapping test is disabled.
-     *
-     * <p>Note that this property disables a round-trip test of the points used to test
-     * the survival probability. The inverse survival probability can also be tested
-     * separately using the {@link #getIsfPoints()} allowing the forward and reverse
-     * functions to target different data.
-     *
-     * @return true if a SF inverse mapping test is disabled.
-     */
-    boolean isDisableSfInverse() {
-        return disableSfInverse;
-    }
-
-    /**
-     * Checks if a test of the sample method is disabled.
-     *
-     * @return true if a sample test is disabled.
-     */
-    boolean isDisableSample() {
-        return disableSample;
-    }
-
-    /**
-     * Checks if a test of the CDF method is disabled.
-     *
-     * @return true if a CDF test is disabled.
-     * @see #getCdfValues()
-     */
-    boolean isDisableCdf() {
-        return disableCdf;
-    }
-
-    /**
-     * Checks if a test of the survival function method is disabled.
-     *
-     * @return true if a survival function test is disabled.
-     * @see #getSfValues()
-     */
-    boolean isDisableSf() {
-        return disableSf;
-    }
 }
 

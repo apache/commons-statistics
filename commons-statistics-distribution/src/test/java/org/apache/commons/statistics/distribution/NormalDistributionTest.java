@@ -59,16 +59,6 @@ class NormalDistributionTest extends BaseContinuousDistributionTest {
         return 20 * RELATIVE_EPS;
     }
 
-    @Override
-    protected double getHighPrecisionRelativeTolerance() {
-        // Tests are limited by the survival probability.
-        // Tolerance is 1.6653345369377348E-14.
-        // This is the lowest achieved with various implementations of the
-        // survival function against high precision reference data.
-        // It requires computing the factor sqrt(2 * sd * sd) exactly.
-        return 75 * RELATIVE_EPS;
-    }
-
     //-------------------- Additional test cases -------------------------------
 
     @Test

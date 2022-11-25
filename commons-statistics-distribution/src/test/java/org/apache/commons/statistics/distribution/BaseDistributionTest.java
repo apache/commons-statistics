@@ -27,7 +27,6 @@ import java.util.Locale;
 import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.ToDoubleFunction;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.junit.jupiter.api.Assertions;
@@ -55,7 +54,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <p>The class has two specializations for testing {@link ContinuousDistribution} and
  * {@link DiscreteDistribution}. It is not intended to extend this class when creating
  * a test for a new distribution. This class exists for the sole purpose of containing
- * commons functionality to search for and load properties files containing the distribution
+ * common functionality to search for and load properties files containing the distribution
  * data.
  *
  * <p>To test a new distribution extend the specialized classes:
@@ -105,8 +104,6 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
         final Properties defaults = new Properties();
         defaults.setProperty(DistributionTestData.KEY_TOLERANCE_ABSOLUTE, String.valueOf(getAbsoluteTolerance()));
         defaults.setProperty(DistributionTestData.KEY_TOLERANCE_RELATIVE, String.valueOf(getRelativeTolerance()));
-        defaults.setProperty(DistributionTestData.KEY_TOLERANCE_ABSOLUTE_HP, String.valueOf(getHighPrecisionAbsoluteTolerance()));
-        defaults.setProperty(DistributionTestData.KEY_TOLERANCE_RELATIVE_HP, String.valueOf(getHighPrecisionRelativeTolerance()));
         for (int i = 1; ; i++) {
             final String filename = String.format("test.%s.%d.properties", key, i);
             try (InputStream resource = this.getClass().getResourceAsStream(
@@ -158,42 +155,6 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the relative tolerance
      */
     protected double getRelativeTolerance() {
-        return 1e-12;
-    }
-
-    /**
-     * Gets the default absolute tolerance used in comparing expected and returned values in high precision tests.
-     *
-     * <p>The initial value is 0.0 (disabled).
-     *
-     * <p>Override this method to set the <strong>default</strong> high-precision absolute tolerance for all test
-     * cases defined by a properties file. Any properties file with a high-precision absolute tolerance entry
-     * ignores this value.
-     *
-     * <p>Notes: Floating-point values are considered equal using the absolute or the relative tolerance.
-     * See {@link #createHighPrecisionTolerance()}.
-     *
-     * @return the high precision absolute tolerance
-     */
-    protected double getHighPrecisionAbsoluteTolerance() {
-        return 0.0;
-    }
-
-    /**
-     * Gets the default relative tolerance used in comparing expected and returned values in high precision tests.
-     *
-     * <p>The initial value is 1e-12.
-     *
-     * <p>Override this method to set the <strong>default</strong> high-precision relative tolerance for all test
-     * cases defined by a properties file. Any properties file with a high-precision relative tolerance entry
-     * ignores this value.
-     *
-     * <p>Notes: Floating-point values are considered equal using the absolute or the relative tolerance.
-     * See {@link #createHighPrecisionTolerance()}.
-     *
-     * @return the high precision relative tolerance
-     */
-    protected double getHighPrecisionRelativeTolerance() {
         return 1e-12;
     }
 
@@ -296,27 +257,8 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     }
 
     /**
-     * Creates the tolerance using an {@code Or} combination of absolute and relative error.
-     *
-     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
-     * is used.
-     *
-     * <p>If the relative tolerance is zero it is ignored.
-     *
-     * @param testData Test data
-     * @param absTolerance Function to create the absolute tolerance
-     * @param relTolerance Function to create the relative tolerance
-     * @return the tolerance
-     */
-    DoubleTolerance createTestAbsOrRelTolerance(
-            D testData, ToDoubleFunction<D> absTolerance, ToDoubleFunction<D> relTolerance) {
-        final double abs = absTolerance == null ? 0 : absTolerance.applyAsDouble(testData);
-        final double rel = relTolerance == null ? 0 : relTolerance.applyAsDouble(testData);
-        return createAbsOrRelTolerance(abs, rel);
-    }
-
-    /**
-     * Creates the default tolerance for the test data.
+     * Creates the tolerance using an {@code Or} combination of absolute and relative error
+     * defined in the test data.
      *
      * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
      * is used.
@@ -327,13 +269,15 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the tolerance
      */
     DoubleTolerance createTestTolerance(D testData) {
-        return createTestAbsOrRelTolerance(testData,
-                                           DistributionTestData::getAbsoluteTolerance,
-                                           DistributionTestData::getRelativeTolerance);
+        final double abs = testData.getAbsoluteTolerance();
+        final double rel = testData.getRelativeTolerance();
+        return createAbsOrRelTolerance(abs, rel);
     }
 
     /**
-     * Creates the default high-precision tolerance for the test data.
+     * Creates the tolerance for the named test using an {@code Or} combination of absolute
+     * and relative error defined in the test data. If the named test tolerance is not defined
+     * then this uses the default tolerance.
      *
      * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
      * is used.
@@ -341,12 +285,13 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * <p>If the relative tolerance is zero it is ignored.
      *
      * @param testData Test data
+     * @param name Name of the function under test
      * @return the tolerance
      */
-    DoubleTolerance createTestHighPrecisionTolerance(D testData) {
-        return createTestAbsOrRelTolerance(testData,
-                                           DistributionTestData::getHighPrecisionAbsoluteTolerance,
-                                           DistributionTestData::getHighPrecisionRelativeTolerance);
+    DoubleTolerance createTestTolerance(D testData, TestName name) {
+        final double abs = testData.getAbsoluteTolerance(name);
+        final double rel = testData.getRelativeTolerance(name);
+        return createAbsOrRelTolerance(abs, rel);
     }
 
     /**
@@ -362,21 +307,6 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     DoubleTolerance createTolerance() {
         return createAbsOrRelTolerance(getAbsoluteTolerance(),
                                        getRelativeTolerance());
-    }
-
-    /**
-     * Creates the default high-precision tolerance.
-     *
-     * <p>If the absolute tolerance is zero it is ignored and a tolerance of numerical equality
-     * is used.
-     *
-     * <p>If the relative tolerance is zero it is ignored.
-     *
-     * @return the tolerance
-     */
-    DoubleTolerance createHighPrecisionTolerance() {
-        return createAbsOrRelTolerance(getHighPrecisionAbsoluteTolerance(),
-                                       getHighPrecisionRelativeTolerance());
     }
 
     //------------------------ Methods to stream the test data -----------------------------
@@ -476,17 +406,6 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     }
 
     /**
-     * Create a predicate that returns false. This can be used to signal do not ignore
-     * for test data.
-     *
-     * @param <D> Type of object
-     * @return the predicate
-     */
-    private static <D> Predicate<D> doNotIgnore() {
-        return d -> false;
-    }
-
-    /**
      * Create a stream of arguments containing the distribution to test.
      *
      * @return the stream
@@ -496,22 +415,54 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     }
 
     /**
-     * Create a stream of arguments containing the distribution to test.
+     * Create a stream of arguments containing the distribution to test and the test tolerance.
+     * The tolerance is identified using functions on the test instance data.
+     * The test data will be skipped if disabled.
      *
-     * @param filter Filter applied on the test data. If true the data is ignored.
      * @param name Name of the function under test
      * @return the stream
      */
-    Stream<Arguments> streamDistributionWithFilter(Predicate<D> filter,
-                                                   String name) {
+    Stream<Arguments> stream(TestName name) {
         final Builder<Arguments> b = Stream.builder();
         final int[] size = {0};
         data.forEach(d -> {
-            if (filter.test(d)) {
+            if (d.isDisabled(name)) {
                 return;
             }
             size[0]++;
-            b.accept(Arguments.of(namedDistribution(d.getParameters())));
+            b.accept(Arguments.of(namedDistribution(d.getParameters()),
+                     createTestTolerance(d, name)));
+        });
+        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
+        return b.build();
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test, the test
+     * points, and the test tolerance. The points and tolerance
+     * are identified using functions on the test instance data.
+     * The test data will be skipped if disabled or the length of the points is zero.
+     *
+     * <p>If all test data is skipped then a
+     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
+     *
+     * @param name Name of the function under test
+     * @param points Function to create the points
+     * @return the stream
+     */
+    <P> Stream<Arguments> stream(TestName name,
+                                 Function<D, P> points) {
+        final Builder<Arguments> b = Stream.builder();
+        final int[] size = {0};
+        data.forEach(d -> {
+            final P p = points.apply(d);
+            if (d.isDisabled(name) || TestUtils.getLength(p) == 0) {
+                return;
+            }
+            size[0]++;
+            b.accept(Arguments.of(namedDistribution(d.getParameters()),
+                     namedArray("points", p),
+                     createTestTolerance(d, name)));
         });
         Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
         return b.build();
@@ -521,141 +472,34 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * Create a stream of arguments containing the distribution to test, the test
      * points, test values and the test tolerance. The points, values and tolerance
      * are identified using functions on the test instance data.
+     * The test data will be skipped if disabled or the length of the points or values is zero.
      *
-     * <p>If the length of the points or values is zero then a
+     * <p>If all test data is skipped then a
      * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
      *
+     * @param name Name of the function under test
      * @param points Function to create the points
      * @param values Function to create the values
-     * @param tolerance Function to create the tolerance
-     * @param name Name of the function under test
      * @return the stream
      */
-    <P, V> Stream<Arguments> stream(Function<D, P> points,
-                                    Function<D, V> values,
-                                    ToDoubleFunction<D> tolerance,
-                                    String name) {
-        return stream(doNotIgnore(), points, values, tolerance, name);
-    }
-
-    /**
-     * Create a stream of arguments containing the distribution to test, the test
-     * points, test values and the test tolerance. The points, values and tolerance
-     * are identified using functions on the test instance data.
-     *
-     * <p>If the length of the points or values is zero then a
-     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
-     *
-     * @param filter Filter applied on the test data. If true the data is ignored.
-     * @param points Function to create the points
-     * @param values Function to create the values
-     * @param tolerance Function to create the tolerance
-     * @param name Name of the function under test
-     * @return the stream
-     */
-    <P, V> Stream<Arguments> stream(Predicate<D> filter,
+    <P, V> Stream<Arguments> stream(TestName name,
                                     Function<D, P> points,
-                                    Function<D, V> values,
-                                    ToDoubleFunction<D> tolerance,
-                                    String name) {
-        final Builder<Arguments> b = Stream.builder();
-        final int[] size = {0};
-        data.forEach(d -> {
-            final P p = points.apply(d);
-            final V v = values.apply(d);
-            if (filter.test(d) || TestUtils.getLength(p) == 0 || TestUtils.getLength(v) == 0) {
-                return;
-            }
-            size[0]++;
-            b.accept(Arguments.of(namedDistribution(d.getParameters()),
-                     namedArray("points", p),
-                     namedArray("values", v),
-                     tolerance.applyAsDouble(d)));
-        });
-        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
-        return b.build();
-    }
-
-    /**
-     * Create a stream of arguments containing the distribution to test, the test
-     * points, and the test tolerance. The points and tolerance
-     * are identified using functions on the test instance data.
-     *
-     * <p>If the length of the points is zero then a
-     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
-     *
-     * @param points Function to create the points
-     * @param tolerance Function to create the tolerance
-     * @param name Name of the function under test
-     * @return the stream
-     */
-    <P, V> Stream<Arguments> streamPoints(Function<D, P> points,
-                                          Function<D, DoubleTolerance> tolerance,
-                                          String name) {
-        return streamPoints(doNotIgnore(), points, tolerance, name);
-    }
-
-    /**
-     * Create a stream of arguments containing the distribution to test, the test
-     * points, and the test tolerance. The points and tolerance
-     * are identified using functions on the test instance data.
-     *
-     * <p>If the length of the points is zero then a
-     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
-     *
-     * @param filter Filter applied on the test data. If true the data is ignored.
-     * @param points Function to create the points
-     * @param tolerance Function to create the tolerance
-     * @param name Name of the function under test
-     * @return the stream
-     */
-    <P, V> Stream<Arguments> streamPoints(Predicate<D> filter,
-                                          Function<D, P> points,
-                                          Function<D, DoubleTolerance> tolerance,
-                                          String name) {
-        final Builder<Arguments> b = Stream.builder();
-        final int[] size = {0};
-        data.forEach(d -> {
-            final P p = points.apply(d);
-            if (filter.test(d) || TestUtils.getLength(p) == 0) {
-                return;
-            }
-            size[0]++;
-            b.accept(Arguments.of(namedDistribution(d.getParameters()),
-                     namedArray("points", p),
-                     tolerance.apply(d)));
-        });
-        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
-        return b.build();
+                                    Function<D, V> values) {
+        // Delegate
+        return stream(d -> d.isDisabled(name),
+                      points,
+                      values,
+                      d -> createTestTolerance(d, name),
+                      name.toString());
     }
 
     /**
      * Create a stream of arguments containing the distribution to test, the test
      * points, test values and the test tolerance. The points, values and tolerance
      * are identified using functions on the test instance data.
+     * The test data will be skipped if disabled or the length of the points or values is zero.
      *
-     * <p>If the length of the points or values is zero then a
-     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
-     *
-     * @param points Function to create the points
-     * @param values Function to create the values
-     * @param tolerance Function to create the tolerance
-     * @param name Name of the function under test
-     * @return the stream
-     */
-    <P, V> Stream<Arguments> stream(Function<D, P> points,
-                                    Function<D, V> values,
-                                    Function<D, DoubleTolerance> tolerance,
-                                    String name) {
-        return stream(doNotIgnore(), points, values, tolerance, name);
-    }
-
-    /**
-     * Create a stream of arguments containing the distribution to test, the test
-     * points, test values and the test tolerance. The points, values and tolerance
-     * are identified using functions on the test instance data.
-     *
-     * <p>If the length of the points or values is zero then a
+     * <p>If all test data is skipped then a
      * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
      *
      * @param filter Filter applied on the test data. If true the data is ignored.
@@ -689,101 +533,26 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     }
 
     /**
-     * Create a stream of arguments containing the distribution to test, the test
-     * points, and test values. The points and values
-     * are identified using functions on the test instance data.
+     * Create a stream of arguments built using the provided mapping function.
+     * The test data will be skipped if disabled.
      *
-     * <p>If the length of the points or values is zero then a
+     * <p>If all test data is skipped then a
      * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
      *
-     * @param points Function to create the points
-     * @param values Function to create the values
      * @param name Name of the function under test
+     * @param mappingFunction Function to create the arguments for the test data
      * @return the stream
      */
-    <P, V> Stream<Arguments> stream(Function<D, P> points,
-                                    Function<D, V> values,
-                                    String name) {
-        return stream(doNotIgnore(), points, values, name);
-    }
-
-    /**
-     * Create a stream of arguments containing the distribution to test, the test
-     * points, and test values. The points and values
-     * are identified using functions on the test instance data.
-     *
-     * <p>If the length of the points or values is zero then a
-     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
-     *
-     * @param filter Filter applied on the test data. If true the data is ignored.
-     * @param points Function to create the points
-     * @param values Function to create the values
-     * @param name Name of the function under test
-     * @return the stream
-     */
-    <P, V> Stream<Arguments> stream(Predicate<D> filter,
-                                    Function<D, P> points,
-                                    Function<D, V> values,
-                                    String name) {
+    Stream<Arguments> streamArguments(TestName name,
+                                      Function<D, Arguments> mappingFunction) {
         final Builder<Arguments> b = Stream.builder();
         final int[] size = {0};
         data.forEach(d -> {
-            final P p = points.apply(d);
-            final V v = values.apply(d);
-            if (filter.test(d) || TestUtils.getLength(p) == 0 || TestUtils.getLength(v) == 0) {
+            if (d.isDisabled(name)) {
                 return;
             }
             size[0]++;
-            b.accept(Arguments.of(namedDistribution(d.getParameters()),
-                     namedArray("points", p),
-                     namedArray("values", v)));
-        });
-        Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
-        return b.build();
-    }
-
-
-    /**
-     * Create a stream of arguments containing the distribution to test and the test
-     * points. The points are identified using functions on the test instance data.
-     *
-     * <p>If the length of the points or values is zero then a
-     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
-     *
-     * @param points Function to create the points
-     * @param name Name of the function under test
-     * @return the stream
-     */
-    <P> Stream<Arguments> stream(Function<D, P> points,
-                                 String name) {
-        return stream(doNotIgnore(), points, name);
-    }
-
-    /**
-     * Create a stream of arguments containing the distribution to test and the test
-     * points. The points are identified using functions on the test instance data.
-     *
-     * <p>If the length of the points or values is zero then a
-     * {@link org.opentest4j.TestAbortedException TestAbortedException} is raised.
-     *
-     * @param filter Filter applied on the test data. If true the data is ignored.
-     * @param points Function to create the points
-     * @param name Name of the function under test
-     * @return the stream
-     */
-    <P> Stream<Arguments> stream(Predicate<D> filter,
-                                 Function<D, P> points,
-                                 String name) {
-        final Builder<Arguments> b = Stream.builder();
-        final int[] size = {0};
-        data.forEach(d -> {
-            final P p = points.apply(d);
-            if (filter.test(d) || TestUtils.getLength(p) == 0) {
-                return;
-            }
-            size[0]++;
-            b.accept(Arguments.of(namedDistribution(d.getParameters()),
-                     namedArray("points", p)));
+            b.accept(mappingFunction.apply(d));
         });
         Assumptions.assumeTrue(size[0] != 0, () -> "Distribution has no data for " + name);
         return b.build();

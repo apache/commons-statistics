@@ -65,7 +65,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * The parameters are parsed from String values to the appropriate parameter object. Currently
  * this supports Double and Integer; numbers can be unboxed and used to create the distribution.
  *
- * <p>Illegal arguments for the distribution are tested from parametersprovided by
+ * <p>Illegal arguments for the distribution are tested from parameters provided by
  * {@link #makeInvalidParameters()}. If there are no illegal arguments this method may return
  * null to skip the test. Primitive parameters are boxed to objects so ensure the canonical form
  * is used, e.g. {@code 1.0} not {@code 1} for a {@code double} argument.
@@ -87,13 +87,11 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <li>Points for the PMF (and log PMF) can be specified. The default will use the CDF points.
  * Note: It is not expected that evaluation of the PMF will require different points to the CDF.
  * <li>Points and expected values for the inverse CDF can be specified. These are used in
- * addition to test the inverse mapping of the CDF values to the CDF test points. The
- * inverse mapping test can be disabled.
+ * addition to test the inverse mapping of the CDF values to the CDF test points.
  * <li>Expected values for the log PMF can be specified. The default will use
  * {@link Math#log(double)} on the PMF values.
  * <li>Points and expected values for the survival function can be specified. These are used in
- * addition to test the inverse mapping of the SF values to the SF test points. The
- * inverse mapping test can be disabled.
+ * addition to test the inverse mapping of the SF values to the SF test points.
  * The default will use the expected CDF values (SF = 1 - CDF).
  * <li>A tolerance for equality assertions. The default is set by {@link #getAbsoluteTolerance()}
  * and {@link #getRelativeTolerance()}.
@@ -101,9 +99,19 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * <p>If the distribution provides higher precision implementations of
  * cumulative probability and/or survival probability as the values approach zero, then test
- * points and expected values can be provided with a tolerance for equality assertions of
- * high-precision computations. The default is set by {@link #getHighPrecisionAbsoluteTolerance()}
- * and {@link #getHighPrecisionRelativeTolerance()}.
+ * points and expected values can be provided for high-precision computations. If the default
+ * absolute tolerance has been set to non-zero, then very small p-values will require the
+ * high-precision absolute tolerance is configured for the test to a suitable magnitude (see below).
+ *
+ * <p>Per-test configuration
+ *
+ * <p>Each test is identified with a {@link TestName} key in the properties file. This key
+ * can be used to set a per-test tolerance, or disable the test:
+ * <pre>
+ * cdf.hp.relative = 1e-14
+ * cdf.hp.absolute = 1e-50
+ * sampling.disable
+ * </pre>
  *
  * <p>Note: All properties files are read during test initialization. Any errors in a single
  * property file will throw an exception, invalidating the initialization and no tests
@@ -136,7 +144,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * <p>The properties file uses {@code key=value} pairs loaded using a
  * {@link java.util.Properties} object. Values will be read as String and then parsed to
- * numeric data, and data arrays. Multi-line values can use a {@code \} character.
+ * numeric data, and data arrays. Multi-line values can use a {@code \} character to join lines.
  * Data in the properties file will be converted to numbers using standard parsing
  * functions appropriate to the primitive type, e.g. {@link Double#parseDouble(String)}.
  * Special double values should use NaN, Infinity and -Infinity. As a convenience
@@ -158,10 +166,6 @@ import org.junit.jupiter.params.provider.MethodSource;
  * tolerance.relative = 1e-9
  * # optional (default 0.0 or over-ridden in getAbsoluteTolerance())
  * tolerance.absolute = 0.0
- * # optional (default 1e-12 or over-ridden in getHighPrecisionRelativeTolerance())
- * tolerance.relative.hp = 1e-10
- * # optional (default 0.0 or over-ridden in getHighPrecisionAbsoluteTolerance())
- * tolerance.absolute.hp = 1e-30
  * cdf.points = 0, 2
  * cdf.values = 0.0, 0.5
  * # optional (default uses cdf.points)
@@ -185,22 +189,10 @@ import org.junit.jupiter.params.provider.MethodSource;
  * # optional inverse CDF test (defaults to ignore)
  * isf.points = 1.0, 0.5
  * isf.values = 3, 4
- * # CDF inverse mapping test (default false)
- * disable.cdf.inverse = false
- * # SF inverse mapping test (default false)
- * disable.sf.inverse = false
- * # Sampling test (default false)
- * disable.sample = false
- * # PMF values test (default false)
- * disable.pmf = false
- * # Log PMF values test (default false)
- * disable.logpmf = false
- * # CDF values test (default false)
- * disable.cdf = false
- * # Survival function values test (default false)
- * disable.sf = false
- * # Sampling PMF summation verses CDF test (default false)
- * disable.pmf.sum = false
+ * # Optional per-test tolerance and disable
+ * cdf.hp.relative = 1e-14
+ * cdf.hp.absolute = 1e-50
+ * sampling.disable = true
  * </pre>
  *
  * <p>See {@link BinomialDistributionTest} for an example and the resource file {@code test.binomial.1.properties}.
@@ -224,14 +216,15 @@ abstract class BaseDiscreteDistributionTest
     // stream different arguments to the test case.
 
     /**
-     * Create a stream of arguments containing the distribution to test, the CDF test points and
-     * the test tolerance.
+     * Create a stream of arguments containing the distribution to test, the CDF test
+     * points and the test tolerance.
      *
+     * @param name Name of the function under test
      * @return the stream
      */
-    Stream<Arguments> streamCdfTestPoints() {
-        return streamPoints(DiscreteDistributionTestData::getCdfPoints,
-                            this::createTestTolerance, "cdf test points");
+    Stream<Arguments> streamCdfTestPoints(TestName name) {
+        return stream(name,
+                      DiscreteDistributionTestData::getCdfPoints);
     }
 
     /**
@@ -241,10 +234,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testProbability() {
-        return stream(DiscreteDistributionTestData::isDisablePmf,
+        return stream(TestName.PMF,
                       DiscreteDistributionTestData::getPmfPoints,
-                      DiscreteDistributionTestData::getPmfValues,
-                      this::createTestTolerance, "pmf");
+                      DiscreteDistributionTestData::getPmfValues);
     }
 
     /**
@@ -254,10 +246,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testLogProbability() {
-        return stream(DiscreteDistributionTestData::isDisableLogPmf,
+        return stream(TestName.LOGPMF,
                       DiscreteDistributionTestData::getPmfPoints,
-                      DiscreteDistributionTestData::getLogPmfValues,
-                      this::createTestTolerance, "logpmf");
+                      DiscreteDistributionTestData::getLogPmfValues);
     }
 
     /**
@@ -267,10 +258,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testCumulativeProbability() {
-        return stream(DiscreteDistributionTestData::isDisableCdf,
+        return stream(TestName.CDF,
                       DiscreteDistributionTestData::getCdfPoints,
-                      DiscreteDistributionTestData::getCdfValues,
-                      this::createTestTolerance, "cdf");
+                      DiscreteDistributionTestData::getCdfValues);
     }
 
     /**
@@ -282,10 +272,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSurvivalProbability() {
-        return stream(DiscreteDistributionTestData::isDisableSf,
+        return stream(TestName.SF,
                       DiscreteDistributionTestData::getSfPoints,
-                      DiscreteDistributionTestData::getSfValues,
-                      this::createTestTolerance, "sf");
+                      DiscreteDistributionTestData::getSfValues);
     }
 
     /**
@@ -295,9 +284,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testCumulativeProbabilityHighPrecision() {
-        return stream(DiscreteDistributionTestData::getCdfHpPoints,
-                      DiscreteDistributionTestData::getCdfHpValues,
-                      this::createTestHighPrecisionTolerance, "cdf.hp");
+        return stream(TestName.CDF_HP,
+                      DiscreteDistributionTestData::getCdfHpPoints,
+                      DiscreteDistributionTestData::getCdfHpValues);
     }
 
     /**
@@ -307,9 +296,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSurvivalProbabilityHighPrecision() {
-        return stream(DiscreteDistributionTestData::getSfHpPoints,
-                      DiscreteDistributionTestData::getSfHpValues,
-                      this::createTestHighPrecisionTolerance, "sf.hp");
+        return stream(TestName.SF_HP,
+                      DiscreteDistributionTestData::getSfHpPoints,
+                      DiscreteDistributionTestData::getSfHpValues);
     }
 
     /**
@@ -319,8 +308,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testInverseCumulativeProbability() {
-        return stream(DiscreteDistributionTestData::getIcdfPoints,
-                      DiscreteDistributionTestData::getIcdfValues, "icdf");
+        return stream(TestName.ICDF,
+                      DiscreteDistributionTestData::getIcdfPoints,
+                      DiscreteDistributionTestData::getIcdfValues);
     }
 
     /**
@@ -330,8 +320,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testInverseSurvivalProbability() {
-        return stream(DiscreteDistributionTestData::getIsfPoints,
-                      DiscreteDistributionTestData::getIsfValues, "isf");
+        return stream(TestName.ISF,
+                      DiscreteDistributionTestData::getIsfPoints,
+                      DiscreteDistributionTestData::getIsfValues);
     }
 
     /**
@@ -340,9 +331,8 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testCumulativeProbabilityInverseMapping() {
-        return stream(DiscreteDistributionTestData::isDisableCdfInverse,
-                      DiscreteDistributionTestData::getCdfPoints,
-                      "cdf test points");
+        return stream(TestName.CDF_MAPPING,
+                      DiscreteDistributionTestData::getCdfPoints);
     }
 
     /**
@@ -351,9 +341,8 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSurvivalProbabilityInverseMapping() {
-        return stream(DiscreteDistributionTestData::isDisableSfInverse,
-                      DiscreteDistributionTestData::getSfPoints,
-                      "sf test points");
+        return stream(TestName.SF_MAPPING,
+                      DiscreteDistributionTestData::getSfPoints);
     }
 
     /**
@@ -363,9 +352,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSurvivalAndCumulativeProbabilityComplement() {
-        // This is not disabled based on isDisableCdf && isDisableSf.
+        // This is not disabled based on cdf.disable && sf.disable.
         // Those flags are intended to ignore tests against reference values.
-        return streamCdfTestPoints();
+        return streamCdfTestPoints(TestName.COMPLEMENT);
     }
 
     /**
@@ -376,9 +365,9 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testConsistency() {
-        // This is not disabled based on isDisableCdf.
-        // That flags is intended to ignore tests against reference values.
-        return streamCdfTestPoints();
+        // This is not disabled based on cdf.disable.
+        // That flag is intended to ignore tests against reference values.
+        return streamCdfTestPoints(TestName.CONSISTENCY);
     }
 
     /**
@@ -387,7 +376,7 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testOutsideSupport() {
-        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), createTestTolerance(d)));
+        return stream(TestName.OUTSIDE_SUPPORT);
     }
 
     /**
@@ -396,10 +385,10 @@ abstract class BaseDiscreteDistributionTest
      *
      * @return the stream
      */
-    Stream<Arguments> testSampling() {
-        return stream(DiscreteDistributionTestData::isDisableSample,
+    Stream<Arguments> testSamplingPMF() {
+        return stream(TestName.SAMPLING_PMF,
                       DiscreteDistributionTestData::getPmfPoints,
-                      DiscreteDistributionTestData::getPmfValues, "pmf sampling");
+                      DiscreteDistributionTestData::getPmfValues);
     }
 
     /**
@@ -410,8 +399,8 @@ abstract class BaseDiscreteDistributionTest
      *
      * @return the stream
      */
-    Stream<Arguments> testSamplingQuartiles() {
-        return streamDistributionWithFilter(DiscreteDistributionTestData::isDisableSample, "sampling quartiles");
+    Stream<Arguments> testSampling() {
+        return stream(TestName.SAMPLING);
     }
 
     /**
@@ -421,22 +410,21 @@ abstract class BaseDiscreteDistributionTest
      * of single points of the CDF.
      * Override this method to change the tolerance.
      *
-     * <p>This is disabled by {@link DiscreteDistributionTestData#isDisablePmf()}. If
-     * the distribution cannot compute the PMF to match reference values then it
-     * is assumed a sum of the PMF will fail to match reference CDF values.
-     *
      * @return the stream
      */
     Stream<Arguments> testProbabilitySums() {
         // Assume the the test tolerance for single CDF values can be relaxed slightly
         // when summing values.
         final double scale = 10;
+        final TestName cdf = TestName.CDF;
         final Function<DiscreteDistributionTestData, DoubleTolerance> tolerance =
-            d -> createAbsOrRelTolerance(d.getAbsoluteTolerance() * scale, d.getRelativeTolerance() * scale);
-        return stream(d -> d.isDisablePmf() || d.isDisablePmfSum(),
+            d -> createAbsOrRelTolerance(d.getAbsoluteTolerance(cdf) * scale,
+                                         d.getRelativeTolerance(cdf) * scale);
+        final TestName name = TestName.PMF_SUM;
+        return stream(d -> d.isDisabled(name),
                       DiscreteDistributionTestData::getCdfPoints,
                       DiscreteDistributionTestData::getCdfValues,
-                      tolerance, "pmf sums");
+                      tolerance, name.toString());
     }
 
     /**
@@ -446,7 +434,8 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testSupport() {
-        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), d.getLower(), d.getUpper()));
+        return streamArguments(TestName.SUPPORT,
+            d -> Arguments.of(namedDistribution(d.getParameters()), d.getLower(), d.getUpper()));
     }
 
     /**
@@ -456,7 +445,10 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testMoments() {
-        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(), createTestTolerance(d)));
+        final TestName name = TestName.MOMENTS;
+        return streamArguments(name,
+            d -> Arguments.of(namedDistribution(d.getParameters()), d.getMean(), d.getVariance(),
+                              createTestTolerance(d, name)));
     }
 
     /**
@@ -465,7 +457,8 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testMedian() {
-        return data.stream().map(d -> Arguments.of(namedDistribution(d.getParameters())));
+        return streamArguments(TestName.MEDIAN,
+            d -> Arguments.of(namedDistribution(d.getParameters())));
     }
 
     //------------------------ Tests -----------------------------
@@ -942,12 +935,14 @@ abstract class BaseDiscreteDistributionTest
 
     /**
      * Test sampling from the distribution.
+     * This test uses the points that are used to test the distribution PMF.
+     * The test is skipped if the sum of the PMF values is less than 0.5.
      */
     @ParameterizedTest
     @MethodSource
-    final void testSampling(DiscreteDistribution dist,
-                            int[] points,
-                            double[] values) {
+    final void testSamplingPMF(DiscreteDistribution dist,
+                               int[] points,
+                               double[] values) {
         // This test uses the points that are used to test the distribution PMF.
         // The sum of the probability values does not have to be 1 (or very close to 1).
         // Any value generated by the sampler that is not an expected point will
@@ -1002,12 +997,12 @@ abstract class BaseDiscreteDistributionTest
      * Test sampling from the distribution using quartiles.
      * This test is ignored if the range for the distribution PMF is small
      * and the quartiles do not map to approximately 0.25. When the range of
-     * the distribution is small then the {@link #testSampling(DiscreteDistribution, int[], double[])}
+     * the distribution is small then the {@link #testSamplingPMF(DiscreteDistribution, int[], double[])}
      * method should be used with points that covers at least 50% of the PMF.
      */
     @ParameterizedTest
     @MethodSource
-    final void testSamplingQuartiles(DiscreteDistribution dist) {
+    final void testSampling(DiscreteDistribution dist) {
         final int[] quartiles = TestUtils.getDistributionQuartiles(dist);
         // The distribution quartiles are created using the inverse CDF.
         // This may not be accurate for extreme parameterizations of the distribution.
