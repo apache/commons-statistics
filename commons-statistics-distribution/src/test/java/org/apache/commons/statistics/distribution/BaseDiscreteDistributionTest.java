@@ -346,6 +346,28 @@ abstract class BaseDiscreteDistributionTest
     }
 
     /**
+     * Create a stream of arguments containing the distribution to test and
+     * high-precision CDF test points.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testCumulativeProbabilityHighPrecisionInverseMapping() {
+        return stream(TestName.CDF_HP_MAPPING,
+                      DiscreteDistributionTestData::getCdfHpPoints);
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test and
+     * high-precision SF test points.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testSurvivalProbabilityHighPrecisionInverseMapping() {
+        return stream(TestName.SF_HP_MAPPING,
+                      DiscreteDistributionTestData::getSfHpPoints);
+    }
+
+    /**
      * Create a stream of arguments containing the distribution to test, the test points
      * to evaluate the CDF and survival function, and the test tolerance. CDF + SF must equal 1.
      *
@@ -764,6 +786,32 @@ abstract class BaseDiscreteDistributionTest
                 }
             }
         }
+    }
+
+    /**
+     * Test that an inverse mapping of the cumulative probability density values matches
+     * the original point, {@code x = icdf(cdf(x))} using the points for the high-precision
+     * CDF.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testCumulativeProbabilityHighPrecisionInverseMapping(
+            DiscreteDistribution dist,
+            int[] points) {
+        testCumulativeProbabilityInverseMapping(dist, points);
+    }
+
+    /**
+     * Test that an inverse mapping of the survival probability density values matches
+     * the original point, {@code x = isf(sf(x))} using the points for the high-precision
+     * SF.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testSurvivalProbabilityHighPrecisionInverseMapping(
+            DiscreteDistribution dist,
+            int[] points) {
+        testSurvivalProbabilityInverseMapping(dist, points);
     }
 
     /**

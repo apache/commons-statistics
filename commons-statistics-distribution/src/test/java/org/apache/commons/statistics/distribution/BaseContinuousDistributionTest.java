@@ -342,6 +342,32 @@ abstract class BaseContinuousDistributionTest
 
     /**
      * Create a stream of arguments containing the distribution to test, the test points
+     * to evaluate the CDF, and the test tolerance. The equality
+     * {@code cdf(x) = cdf(icdf(cdf(x)))} must be true within the tolerance.
+     * This uses the points for the high-precision CDF.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testCumulativeProbabilityHighPrecisionInverseMapping() {
+        return stream(TestName.CDF_HP_MAPPING,
+                      ContinuousDistributionTestData::getCdfHpPoints);
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test, the test points
+     * to evaluate the SF, and the test tolerance. The equality
+     * {@code sf(x) = sf(isf(sf(x)))} must be true within the tolerance.
+     * This uses the points for the high-precision SF.
+     *
+     * @return the stream
+     */
+    Stream<Arguments> testSurvivalProbabilityHighPrecisionInverseMapping() {
+        return stream(TestName.SF_HP_MAPPING,
+                      ContinuousDistributionTestData::getSfHpPoints);
+    }
+
+    /**
+     * Create a stream of arguments containing the distribution to test, the test points
      * to evaluate the CDF and survival function, and the test tolerance. CDF + SF must equal 1.
      *
      * @return the stream
@@ -659,6 +685,34 @@ abstract class BaseContinuousDistributionTest
                 tolerance,
                 () -> "Incorrect SF(inverse SF(SF(x))) value returned for " + x);
         }
+    }
+
+    /**
+     * Test that an inverse mapping of the cumulative probability density values matches
+     * the original point, {@code x = icdf(cdf(x))} using the points for the high-precision
+     * CDF.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testCumulativeProbabilityHighPrecisionInverseMapping(
+            ContinuousDistribution dist,
+            double[] points,
+            DoubleTolerance tolerance) {
+        testCumulativeProbabilityInverseMapping(dist, points, tolerance);
+    }
+
+    /**
+     * Test that an inverse mapping of the survival probability density values matches
+     * the original point, {@code x = isf(sf(x))} using the points for the high-precision
+     * SF.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testSurvivalProbabilityHighPrecisionInverseMapping(
+            ContinuousDistribution dist,
+            double[] points,
+            DoubleTolerance tolerance) {
+        testSurvivalProbabilityInverseMapping(dist, points, tolerance);
     }
 
     /**

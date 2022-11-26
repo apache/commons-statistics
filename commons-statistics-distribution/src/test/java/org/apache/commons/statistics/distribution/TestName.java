@@ -35,6 +35,8 @@ enum TestName {
     ISF,
     CDF_MAPPING,
     SF_MAPPING,
+    CDF_HP_MAPPING,
+    SF_HP_MAPPING,
     COMPLEMENT,
     CONSISTENCY,
     OUTSIDE_SUPPORT,
