@@ -79,12 +79,55 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
 
     @Test
     void testAdditionalCumulativeProbabilityHighPrecision() {
-        final ParetoDistribution dist = ParetoDistribution.of(2.1, 1.4);
-        testCumulativeProbabilityHighPrecision(
-            dist,
-            new double[] {2.100000000000001, 2.100000000000005},
-            new double[] {6.217248937900875e-16, 3.2640556923979585e-15},
-            DoubleTolerances.relative(5e-14));
+        final double scale = 2.1;
+        // 2.1000000000000005, 2.100000000000001
+        final double[] x = {Math.nextUp(scale), Math.nextUp(Math.nextUp(scale))};
+
+        // R and Wolfram alpha do not match for high precision CDF at small x.
+        // The answers were computed using BigDecimal with a math context precision of 100.
+        // Note that the results using double are limited by intermediate rounding and the
+        // CDF is not high precision as the number of bits of accuracy is low:
+        //
+        // x = Math.nextUp(scale)
+        // 1.0 - pow(scale/x, 0.75)                    ==> 1.1102230246251565E-16
+        // -expm1(shape * log(scale/x))                ==> 1.665334536937735E-16
+        // -expm1(shape * log(scale) - shape * log(x)) ==> 2.2204460492503128E-16
+        //
+        // x = Math.nextUp(Math.nextUp(scale))
+        // 1.0 - pow(scale/x, 0.75)                    ==> 3.3306690738754696E-16
+        // -expm1(shape * log(scale/x))                ==> 3.33066907387547E-16
+        // -expm1(shape * log(scale) - shape * log(x)) ==> 4.440892098500625E-16
+
+        final ParetoDistribution dist = ParetoDistribution.of(scale, 0.75);
+        // BigDecimal: 1 - (scale/x).pow(3).sqrt().sqrt()
+        // MathContext mc = new MathContext(100)
+        // BigDecimal.ONE.subtract(
+        //   new BigDecimal(2.1).divide(new BigDecimal(Math.nextUp(Math.nextUp(2.1))), mc)
+        //    .pow(3).sqrt(mc).sqrt(mc)).doubleValue()
+        final double[] values = {1.5860328923216517E-16, 3.172065784643303E-16};
+        testCumulativeProbabilityHighPrecision(dist, x, values, createRelTolerance(0.05));
+    }
+
+    @Test
+    void testAdditionalCumulativeProbabilityHighPrecision2() {
+        final double scale = 3;
+        // 3.0000000000000004, 3.000000000000001
+        final double[] x = {Math.nextUp(scale), Math.nextUp(Math.nextUp(scale))};
+
+        // The current implementation is closer to the answer than either R or Wolfram but
+        // the relative error is typically 0.25 (error in the first or second digit).
+        // The absolute tolerance checks the result to a closer tolerance than
+        // the answer computed using 1 - Math.pow(scale/x, shape), which is zero.
+
+        final ParetoDistribution dist = ParetoDistribution.of(3, 0.25);
+        // BigDecimal: 1 - (scale/x).sqrt().sqrt()
+        final double[] values = {3.700743415417188E-17, 7.401486830834375E-17};
+        testCumulativeProbabilityHighPrecision(dist, x, values, createAbsTolerance(1e-17));
+
+        final ParetoDistribution dist2 = ParetoDistribution.of(3, 1.5);
+        // BigDecimal: 1 - (scale/x).pow(3).sqrt()
+        final double[] values2 = {2.2204460492503126E-16, 4.4408920985006247E-16};
+        testCumulativeProbabilityHighPrecision(dist2, x, values2, createAbsTolerance(6e-17));
     }
 
     @Test
@@ -95,26 +138,6 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
             new double[] {42e11, 64e11},
             new double[] {6.005622169907148e-18, 3.330082930386111e-18},
             DoubleTolerances.relative(5e-14));
-    }
-
-    @Test
-    void testAdditionalCumulativeProbabilityHighPrecision2() {
-        final double[] x = {3.000000000000001, 3.000000000000005};
-
-        // R and Wolfram alpha do not match for high precision CDF at small x.
-        // The answers were computed using BigDecimal with a math context precision of 100.
-        // The current implementation is closer to the answer than either R or Wolfram but
-        // the tolerance is quite high as the error is typically in the second significant digit.
-
-        final ParetoDistribution dist = ParetoDistribution.of(3, 0.5);
-        // BigDecimal: 1 - (scale/x).sqrt()
-        final double[] values = {1.480297366166875E-16, 8.141635513917804E-16};
-        testCumulativeProbabilityHighPrecision(dist, x, values, createAbsTolerance(2e-17));
-
-        final ParetoDistribution dist2 = ParetoDistribution.of(3, 2);
-        // BigDecimal: 1 - (scale/x).pow(2)
-        final double[] values2 = {5.921189464667499E-16, 3.256654205567118E-15};
-        testCumulativeProbabilityHighPrecision(dist2, x, values2, createAbsTolerance(8e-17));
     }
 
     /**

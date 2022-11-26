@@ -542,8 +542,8 @@ abstract class BaseDiscreteDistributionTest
     }
 
     /**
-     * Test that CDF is simply not 1-survival function by testing values that would result
-     * with inaccurate results if simply calculating 1-survival function.
+     * Test that cumulative probability is not {@code (1 - survival probability)} by testing values
+     * that would result in inaccurate results if simply calculating (1 - sf).
      */
     @ParameterizedTest
     @MethodSource
@@ -551,12 +551,13 @@ abstract class BaseDiscreteDistributionTest
                                                       int[] points,
                                                       double[] values,
                                                       DoubleTolerance tolerance) {
+        assertHighPrecision(tolerance, values);
         testCumulativeProbability(dist, points, values, tolerance);
     }
 
     /**
-     * Test that survival is simply not 1-cdf by testing calculations that would underflow
-     * that calculation and result in an inaccurate answer.
+     * Test that survival probability is not {@code (1 - cumulative probability)} by testing values
+     * that would result in inaccurate results if simply calculating (1 - cdf).
      */
     @ParameterizedTest
     @MethodSource
@@ -564,6 +565,7 @@ abstract class BaseDiscreteDistributionTest
                                                     int[] points,
                                                     double[] values,
                                                     DoubleTolerance tolerance) {
+        assertHighPrecision(tolerance, values);
         testSurvivalProbability(dist, points, values, tolerance);
     }
 

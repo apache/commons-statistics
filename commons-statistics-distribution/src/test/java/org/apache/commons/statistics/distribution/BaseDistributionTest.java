@@ -559,6 +559,36 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     }
 
     /**
+     * Assert the probabilities require a high-precision computation. This verifies
+     * the approximation {@code (1 - p) ~ 1}. The tolerance is set at 2 ULP for the
+     * smallest p-value.
+     *
+     * <p>The test tolerance is verified that it can distinguish values a and b when
+     * separated by an absolute distance of 2 EPSILON (4.44e-16). This is a quick
+     * check to ensure any tests that have overridden the default absolute tolerance
+     * of 0 have correctly configured the absolute tolerance for the high-precision
+     * probabilities (which are expected to have some p-values {@code < 1e-16}).
+     *
+     * @param tolerance Test tolerance
+     * @param probabilities Probabilities
+     */
+    void assertHighPrecision(DoubleTolerance tolerance, double... probabilities) {
+        final double b = 2 * RELATIVE_EPS;
+        Assertions.assertFalse(tolerance.test(0.0, b),
+            () -> "Test tolerance cannot separate small values 0.0 and " + b + ": " + tolerance);
+
+        final long one = Double.doubleToRawLongBits(1.0);
+        final double expected = 2;
+        final int[] ulps = Arrays.stream(probabilities)
+                                 .mapToInt(p -> (int) (one - Double.doubleToRawLongBits(1.0 - p)))
+                                 .toArray();
+        final double min = Arrays.stream(ulps).min().orElse(0);
+        Assertions.assertFalse(min < 0, () -> "Invalid probability above 1.0: " + Arrays.toString(probabilities));
+        Assertions.assertTrue(min <= expected,
+            () -> "Not high-precision p-values: (1 - p) ulps from 1 = " + Arrays.toString(ulps));
+    }
+
+    /**
      * Create arguments to test invalid parameters of the distribution. Each Object[]
      * will be expected to raise an exception when passed to the {@link #makeDistribution(Object...)}
      * method.
