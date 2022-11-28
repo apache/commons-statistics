@@ -48,11 +48,6 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getRelativeTolerance() {
-        return 8e-15;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 1.0},
@@ -65,6 +60,11 @@ class BetaDistributionTest extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         return new String[] {"Alpha", "Beta"};
+    }
+
+    @Override
+    protected double getRelativeTolerance() {
+        return 8e-15;
     }
 
     //-------------------- Additional test cases -------------------------------

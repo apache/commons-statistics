@@ -53,6 +53,11 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
         return new String[] {"SupportLowerBound", "SupportUpperBound"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-15;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @ParameterizedTest

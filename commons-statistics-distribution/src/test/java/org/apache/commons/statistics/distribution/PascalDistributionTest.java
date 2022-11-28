@@ -50,6 +50,11 @@ class PascalDistributionTest extends BaseDiscreteDistributionTest {
         return new String[] {"NumberOfSuccesses", "ProbabilityOfSuccess"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 5e-15;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @ParameterizedTest

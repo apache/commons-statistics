@@ -53,6 +53,11 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
         return new String[] {"NumberOfElements", "Exponent"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-14;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @ParameterizedTest

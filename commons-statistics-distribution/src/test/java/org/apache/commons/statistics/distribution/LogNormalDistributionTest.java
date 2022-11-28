@@ -33,12 +33,6 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getRelativeTolerance() {
-        // Limited by the CDF inverse mapping
-        return 1e-9;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0},
@@ -49,6 +43,11 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         return new String[] {"Mu", "Sigma"};
+    }
+
+    @Override
+    protected double getRelativeTolerance() {
+        return 5e-14;
     }
 
     //-------------------- Additional test cases -------------------------------

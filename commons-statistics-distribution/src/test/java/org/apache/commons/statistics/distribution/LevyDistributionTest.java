@@ -29,11 +29,6 @@ class LevyDistributionTest  extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getRelativeTolerance() {
-        return 1e-14;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0},
@@ -44,5 +39,10 @@ class LevyDistributionTest  extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         return new String[] {"Location", "Scale"};
+    }
+
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-14;
     }
 }

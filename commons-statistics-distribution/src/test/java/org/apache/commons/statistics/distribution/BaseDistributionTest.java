@@ -143,7 +143,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
     /**
      * Gets the default relative tolerance used in comparing expected and returned values.
      *
-     * <p>The initial value is 1e-12.
+     * <p>The initial value is 1e-14.
      *
      * <p>Override this method to set the <strong>default</strong> relative tolerance for all test
      * cases defined by a properties file. Any properties file with a relative tolerance entry
@@ -155,7 +155,7 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      * @return the relative tolerance
      */
     protected double getRelativeTolerance() {
-        return 1e-12;
+        return 1e-14;
     }
 
     /**

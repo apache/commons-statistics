@@ -35,11 +35,6 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getRelativeTolerance() {
-        return 5e-15;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 1.0},
@@ -52,6 +47,11 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         return new String[] {"Shape", "Scale"};
+    }
+
+    @Override
+    protected double getRelativeTolerance() {
+        return 5e-15;
     }
 
     //-------------------- Additional test cases -------------------------------

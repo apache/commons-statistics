@@ -41,4 +41,9 @@ class LaplaceDistributionTest extends BaseContinuousDistributionTest {
     String[] getParameterNames() {
         return new String[] {"Location", "Scale"};
     }
+
+    @Override
+    protected double getRelativeTolerance() {
+        return 5e-15;
+    }
 }

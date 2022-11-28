@@ -57,6 +57,11 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {null, null, "SupportLowerBound", "SupportUpperBound"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-14;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     /**

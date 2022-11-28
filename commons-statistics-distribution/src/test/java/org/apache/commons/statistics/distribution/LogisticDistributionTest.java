@@ -32,12 +32,6 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getRelativeTolerance() {
-        // Limited by the CDF inverse mapping
-        return 1e-9;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0},
@@ -48,6 +42,12 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         return new String[] {"Location", "Scale"};
+    }
+
+    @Override
+    protected double getRelativeTolerance() {
+        // Limited by the CDF inverse mapping
+        return 1e-9;
     }
 
     //-------------------- Additional test cases -------------------------------

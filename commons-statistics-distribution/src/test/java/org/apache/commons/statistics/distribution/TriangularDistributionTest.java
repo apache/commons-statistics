@@ -58,6 +58,12 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {"SupportLowerBound", "Mode", "SupportUpperBound"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        // Tolerance is 4.440892098500626E-15.
+        return 20 * RELATIVE_EPS;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @ParameterizedTest

@@ -44,12 +44,6 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getRelativeTolerance() {
-        // Limited by CDF inverse mapping test
-        return 1e-9;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 1.0},
@@ -63,6 +57,12 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         return new String[] {"Scale", "Shape"};
+    }
+
+    @Override
+    protected double getRelativeTolerance() {
+        // Limited by CDF inverse mapping test
+        return 1e-9;
     }
 
     //-------------------- Additional test cases -------------------------------

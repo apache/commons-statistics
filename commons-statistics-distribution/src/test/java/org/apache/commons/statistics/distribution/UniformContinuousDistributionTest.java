@@ -42,11 +42,6 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
     }
 
     @Override
-    protected double getRelativeTolerance() {
-        return 1e-15;
-    }
-
-    @Override
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0},
@@ -61,6 +56,11 @@ class UniformContinuousDistributionTest extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         return new String[] {"SupportLowerBound", "SupportUpperBound"};
+    }
+
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-15;
     }
 
     //-------------------- Additional test cases -------------------------------

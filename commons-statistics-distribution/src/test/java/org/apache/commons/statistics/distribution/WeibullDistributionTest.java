@@ -54,6 +54,11 @@ class WeibullDistributionTest extends BaseContinuousDistributionTest {
         return new String[] {"Shape", "Scale"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 1e-14;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @ParameterizedTest

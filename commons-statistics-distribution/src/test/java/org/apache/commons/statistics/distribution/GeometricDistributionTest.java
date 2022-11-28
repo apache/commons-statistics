@@ -50,6 +50,11 @@ class GeometricDistributionTest extends BaseDiscreteDistributionTest {
         return new String[] {"ProbabilityOfSuccess"};
     }
 
+    @Override
+    protected double getRelativeTolerance() {
+        return 2 * RELATIVE_EPS;
+    }
+
     //-------------------- Additional test cases -------------------------------
 
     @ParameterizedTest
