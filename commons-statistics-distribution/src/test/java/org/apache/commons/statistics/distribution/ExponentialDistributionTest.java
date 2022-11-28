@@ -48,7 +48,8 @@ class ExponentialDistributionTest extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        return 5e-15;
+        // Tolerance is 8.881784197001252E-16
+        return 4 * RELATIVE_EPS;
     }
 
     //------------ Additional tests -------------------------------------------

@@ -43,6 +43,6 @@ class LevyDistributionTest  extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        return 1e-14;
+        return 5e-15;
     }
 }

@@ -47,7 +47,7 @@ class LogNormalDistributionTest extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        return 5e-14;
+        return 5e-15;
     }
 
     //-------------------- Additional test cases -------------------------------

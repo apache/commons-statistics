@@ -46,8 +46,7 @@ class LogisticDistributionTest extends BaseContinuousDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        // Limited by the CDF inverse mapping
-        return 1e-9;
+        return 5e-15;
     }
 
     //-------------------- Additional test cases -------------------------------

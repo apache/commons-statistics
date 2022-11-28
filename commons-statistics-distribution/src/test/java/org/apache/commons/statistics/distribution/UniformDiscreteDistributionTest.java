@@ -55,7 +55,8 @@ class UniformDiscreteDistributionTest extends BaseDiscreteDistributionTest {
 
     @Override
     protected double getRelativeTolerance() {
-        return 1e-15;
+        // Tolerance is 4.440892098500626E-16
+        return 2 * RELATIVE_EPS;
     }
 
     //-------------------- Additional test cases -------------------------------
