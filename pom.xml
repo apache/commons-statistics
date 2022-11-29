@@ -611,8 +611,6 @@ This is avoided by creating an empty directory when svn is not available.
     <profile>
       <id>examples</id>
       <modules>
-        <module>commons-statistics-distribution</module>
-        <module>commons-statistics-regression</module>
         <module>commons-statistics-examples</module>
       </modules>
     </profile>
