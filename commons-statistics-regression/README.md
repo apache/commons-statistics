@@ -45,7 +45,6 @@ Apache Commons Statistics Regression
 
 [![Build Status](https://github.com/apache/commons-statistics/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-statistics/actions/workflows/maven.yml)
 [![Coverage Status](https://codecov.io/gh/apache/commons-statistics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-statistics)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-regression/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-regression/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 Statistical regressions.
@@ -60,16 +59,6 @@ Questions related to the usage of Apache Commons Statistics Regression should be
 Where can I get the latest release?
 -----------------------------------
 You can download source and binaries from our [download page](https://commons.apache.org/proper/commons-statistics/download_statistics.cgi).
-
-Alternatively you can pull it from the central Maven repositories:
-
-```xml
-<dependency>
-  <groupId>org.apache.commons</groupId>
-  <artifactId>commons-statistics-regression</artifactId>
-  <version>1.0</version>
-</dependency>
-```
 
 Contributing
 ------------
