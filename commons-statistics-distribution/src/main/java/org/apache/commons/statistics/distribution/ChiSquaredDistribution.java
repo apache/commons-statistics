@@ -159,30 +159,7 @@ public final class ChiSquaredDistribution extends AbstractContinuousDistribution
         return Double.POSITIVE_INFINITY;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     * Sampling algorithms:
-     * <ul>
-     *  <li>
-     *   For {@code 0 < degreesOfFreedom < 2}:
-     *   <blockquote>
-     *    Ahrens, J. H. and Dieter, U.,
-     *    <i>Computer methods for sampling from gamma, beta, Poisson and binomial distributions,</i>
-     *    Computing, 12, 223-246, 1974.
-     *   </blockquote>
-     *  </li>
-     *  <li>
-     *  For {@code degreesOfFreedom >= 2}:
-     *   <blockquote>
-     *   Marsaglia and Tsang, <i>A Simple Method for Generating
-     *   Gamma Variables.</i> ACM Transactions on Mathematical Software,
-     *   Volume 26 Issue 3, September, 2000.
-     *   </blockquote>
-     *  </li>
-     * </ul>
-     */
+    /** {@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         return gamma.createSampler(rng);

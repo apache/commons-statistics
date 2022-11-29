@@ -232,18 +232,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
         return 1;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Sampling is performed using Cheng's algorithm:
-     * <blockquote>
-     * <pre>
-     * R. C. H. Cheng,
-     * "Generating beta variates with nonintegral shape parameters",
-     * Communications of the ACM, 21, 317-322, 1978.
-     * </pre>
-     * </blockquote>
-     */
+    /** {@inheritDoc} */
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Beta distribution sampler.
