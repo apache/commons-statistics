@@ -56,7 +56,7 @@ abstract class AbstractDiscreteDistribution
      *
      * @return the median
      */
-    protected int getMedian() {
+    int getMedian() {
         long m = median;
         if (m == NO_MEDIAN) {
             median = m = inverseCumulativeProbability(0.5);

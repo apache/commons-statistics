@@ -214,8 +214,8 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
 
     /** {@inheritDoc} */
     @Override
-    protected int getMedian() {
-        // Overridden for the probability(double, double) method.
+    int getMedian() {
+        // Overridden for the probability(int, int) method.
         // This is intentionally not a public method.
         // Can be floor or ceiling of np. For the probability in a range use the floor
         // as this only used for values >= median+1.
