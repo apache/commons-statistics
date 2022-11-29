@@ -68,7 +68,7 @@
       </p>
 
       <p>
-        Commons Statistics is divided into a number of submodules.
+        Commons Statistics is divided into a number of submodules:
       </p>
       <ul>
         <li>
@@ -95,7 +95,7 @@
     <section name="Probability Distributions" id="distributions">
       <subsection name="Overview" id="dist_overview">
         <p>
-          The distributions package provides a framework and implementations for some commonly used
+          The <code>commons-statistics-distribution</code> module provides a framework and implementations for some commonly used
           probability distributions. Continuous univariate distributions are represented by
           implementations of the
           <a href="../commons-statistics-distribution/apidocs/org/apache/commons/statistics/distribution/ContinuousDistribution.html">ContinuousDistribution</a>
@@ -135,8 +135,7 @@ double upperTail = t.survivalProbability(2.75);       // P(T(29) &gt; 2.75)
           For <a href="../commons-statistics-distribution/apidocs/org/apache/commons/statistics/distribution/ContinuousDistribution.html">continuous</a>
           <code>F</code>, the probability density function is given by <code>f.density(x)</code>.
           Distributions also implement <code>f.probability(x1, x2)</code> for computing
-          <code>P(x1 &lt;= X &lt;= x2)</code> for continuous or <code>P(x1 &lt; X &lt;= x2)</code>
-          for discrete distributions.
+          <code>P(x1 &lt; X &lt;= x2)</code>.
         </p>
 <source class="prettyprint">
 PoissonDistribution pd = PoissonDistribution.of(1.23);
@@ -152,18 +151,22 @@ double p3 = pd.probability(4, 5);
           methods. For continuous <code>f</code> and <code>p</code> a probability,
           <code>f.inverseCumulativeProbability(p)</code> returns
         </p>
-        <ul>
-          <li><code>inf{x in R | P(X &le; x) &ge; p} for 0 &lt; p &le; 1</code>,</li>
-          <li><code>inf{x in R | P(X &le; x) &gt; 0} for p = 0</code></li>
-        </ul>
+        <p>
+          \[ x = \begin{cases}
+             \inf \{ x \in \mathbb R : P(X \le x) \ge p\}   &amp; \text{for } 0 \lt p \le 1 \\
+             \inf \{ x \in \mathbb R : P(X \le x) \gt 0 \}  &amp; \text{for } p = 0
+             \end{cases} \]
+        </p>
         <p>
           where <code>X</code> is distributed as <code>F</code>.<br/>
           Likewise <code>f.inverseSurvivalProbability(p)</code> returns
         </p>
-        <ul>
-          <li><code>inf{x in R | P(X &ge; x) &le; p} for 0 &le; p &lt; 1</code>,</li>
-          <li><code>inf{x in R | P(X &ge; x) &lt; 1} for p = 1</code>.</li>
-        </ul>
+        <p>
+          \[ x = \begin{cases}
+             \inf \{ x \in \mathbb R : P(X \ge x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
+             \inf \{ x \in \mathbb R : P(X \ge x) \lt 1 \}  &amp; \text{for } p = 1
+             \end{cases} \]
+        </p>
 <source class="prettyprint">
 NormalDistribution n = NormalDistribution.of(0, 1);
 double x1 = n.inverseCumulativeProbability(1e-300);
@@ -171,10 +174,10 @@ double x2 = n.inverseSurvivalProbability(1e-300);
 // x1 == -x2 ~ -37.0471
 </source>
         <p>
-          For discrete <code>F</code>, the definition is the same, with <code>Z</code>
-          (the integers) in place of <code>R</code> (but note that, in the discrete case,
+          For discrete <code>F</code>, the definition is the same, with \( \mathbb Z \)
+          (the integers) in place of \( \mathbb R \) (but note that, in the discrete case,
           the &ge; in the definition can make a difference when <code>p</code> is an attained
-          svalue of the distribution).
+          value of the distribution).
         </p>
         <p>
           All distributions provide accessors for the parameters used to create the distribution,
@@ -185,7 +188,7 @@ double x2 = n.inverseSurvivalProbability(1e-300);
 ChiSquaredDistribution chi2 = ChiSquaredDistribution.of(42);
 double df = chi2.getDegreesOfFreedom();    // 42
 double mean = chi2.getMean();              // 42
-double var = chi2.getVariance();           // 84
+double variance = chi2.getVariance();      // 84
 
 CauchyDistribution cauchy = CauchyDistribution.of(1.23, 4.56);
 double location = cauchy.getLocation();    // 1.23
@@ -205,7 +208,7 @@ int upper = b.getSupportUpperBound();  // 13
         <p>
           All distributions implement a <code>createSampler(UniformRandomProvider rng)</code>
           method to support random sampling from the distribution, where <code>UniformRandomProvider</code>
-          is an interface defined in <a href="https://commons.apache.org/rng">Commons RNG</a>.
+          is an interface defined in <a href="https://commons.apache.org/proper/commons-rng/">Commons RNG</a>.
           The sampler is a functional interface whose functional method is <code>sample()</code>,
           suitable for generation of <code>double</code> or <code>int</code> samples.
           Default <code>samples()</code> methods are provided to create a
@@ -305,7 +308,7 @@ double q2 = chi2.survivalProbability(168);
         </table>
         <p>
           Probability computations should use the appropriate cumulative or survival function
-          to calculate the lower or upper tail resepectively. The same care should be applied
+          to calculate the lower or upper tail respectively. The same care should be applied
           when inverting probability distributions. It is preferred to compute either
           <code>p &le; 0.5</code> or <code>q &le; 0.5</code> without loss of accuracy and then
           invert respectively the cumulative probability using <code>p</code> or the survival
@@ -325,7 +328,7 @@ double x2 = chi2.inverseSurvivalProbability(q);
           Note: The survival probability functions were not present in the
           <code>org.apache.commons.math3.distribution</code> package. Users upgrading from
           <code><a href="https://commons.apache.org/proper/commons-math/">commons-math</a></code>
-          should update usage of the cumulative probability functions where appropirate.
+          should update usage of the cumulative probability functions where appropriate.
         </p>
       </subsection>
     </section>
