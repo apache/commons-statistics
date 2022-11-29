@@ -228,7 +228,7 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
      *
      * <p>For scale parameter \( k \) and shape parameter \( \alpha \), the mean is:
      *
-     * <p>\[ \operatorname{E}[X] = \begin{cases}
+     * <p>\[ \mathbb{E}[X] = \begin{cases}
      *       \infty                      &amp; \text{for } \alpha \le 1 \\
      *       \frac{k \alpha}{(\alpha-1)} &amp; \text{for } \alpha \gt 1
      *       \end{cases} \]

@@ -282,7 +282,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
      *
      * <p>For denominator degrees of freedom parameter \( m \), the mean is:
      *
-     * <p>\[ \operatorname{E}[X] = \begin{cases}
+     * <p>\[ \mathbb{E}[X] = \begin{cases}
      *       \frac{m}{m-2}    &amp; \text{for } m \gt 2 \\
      *       \text{undefined} &amp; \text{otherwise}
      *       \end{cases} \]

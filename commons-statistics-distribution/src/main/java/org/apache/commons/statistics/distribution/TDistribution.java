@@ -282,7 +282,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      *
      * <p>For degrees of freedom parameter \( v \), the mean is:
      *
-     * <p>\[ \operatorname{E}[X] = \begin{cases}
+     * <p>\[ \mathbb{E}[X] = \begin{cases}
      *       0                &amp; \text{for } v \gt 1 \\
      *       \text{undefined} &amp; \text{otherwise}
      *       \end{cases} \]
