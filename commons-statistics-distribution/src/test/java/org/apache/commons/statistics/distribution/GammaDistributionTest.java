@@ -77,7 +77,11 @@ class GammaDistributionTest extends BaseContinuousDistributionTest {
     static Stream<Arguments> testAdditionalMoments() {
         return Stream.of(
             Arguments.of(1, 2, 2, 4),
-            Arguments.of(1.1, 4.2, 1.1 * 4.2, 1.1 * 4.2 * 4.2)
+            Arguments.of(1.1, 4.2, 1.1 * 4.2, 1.1 * 4.2 * 4.2),
+            // scipy.stats.gamma(shape, scale=scale).stats()
+            Arguments.of(0.5, 10, 5, 50),
+            Arguments.of(0.5, 7.5, 3.75, 28.125),
+            Arguments.of(0.25, 10, 2.5, 25)
         );
     }
 
