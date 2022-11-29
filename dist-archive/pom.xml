@@ -44,8 +44,6 @@ under the License.
     <commons.releaseManagerKey>B39617E095CD748DFE505816703413011E22D5B8</commons.releaseManagerKey>
   </properties>
 
-
-
   <build>
     <plugins>
       <plugin>
@@ -83,23 +81,11 @@ under the License.
         </dependency>
 
       </dependencies>
+
       <build>
         <plugins>
           <plugin>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>get-dependencies</id>
-                <phase>prepare-package</phase>
-                <goals>
-                  <goal>copy-dependencies</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
-            <version>2.4</version>
             <configuration>
               <skipAssembly>false</skipAssembly>
             </configuration>
