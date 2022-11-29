@@ -46,10 +46,6 @@ import org.apache.commons.numbers.gamma.RegularizedBeta;
  *
  * <p>is the binomial coefficient.
  *
- * <p>The mean and variance of \( X \) are:
- *
- * <p>\[ \begin{aligned} \mathbb{E}(X) &amp;= \frac {(1 - p) r}{p} \\ \mathrm{Var}(X) &amp;= \frac {(1 - p) r}{p^2} \end{aligned} \]
- *
  * <p>The cumulative distribution function of \( X \) is:
  *
  * <p>\[ P(X \leq k) = I(p, r, k + 1) \]
