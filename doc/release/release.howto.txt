@@ -1,0 +1,1013 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+This document is meant as a step-by-step recipe to achieve the release of
+the Commons Statistics component. Note that more general instructions valid
+for all components, including [statistics], are available on the Apache Commons
+main site: at "https://commons.apache.org/releases/prepare.html" and
+"https://commons.apache.org/releases/release.html".
+
+When performing a release it is recommended to make notes of any changes that
+were required to those detailed in this document. The changes can be incorporated
+after a successful release.
+
+The files "settings-security.xml" and "settings.xml" are minimal examples
+of files used by maven to pick up authentication credentials needed to
+connect to remote servers and to cryptographically sign the artifacts.
+
+Release preparation is done on the release manager local host in a branch.
+As branches deletion is now forbidden at Apache, we will use a specific
+release branch for every version.
+The branch will be simply named X.Y-release, with X.Y being the version number.
+The branch will be used to store the release specific parts (i.e. the pom changes with
+the version number, the release date in the site and so on). Everything else and in
+particular code change that will remain in the component after the release must be
+committed to the master branch (or version branch). The release candidate branch will
+be created from master or version branch at the start of each new candidate for
+this particular release. Once the release is done, the branch will be merged back to
+master, but it will never be deleted so release history will be preserved.
+
+The example below show a typical workflow. Just after commit A in the master branch, the
+X.Y-release branch is created starting from master. This is shown by the 'b' in the
+second line. Then release specific commits are made on the pom and a few other
+files, leading to a commit which will be tagged as RC1. This release candidate fails, and
+a few corrections need to be made on master, corresponding to commits B and C. Then the
+X.Y-release branch is synchronized by running a 'git merge' command on the branch.
+This is shown by the 'm' in the second line. A new commit is tagged as RC2. This second
+release candidate also fails, and a new correction is made on master branch, a new merge
+is done on the X.Y-release branch, a new commit is tagged and a third release candidate is
+create, which succeeds. Then a final tag will be added on the final commit of this branch
+showing the status as released. Then the files are cleaned to prepare for next version
+(pom getting again a SNAPSHOT suffix, changes.xml getting a new placeholder for changes)
+and the cleaned branch is merged back to master. Once the X.Y-release branch has been merged,
+it is kept for history. The release for next version will use another specific branch.
+
+
+ ----A-------> B --> C----------> D--------------------------------------m---->    <- master branch
+      \               \            \                                    /
+       b---> RC1 ------m---> RC2 ---m---> RC3/final release --> cleaning --X       <- X.Y-release branch
+
+This process allows:
+
+ - to never commit release candidate specific changes to the master
+   branch (so the pom on master always holds a SNAPSHOT version),
+ - to preserve future reference to the release
+ - to allow parallel work on master during the release
+ - if necessary to have multiple release managers or help on the
+   release as the X.Y-release branch is shared
+
+NOTE
+----
+
+When performing a release it is good practice to edit a copy of these notes during the process
+and merge the updated document into the repository following a release. To assist in this process
+a find-and-replace can be performed to update all the version statistics in order. For example
+based on a previous release of 1.0:
+
+- Next development version  : 1.1 -> 1.2
+- Next release version      : 1.0 -> 1.1
+- Previous release version  : NA -> 1.0
+- Release candidate version : RC1 -> RC2   (if applicable)
+
+This allows the included commands to be coped during the release process.
+
+
+(0)
+Preliminary checks:
+ * All Java files must contain a license header. The "RAT" maven plugin will
+   generate a report indicating for which files the license is missing.
+ * For a "minor" release, the library must be backward-compatible.
+   Ensure the binary compatibility release version is correctly set in the pom.xml using the
+   appropriate properties:
+     <properties>
+       <!-- ... -->
+       <!-- upcoming release version -->
+       <commons.release.version>1.0</commons.release.version>
+       <!-- previous release version -->
+       <commons.bc.version>NA</commons.bc.version>
+       <!-- ... -->
+     </properties>
+   Check all the issues reported by the "japicmp" plugin.
+   Check the new public/protected API classes/interfaces/methods/enums have an appropriate
+   @since tag for the release.
+ * Clear all "CheckStyle" warnings.
+ * Make sure that the construct reported by "SpotBugs" and "PMD" are intentional.
+ * Mark all issues fixed in the release as resolved in the bug-tracking system (JIRA). Issues marked
+   as 'Implemented' or 'Fixed' will appear in the changes report. Add a corresponding entry in
+   "src/changes/changes.xml" for the JIRA ticket. To search for unresolved tickets
+   click 'Releases' on the left menu and select the upcoming release version.
+
+
+(1)
+As an optional step, you can test that everything works locally, i.e.
+that the build process can create all the necessary artifacts.
+
+  (1a)
+  The command
+
+    $ JAVA_HOME="__Path_to_a_JDK__" mvn -Duser.name="__Your_Apache_id__" -Ptest-deploy -Prelease clean deploy site site:stage [-Dgpg.skip]
+
+  should create the artifacts in the "target/deploy" directory. The site goal
+  is required for the commons release plugin even though the site is
+  built separately for the full multi-module project to include the examples.
+
+  The "dist-archive/target" directory will contain those files:
+
+    commons-statistics-1.0-SNAPSHOT-bin.tar.gz
+    commons-statistics-1.0-SNAPSHOT-bin.zip
+    commons-statistics-1.0-SNAPSHOT-src.tar.gz
+    commons-statistics-1.0-SNAPSHOT-src.zip
+
+  At some point when processing the above command, the GPG passphrase will be
+  requested; to avoid problems, the "gpg2" executable should be specified in
+  the "settings.xml" file (see below).
+  Note: If running from a remote terminal, you might need to tune the "gpg-agent"
+  configuration file
+    ~/.gnupg/gpg-agent.conf
+  to contain the following statements:
+    ---CUT---
+    enable-ssh-support
+    pinentry-program /usr/bin/pinentry-tty
+    ---CUT---
+  and execute
+    $ export GPG_TTY=$(tty)
+  in order to set up the environment for entering the passphrase.
+
+  For testing, or when GPG is not configured, this can be avoided using "-Dgpg.skip" argument
+  in the maven release dry run command.
+
+  (1b)
+  The command:
+
+    $ JAVA_HOME="__Path_to_a_JDK__" mvn -Pexamples package site site:stage
+
+  should create the site in the "target/staging" directory.
+
+  Note: The examples are not part of the binary distribution (release profile) but are
+  included in the site for documentation.
+
+
+(2)
+At this point, you will work mainly on the X.Y-release branch.
+
+If the X.Y-release branch does not exist because it is the first release
+candidate, create it locally starting from the master branch or the version
+branch and push it to Apache repository (assuming it is called origin),
+remembering the binding between the local and remote origin branches:
+
+  $ git branch 1.0-release
+  $ git push -u origin 1.0-release
+
+(Optional)
+Modify the dist-archive/pom.xml to update the release manager name and GPG signing key
+to be used for the release.
+
+
+(3)
+Switch to the release branch:
+
+  $ git checkout 1.0-release
+
+
+(4)
+If there have been changes committed in the master branch or the version
+branch since the creation of the release branch, there are two cases:
+
+  (4a)
+  if all these changes must be included in version 1.0, merge "master"
+  or the version branch into "1.0-release":
+
+    $ git merge master
+
+  or, if the version branch is called "1.0-develop"
+
+    $ git merge 1.0-develop
+
+  (4b)
+  if only part of these changes must be included in version 1.0,
+  cherry-pick the required commits into the "1.0-release" branch:
+
+    $ git cherry-pick commit-SHA
+
+
+(5)
+Update the release specific files, checking you are really working on the
+release branch and *not* on the master branch.
+
+In particular:
+ * Update and commit the "src/site/site.xml" file in **each** maven module to contain
+   the information about the API docs of the new release.
+ * Estimate a release date (taking into account the release vote delay) and
+   insert it in the "src/changes/changes.xml" file.
+ * Update the "pom.xml" to contain the final version number and not a SNAPSHOT:
+   Assuming that the release version will be "1.0", modify the "<version>" tag to
+   read:
+
+    <version>1.0</version>
+
+   This can be done using maven:
+
+    $ mvn versions:set -DnewVersion=1.0 -DgenerateBackupPoms=false -Pexamples
+
+   You may need to update the version in dist-archive/pom.xml manually.
+
+   Modify the section of "<properties>" that also refers to version statistics.
+   You should uncomment the "<commons.rc.version>" line and indicate the
+   appropriate numbering of the release candidate: This refers to how many
+   times you will need to repeat this whole release process until it is
+   accepted (by a vote):
+
+  <properties>
+    <!-- ... -->
+    <commons.release.version>1.0</commons.release.version>
+    <commons.rc.version>RC1</commons.rc.version>
+    <!-- ... -->
+  </properties>
+
+
+(6)
+The "download" page template is located at "src/site/xdoc/download_statistics.xml".
+This file is updated automatically by running the command:
+
+  $ mvn -N commons-build:download-page
+
+  Note: This command presently requires Java 8.
+
+(7)
+The "release notes" file will be created by gathering all the changes
+collected during development in the file "src/changes/changes.xml".
+
+Create it by running:
+
+  $ mvn -N -Prelease-notes changes:announcement-generate
+
+Ensure the formatting of the RELEASE-NOTES.txt is consistent. Compare the main
+header description to the previous release notes in src/site/resources/release-notes/
+and update the line wrap formatting to match. Remove trailing whitespace.
+Ensure the lines wrap at 100 characters.
+Note that wrapping is taken from changes.xml which should be written to wrap
+at 100 characters but allowing for a indent on the first line due to the Statistics
+issue field. Update changes.xml if appropriate.
+
+Append the previous release notes from src/site/resources/release-notes/ to the current one:
+
+  $ (echo "=============================================================================" &&
+     cat src/site/resources/release-notes/RELEASE-NOTES-NA.txt) >> RELEASE-NOTES.txt
+
+Copy the RELEASE-NOTES.txt to src/site/resources/release-notes:
+
+  $ cp RELEASE-NOTES.txt src/site/resources/release-notes/RELEASE-NOTES-1.0.txt
+
+Update the src/site/xdoc/release-history.xml to include the latest version. This generates
+the release history page on the web site.
+
+Commit the updated files to git:
+
+  $ git add */src/site/site.xml \
+            src/changes/changes.xml \
+            pom.xml \
+            src/site/xdoc/download_statistics.xml \
+            RELEASE-NOTES.txt \
+            src/site/resources/release-notes/RELEASE-NOTES-* \
+            src/site/xdoc/release-history.xml
+
+Check you did not forget any files:
+
+  $ git status
+
+Commit the changes:
+
+  $ git commit -m "Release candidate."
+
+
+(8)
+Create a GPG signed tag that will contain the whole source of this release candidate.
+First, make sure once again that the workspace is up-to-date:
+
+  $ git status
+
+Then, assuming the first candidate, the suffix will be "RC1" (this should
+be the same as in the "<properties>" in the "pom.xml"), and the command
+will be:
+
+  $ git tag -u "__Your_key_id__" -s -m "RC1" commons-statistics-1.0-RC1
+
+If you have several GPG keys, you may prefer to use "-u keyId" to select a specific
+key for signing the tag instead of "-s" which select automatically one key
+from the configured e-mail address.
+
+Check the tag GPG signature:
+
+  $ git tag -v commons-statistics-1.0-RC1
+
+You will get something like:
+
+  object cf4a9d70c9ac24dd7196995390171150e4e56451
+  type commit
+  tag commons-statistics-1.0-RC1
+  tagger YourName <YourApacheEmail> 1418934614 +0100
+
+  RC1
+
+followed by GPG output lines.
+
+Remember the commit ID listed in the object line (here cf4a9d70c9ac24dd7196995390171150e4e56451),
+as it is the most stable reference for traceability.
+
+Push everything (including the tag!) on the Apache repository:
+
+  $ git push && git push origin commons-statistics-1.0-RC1
+
+
+(9)
+Switch to a new directory out of your regular workspace, and retrieve
+the official tag from the Apache repository:
+
+  $ cd /tmp
+  $ git clone https://gitbox.apache.org/repos/asf/commons-statistics.git --branch commons-statistics-1.0-RC1
+
+In the command above, the --branch option accepts both branch names and tags names,
+so we specify directly the tag here. Git will warn that the resulting workspace
+is in 'detached HEAD' state and 'git status' commands will warn that you are not
+currently on any branch. This is expected in this situation.
+
+Check that the last commit has the id you noted in the previous step:
+
+  $ cd commons-statistics
+  $ git log -1
+
+
+(10)
+If this is your first release, you might need to add your GPG encryption
+key to the KEYS file. [If you have already done so, skip this section.]
+
+Retrieve the files from the SVN repository:
+
+  $ svn co --depth=files \
+    https://dist.apache.org/repos/dist/release/commons/svn
+
+and follow the instructions at the top of the "KEYS" file.
+
+
+(11)
+Create and transfer the artifacts to the Nexus server (a.k.a. "deploy").
+
+Because the artifacts must be cryptographically signed, this step requires that
+a profile named "release" exists in the maven "settings.xml" configuration file
+which will contain the identifier of your GPG key (cf. sample "settings.xml"
+file). You will also have to follow the instructions at
+https://maven.apache.org/guides/mini/guide-encryption.html to set your password
+for your apache id in the settings.xml file which is used for Nexus repository staging.
+
+The release process requires commit access for the commons SVN repository used to host the
+web site. This will use the provided 'user.name' for SVN. If your SVN is not set-up to
+cache passwords then a password must be provided. This can be done using a <server> section in
+the maven settings.xml file. Typically the username is the same for Nexus repository staging
+(i.e. your apache id) so the server 'apache.releases.https' configured in the example
+settings.xml file can be used by setting the commons.distServer property for the commons release
+plugin (see https://commons.apache.org/proper/commons-release-plugin/index.html).
+
+You can then generate the release artifacts without the site generation (using Java 8):
+
+  $ mvn -Duser.name="__Your_Apache_id__" [-Dcommons.distServer=apache.releases.https] \
+        [-Duser.password=<yourApacheIdsPassword] \
+        -Prelease clean deploy site
+
+which will transfer the artifacts to the Nexus repository located at
+  https://repository.apache.org/index.html#stagingRepositories
+
+The apache ID password is required to clean and deploy the binary distribution
+files to svn if the svn client is not configured to locally cache the user
+password.
+
+Note: The 'site' goal is required for the release plugin. The live site
+should be generated separately to include the examples modules for
+documentation. The release profile will not include the example modules as they
+are not part of the binary release artifacts. The 'package' goal is required
+to generate a jar file for the japicmp report.
+
+Using Java 8 ensures a package-list is created for the javadoc in each module. Later Java
+versions may generate an element-list. If the site is generated including the examples
+module using JDK 11+ without running 'mvn clean' then the package-list will coexist
+alongside the newly generated element-list. This allows the javadocs to be searchable
+from new and old JDKs.
+
+This process transfers more files than really needed in the the "staging" (i.e.
+non official) maven repository. The files expected in the repository are
+  commons-statistics-<ModuleArtifactID>-1.0.pom
+  commons-statistics-<ModuleArtifactID>-1.0.jar
+  commons-statistics-<ModuleArtifactID>-1.0.javadoc.jar
+  commons-statistics-<ModuleArtifactID>-1.0.sources.jar
+  commons-statistics-<ModuleArtifactID>-1.0.test-sources.jar
+  commons-statistics-<ModuleArtifactID>-1.0.tests.jar
+  commons-statistics-<ModuleArtifactID>-1.0.spdx.rdf.xml
+and their associated fingerprints
+  <file-name>.md5
+  <file-name>.sha1
+and their signatures
+  <file-name>.asc
+
+The commons-statistics-parent artifact should contain the pom
+and the associated fingerprints and signatures. The commons-parent also
+contains a Software Package Data Exchange (SPDX) file.
+
+Nexus used to add "md5" and "sha1" checksums files to the "asc" files
+(cryptographic signature). If these fingerprints on signatures are
+present, they must be manually removed from Nexus staging area.
+
+The process used to transfer the complete source and binaries distributions files,
+(for each module):
+  commons-statistics-<ModuleArtifactId>-1.0-bin.tar.gz
+  commons-statistics-<ModuleArtifactId>-1.0-bin.zip
+  commons-statistics-<ModuleArtifactId>-1.0-src.tar.gz
+  commons-statistics-<ModuleArtifactId>-1.0-src.zip
+as well as their associated .md5 and .sha1 fingerprints and .asc signatures.
+All these files are not maven artifacts but rather distribution archives: They
+belong elsewhere; hence they must also been removed from the Nexus staging
+repository.
+
+As a final validity check, the Nexus repository must be manually "closed"
+before other people review the deliverables just created.
+How to "close" the staging repository is explained at this page:
+  http://www.apache.org/dev/publishing-maven-artifacts.html#close-stage
+
+The nexus staging ID should be noted so that it can be used in the generation
+of the VOTE email. The id is the XXXX number from the repository id with the
+format orgapachecommons-XXXX.
+
+(12)
+[NOTE: The "Commons release-plugin" now automatically performs all the tasks
+referred to in this section.]
+
+***
+Verify that the release plugin has performed the steps below.
+You may be required to remove the staged site from the "dev" area
+and add missing files. The following was performed for release 1.0:
+
+  $ cd /tmp
+  $ svn checkout https://dist.apache.org/repos/dist/dev/commons/statistics
+  $ cd statistics/1.0-RC1
+  $ cp path-to-the-RC-workspace/CONTRIBUTING.md .
+  $ svn add CONTRIBUTING.md
+  $ svn del site
+  $ svn commit -m "Distribution files for Commons Statistics v1.0 (RC1)."
+***
+
+Create and upload the other distribution files to the Apache servers.
+
+  (12a)
+  Perform a server-side copy of the README.html from the "release" area of
+  the Apache dist server to the "dev" area:
+
+    $ svn cp https://dist.apache.org/repos/dist/release/commons/statistics/README.html \
+             https://dist.apache.org/repos/dist/dev/commons/statistics/README.html
+
+  (12b)
+  The modules "dist-archive" dedicated to creating the archive files.
+  Run the following command:
+
+    $ ( cd dist-archive && mvn -P release assembly:single )
+
+  (12c)
+  Go to a temporary directory and check out the "dev" area.
+
+    $ cd /tmp
+    $ svn checkout https://dist.apache.org/repos/dist/dev/commons/statistics
+    $ cd statistics
+
+  (12d)
+  Edit the "README.html" file to contain the released version number.
+
+  (12e)
+  Copy other files from the RC workspace:
+
+    $ cp path-to-the-RC-workspace/RELEASE-NOTES.txt .
+    $ cp path-to-the-RC-workspace/CONTRIBUTING.md .
+    $ cp path-to-the-RC-workspace/dist-archive/target/commons-release-plugin/scm/1.0-RC1/README.html .
+    $ cp path-to-the-RC-workspace/dist-archive/target/*-bin.* binaries
+    $ cp path-to-the-RC-workspace/dist-archive/target/*-src.* source
+
+  Currently, the commons-parent build does not create the
+   * signatures (".asc"),
+   * hashes (".sha512")
+  of the distribution files.  Hence, you have to create them "manually"!
+  For the signature, the command is
+    $ gpg -ab file-to-sign
+  For the hash, the commands is
+    $ sha512sum -b input-file > input-file.sha512
+
+  Double-check the signatures and hashes with the following:
+    $ gpg --verify asc-file
+    $ sha512sum -c hash-file
+
+  (12f)
+  Commit to SVN:
+
+    $ svn add \
+      CONTRIBUTING.md \
+      README.html \
+      RELEASE-NOTES.txt \
+      binaries/* \
+      source/*
+    $ svn commit -m "Distribution files for Commons Statistics v1.0 (RC1)."
+
+
+(13)
+[NOTE: The "Commons release-plugin" now automatically uploads the web site
+to the "dist dev" area of the svn repository.  However, for multi-module
+maven projects, the site is incomplete.]
+
+As the web site staging area is shared among all commons components and therefore
+could be published before the vote ends, it is not recommended to use the standard
+staging area for the release candidate. So you will just archive the site and
+transfer it to your apache personal area for review.
+Here is how to do this using "lftp" to initiate the sftp transfer. "lftp" supports
+a mirror command for recursive transfers; don't forget the -R flag for uploading
+instead of downloading the site.
+If you haven't setup your login on home.apache.org you will need to go to
+  https://id.apache.org/
+login and copy the contents of your
+  ~/.ssh/id_rsa.pub
+file to "SSH Key (authorized_keys line)".
+Then run these commands:
+
+  Do not run 'clean' as it will delete the release source/binary artifacts and the
+  release plugin cannot be used to generate the template VOTE.txt file with the
+  correct hashes. It also removes the previous javadocs package-list generated using
+  Java 8.
+
+  $ mvn -Pexamples package site site:stage
+
+  $ cd target
+  $ mv staging commons-statistics-1.0-RC1-site
+  $ lftp sftp://__Your_apache_login__@home.apache.org
+     lftp you@home.apache.org:~> mkdir public_html
+     lftp you@home.apache.org:~> cd public_html
+     lftp you@home.apache.org:~/public_html> mirror -R commons-statistics-1.0-RC1-site
+     lftp you@home.apache.org:~/public_html> bye
+
+If lftp fails with 'Fatal error: Host key verification failed.' then the host
+key for home.apache.org may have changed. Try to ssh to the server. This will be
+refused as only ftp connections are allowed but the error message should
+describe how to update the SSH known hosts to remove the error.
+
+(14)
+[NOTE: The "Commons release-plugin" can generate the text for the "[VOTE]"
+message. However, the script makes some (incorrect) assumptions and produces
+a result that must be heavily edited.]
+
+Template the vote using this command (run from the dist-archive module):
+
+  $ mvn org.apache.commons:commons-release-plugin:vote-txt \
+        -Dgit.tag.commit=commons-statistics-1.0-RC1 \
+        -Dcommons.nexus.repo.id=XXXX
+
+where XXXX is the nexus repository staging ID. The output is target/VOTE.txt.
+This must be heavily edited. It is useful to generate the release hashes.
+
+Call to vote by sending a message to the "dev" ML with subject
+"[VOTE] Release Commons Statistics 1.0 based on RC1". You can use the following example as
+a reference point, replacing the URLs with the appropriate ones:
+----------
+We have fixed quite a few bugs and added some significant enhancements since Apache Commons Statistics NA was released,
+so I would like to release Apache Commons Statistics 1.0.
+
+Apache Commons Statistics 1.0 RC1 is available for review here:
+    https://dist.apache.org/repos/dist/dev/commons/statistics/1.0-RC1 (svn revision 48777)
+
+The Git tag commit for this RC is commons-statistics-1.0-RC1 which you can browse here:
+    https://gitbox.apache.org/repos/asf?p=commons-statistics.git;a=commit;h=commons-statistics-1.0-RC1
+
+You may checkout this tag using:
+    git clone https://gitbox.apache.org/repos/asf/commons-statistics.git --branch commons-statistics-1.0-RC1 commons-statistics-1.0-RC1
+
+Maven artifacts are here:
+    https://repository.apache.org/content/repositories/orgapachecommons-XXXX/org/apache/commons/
+
+These are the artifacts and their hashes:
+
+commons-statistics-1.0-bin.tar.gz=<hash>
+commons-statistics-1.0-bin.zip=<hash>
+commons-statistics-1.0-src.tar.gz=<hash>
+commons-statistics-1.0-src.zip=<hash>
+
+(no need for .asc hashes!)
+
+I have tested this with 'mvn clean install' using:
+
+***
+<mvn -version>
+***
+
+I have tested this with 'mvn clean install site site:stage -Pexamples' using:
+
+***
+<mvn -version>
+***
+
+Details of changes since NA are in the release notes:
+    https://dist.apache.org/repos/dist/dev/commons/statistics/1.0-RC1/RELEASE-NOTES.txt
+
+Site:
+    https://home.apache.org/~aherbert/commons-statistics-1.0-RC1-site/
+    (note some *relative* links are broken and the 1.0 directories are not yet created - these will be OK once the site is deployed.)
+
+JApiCmp Report:
+    https://home.apache.org/~aherbert/commons-statistics-1.0-RC1-site/commons-statistics-distribution/japicmp.html
+
+RAT Report:
+    https://home.apache.org/~aherbert/commons-statistics-1.0-RC1-site/rat-report.html
+
+KEYS:
+  https://www.apache.org/dist/commons/KEYS
+
+Please review the release candidate and vote.
+This vote will close no sooner that 72 hours from now.
+
+  [ ] +1 Release these artifacts
+  [ ] +0 OK, but...
+  [ ] -0 OK, but really should fix...
+  [ ] -1 I oppose this release because...
+
+Thank you,
+
+Alex Herbert,
+Release Manager (using key BC87A3FD0A54480F0BADBEBD21939FF0CA2A6567)
+----------
+
+
+(15)
+If some blocking problems have been found in the release deliverables, cancel
+the vote by sending a "[CANCEL][VOTE]" message to the "dev" ML.
+After correcting the problems, you'll likely have to start again from step 3,
+4 or 5.
+
+
+(16)
+After at least 72 hours have elapsed, send a "[VOTE][RESULT]" mail to
+summarize the outcome of the vote. This should tally the votes cast,
+and state which are binding (PMC members). The vote needs at least three +1's
+from PMC members to pass.
+
+
+(17)
+The distribution files must be moved from the development area to the release
+area of the Apache dist server.
+
+  (17a)
+  Checkout the official distribution repository:
+
+    $ svn co https://dist.apache.org/repos/dist/release/commons/statistics
+
+  Identify symbolic links:
+
+    $ find . -type l
+
+  (17b)
+  Copy the files from the checkout of the repository that was voted on:
+
+    $ svn co https://dist.apache.org/repos/dist/dev/commons/statistics statistics2
+    $ cd statistics
+    $ rsync -Cav ../statistics2/1.0-RC1/ .
+
+  [Note: This might overwrite symbolic links; in this case, do a "svn
+  revert" in order to restore the files that should not be updated.]
+
+    $ svn revert binaries/HEADER.html binaries/README.html \
+                 source/HEADER.html source/README.html
+
+  (17c)
+  Check files. The following is useful:
+
+    $ svn diff --summarize
+
+  Perform a "svn add" for the new release artifacts.
+  Perform a "svn del" for the old release(s) artifacts.
+
+    $ svn del binaries/*-NA-* source/*-NA-*
+    $ svn add binaries/*-1.0-* source/*-1.0-*
+
+  (17d)
+  Commit:
+
+    $ svn commit -m "Release Commons Statistics v1.0 (from RC1)."
+
+  (17e)
+  Register the release at
+    https://reporter.apache.org/addrelease.html?commons
+
+
+(18)
+Login to the Nexus repository located at
+  https://repository.apache.org/index.html#stagingRepositories
+
+Release (a.k.a. "promote") the artifacts on the Nexus server, as shown here:
+  http://www.apache.org/dev/publishing-maven-artifacts.html#promote
+
+
+(19)
+Publish the web site. This is done by first committing the web site to the
+staging area, and then by publishing the staging area (which is shared among
+all commons components).
+
+To assist in committing the web site to the staging area, a profile can be used
+to checkout the current site to the folder 'site-content'. However this does not perform a
+complete checkout and the directory must be updated:
+
+ $ mvn -Psite-checkout -N pre-site
+ $ (cd site-content && svn up --set-depth infinity)
+
+Note that svn commits in the site-content directory are immediately synced with
+the live site and so your changes should show up in a few minutes once you
+commit the new site. You can also check out the site directly by yourself
+elsewhere:
+
+  $ svn checkout https://svn.apache.org/repos/infra/websites/production/commons/content/proper/commons-statistics site-content
+
+Remove all files there (except .svn folder) and move all the files from the site.
+
+ $ cd site-content
+ $ rm -rf *
+ $ cp -pR ../target/commons-statistics-1.0-RC1-site/* .
+
+Check for new or deleted files:
+ $ svn status
+and "svn add" or "svn del" them if necessary.
+
+It is very useful to know changes to the project since the last release. The
+japicmp report is helpful for the public API. Changes in commons-statistics-examples
+are not subject to these reports and require developer insight. If in doubt do
+not delete files.
+
+Note the svn symbols (svn status --help):
+
+M - Modified (will be committed)
+A - Marked for addition
+D - Marked for deletion
+? - Not under version control (must be marked as A to add)
+! - Missing (must be marked as D to remove)
+
+The following commands are useful.
+
+Note that the "awk '{if ... print $2}'" only works for files that have no
+spaces. Currently the only files known to have spaces are the SPDX files,
+e.g. 'Apache Commons Statistics-1.0.spdx.rdf.xml'; these must be committed manually.
+
+Reverting (may not be required):
+
+  $ svn status | grep ^M | less
+  $ svn status | awk '{if ($1 == "M") print $2 }' | xargs svn revert
+
+Deleting (**do not** delete old javadocs):
+
+  $ svn status | grep -v javadocs | grep ^! | less
+  $ svn status | grep -v javadocs | awk '{if ($1 == "!") print $2 }' | xargs svn del
+
+Adding:
+
+  $ svn status | grep ^? | less
+  $ svn status | awk '{if ($1 == "?") print $2 }' | xargs svn add
+
+Check the local website:
+
+  $ open index.html
+
+Commit the new contents of the web site:
+  $ svn commit -m "Commons Statistics v1.0 was released (from RC1). Web site update"
+
+Note the SVN website revision for the next step (javadocs archiving).
+
+
+Edit the file component_releases.properties to hold the current version and release date for
+your component:
+
+  $ svn checkout --depth files https://svn.apache.org/repos/asf/commons/cms-site/trunk/conf/
+
+  [edit file: component_releases.properties]
+
+  $ (cd conf && svn commit -m "Commons Statistics v1.0 was released (from RC1)")
+
+
+(20)
+The Javadoc for several versions is kept available on the website, under the
+"javadocs" directory.
+There is a huge number of files that never change, so they are not retrieved by
+default in the working copy when running 'svn checkout'.
+The Javadoc must therefore be copied manually using server side copy from the
+"apidocs" directory after release, in order for the links to former versions
+to work. This is done using the "doc/release/copyLongTermJavadoc.sh" script
+(options are the svn revision and the component's new version).
+
+  $ doc/release/copyLongTermJavadoc.sh -r 1080991 -v 1.0
+
+Wait a few minutes for the live site to fully sync and then check
+  https://commons.apache.org/proper/commons-statistics/
+to make sure that everything looks correct.
+
+
+(21)
+Edit "doap_statistics.rdf" to add the just released version date.
+It is located at
+  https://svn.apache.org/repos/asf/commons/cms-site/trunk/doap
+in the SVN repository.
+
+  $ svn checkout https://svn.apache.org/repos/asf/commons/cms-site/trunk/doap
+
+  [edit file: doap/doap_statistics.rdf]
+
+  $ (cd doap && svn commit -m "Commons Statistics v1.0 was released (from RC1)")
+
+(22)
+In the git repository, put the official final tag to point at the same commit
+as the **last release candidate** tag:
+
+  $ git tag -v commons-statistics-1.0-RC1
+
+Check the commit hash then add the release tag.
+Note: The 'rel/' prefix adds the tag to the release section of the tags.
+This cannot be deleted once pushed to the main repository due to restrictions
+on this section of the tag namespace (preventing deletion of official release
+tags).
+
+  $ git checkout 1.0-release
+  $ git tag -u "__Your_key_id__" -s -m "RC1 becomes v1.0 official release." rel/commons-statistics-1.0 [commit hash]
+  $ git tag -v rel/commons-statistics-1.0
+  $ git log -1
+  $ git push origin rel/commons-statistics-1.0
+
+
+(23)
+Switch back to the "master" branch.
+We now prepare for the next round of development (here we assume that the
+next version will be 1.1).
+
+  (23a)
+  Retrieve changes made on the "1.0-release branch" (so that the web site will
+  contain up-to-date information):
+
+    $ git cherry-pick -n [release commit range]
+
+  Edit "src/changes/changes.xml" to add a new section for the next release,
+  setting the release date and description to "TBD".
+  Then commit them.
+
+  (23b)
+  Optional: If the release manager was changed retrieve the updated release manager details:
+
+    $ git checkout 1.0-release dist-archive/pom.xml
+
+  Edit every "pom.xml" file (i.e. for each module) to contain
+
+    <version>1.1-SNAPSHOT</version>
+
+  This can be done using maven:
+
+    $ mvn release:update-versions -DautoVersionSubmodules=true -Prelease -Pexamples
+
+  You will only be prompted for the desired version number once.
+  This may miss the dist-archive/pom.xml for all the dependencies.
+  These should be updated manually.
+  Double-check that the "pom.xml" files *really* have a "-SNAPSHOT" suffix
+  in the "<version>" property.
+
+  $ git grep '1.0-SNAPSHOT'    [old version number]
+  $ git grep '1.1-SNAPSHOT'    [new version number]
+  $ git grep '<version>'
+
+  Then commit them.
+
+  (23c)
+  Update the README.md files to refer the latest release. These files are
+  auto-generated from the commons maven plugin using 'mvn common:readme-md'.
+  The generated README.md files may have been edited for the multi-module
+  set-up with extra text added to the main README.md.
+
+  An updated will involve:
+
+  1. Replacing the <version>NA</version> example XML for the maven dependency to
+     <version>1.0</version>.
+  2. Updating any badges for Javadocs. This can be done using search and replace
+     of 'NA.svg' for 'NA.svg' and '/NA)' for '/1.0)'.
+
+  Check the changes using 'git diff' and commit.
+
+  (23d)
+  Update the <commons.release.version> tag in the master pom for the next
+  planned release.
+
+  Update the <commons.bc.version> tag in the master pom for the recent release.
+
+  (23e)
+  Update any other files that use a hard-coded version number.
+
+
+(24)
+Allow for the web site mirrors to be updated (possibly several hours); then
+send (from your apache account) a release announcement to the following ML:
+  announce@apache.org
+  dev@commons.apache.org
+  user@commons.apache.org
+
+If you don't have it setup already you can follow these instructions to send
+email from your apache account :
+
+https://infra.apache.org/committer-email.html
+
+The mail should be sent as text/plain. A text/html message will be refused by
+the Apache mailer daemon.
+
+You can use the following message as a template:
+
+Subject:
+[ANNOUNCE] Apache Commons Statistics Version 1.0 Released
+----------
+The Apache Commons Team is pleased to announce the availability of
+version 1.0 of "Apache Commons Statistics".
+
+Apache Commons Statistics provides number types and utilities.
+
+Changes in this version include:
+
+***<Include release notes inline wrapped to 80 characters>***
+
+Historical list of changes:
+  https://commons.apache.org/proper/commons-statistics/changes-report.html
+
+For complete information on Apache Commons Statistics, including instructions on how
+to submit bug reports, patches, or suggestions for improvement, see the
+Apache Commons Statistics website:
+  https://commons.apache.org/proper/commons-statistics/
+
+Distribution packages can be downloaded from
+  http://commons.apache.org/proper/commons-statistics/download_statistics.cgi
+
+When downloading, please verify signatures using the KEYS file
+available at
+  https://www.apache.org/dist/commons/KEYS
+
+The Apache Commons Team
+----------
+
+
+(25)
+Update JIRA to close all issues resolved in this release and prepare for the next version.
+
+  (25a)
+  Log in to JIRA:
+  https://issues.apache.org/jira/projects/STATISTICS
+
+  (25b)
+  Batch close resolved issues without sending notification e-mails:
+
+  - Click 'View all issues and filters'.
+  - Enter in the search field: project = STATISTICS AND status = resolved
+  - Select "Tools" in the top right and choose "Bulk Change" for all of your relevant issues.
+      Step 1: Select the issues to close.
+      Step 2: Select 'Transition issues'.
+      Step 3: Select to close.
+      Step 4: Enter comment: 'Closed by release 1.0'.
+              Unselect 'Send mail for this update'.
+      Confirm.
+
+  (25c)
+  Manage the JIRA version for the release.
+
+  Go to: https://issues.apache.org/jira/projects/STATISTICS
+
+  Click 'Releases' on the left menu.
+
+  Add a new version:
+  - Enter the new version number in the field and click 'Add'.
+  - Versions can be ordered by drag-and-drop. Ensure the latest version is at the top of the list.
+    (This affects the ordering for the changes jira report.)
+
+  Set the release date for the recently release version:
+  - Click the released version.
+  - Click 'Release' and enter the date.
+
+
+(26)
+If you created a staged version of the website you may wish to delete this
+from apache personal area:
+
+  $ lftp sftp://__Your_apache_login__@home.apache.org
+     lftp you@home.apache.org:~> cd public_html
+     lftp you@home.apache.org:~/public_html> rm -rf commons-statistics-1.0-RC1-site
+     lftp you@home.apache.org:~/public_html> bye
+
+(27)
+Finally revise the release notes (this document) with any changes to improve
+the release process.
