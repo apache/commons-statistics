@@ -205,7 +205,7 @@ public interface DiscreteDistribution {
     Sampler createSampler(UniformRandomProvider rng);
 
     /**
-     * Sampling functionality.
+     * Distribution sampling functionality.
      */
     @FunctionalInterface
     interface Sampler {

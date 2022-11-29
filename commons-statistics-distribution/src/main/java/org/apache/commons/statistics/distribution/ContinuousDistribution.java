@@ -20,7 +20,7 @@ import java.util.stream.DoubleStream;
 import org.apache.commons.rng.UniformRandomProvider;
 
 /**
- * Base interface for distributions on the reals.
+ * Interface for distributions on the reals.
  */
 public interface ContinuousDistribution {
     /**
@@ -182,7 +182,7 @@ public interface ContinuousDistribution {
     Sampler createSampler(UniformRandomProvider rng);
 
     /**
-     * Sampling functionality.
+     * Distribution sampling functionality.
      */
     @FunctionalInterface
     interface Sampler {
