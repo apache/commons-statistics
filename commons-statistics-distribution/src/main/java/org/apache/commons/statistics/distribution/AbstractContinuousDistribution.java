@@ -119,8 +119,8 @@ abstract class AbstractContinuousDistribution
      * <li>{@link #getSupportLowerBound()} for {@code p = 0},</li>
      * <li>{@link #getSupportUpperBound()} for {@code p = 1}, or</li>
      * <li>the result of a search for a root between the lower and upper bound using
-     *     {@link #cumulativeProbability(double) cdf(x) - p}. The bounds may be bracketed for
-     *     efficiency.</li>
+     *     {@link #cumulativeProbability(double) cumulativeProbability(x) - p}.
+     *     The bounds may be bracketed for efficiency.</li>
      * </ul>
      *
      * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
