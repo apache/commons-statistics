@@ -105,8 +105,8 @@ abstract class AbstractDiscreteDistribution
      * <li>{@link #getSupportLowerBound()} for {@code p = 0},</li>
      * <li>{@link #getSupportUpperBound()} for {@code p = 1}, or</li>
      * <li>the result of a binary search between the lower and upper bound using
-     *     {@link #cumulativeProbability(int)}. The bounds may be bracketed for
-     *     efficiency.</li>
+     *     {@link #cumulativeProbability(int) cumulativeProbability(x)}.
+     *     The bounds may be bracketed for efficiency.</li>
      * </ul>
      *
      * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
@@ -124,8 +124,8 @@ abstract class AbstractDiscreteDistribution
      * <ul>
      * <li>{@link #getSupportLowerBound()} for {@code p = 1},</li>
      * <li>{@link #getSupportUpperBound()} for {@code p = 0}, or</li>
-     * <li>the result of a search for a root between the lower and upper bound using
-     *     {@link #survivalProbability(int) survivalProbability(x) - p}.
+     * <li>the result of a binary search between the lower and upper bound using
+     *     {@link #survivalProbability(int) survivalProbability(x)}.
      *     The bounds may be bracketed for efficiency.</li>
      * </ul>
      *
