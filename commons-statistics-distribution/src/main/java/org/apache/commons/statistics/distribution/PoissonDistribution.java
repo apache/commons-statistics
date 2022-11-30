@@ -141,7 +141,7 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return {@code Integer.MAX_VALUE}
+     * @return {@link Integer#MAX_VALUE}
      */
     @Override
     public int getSupportUpperBound() {

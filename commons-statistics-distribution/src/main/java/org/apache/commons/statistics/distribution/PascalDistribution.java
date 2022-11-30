@@ -224,7 +224,7 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
      * <p>The upper bound of the support is positive infinity except for the
      * probability parameter {@code p = 1.0}.
      *
-     * @return {@code Integer.MAX_VALUE} or 0.
+     * @return {@link Integer#MAX_VALUE} or 0.
      */
     @Override
     public int getSupportUpperBound() {

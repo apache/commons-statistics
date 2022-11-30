@@ -119,7 +119,7 @@ public interface DiscreteDistribution {
      *       \end{cases} \]
      *
      * <p>If the result exceeds the range of the data type {@code int},
-     * then {@code Integer.MIN_VALUE} or {@code Integer.MAX_VALUE} is returned.
+     * then {@link Integer#MIN_VALUE} or {@link Integer#MAX_VALUE} is returned.
      * In this case the result of {@link #cumulativeProbability(int) cumulativeProbability(x)}
      * called using the returned {@code p}-quantile may not compute the original {@code p}.
      *
@@ -141,7 +141,7 @@ public interface DiscreteDistribution {
      *       \end{cases} \]
      *
      * <p>If the result exceeds the range of the data type {@code int},
-     * then {@code Integer.MIN_VALUE} or {@code Integer.MAX_VALUE} is returned.
+     * then {@link Integer#MIN_VALUE} or {@link Integer#MAX_VALUE} is returned.
      * In this case the result of {@link #survivalProbability(int) survivalProbability(x)}
      * called using the returned {@code (1-p)}-quantile may not compute the original {@code p}.
      *
@@ -176,7 +176,7 @@ public interface DiscreteDistribution {
      * This method must return the same value as
      * {@code inverseCumulativeProbability(0)}, i.e.
      * \( \inf \{ x \in \mathbb Z : P(X \le x) \gt 0 \} \).
-     * By convention, {@code Integer.MIN_VALUE} should be substituted
+     * By convention, {@link Integer#MIN_VALUE} should be substituted
      * for negative infinity.
      *
      * @return the lower bound of the support.
@@ -188,7 +188,7 @@ public interface DiscreteDistribution {
      * This method must return the same value as
      * {@code inverseCumulativeProbability(1)}, i.e.
      * \( \inf \{ x \in \mathbb Z : P(X \le x) = 1 \} \).
-     * By convention, {@code Integer.MAX_VALUE} should be substituted
+     * By convention, {@link Integer#MAX_VALUE} should be substituted
      * for positive infinity.
      *
      * @return the upper bound of the support.

@@ -201,7 +201,7 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
      * {@inheritDoc}
      *
      * <p>Returns {@code 0} when {@code p == 0} and
-     * {@code Double.POSITIVE_INFINITY} when {@code p == 1}.
+     * {@link Double#POSITIVE_INFINITY} when {@code p == 1}.
      */
     @Override
     public double inverseCumulativeProbability(double p) {
@@ -218,7 +218,7 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
      * {@inheritDoc}
      *
      * <p>Returns {@code 0} when {@code p == 1} and
-     * {@code Double.POSITIVE_INFINITY} when {@code p == 0}.
+     * {@link Double#POSITIVE_INFINITY} when {@code p == 0}.
      */
     @Override
     public double inverseSurvivalProbability(double p) {
