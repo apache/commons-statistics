@@ -15,8 +15,8 @@
  limitations under the License.
 -->
 
-Apache Commons RNG Examples Distribution  Utilities
-===================================================
+Apache Commons Statistics Examples Distribution  Utilities
+==========================================================
 
 Application for calling distributions defined in Commons Statistics.
 
