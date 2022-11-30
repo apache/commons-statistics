@@ -296,12 +296,13 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
     @Override
     public ContinuousDistribution.Sampler createSampler(final UniformRandomProvider rng) {
         // Pareto distribution sampler.
-        // Commons RNG v1.5 uses nextDouble() for (1 - p) effectively sampling from p in (0, 1].
+        // Commons RNG v1.5 uses nextDouble for (1 - p) effectively sampling from p in (0, 1].
         // Ensure sampling is concentrated at the lower / upper bound at extreme shapes:
         // Large shape should sample using p in [0, 1)  (lower bound)
         // Small shape should sample using p in (0, 1]  (upper bound)
         // Note: For small shape the input RNG is also wrapped to use nextLong as the source of
         // randomness; this ensures the nextDouble method uses the interface output of [0, 1).
+        // Commons RNG v1.6 uses nextLong and will not be affected changes to nextDouble.
         final UniformRandomProvider wrappedRng = shape >= 1 ? new InvertedRNG(rng) : rng::nextLong;
         return InverseTransformParetoSampler.of(wrappedRng, scale, shape)::sample;
     }
