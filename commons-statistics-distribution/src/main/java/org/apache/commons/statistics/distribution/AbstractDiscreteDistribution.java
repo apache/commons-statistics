@@ -219,10 +219,8 @@ abstract class AbstractDiscreteDistribution
         long lower = lowerBound;
         long upper = upperBound;
         while (lower + 1 < upper) {
-            // Cannot replace division by 2 with a right shift because (lower + upper)
-            // can be negative. This can be optimized when we know that both
-            // lower and upper arguments of this method are positive, for
-            // example, for PoissonDistribution.
+            // Note: Cannot replace division by 2 with a right shift because
+            // (lower + upper) can be negative.
             final long middle = (lower + upper) / 2;
             final int pm = fun.applyAsInt((int) middle);
             if (pm < 0) {
