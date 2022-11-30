@@ -64,8 +64,7 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
     }
 
     /**
-     * Creates a new uniform integer distribution using the given lower and upper
-     * bounds (both inclusive).
+     * Creates a new uniform discrete distribution.
      *
      * @param lower Lower bound (inclusive) of this distribution.
      * @param upper Upper bound (inclusive) of this distribution.

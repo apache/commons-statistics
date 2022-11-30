@@ -61,7 +61,7 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
     }
 
     /**
-     * Creates a uniform distribution.
+     * Creates a uniform continuous distribution.
      *
      * @param lower Lower bound of this distribution (inclusive).
      * @param upper Upper bound of this distribution (inclusive).
