@@ -287,7 +287,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      *       \text{undefined} &amp; \text{otherwise}
      *       \end{cases} \]
      *
-     * @return the mean, or {@code NaN} if it is not defined.
+     * @return the mean, or {@link Double#NaN NaN} if it is not defined.
      */
     @Override
     public abstract double getMean();
@@ -303,7 +303,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      *       \text{undefined} &amp; \text{otherwise}
      *       \end{cases} \]
      *
-     * @return the variance, or {@code NaN} if it is not defined.
+     * @return the variance, or {@link Double#NaN NaN} if it is not defined.
      */
     @Override
     public abstract double getVariance();
@@ -313,7 +313,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      *
      * <p>The lower bound of the support is always negative infinity.
      *
-     * @return negative infinity.
+     * @return {@link Double#NEGATIVE_INFINITY negative infinity}.
      */
     @Override
     public double getSupportLowerBound() {
@@ -325,7 +325,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return positive infinity.
+     * @return {@link Double#POSITIVE_INFINITY positive infinity}.
      */
     @Override
     public double getSupportUpperBound() {

@@ -156,7 +156,7 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
      *
      * <p>The mean is always undefined.
      *
-     * @return NaN.
+     * @return {@link Double#NaN NaN}.
      */
     @Override
     public double getMean() {
@@ -168,7 +168,7 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
      *
      * <p>The variance is always undefined.
      *
-     * @return NaN.
+     * @return {@link Double#NaN NaN}.
      */
     @Override
     public double getVariance() {
@@ -180,7 +180,7 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
      *
      * <p>The lower bound of the support is always negative infinity.
      *
-     * @return negative infinity.
+     * @return {@link Double#NEGATIVE_INFINITY negative infinity}.
      */
     @Override
     public double getSupportLowerBound() {
@@ -192,7 +192,7 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return positive infinity.
+     * @return {@link Double#POSITIVE_INFINITY positive infinity}.
      */
     @Override
     public double getSupportUpperBound() {

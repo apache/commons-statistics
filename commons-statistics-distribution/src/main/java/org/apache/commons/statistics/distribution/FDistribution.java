@@ -287,7 +287,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
      *       \text{undefined} &amp; \text{otherwise}
      *       \end{cases} \]
      *
-     * @return the mean, or {@code NaN} if it is not defined.
+     * @return the mean, or {@link Double#NaN NaN} if it is not defined.
      */
     @Override
     public double getMean() {
@@ -305,7 +305,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
      *       \text{undefined}                     &amp; \text{otherwise}
      *       \end{cases} \]
      *
-     * @return the variance, or {@code NaN} if it is not defined.
+     * @return the variance, or {@link Double#NaN NaN} if it is not defined.
      */
     @Override
     public double getVariance() {
@@ -329,7 +329,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return positive infinity.
+     * @return {@link Double#POSITIVE_INFINITY positive infinity}.
      */
     @Override
     public double getSupportUpperBound() {

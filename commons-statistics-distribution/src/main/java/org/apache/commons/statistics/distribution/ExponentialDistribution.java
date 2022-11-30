@@ -171,7 +171,7 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return positive infinity.
+     * @return {@link Double#POSITIVE_INFINITY positive infinity}.
      */
     @Override
     public double getSupportUpperBound() {
