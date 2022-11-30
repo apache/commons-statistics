@@ -293,7 +293,7 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
      * {@inheritDoc}
      *
      * <p>For number of successes \( K \), and sample
-     * size \( n \), the upper bound of the support is \( \min \{ K, n \} \).
+     * size \( n \), the upper bound of the support is \( \min \{ n, K \} \).
      *
      * @return upper bound of the support
      */
