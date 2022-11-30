@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -960,6 +961,8 @@ abstract class BaseContinuousDistributionTest
      * The median is used internally for computation of the probability of a range
      * using either the CDF or survival function. If overridden by a distribution it should
      * be equivalent to the inverse CDF called with 0.5.
+     *
+     * <p>The method modifiers are asserted to check the method is not public or protected.
      */
     @ParameterizedTest
     @MethodSource
@@ -967,6 +970,7 @@ abstract class BaseContinuousDistributionTest
         if (dist instanceof AbstractContinuousDistribution) {
             final AbstractContinuousDistribution d = (AbstractContinuousDistribution) dist;
             TestUtils.assertEquals(d.inverseCumulativeProbability(0.5), d.getMedian(), tolerance, "median");
+            assertMethodNotModified(dist.getClass(), Modifier.PUBLIC | Modifier.PROTECTED, "getMedian");
         }
     }
 }

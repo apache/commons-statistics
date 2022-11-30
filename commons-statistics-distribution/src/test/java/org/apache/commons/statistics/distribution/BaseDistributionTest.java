@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -609,6 +610,39 @@ abstract class BaseDistributionTest<T, D extends DistributionTestData> {
      */
     Stream<Arguments> testParameterAccessors() {
         return data.stream().map(d -> Arguments.of(d.getParameters()));
+    }
+
+    /**
+     * Assert the named method on the class is not modified with the specified modifiers.
+     *
+     * <p>This uses reflection to traverse the object hierarchy to search for the named
+     * method. It can be used to assert that internal methods are not exposed in the API
+     * as public or protected.
+     *
+     * @param cls Class.
+     * @param modifiers Disallowed modifiers.
+     * @param name Name of the method.
+     * @param parameterTypes Array of parameter types for the method.
+     * @see Method#getModifiers()
+     * @see Class#getDeclaredMethod(String, Class...)
+     * @see java.lang.reflect.Modifier
+     */
+    static void assertMethodNotModified(Class<?> cls, int modifiers, String name, Class<?>... parameterTypes) {
+        // getMethod will only find public methods.
+        // using getDeclaredMethod can access private methods but it
+        // only applies to the current class so we traverse the hierarchy.
+        for (Class<?> c = cls; c != null; c = c.getSuperclass()) {
+            try {
+                final Method method = cls.getDeclaredMethod(name, parameterTypes);
+                final int flags = method.getModifiers() & modifiers;
+                Assertions.assertEquals(0, flags,
+                    () -> "Method " + name + " has disallowed modifiers: " + Modifier.toString(flags));
+            } catch (NoSuchMethodException ignore) {
+                // The class does not declare the method
+            } catch (SecurityException e) {
+                Assertions.fail("Cannot search for " + name + " using reflection", e);
+            }
+        }
     }
 
     //------------------------ Tests -----------------------------
