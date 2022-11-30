@@ -302,7 +302,7 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
         // Small shape should sample using p in (0, 1]  (upper bound)
         // Note: For small shape the input RNG is also wrapped to use nextLong as the source of
         // randomness; this ensures the nextDouble method uses the interface output of [0, 1).
-        // Commons RNG v1.6 uses nextLong and will not be affected changes to nextDouble.
+        // Commons RNG v1.6 uses nextLong and will not be affected by changes to nextDouble.
         final UniformRandomProvider wrappedRng = shape >= 1 ? new InvertedRNG(rng) : rng::nextLong;
         return InverseTransformParetoSampler.of(wrappedRng, scale, shape)::sample;
     }
