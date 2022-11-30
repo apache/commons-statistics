@@ -112,6 +112,8 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      *
      * <p>Note that the {@code mean} and {@code sd} is of the parent normal distribution,
      * and not the true mean and standard deviation of the truncated normal distribution.
+     * The {@code lower} and {@code upper} bounds define the truncation of the parent
+     * normal distribution.
      *
      * @param mean Mean for the parent distribution.
      * @param sd Standard deviation for the parent distribution.
@@ -285,7 +287,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      *
      * <p>For \( \mu \) mean of the parent normal distribution,
      * \( \sigma \) standard deviation of the parent normal distribution, and
-     * \( a \lt b \) the truncation interval, the mean is:
+     * \( a \lt b \) the truncation interval of the parent normal distribution, the mean is:
      *
      * <p>\[ \mu + \frac{\phi(a)-\phi(b)}{\Phi(b) - \Phi(a)}\sigma \]
      *
@@ -309,7 +311,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      *
      * <p>For \( \mu \) mean of the parent normal distribution,
      * \( \sigma \) standard deviation of the parent normal distribution, and
-     * \( a \lt b \) the truncation interval, the variance is:
+     * \( a \lt b \) the truncation interval of the parent normal distribution, the variance is:
      *
      * <p>\[ \sigma^2 \left[1 + \frac{a\phi(a)-b\phi(b)}{\Phi(b) - \Phi(a)} -
      *       \left( \frac{\phi(a)-\phi(b)}{\Phi(b) - \Phi(a)} \right)^2 \right] \]
