@@ -218,17 +218,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
         return log ? p : Math.exp(p);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The implementation of this method is based on
-     * <ul>
-     *  <li>
-     *   <a href="https://mathworld.wolfram.com/F-Distribution.html">
-     *   F-Distribution</a>, equation (4).
-     *  </li>
-     * </ul>
-     */
+    /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x)  {
         if (x <= SUPPORT_LO) {

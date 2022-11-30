@@ -160,20 +160,7 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
         return minusLogGammaShapeMinusLogScale - y + Math.log(y) * (shape - 1);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>The implementation of this method is based on:
-     * <ul>
-     *  <li>
-     *   <a href="https://mathworld.wolfram.com/Chi-SquaredDistribution.html">
-     *    Chi-Squared Distribution</a>, equation (9).
-     *  </li>
-     *  <li>Casella, G., &amp; Berger, R. (1990). <i>Statistical Inference</i>.
-     *    Belmont, CA: Duxbury Press.
-     *  </li>
-     * </ul>
-     */
+    /** {@inheritDoc} */
     @Override
     public double cumulativeProbability(double x) {
         if (x <= SUPPORT_LO) {
