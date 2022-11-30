@@ -224,7 +224,7 @@ abstract class AbstractDiscreteDistribution
             // lower and upper arguments of this method are positive, for
             // example, for PoissonDistribution.
             final long middle = (lower + upper) / 2;
-            final double pm = fun.applyAsInt((int) middle);
+            final int pm = fun.applyAsInt((int) middle);
             if (pm < 0) {
                 lower = middle;
             } else {
