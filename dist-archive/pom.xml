@@ -23,11 +23,11 @@ under the License.
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-statistics-parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
   </parent>
 
   <artifactId>commons-statistics</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>pom</packaging>
   <name>Apache Commons Statistics (full distribution)</name>
   <description>This module creates the Apache Commons Statistics distribution.</description>
@@ -65,18 +65,18 @@ under the License.
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-distribution</artifactId>
-          <version>1.0-SNAPSHOT</version>
+          <version>1.0</version>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-distribution</artifactId>
-          <version>1.0-SNAPSHOT</version>
+          <version>1.0</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-distribution</artifactId>
-          <version>1.0-SNAPSHOT</version>
+          <version>1.0</version>
           <classifier>javadoc</classifier>
         </dependency>
 

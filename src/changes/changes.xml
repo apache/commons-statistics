@@ -53,7 +53,7 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
 
-    <release version="1.0-beta1" date="2020-04-30" description="
+    <release version="1.0" date="2022-12-05" description="
 This is the first release of Apache Commons Statistics.
 
 Contains the following modules:
