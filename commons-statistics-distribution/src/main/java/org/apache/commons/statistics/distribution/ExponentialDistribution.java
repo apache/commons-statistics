@@ -31,7 +31,7 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  *
  * <p>This implementation uses the scale parameter \( \mu \) which is the mean of the distribution.
  * A common alternative parameterization uses the rate parameter \( \lambda \) which is the reciprocal
- * of the mean.
+ * of the mean. The distribution can be be created using \( \mu  = \frac{1}{\lambda} \).
  *
  * @see <a href="https://en.wikipedia.org/wiki/Exponential_distribution">Exponential distribution (Wikipedia)</a>
  * @see <a href="https://mathworld.wolfram.com/ExponentialDistribution.html">Exponential distribution (MathWorld)</a>
