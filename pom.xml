@@ -86,7 +86,8 @@
     <commons.componentid>statistics</commons.componentid>
     <!-- This value must reflect the current name of the base package. -->
     <commons.osgi.symbolicName>org.apache.commons.statistics</commons.osgi.symbolicName>
-    <commons.module.name>org.apache.commons.statistics</commons.module.name>
+    <!-- Module name can re-use the OSGI name -->
+    <commons.module.name>${commons.osgi.symbolicName}</commons.module.name>
     <!-- OSGi -->
     <commons.osgi.export>org.apache.commons.statistics</commons.osgi.export>
     <!-- This flag should only be true in the dist-archive module. -->
@@ -190,6 +191,17 @@
           <compilerArgs>
             <arg>-Xlint:all,-options,-path</arg>
           </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive combine.children="append">
+            <manifestEntries>
+              <Automatic-Module-Name>${commons.module.name}</Automatic-Module-Name>
+            </manifestEntries>
+          </archive>
         </configuration>
       </plugin>
 
