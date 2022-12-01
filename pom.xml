@@ -308,8 +308,8 @@
         <configuration>
           <!--  Should agree with apache-rat-plugin config under <build> -->
           <excludes combine.children="append">
-            <!-- version 0.8 of apache-rat-plugin does not exclude properly
-                 some default development tools files (see RAT-126) -->
+            <!-- apache-rat-plugin uses .gitignore but does not exclude
+                 development files recursively in sub-modules. -->
             <exclude>.ekstazi/**</exclude>
             <exclude>**/site-content/**</exclude>
             <exclude>**/.classpath</exclude>
@@ -318,8 +318,6 @@
             <exclude>**/.checkstyle</exclude>
             <exclude>**/target/**</exclude>
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
-            <exclude>src/site/resources/txt/userguide/stress/**</exclude>
-            <exclude>dist-archive/**</exclude>
             <!-- Moved to commons-parent 55 -->
             <exclude>.gitattributes</exclude>
           </excludes>
