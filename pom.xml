@@ -176,7 +176,6 @@
   </dependencies>
 
   <build>
-    <!--  TODO: Add binary compatibility check when released. -->
     <defaultGoal>clean verify javadoc:javadoc</defaultGoal>
     <plugins>
       <plugin>
