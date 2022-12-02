@@ -33,10 +33,11 @@
   <description>Statistical regressions.</description>
 
   <properties>
-    <!-- This value must reflect the current name of the base package. -->
-    <commons.osgi.symbolicName>org.apache.commons.statistics.regression</commons.osgi.symbolicName>
     <!-- OSGi -->
+    <commons.osgi.symbolicName>org.apache.commons.statistics.regression</commons.osgi.symbolicName>
     <commons.osgi.export>org.apache.commons.statistics.regression</commons.osgi.export>
+    <!-- Java 9+ -->
+    <commons.module.name>org.apache.commons.statistics.regression</commons.module.name>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
     <statistics.jira.component>regression</statistics.jira.component>

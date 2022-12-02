@@ -84,12 +84,12 @@
          name of the base package evolves with major release numbers
          (see "commons.osgi.symbolicName", below). -->
     <commons.componentid>statistics</commons.componentid>
+    <!-- OSGi -->
     <!-- This value must reflect the current name of the base package. -->
     <commons.osgi.symbolicName>org.apache.commons.statistics</commons.osgi.symbolicName>
-    <!-- Module name can re-use the OSGI name -->
-    <commons.module.name>${commons.osgi.symbolicName}</commons.module.name>
-    <!-- OSGi -->
     <commons.osgi.export>org.apache.commons.statistics</commons.osgi.export>
+    <!-- Java 9+ -->
+    <commons.module.name>org.apache.commons.statistics</commons.module.name>
     <!-- This flag should only be true in the dist-archive module. -->
     <commons.release.isDistModule>false</commons.release.isDistModule>
     <!-- do not use snapshot suffix here -->
@@ -193,6 +193,7 @@
         <configuration>
           <archive combine.children="append">
             <manifestEntries>
+              <!-- Java 9+ -->
               <Automatic-Module-Name>${commons.module.name}</Automatic-Module-Name>
               <!-- Add entries from CP that are not inherited (for reasons unknown).
                    Replace ${implementation.build} property with the unique git build number. -->
