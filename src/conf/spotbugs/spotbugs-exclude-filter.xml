@@ -62,4 +62,9 @@
     <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS" />
   </Match>
 
+  <Match>
+    <Class name="org.apache.commons.statistics.ranking.NaturalRanking$DataPosition" />
+    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS" />
+  </Match>
+
 </FindBugsFilter>

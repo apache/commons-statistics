@@ -124,11 +124,25 @@
         value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='AbstractContinuousDistribution']"/>
     </properties>
   </rule>
+  <rule ref="category/java/design.xml/GodClass">
+    <properties>
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='NaturalRanking']"/>
+    </properties>
+  </rule>
 
   <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
     <properties>
       <!-- Add 1 as a magic number. -->
       <property name="ignoreMagicNumbers" value="-1,0,1" />
+    </properties>
+  </rule>
+
+  <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName">
+    <properties>
+      <!-- size() method return the list size. -->
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='IntList']"/>
     </properties>
   </rule>
 
