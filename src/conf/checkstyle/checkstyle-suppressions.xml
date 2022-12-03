@@ -22,6 +22,7 @@
   <!-- Allow variable to match known equations. -->
   <suppress checks="LocalFinalVariableName" files=".*[/\\]ZipfDistribution.java" />
   <suppress checks="LocalFinalVariableName" files=".*[/\\]HypergeometricDistribution.java" />
+  <suppress checks="ParameterNumber" files=".*[/\\]TTest.java" />
   <!-- Be more lenient on tests. -->
   <suppress checks="Javadoc" files=".*[/\\]test[/\\].*" />
   <suppress checks="MultipleStringLiterals" files=".*[/\\]test[/\\].*" />
@@ -30,4 +31,10 @@
   <suppress checks="UnnecessaryParentheses" files=".*[/\\]test[/\\].*" />
   <suppress checks="LineLength" files=".*[/\\]test.*.properties" />
   <suppress checks="LocalFinalVariableName" files=".*[/\\]HypergeometricDistributionTest.java" />
+  <suppress checks="ParameterNumber" files=".*[/\\]TTestTest.java" />
+  <suppress checks="ParameterNumber" files=".*[/\\]OneWayAnovaTest.java" />
+  <suppress checks="ParameterNumber" files=".*[/\\]KolmogorovSmirnovTestTest.java" />
+  <suppress checks="ParameterNumber" files=".*[/\\]MannWhitneyUTestTest.java" />
+  <suppress checks="ParameterNumber" files=".*[/\\]WilcoxonSignedRankTestTest.java" />
+  <suppress checks="MethodLength" files=".*[/\\]WilcoxonSignedRankTestTest.java" />
 </suppressions>

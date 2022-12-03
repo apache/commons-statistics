@@ -638,6 +638,7 @@ This is avoided by creating an empty directory when svn is not available.
   <modules>
     <module>commons-statistics-distribution</module>
     <module>commons-statistics-ranking</module>
+    <module>commons-statistics-inference</module>
     <module>commons-statistics-regression</module>
   </modules>
 

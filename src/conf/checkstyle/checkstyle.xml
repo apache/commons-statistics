@@ -125,7 +125,10 @@
 
     <!-- Checks for Size Violations. -->
     <!-- See http://checkstyle.org/config_sizes.html -->
-    <module name="MethodLength" />
+    <module name="MethodLength">
+      <!-- Ignore empty and comments -->
+      <property name="countEmpty" value="false"/>
+    </module>
     <module name="ParameterNumber" />
 
     <!-- Checks for whitespace -->
