@@ -113,7 +113,7 @@ reports, patches, or suggestions for improvement, see the ${project.name} websit
 
 ${project.url}
 
-Download page: ${project.url}download_text.cgi
+Download page: ${project.url}download_statistics.cgi
 
 Have fun!
 -Apache Commons Team
