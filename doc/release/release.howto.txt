@@ -74,7 +74,7 @@ NOTE
 
 When performing a release it is good practice to edit a copy of these notes during the process
 and merge the updated document into the repository following a release. To assist in this process
-a find-and-replace can be performed to update all the version statistics in order. For example
+a find-and-replace can be performed to update all the version numbers in order. For example
 based on a previous release of 1.0:
 
 - Next development version  : 1.1 -> 1.2
@@ -118,7 +118,7 @@ that the build process can create all the necessary artifacts.
   (1a)
   The command
 
-    $ JAVA_HOME="__Path_to_a_JDK__" mvn -Duser.name="__Your_Apache_id__" -Ptest-deploy -Prelease clean deploy site site:stage [-Dgpg.skip]
+    $ JAVA_HOME="__Path_to_a_JDK__" mvn -Duser.name="__Your_Apache_id__" -Ptest-deploy -Prelease clean deploy site [-Dgpg.skip]
 
   should create the artifacts in the "target/deploy" directory. The site goal
   is required for the commons release plugin even though the site is
@@ -180,6 +180,12 @@ to be used for the release.
 Switch to the release branch:
 
   $ git checkout 1.0-release
+
+  (3a)
+  if there are any modules not ready for release then remove them from the
+  pom.xml and delete the module:
+
+  $ git rm -r commons-statistics-regression
 
 
 (4)
@@ -389,6 +395,17 @@ You can then generate the release artifacts without the site generation (using J
 which will transfer the artifacts to the Nexus repository located at
   https://repository.apache.org/index.html#stagingRepositories
 
+***
+Note: 1.0 RC1 failed to create the assembly in the dist-archive module.
+Restarting with maven 'resume from' was successful:
+
+  $ mvn -Duser.name=aherbert -Duser.password=<xxx> -Prelease clean deploy site -rf :commons-statistics
+
+The reason for the error creating the assembly archives is unknown. It is not
+reproducible using test-deploy. Artifacts were staged correctly on resume
+with no configuration changes.
+***
+
 The apache ID password is required to clean and deploy the binary distribution
 files to svn if the svn client is not configured to locally cache the user
 password.
@@ -439,6 +456,20 @@ All these files are not maven artifacts but rather distribution archives: They
 belong elsewhere; hence they must also been removed from the Nexus staging
 repository.
 
+All jar modules should have the correct entries in the manifest. The manifest
+can be read to stdout using e.g.
+
+  $ unzip -p commons-statistics-distribution/target/commons-statistics-distribution-1.0.jar META-INF/MANIFEST.MF
+
+Entries that must be specific to the module are:
+
+  Automatic-Module-Name
+  Bundle-SymbolicName
+  Export-Package
+
+The Implementation-Build entry should point to the commit hash for the release
+tag.
+
 As a final validity check, the Nexus repository must be manually "closed"
 before other people review the deliverables just created.
 How to "close" the staging repository is explained at this page:
@@ -460,8 +491,6 @@ and add missing files. The following was performed for release 1.0:
   $ cd /tmp
   $ svn checkout https://dist.apache.org/repos/dist/dev/commons/statistics
   $ cd statistics/1.0-RC1
-  $ cp path-to-the-RC-workspace/CONTRIBUTING.md .
-  $ svn add CONTRIBUTING.md
   $ svn del site
   $ svn commit -m "Distribution files for Commons Statistics v1.0 (RC1)."
 ***
@@ -495,7 +524,6 @@ Create and upload the other distribution files to the Apache servers.
   Copy other files from the RC workspace:
 
     $ cp path-to-the-RC-workspace/RELEASE-NOTES.txt .
-    $ cp path-to-the-RC-workspace/CONTRIBUTING.md .
     $ cp path-to-the-RC-workspace/dist-archive/target/commons-release-plugin/scm/1.0-RC1/README.html .
     $ cp path-to-the-RC-workspace/dist-archive/target/*-bin.* binaries
     $ cp path-to-the-RC-workspace/dist-archive/target/*-src.* source
@@ -517,7 +545,6 @@ Create and upload the other distribution files to the Apache servers.
   Commit to SVN:
 
     $ svn add \
-      CONTRIBUTING.md \
       README.html \
       RELEASE-NOTES.txt \
       binaries/* \
@@ -813,6 +840,15 @@ to work. This is done using the "doc/release/copyLongTermJavadoc.sh" script
 
   $ doc/release/copyLongTermJavadoc.sh -r 1080991 -v 1.0
 
+  Note: New modules will require the 'javadocs' directory to exist on
+  the server, for example:
+
+  $ svn co https://svn.apache.org/repos/infra/websites/production/commons/content/proper/commons-statistics
+  $ cd commons-statistics
+  $ mkdir commons-statistics-distribution/javadocs
+  $ svn add commons-statistics-distribution/javadocs
+  $ svn commit -m "Created Commons Statistics long-term javadocs directory"
+
 Wait a few minutes for the live site to fully sync and then check
   https://commons.apache.org/proper/commons-statistics/
 to make sure that everything looks correct.
@@ -937,7 +973,7 @@ Subject:
 The Apache Commons Team is pleased to announce the availability of
 version 1.0 of "Apache Commons Statistics".
 
-Apache Commons Statistics provides number types and utilities.
+Apache Commons Statistics provides tools for statistics.
 
 Changes in this version include:
 
@@ -973,7 +1009,7 @@ Update JIRA to close all issues resolved in this release and prepare for the nex
   Batch close resolved issues without sending notification e-mails:
 
   - Click 'View all issues and filters'.
-  - Enter in the search field: project = STATISTICS AND status = resolved
+  - Enter in the advanced search field: project = STATISTICS AND status = resolved
   - Select "Tools" in the top right and choose "Bulk Change" for all of your relevant issues.
       Step 1: Select the issues to close.
       Step 2: Select 'Transition issues'.
