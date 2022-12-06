@@ -93,11 +93,8 @@ public class NaturalRanking implements RankingAlgorithm {
     /** Map values to negative infinity. */
     private static final DoubleUnaryOperator ACTION_NEG_INF = x -> Double.NEGATIVE_INFINITY;
     /** Raise an exception for values. */
-    private static final DoubleUnaryOperator ACTION_ERROR = new DoubleUnaryOperator() {
-        @Override
-        public double applyAsDouble(double operand) {
-            throw new IllegalArgumentException("Invalid data: " + operand);
-        }
+    private static final DoubleUnaryOperator ACTION_ERROR = operand -> {
+        throw new IllegalArgumentException("Invalid data: " + operand);
     };
 
     /** NaN strategy. */
