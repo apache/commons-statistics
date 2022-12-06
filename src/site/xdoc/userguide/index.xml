@@ -55,7 +55,9 @@
             </li>
           </ul>
         </li>
-
+        <li>
+          <a href="#ranking">Ranking</a>
+        </li>
       </ul>
     </section>
 
@@ -331,6 +333,60 @@ double x2 = chi2.inverseSurvivalProbability(q);
           should update usage of the cumulative probability functions where appropriate.
         </p>
       </subsection>
+    </section>
+    <section name="Ranking" id="ranking">
+      <p>
+        The <code>commons-statistics-ranking</code> module provides rank transformations.
+      </p>
+      <p>
+        The <code>NaturalRanking</code> class provides a ranking based on the natural ordering
+        of floating-point values. Ranks are assigned to the input numbers in ascending order,
+        starting from 1.
+      </p>
+<source class="prettyprint">
+NaturalRanking ranking = new NaturalRanking();
+ranking.apply(new double[] {5, 6, 7, 8});   // 1, 2, 3, 4
+ranking.apply(new double[] {8, 5, 7, 6});   // 4, 1, 3, 2
+</source>
+      <p>
+        The special case of <code>NaN</code> values are handled using the configured
+        <code>NaNStragegy</code>. The default is to raise an exception.
+      </p>
+<source class="prettyprint">
+double[] data = new double[] {6, 5, Double.NaN, 7};
+new NaturalRanking().apply(data);                      // IllegalArgumentException
+new NaturalRanking(NaNStrategy.MINIMAL).apply(data);   // (4, 2, 1, 3)
+new NaturalRanking(NaNStrategy.MAXIMAL).apply(data);   // (3, 1, 4, 2)
+new NaturalRanking(NaNStrategy.REMOVED).apply(data);   // (3, 1, 2)
+new NaturalRanking(NaNStrategy.FIXED).apply(data);     // (3, 1, NaN, 2)
+new NaturalRanking(NaNStrategy.FAILED).apply(data);    // IllegalArgumentException
+</source>
+      <p>
+        Ties are handled using the configured <code>TiesStragegy</code>. The default is to
+        use an average.
+      </p>
+<source class="prettyprint">
+double[] data = new double[] {7, 5, 7, 6};
+new NaturalRanking(.apply(data);                           // (3.5, 1, 3.5, 2)
+new NaturalRanking(TiesStrategy.SEQUENTIAL).apply(data);   // (3, 1, 4, 2)
+new NaturalRanking(TiesStrategy.MINIMUM).apply(data);      // (3, 1, 3, 2)
+new NaturalRanking(TiesStrategy.MAXIMUM).apply(data);      // (4, 1, 4, 2)
+new NaturalRanking(TiesStrategy.AVERAGE).apply(data);      // (3.5, 1, 3.5, 2)
+new NaturalRanking(TiesStrategy.RANDOM).apply(data);       // (3, 1, 4, 2)  or  (4, 1, 3, 2)
+</source>
+      <p>
+        The source of randomness defaults to a system supplied generator. The randomness can be
+        provided as a <code>LongSupplier</code> of random 64-bit values.
+      </p>
+<source class="prettyprint">
+double[] data = new double[] {7, 5, 7, 6};
+new NaturalRanking(TiesStrategy.RANDOM).apply(data);
+new NaturalRanking(new SplittableRandom()::nextLong).apply(data);
+// From Commons RNG
+UniformRandomProvider rng = RandomSource.KISS.create();
+new NaturalRanking(rng::nextLong).apply(data);
+// ranks: (3, 1, 4, 2)  or  (4, 1, 3, 2)
+</source>
     </section>
 
   </body>
