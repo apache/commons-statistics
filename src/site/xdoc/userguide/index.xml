@@ -381,10 +381,10 @@ new NaturalRanking(TiesStrategy.RANDOM).apply(data);       // (3, 1, 4, 2)  or  
 <source class="prettyprint">
 double[] data = new double[] {7, 5, 7, 6};
 new NaturalRanking(TiesStrategy.RANDOM).apply(data);
-new NaturalRanking(new SplittableRandom()::nextLong).apply(data);
+new NaturalRanking(new SplittableRandom()::nextInt).apply(data);
 // From Commons RNG
 UniformRandomProvider rng = RandomSource.KISS.create();
-new NaturalRanking(rng::nextLong).apply(data);
+new NaturalRanking(rng::nextInt).apply(data);
 // ranks: (3, 1, 4, 2)  or  (4, 1, 3, 2)
 </source>
     </section>

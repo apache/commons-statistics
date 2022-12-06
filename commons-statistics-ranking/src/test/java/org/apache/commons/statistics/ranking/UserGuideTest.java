@@ -64,9 +64,9 @@ class UserGuideTest {
     void testRanking4() {
         final double[] data = {7, 5, 7, 6};
         final double[] r1 = new NaturalRanking(TiesStrategy.RANDOM).apply(data);
-        final double[] r2 = new NaturalRanking(new SplittableRandom()::nextLong).apply(data);
+        final double[] r2 = new NaturalRanking(new SplittableRandom()::nextInt).apply(data);
         final UniformRandomProvider rng = RandomSource.KISS.create();
-        final double[] r3 = new NaturalRanking(rng::nextLong).apply(data);
+        final double[] r3 = new NaturalRanking(rng::nextInt).apply(data);
         final double[] expected1 = {3, 1, 4, 2};
         final double[] expected2 = {4, 1, 3, 2};
         Assertions.assertTrue(Arrays.equals(expected1, r1) || Arrays.equals(expected2, r1));

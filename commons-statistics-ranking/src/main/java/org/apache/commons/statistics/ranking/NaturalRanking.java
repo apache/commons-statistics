@@ -19,8 +19,7 @@ package org.apache.commons.statistics.ranking;
 import java.util.Arrays;
 import java.util.SplittableRandom;
 import java.util.function.DoubleUnaryOperator;
-import java.util.function.LongSupplier;
-import org.apache.commons.rng.UniformRandomProvider;
+import java.util.function.IntUnaryOperator;
 
 /**
  * Ranking based on the natural ordering on floating-point values.
@@ -31,15 +30,15 @@ import org.apache.commons.rng.UniformRandomProvider;
  * constructor arguments. Defaults are {@link NaNStrategy#FAILED} and
  * {@link TiesStrategy#AVERAGE}, respectively.
  *
- * <p>When using {@link TiesStrategy#RANDOM}, a generator of random bits may be
- * supplied as a {@link LongSupplier} argument; otherwise a default is created
+ * <p>When using {@link TiesStrategy#RANDOM}, a generator of random values in {@code [0, x)}
+ * supplied as a {@link IntUnaryOperator} argument; otherwise a default is created
  * on-demand. The source of randomness can be supplied using a method reference.
  * The following example creates a ranking with NaN values with the highest
  * ranking and ties resolved randomly:
  *
  * <pre>
  * NaturalRanking ranking = new NaturalRanking(NaNStrategy.MAXIMAL,
- *                                             new SplittableRandom()::nextLong);
+ *                                             new SplittableRandom()::nextInt);
  * </pre>
  *
  * <p>Note: Using {@link TiesStrategy#RANDOM} is not thread-safe due to the mutable
@@ -102,10 +101,9 @@ public class NaturalRanking implements RankingAlgorithm {
     /** Ties strategy. */
     private final TiesStrategy tiesStrategy;
     /** Source of randomness when ties strategy is RANDOM.
+     * Function maps positive x to {@code [0, x)}.
      * Can be null to default to a JDK implementation. */
-    private final LongSupplier randomSource;
-    /** Random generator created on demand when ties strategy is RANDOM. */
-    private UniformRandomProvider rng;
+    private IntUnaryOperator randomIntFunction;
 
     /**
      * Creates an instance with {@link NaNStrategy#FAILED} and
@@ -155,37 +153,39 @@ public class NaturalRanking implements RankingAlgorithm {
 
     /**
      * Creates an instance with {@link NaNStrategy#FAILED},
-     * {@link TiesStrategy#RANDOM} and the given the source of random data.
+     * {@link TiesStrategy#RANDOM} and the given the source of random index data.
      *
-     * @param randomSource Source of random data.
+     * @param randomIntFunction Source of random index data.
+     * Function maps positive {@code x} randomly to {@code [0, x)}
      */
-    public NaturalRanking(LongSupplier randomSource) {
-        this(DEFAULT_NAN_STRATEGY, TiesStrategy.RANDOM, randomSource);
+    public NaturalRanking(IntUnaryOperator randomIntFunction) {
+        this(DEFAULT_NAN_STRATEGY, TiesStrategy.RANDOM, randomIntFunction);
     }
 
     /**
      * Creates an instance with the specified @{@code nanStrategy},
-     * {@link TiesStrategy#RANDOM} and the given the source of random data.
+     * {@link TiesStrategy#RANDOM} and the given the source of random index data.
      *
      * @param nanStrategy NaNStrategy to use.
-     * @param randomSource Source of random data.
+     * @param randomIntFunction Source of random index data.
+     * Function maps positive {@code x} randomly to {@code [0, x)}
      */
     public NaturalRanking(NaNStrategy nanStrategy,
-                          LongSupplier randomSource) {
-        this(nanStrategy, TiesStrategy.RANDOM, randomSource);
+                          IntUnaryOperator randomIntFunction) {
+        this(nanStrategy, TiesStrategy.RANDOM, randomIntFunction);
     }
 
     /**
      * @param nanStrategy NaNStrategy to use.
      * @param tiesStrategy TiesStrategy to use.
-     * @param randomSource Source of random data.
+     * @param randomIntFunction Source of random index data.
      */
     private NaturalRanking(NaNStrategy nanStrategy,
                            TiesStrategy tiesStrategy,
-                           LongSupplier randomSource) {
+                           IntUnaryOperator randomIntFunction) {
         this.nanStrategy = nanStrategy;
         this.tiesStrategy = tiesStrategy;
-        this.randomSource = randomSource;
+        this.randomIntFunction = randomIntFunction;
     }
 
     /**
@@ -397,7 +397,7 @@ public class NaturalRanking implements RankingAlgorithm {
             // This cast is safe as c is a counter.
             int r = (int) c;
             if (tiesStrategy == TiesStrategy.RANDOM) {
-                tiesTrace.shuffle(getRNG());
+                tiesTrace.shuffle(getRandomIntFunction());
             }
             final int size = tiesTrace.size();
             for (int i = 0; i < size; i++) {
@@ -426,19 +426,16 @@ public class NaturalRanking implements RankingAlgorithm {
     }
 
     /**
-     * Gets the random generator from the source of randomness.
-     * Defaults to a system provided generator if the source of randomness is null.
+     * Gets the function to map positive {@code x} randomly to {@code [0, x)}.
+     * Defaults to a system provided generator if the constructor source of randomness is null.
      *
      * @return the RNG
      */
-    private UniformRandomProvider getRNG() {
-        UniformRandomProvider r = rng;
+    private IntUnaryOperator getRandomIntFunction() {
+        IntUnaryOperator r = randomIntFunction;
         if (r == null) {
-            // Use the provided source, or default to a SplittableRandom
-            final LongSupplier source = randomSource != null ?
-                randomSource :
-                new SplittableRandom()::nextLong;
-            rng = r = source::getAsLong;
+            // Default to a SplittableRandom
+            randomIntFunction = r = new SplittableRandom()::nextInt;
         }
         return r;
     }
@@ -506,13 +503,13 @@ public class NaturalRanking implements RankingAlgorithm {
         /**
          * Shuffle the list.
          *
-         * @param rng Source of randomness
+         * @param randomIntFunction Function maps positive {@code x} randomly to {@code [0, x)}.
          */
-        void shuffle(UniformRandomProvider rng) {
+        void shuffle(IntUnaryOperator randomIntFunction) {
             // Fisher-Yates shuffle
             final int[] array = data;
             for (int i = size; i > 1; i--) {
-                swap(array, i - 1, rng.nextInt(i));
+                swap(array, i - 1, randomIntFunction.applyAsInt(i));
             }
         }
 

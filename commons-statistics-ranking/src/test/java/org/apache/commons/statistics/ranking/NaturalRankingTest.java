@@ -19,7 +19,7 @@ package org.apache.commons.statistics.ranking;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
-import java.util.function.LongSupplier;
+import java.util.function.IntUnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
@@ -56,7 +56,7 @@ class NaturalRankingTest {
     void testProperties() {
         final TiesStrategy defaultTs = TiesStrategy.AVERAGE;
         final NaNStrategy defaultNs = NaNStrategy.FAILED;
-        final LongSupplier randomSource = null;
+        final IntUnaryOperator randomSource = null;
         NaturalRanking ranking;
 
         ranking = new NaturalRanking();
@@ -253,7 +253,7 @@ class NaturalRankingTest {
         final UniformRandomProvider rng = RandomSource.SPLIT_MIX_64.create();
         final Stream.Builder<Arguments> builder = Stream.builder();
         builder.add(Arguments.of(
-            new NaturalRanking(rng::nextLong),
+            new NaturalRanking(rng::nextInt),
             null,
             new int[] {1, 1, 3, 2, 4},
             new int[] {3, 3, 2, 1},
@@ -262,7 +262,7 @@ class NaturalRankingTest {
             new int[] {1, 1, 1, 1}
         ));
         builder.add(Arguments.of(
-            new NaturalRanking(NaNStrategy.FIXED, rng::nextLong),
+            new NaturalRanking(NaNStrategy.FIXED, rng::nextInt),
             new int[] {3, 2, 4, 5, 2, 6, 0, 1, 2},
             new int[] {1, 1, 3, 2, 4},
             new int[] {3, 3, 2, 1},
@@ -271,7 +271,7 @@ class NaturalRankingTest {
             new int[] {1, 1, 1, 1}
         ));
         builder.add(Arguments.of(
-            new NaturalRanking(NaNStrategy.REMOVED, rng::nextLong),
+            new NaturalRanking(NaNStrategy.REMOVED, rng::nextInt),
             new int[] {3, 2, 4, 5, 2, 6, -1, 1, 2},
             new int[] {1, 1, 3, 2, 4},
             new int[] {3, 3, 2, 1},
@@ -410,7 +410,7 @@ class NaturalRankingTest {
         IntStream.range(0, after).forEach(i -> builder.add(++value[0]));
         final double[] data = builder.build().toArray();
         final UniformRandomProvider rng = RandomSource.SPLIT_MIX_64.create(seed);
-        final NaturalRanking ranking = new NaturalRanking(rng::nextLong);
+        final NaturalRanking ranking = new NaturalRanking(rng::nextInt);
         final int k = before + 1;
         final int m = before + ties;
         // Frequency of ranks for each tied position in the data
