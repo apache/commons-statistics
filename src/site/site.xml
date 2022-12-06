@@ -38,9 +38,8 @@
       <item name="Issue Tracking" href="/issue-tracking.html"/>
       <item name="Source Repository (current)"
          href="https://gitbox.apache.org/repos/asf/commons-statistics.git"/>
-      <!-- <item name="Wiki"   -->
-      <!--       href="http://wiki.apache.org/commons/Statistics"/> -->
       <item name="Developers Guide" href="/developers.html"/>
+      <item name="Release History" href="/release-history.html"/>
     </menu>
 
     <menu name="User Guide">
