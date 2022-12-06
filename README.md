@@ -66,7 +66,7 @@ Alternatively you can pull it from the central Maven repositories:
 ```xml
 <dependency>
   <groupId>org.apache.commons</groupId>
-  <artifactId>commons-statistics</artifactId>
+  <artifactId>commons-statistics-distribution</artifactId>
   <version>1.0</version>
 </dependency>
 ```
