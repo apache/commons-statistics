@@ -595,7 +595,7 @@ class NaturalRankingTest {
             // For the actual rank, map back to the group and check it is allowed.
             for (int i = 0; i < numberOfElements; i++) {
                 final double r = ranks[i];
-                Assertions.assertTrue((int) r == r, "Non-integer rank: " + r);
+                Assertions.assertEquals(r, (int) r, () -> "Non-integer rank: " + r);
                 final int rank = (int) r;
                 final BitSet groupSet = rankToGroup[rank];
                 final int group = expectedGroup[i];
