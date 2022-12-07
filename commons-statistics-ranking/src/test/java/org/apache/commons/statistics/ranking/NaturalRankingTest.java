@@ -429,7 +429,7 @@ class NaturalRankingTest {
             }
         }
         final double p = new ChiSquareTest().chiSquareTest(counts);
-        Assertions.assertFalse(p < 1e-3, () -> "p-value too large: " + p);
+        Assertions.assertFalse(p < 1e-3, () -> "p-value too small: " + p);
     }
 
     /**
