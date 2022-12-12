@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-parent</artifactId>
-    <version>54</version>
+    <version>55</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -111,8 +111,6 @@
     <!-- MathJax configuration also includes the prerequisite polyfill.min.js script.
          See the maven-javadoc-plugin plugin. -->
     <statistics.mathjax.url>https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js</statistics.mathjax.url>
-    <!-- Multi-module support fixed in commons-parent 55 -->
-    <cyclonedx.skip>true</cyclonedx.skip>
 
     <!-- Increase from commons-parent -->
     <commons.jacoco.methodRatio>1.00</commons.jacoco.methodRatio>
@@ -321,8 +319,6 @@
             <exclude>**/.checkstyle</exclude>
             <exclude>**/target/**</exclude>
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
-            <!-- Moved to commons-parent 55 -->
-            <exclude>.gitattributes</exclude>
           </excludes>
         </configuration>
       </plugin>
@@ -370,8 +366,6 @@
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
             <exclude>src/site/resources/txt/userguide/stress/**</exclude>
             <exclude>dist-archive/**</exclude>
-            <!-- Moved to commons-parent 55 -->
-            <exclude>.gitattributes</exclude>
           </excludes>
         </configuration>
       </plugin>
