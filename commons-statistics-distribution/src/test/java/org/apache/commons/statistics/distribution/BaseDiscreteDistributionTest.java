@@ -436,7 +436,7 @@ abstract class BaseDiscreteDistributionTest
      * @return the stream
      */
     Stream<Arguments> testProbabilitySums() {
-        // Assume the the test tolerance for single CDF values can be relaxed slightly
+        // Assume the test tolerance for single CDF values can be relaxed slightly
         // when summing values.
         final double scale = 10;
         final TestName cdf = TestName.CDF;

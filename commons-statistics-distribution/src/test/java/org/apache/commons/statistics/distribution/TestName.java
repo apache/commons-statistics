@@ -67,7 +67,7 @@ enum TestName {
     }
 
     /**
-     * Get the instance from the the String representation.
+     * Get the instance from the String representation.
      *
      * @param key String representation.
      * @return the instance (or null)
