@@ -85,6 +85,21 @@ public final class MannWhitneyUTest {
         }
 
         /**
+         * {@inheritDoc}
+         *
+         * <p>This is the U<sub>1</sub> statistic. Compute the U<sub>2</sub> statistic using
+         * the original sample lengths {@code n} and {@code m} using:
+         * <pre>
+         * u2 = (long) n * m - u1;
+         * </pre>
+         */
+        @Override
+        public double getStatistic() {
+            // Note: This method is here for documentation
+            return super.getStatistic();
+        }
+
+        /**
          * Return {@code true} if the data had tied values.
          *
          * <p>Note: The exact computation cannot be used when there are tied values.
@@ -152,8 +167,8 @@ public final class MannWhitneyUTest {
     /**
      * Return an instance with the configured continuity correction.
      *
-     * <p>If {@code enabled}, adjust the U rank statistic by 0.5 towards the
-     * mean value when computing the z-statistic if a normal approximation is used
+     * <p>If {@link ContinuityCorrection#ENABLED ENABLED}, adjust the U rank statistic by
+     * 0.5 towards the mean value when computing the z-statistic if a normal approximation is used
      * to compute the p-value.
      *
      * @param v Value.
@@ -182,14 +197,14 @@ public final class MannWhitneyUTest {
      * <p>This statistic can be used to perform a Mann-Whitney U test evaluating the
      * null hypothesis that the two independent samples differ by a location shift of {@code mu}.
      *
-     * <p>This returns the {@code U1} statistic. Compute the {@code U2} statistic using:
+     * <p>This returns the U<sub>1</sub> statistic. Compute the U<sub>2</sub> statistic using:
      * <pre>
      * u2 = (long) x.length * y.length - u1;
      * </pre>
      *
      * @param x First sample values.
      * @param y Second sample values.
-     * @return Mann-Whitney U1 statistic
+     * @return Mann-Whitney U<sub>1</sub> statistic
      * @throws IllegalArgumentException if {@code x} or {@code y} are zero-length; or contain
      * NaN values.
      * @see #withMu(double)
@@ -213,13 +228,13 @@ public final class MannWhitneyUTest {
      * Performs a Mann-Whitney U test comparing the location for two independent
      * samples. The location is specified using {@link #withMu(double) mu}.
      *
-     * <p>The {@link AlternativeHypothesis alternative hypothesis} is:
+     * <p>The test is defined by the {@link AlternativeHypothesis}.
      * <ul>
-     * <li>'two-sided': the distribution underlying {@code x - mu} is not equal to the
+     * <li>'two-sided': the distribution underlying {@code (x - mu)} is not equal to the
      * distribution underlying {@code y}.
-     * <li>'greater': the distribution underlying {@code x - mu} is stochastically greater than
+     * <li>'greater': the distribution underlying {@code (x - mu)} is stochastically greater than
      * the distribution underlying {@code y}.
-     * <li>'less': the distribution underlying {@code x - mu} is stochastically less than
+     * <li>'less': the distribution underlying {@code (x - mu)} is stochastically less than
      * the distribution underlying {@code y}.
      * </ul>
      *
@@ -233,18 +248,23 @@ public final class MannWhitneyUTest {
      *
      * <p><strong>Note: </strong>
      * Exact computation requires tabulation of values not exceeding size
-     * {@code (n+1)*(m+1)*(u+1)} where {@code u} is the minimum of {@code u1} or {@code u2};
-     * and {@code n} and {@code m} are the sample sizes. This may use a very large amount
-     * of memory and result in an {@link OutOfMemoryError}.
+     * {@code (n+1)*(m+1)*(u+1)} where {@code u} is the minimum of the U<sub>1</sub> and
+     * U<sub>2</sub> statistics and {@code n} and {@code m} are the sample sizes.
+     * This may use a very large amount of memory and result in an {@link OutOfMemoryError}.
      * Exact computation requires a finite binomial coefficient {@code binom(n+m, m)}
-     * which is limited to {@code n+m <= 1029} for any @{@code n} and {@code m}; or
-     * {@code min(n, m) <= 37}.
+     * which is limited to {@code n+m <= 1029} for any {@code n} and {@code m},
+     * or {@code min(n, m) <= 37} for any {@code max(n, m)}.
+     * An {@link OutOfMemoryError} is not expected using the
+     * limits configured for the {@link PValueMethod#AUTO auto} p-value computation
+     * as the maximum required memory is approximately 23 MiB.
      *
      * @param x First sample values.
      * @param y Second sample values.
      * @return test result
      * @throws IllegalArgumentException if {@code x} or {@code y} are zero-length; or contain
      * NaN values.
+     * @throws OutOfMemoryError if the exact computation is <em>user-requested</em> for
+     * large samples and there is not enough memory.
      * @see #statistic(double[], double[])
      * @see #withMu(double)
      * @see #with(AlternativeHypothesis)

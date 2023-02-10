@@ -70,33 +70,31 @@ public final class BinomialTest {
      *
      * <p>The null hypothesis is \( H_0:\pi=\pi_0 \) where \( \pi_0 \) is between 0 and 1.
      *
-     * <p>The test statistic is equal to the estimated proportion \( \frac{k}{n} \).
-     *
-     * <p>The p-value returned is the smallest significance level at which one can
-     * reject the null hypothesis. The form of the hypothesis depends on
-     * {@code alternativeHypothesis}.
-     *
      * <p>The probability of observing \( k \) successes from \( n \) trials with a given
      * probability of success \( p \) is:
      *
      * <p>\[ \Pr(X=k)=\binom{n}{k}p^k(1-p)^{n-k} \]
      *
-     * <p>To test \( \pi &lt; \pi_0 \):
+     * <p>The test is defined by the {@link AlternativeHypothesis}.
+     *
+     * <p>To test \( \pi &lt; \pi_0 \) (less than):
      *
      * <p>\[ p = \sum_{i=0}^k\Pr(X=i)=\sum_{i=0}^k\binom{n}{i}\pi_0^i(1-\pi_0)^{n-i} \]
      *
-     * <p>To test \( \pi &gt; \pi_0 \):
+     * <p>To test \( \pi &gt; \pi_0 \) (greater than):
      *
      * <p>\[ p = \sum_{i=0}^k\Pr(X=i)=\sum_{i=k}^n\binom{n}{i}\pi_0^i(1-\pi_0)^{n-i} \]
      *
-     * <p>To test the two-tailed test requires finding all \( i \) such that
+     * <p>To test \( \pi \ne \pi_0 \) (two-sided) requires finding all \( i \) such that
      * \( \mathcal{I}=\{i:\Pr(X=i)\leq \Pr(X=k)\} \) and compute the sum:
      *
      * <p>\[ p = \sum_{i\in\mathcal{I}}\Pr(X=i)=\sum_{i\in\mathcal{I}}\binom{n}{i}\pi_0^i(1-\pi_0)^{n-i} \]
      *
-     * <p>The p-value represents the likelihood of getting a result at least as
+     * <p>The two-sided p-value represents the likelihood of getting a result at least as
      * extreme as the sample, given the provided {@code probability} of success on a
      * single trial.
+     *
+     * <p>The test statistic is equal to the estimated proportion \( \frac{k}{n} \).
      *
      * @param numberOfTrials Number of trials performed.
      * @param numberOfSuccesses Number of successes observed.
@@ -106,6 +104,7 @@ public final class BinomialTest {
      * @throws IllegalArgumentException if {@code numberOfTrials} or
      * {@code numberOfSuccesses} is negative; {@code probability} is not between 0
      * and 1; or if {@code numberOfTrials < numberOfSuccesses}
+     * @see #with(AlternativeHypothesis)
      */
     public SignificanceResult test(int numberOfTrials, int numberOfSuccesses, double probability) {
         // Note: The distribution validates number of trials and probability.

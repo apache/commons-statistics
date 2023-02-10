@@ -31,46 +31,12 @@ import org.apache.commons.rng.UniformRandomProvider;
 /**
  * Implements the Kolmogorov-Smirnov (K-S) test for equality of continuous distributions.
  *
- * <p>The K-S test uses a statistic based on the maximum deviation of the empirical distribution of
- * sample data points from the distribution expected under the null hypothesis. For one-sample tests
- * evaluating the null hypothesis that a set of sample data points follow a given distribution, the
- * test statistic is \(D_n=\sup_x |F_n(x)-F(x)|\), where \(F\) is the expected distribution and
- * \(F_n\) is the empirical distribution of the \(n\) sample data points. The distribution of
- * \(D_n\) is estimated using the method presented in [2].
+ * <p>The one-sample test uses a D statistic based on the maximum deviation of the empirical
+ * distribution of sample data points from the distribution expected under the null hypothesis.
  *
- * <p>Two-sample tests are also supported, evaluating the null hypothesis that the two samples
- * {@code x} and {@code y} come from the same underlying distribution. In this case, the test
- * statistic is \(D_{n,m}=\sup_t | F_n(t)-F_m(t)|\) where \(n\) is the length of {@code x}, \(m\) is
- * the length of {@code y}, \(F_n\) is the empirical distribution that puts mass \(1/n\) at each of
- * the values in {@code x} and \(F_m\) is the empirical distribution of the {@code y} values. The
- * default 2-sample test method, {@link #test(double[], double[])} works as
- * follows:
- *
- * <ul>
- * <li>When both sample sizes are less than 10000, the methods presented in [5,6]
- * is used to compute the exact p-value for the 2-sample test. The estimation of the p-value
- * can be expressed using strict or non-strict inequality.
- * <li>When the sample sizes, m and n, are larger the asymptotic
- * distribution of \(D_{n,m}\) is used. The p-value is \(1 - CDF(d, \sqrt{mn / (m + n)})\)
- * where CDF is the cumulative density function of the two-sided one-sample Kolmogorov-Smirnov
- * distribution.
- * </ul>
- *
- * <p>For the two-sample test if the data contains ties there is no defined ordering in the tied
- * region to use for the difference between the two empirical distributions. Each ordering of
- * the tied region may create a different D statistic. All possible orderings generate a distribution
- * for the D value. In this case the path with the minimum change on the D statistic is used.
- * The path with the greatest change on the D statistic is also computed. If these two values
- * are different then the tied region is known to generate a distribution for the D statistic;
- * this occurrence is identified in the result. Estimation of the p-value can be performed if
- * significant ties are known to be present in the data. This is modeled after
- * <a href="https://sekhon.berkeley.edu/matching/ks.boot.html">ks.boot</a>
- * in the R {@code Matching} package [3].
- *
- * <p>In the two-sample case, \(D_{n,m}\) has a discrete distribution. This makes the p-value
- * associated with the null hypothesis \(H_0 : D_{n,m} \gt d \) differ from \(H_0 : D_{n,m} \ge d \)
- * by the mass of the observed value \(d\). To distinguish these, the two-sample tests can use
- * a strict equality parameter. This is ignored for large samples.
+ * <p>The two-sample test uses a D statistic based on the maximum deviation of the two empirical
+ * distributions of sample data points. The two-sample tests evaluate the null hypothesis that
+ * the two samples {@code x} and {@code y} come from the same underlying distribution.
  *
  * <p>References:
  * <ol>
@@ -86,8 +52,6 @@ import org.apache.commons.rng.UniformRandomProvider;
  * Multivariate and Propensity Score Matching Software with Automated Balance Optimization:
  * The Matching package for R.</a>
  * Journal of Statistical Software, 42(7), 1–52.
- * <li>Wilcox, Rand. 2012. Introduction to Robust Estimation and Hypothesis Testing,
- * Chapter 5, 3rd Ed. Academic Press.
  * <li>Viehmann, T (2021).
  * <a href="https://doi.org/10.48550/arXiv.2102.08037">
  * Numerically more stable computation of the p-values for the two-sample Kolmogorov-Smirnov test.</a>
@@ -167,8 +131,9 @@ public final class KolmogorovSmirnovTest {
         }
 
         /**
-         * Gets the sign of the statistic. This is 1 for D+ and -1 for D-.
-         * For a two sided-test this is zero if the magnitude of D+ and D- was equal.
+         * Gets the sign of the statistic. This is 1 for \(D^+\) and -1 for \(D^-\).
+         * For a two sided-test this is zero if the magnitude of \(D^+\) and \(D^-\) was equal;
+         * otherwise the sign indicates the larger of \(D^+\) or \(D^-\).
          *
          * @return the sign
          */
@@ -220,7 +185,7 @@ public final class KolmogorovSmirnovTest {
          * by all possible orderings of the tied regions. This statistic is computed using the
          * path with the <em>minimum</em> effect on the D statistic.
          *
-         * <p>For a one-sided statistic D+ or D-, this is the lower bound of the D statistic.
+         * <p>For a one-sided statistic \(D^+\) or \(D^-\), this is the lower bound of the D statistic.
          *
          * <p>For a two-sided statistic D, this may be <em>below</em> the lower bound of the
          * distribution of all possible D values. This case occurs when the number of ties
@@ -249,14 +214,17 @@ public final class KolmogorovSmirnovTest {
          *
          * <p>Ties between the data can be interpreted as if the values were different
          * but within machine epsilon. In this case the order within the tie region is not known.
-         * If the most extreme ordering of any tied regions could create a larger D statistic
-         * this method will return {@code true}.
+         * If the most extreme ordering of any tied regions (e.g. all tied values of {@code x}
+         * before all tied values of {@code y}) could create a larger D statistic this
+         * method will return {@code true}.
          *
          * <p>If there were no ties, or all possible orderings of tied regions create the same
          * D statistic, this method returns {@code false}.
          *
          * <p>Note it is possible that this method returns {@code true} when {@code D == upperD}
-         * due to rounding when converting the computed D statistic to a double.
+         * due to rounding when converting the computed D statistic to a double. This will
+         * only occur for large sample sizes {@code n} and {@code m} where the product
+         * {@code n*m >= 2^53}.
          *
          * @return true if the D statistic could be changed by resolution of ties
          * @see #getUpperD()
@@ -280,8 +248,8 @@ public final class KolmogorovSmirnovTest {
         /**
          * Return the p-value of the upper bound of the D statistic.
          *
-         * <p>If computed, this will return a value equal to or less than {@link #getPValue()}. It
-         * may be orders of magnitude smaller.
+         * <p>If computed, this will return a value equal to or less than
+         * {@link #getPValue() getPValue}. It may be orders of magnitude smaller.
          *
          * <p>Note: This p-value corresponds to the most extreme p-value from all possible
          * orderings of tied regions. It is <strong>not</strong> recommended to use this to
@@ -294,7 +262,7 @@ public final class KolmogorovSmirnovTest {
          * using a distribution of possible D values given the underlying joint distribution of
          * the sample data. Comparison of the p-value to the upper p-value is not applicable.
          *
-         * @return the p-value of the upper bound of D
+         * @return the p-value of the upper bound of D (or NaN)
          * @see #getUpperD()
          */
         public double getUpperPValue() {
@@ -348,13 +316,17 @@ public final class KolmogorovSmirnovTest {
     /**
      * Return an instance with the configured p-value method.
      *
-     * <p>For the one-sample two-sided test Kolmogorov's asymptotic approximation can be used.
+     * <p>For the one-sample two-sided test Kolmogorov's asymptotic approximation can be used;
+     * otherwise the p-value uses the distribution of the D statistic.
      *
      * <p>For the two-sample test the exact p-value can be computed for small sample sizes;
-     * otherwise the p-value resorts to the asymptotic approximation.
+     * otherwise the p-value resorts to the asymptotic approximation. Alternatively a p-value
+     * can be estimated from the combined distribution of the samples. This requires a source
+     * of randomness.
      *
      * @param v Value.
      * @return an instance
+     * @see #with(UniformRandomProvider)
      */
     public KolmogorovSmirnovTest with(PValueMethod v) {
         return new KolmogorovSmirnovTest(alternative, Objects.requireNonNull(v), strictInequality, rng, iterations);
@@ -366,7 +338,7 @@ public final class KolmogorovSmirnovTest {
      * <p>Computes the p-value for the two-sample test as \(P(D_{n,m} &gt; d)\) if strict;
      * otherwise \(P(D_{n,m} \ge d)\), where \(D_{n,m}\) is the 2-sample
      * Kolmogorov-Smirnov statistic, either the two-sided \(D_{n,m}\) or one-sided
-     * \(D_{n,m}^+\}.
+     * \(D_{n,m}^+\) or \(D_{n,m}^-\).
      *
      * @param v Value.
      * @return an instance
@@ -389,6 +361,7 @@ public final class KolmogorovSmirnovTest {
      *
      * @param v Value.
      * @return an instance
+     * @see #with(PValueMethod)
      */
     public KolmogorovSmirnovTest with(UniformRandomProvider v) {
         return new KolmogorovSmirnovTest(alternative, pValueMethod, strictInequality,
@@ -400,8 +373,11 @@ public final class KolmogorovSmirnovTest {
      *
      * <p>Applies to the two-sample test when the p-value method is set to
      * {@link PValueMethod#ESTIMATE ESTIMATE}. This is the number of sampling iterations
-     * used to estimate the p-value. The number of significant digits in the p-value is
-     * approximately {@code log10(iterations)}.
+     * used to estimate the p-value. The p-value is a fraction using the {@code iterations}
+     * as the denominator. The number of significant digits in the p-value is
+     * upper bounded by log<sub>10</sub>(iterations); small p-values have fewer significant
+     * digits. A large number of iterations is recommended when using a small critical
+     * value to reject the null hypothesis.
      *
      * @param v Value.
      * @return an instance
@@ -417,8 +393,8 @@ public final class KolmogorovSmirnovTest {
      *
      * <ul>
      * <li>two-sided: \(D_n=\sup_x |F_n(x)-F(x)|\)
-     * <li>greater: \(D_n^+=\sup_x F_n(x)-F(x)\)
-     * <li>less: \(D_n^-=\sup_x F(x)-F_n(x)\)
+     * <li>greater: \(D_n^+=\sup_x (F_n(x)-F(x))\)
+     * <li>less: \(D_n^-=\sup_x (F(x)-F_n(x))\)
      * </ul>
      *
      * <p>where \(F\) is the distribution cumulative density function ({@code cdf}),
@@ -438,6 +414,7 @@ public final class KolmogorovSmirnovTest {
      * @param x Sample being evaluated.
      * @return Kolmogorov-Smirnov statistic
      * @throws IllegalArgumentException if {@code data} does not have length at least 2; or contains NaN values.
+     * @see #test(double[], DoubleUnaryOperator)
      */
     public double statistic(double[] x, DoubleUnaryOperator cdf) {
         return computeStatistic(x, cdf, IGNORED_SIGN);
@@ -448,19 +425,20 @@ public final class KolmogorovSmirnovTest {
      *
      * <ul>
      * <li>two-sided: \(D_{n,m}=\sup_x |F_n(x)-F_m(x)|\)
-     * <li>greater: \(D_{n,m}^+=\sup_x F_n(x)-F(x)\)
-     * <li>less: \(D_{n,m}^-=\sup_x F(x)-F_n(x)\)
+     * <li>greater: \(D_{n,m}^+=\sup_x (F_n(x)-F_m(x))\)
+     * <li>less: \(D_{n,m}^-=\sup_x (F_m(x)-F_n(x))\)
      * </ul>
      *
      * <p>where \(n\) is the length of {@code x}, \(m\) is the length of {@code y}, \(F_n\) is the
      * empirical distribution that puts mass \(1/n\) at each of the values in {@code x} and \(F_m\)
-     * is the empirical distribution that puts mass \(1/\) of the {@code y} values.
+     * is the empirical distribution that puts mass \(1/m\) at each of the values in {@code y}.
      *
      * @param x First sample.
      * @param y Second sample.
      * @return Kolmogorov-Smirnov statistic
-     * @throws IllegalArgumentException if either {@code x} or {@code y} do not have length at
-     *         least 2; or contain NaN values.
+     * @throws IllegalArgumentException if either {@code x} or {@code y} does not
+     * have length at least 2; or contain NaN values.
+     * @see #test(double[], double[])
      */
     public double statistic(double[] x, double[] y) {
         final int n = checkArrayLength(x);
@@ -489,13 +467,13 @@ public final class KolmogorovSmirnovTest {
      *
      * <p>The p-value method defaults to exact. The one-sided p-value uses Smirnov's stable formula:
      *
-     * <p>\[ P(D_n^+ \ge x) = x \sum_{j=0}^{\floor{n(1-x)}} \binom(n, j) (\frac{j}{n} + x)^{j-1} (1-x-\frac{j}{n})^{n-j} \]
+     * <p>\[ P(D_n^+ \ge x) = x \sum_{j=0}^{\lfloor n(1-x) \rfloor} \binom{n}{j} \left(\frac{j}{n} + x\right)^{j-1} \left(1-x-\frac{j}{n} \right)^{n-j} \]
      *
-     * <p>The two-sided test p-value is computed using methods described in
+     * <p>The two-sided p-value is computed using methods described in
      * Simard &amp; L’Ecuyer (2011). The two-sided test supports an asymptotic p-value
      * using Kolmogorov's formula:
      *
-     * <p>\[ \lim_{n\to\infty} P(\sqrt{n}D_n &gt; z) = 2 \sum_{i=1}^\infty (-1)^(i-1) e^{-2 i^2 z^2} \]
+     * <p>\[ \lim_{n\to\infty} P(\sqrt{n}D_n &gt; z) = 2 \sum_{i=1}^\infty (-1)^{i-1} e^{-2 i^2 z^2} \]
      *
      * @param x Sample being being evaluated.
      * @param cdf Reference cumulative distribution function.
@@ -532,12 +510,12 @@ public final class KolmogorovSmirnovTest {
      * Test the empirical distributions \(F_n\) and \(F_m\) where \(n\) is the length
      * of {@code x}, \(m\) is the length of {@code y}, \(F_n\) is the empirical distribution
      * that puts mass \(1/n\) at each of the values in {@code x} and \(F_m\) is the empirical
-     * distribution that puts mass \(1/\) of the {@code y} values.
+     * distribution that puts mass \(1/m\) of the {@code y} values.
      *
      * <p>The test is defined by the {@link AlternativeHypothesis}:
      * <ul>
      * <li>Two-sided evaluates the null hypothesis that the two distributions are
-     * identical, \(F_n(i) = F_m(i)\) for all \( i \); the alternative is that the are not
+     * identical, \(F_n(i) = F_m(i)\) for all \( i \); the alternative is that they are not
      * identical. The statistic is \( max(D_n^+, D_n^-) \) and the sign of \( D \) is provided.
      * <li>Greater evaluates the null hypothesis that the \(F_n(i) &lt;= F_m(i)\) for all \( i \);
      * the alternative is \(F_n(i) &gt; F_m(i)\) for at least one \( i \). The statistic is \( D_n^+ \).
@@ -546,38 +524,47 @@ public final class KolmogorovSmirnovTest {
      * </ul>
      *
      * <p>If the {@link PValueMethod p-value method} is auto, then an exact p computation
-     * is attempted if both sample sizes are less than 10000; otherwise an asymptotic p-value
-     * is returned.
+     * is attempted if both sample sizes are less than 10000 using the methods presented in
+     * Viehmann (2021) and Hodges (1958); otherwise an asymptotic p-value is returned.
+     * The two-sided p-value is \(\overline{F}(d, \sqrt{mn / (m + n)})\) where \(\overline{F}\)
+     * is the complementary cumulative density function of the two-sided one-sample
+     * Kolmogorov-Smirnov distribution. The one-sided p-value uses an approximation from
+     * Hodges (1958) Eq 5.3.
      *
-     * <p>The exact p-value can be computed using a strict inquality as
-     * \(P(D_{n,m} &gt; d)\); otherwise \(P(D_{n,m} \ge d)\). If the computation
-     * of the exact p-value fails due to large sample sizes, then the computation
-     * returns an asymptotic p-value.
+     * <p>\(D_{n,m}\) has a discrete distribution. This makes the p-value associated with the
+     * null hypothesis \(H_0 : D_{n,m} \gt d \) differ from \(H_0 : D_{n,m} \ge d \)
+     * by the mass of the observed value \(d\). These can be distinguished using an
+     * {@link Inequality} parameter. This is ignored for large samples.
      *
-     * <p>This method detects ties in the input data. Any tied region is traversed entirely
-     * and the effect on the D value evaluated at the end of the tied region. However
-     * tied regions can be categorised as different values that are within machine epsilon
-     * and the ordering within the effectively tied region is unknown.
-     * The most extreme path through each tie region is evaluated to determine the
-     * effect of any ties. If this creates a statistic with a greater magnitude than
-     * the returned D statistic then it is possible that a resolution of ties can
-     * create a more extreme D value and the p-value is an over estimate for these cases.
-     * The presence of any significant tied regions is returned in the result.
+     * <p>If the data contains ties there is no defined ordering in the tied region to use
+     * for the difference between the two empirical distributions. Each ordering of the
+     * tied region <em>may</em> create a different D statistic. All possible orderings
+     * generate a distribution for the D value. In this case the tied region is traversed
+     * entirely and the effect on the D value evaluated at the end of the tied region.
+     * This is the path with the least change on the D statistic. The path with the
+     * greatest change on the D statistic is also computed as the upper bound on D.
+     * If these two values are different then the tied region is known to generate a
+     * distribution for the D statistic and the p-value is an over estimate for the cases
+     * with a larger D statistic. The presence of any significant tied regions is returned
+     * in the result.
      *
      * <p>If the p-value method is {@link PValueMethod#ESTIMATE ESTIMATE} then the p-value is
-     * estimated by repeat sampling of the joint distribution of {@code x} and {@code y}
-     * and the p-value is the frequency that the a sample creates a D statistic
+     * estimated by repeat sampling of the joint distribution of {@code x} and {@code y}.
+     * The p-value is the frequency that a sample creates a D statistic
      * greater than or equal to (or greater than for strict inequality) the observed value.
      * In this case a source of randomness must be configured or an {@link IllegalStateException}
-     * will be raised. The p-value for the upper bound will not be estimated and is set to
-     * {@link Double#NaN NaN}.
+     * will be raised. The p-value for the upper bound on D will not be estimated and is set to
+     * {@link Double#NaN NaN}. This estimation procedure is not affected by ties in the data
+     * and is increasingly robust for larger datasets. The method is modeled after
+     * <a href="https://sekhon.berkeley.edu/matching/ks.boot.html">ks.boot</a>
+     * in the R {@code Matching} package (Sekhon (2011)).
      *
      * @param x First sample.
      * @param y Second sample.
      * @return test result
      * @throws IllegalArgumentException if either {@code x} or {@code y} does not
      * have length at least 2; or contain NaN values.
-     * @throws IllegalStateException if the p-value method is {@link PValueMethod#ESTIMATE estimate}
+     * @throws IllegalStateException if the p-value method is {@link PValueMethod#ESTIMATE ESTIMATE}
      * and there is no source of randomness.
      * @see #statistic(double[], double[])
      */
@@ -640,7 +627,7 @@ public final class KolmogorovSmirnovTest {
      * of the combined sample. The memory requirement is an array copy of each of
      * the input arguments.
      *
-     * <p>When {@code strict} is true, this is equivalent to the algorithm implemented in
+     * <p>When using strict inequality, this is equivalent to the algorithm implemented in
      * the R function {@code ks.boot} as described in Sekhon (2011) Journal of Statistical
      * Software, 42(7), 1–52 [3].
      *
@@ -672,7 +659,7 @@ public final class KolmogorovSmirnovTest {
             minus = -d;
         }
 
-        // Test dnm=0
+        // Test dnm=0. This occurs for example when x == y.
         if (0 < minus || 0 > plus) {
             // Edge case where all possible d will be outside the inclusive bounds
             return 1;

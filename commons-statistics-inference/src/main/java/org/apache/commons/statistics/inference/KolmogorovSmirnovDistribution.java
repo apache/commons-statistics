@@ -1059,7 +1059,7 @@ final class KolmogorovSmirnovDistribution {
 
     /**
      * Computes {@code P(sqrt(n) D_n > x)}, the limiting form for the distribution of
-     * Kolmolgorov's D_n as described in Simard and L’Ecuyer (2011) (Eq. 5, or K0 Eq. 6).
+     * Kolmogorov's D_n as described in Simard and L’Ecuyer (2011) (Eq. 5, or K0 Eq. 6).
      *
      * <p>Computes \( 2 \sum_{i=1}^\infty (-1)^(i-1) e^{-2 i^2 x^2} \), or
      * \( 1 - (\sqrt{2 \pi} / x) * \sum_{i=1}^\infty { e^{-(2i-1)^2 \pi^2 / (8x^2) } } \)

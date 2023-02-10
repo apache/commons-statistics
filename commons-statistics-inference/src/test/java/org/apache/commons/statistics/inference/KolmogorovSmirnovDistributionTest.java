@@ -737,7 +737,7 @@ class KolmogorovSmirnovDistributionTest {
     }
 
     /**
-     * Test cases of the limiting form for the distribution of Kolmolgorov's D_n.
+     * Test cases of the limiting form for the distribution of Kolmogorov's D_n.
      */
     @ParameterizedTest
     @CsvSource({

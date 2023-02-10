@@ -151,7 +151,7 @@ public final class TTest {
      *
      * <p>The returned t-statistic is:
      *
-     * <p>\[ t = \frac{m - \mu}{ \sqrt{ \frac{v}{n} } \]
+     * <p>\[ t = \frac{m - \mu}{ \sqrt{ \frac{v}{n} } } \]
      *
      * @param m Sample mean.
      * @param v Sample variance.
@@ -184,10 +184,10 @@ public final class TTest {
     }
 
     /**
-     * Computes a paired two-sample t-statistic comparing the mean difference between the
-     * samples to {@code mu}.
+     * Computes a paired two-sample t-statistic on related samples comparing the mean difference
+     * between the samples to {@code mu}.
      *
-     * <p>The t-statistic returned is equivalent to what would be returned by computing
+     * <p>The t-statistic returned is functionally equivalent to what would be returned by computing
      * the one-sample t-statistic {@link #statistic(double[])}, with
      * the sample array consisting of the (signed) differences between corresponding
      * entries in {@code x} and {@code y}.
@@ -207,18 +207,18 @@ public final class TTest {
     }
 
     /**
-     * Computes a two-sample t statistic, comparing the difference in means of the
-     * datasets to {@code mu}.
+     * Computes a two-sample t statistic on independent samples comparing the difference in means
+     * of the datasets to {@code mu}.
      *
      * <p>Use the {@link DataDispersion} to control the computation of the variance.
      *
      * <p>The heteroscedastic t-statistic is:
      *
-     * <p>\[ t = \frac{m1 - m2 - \mu}{ \sqrt{ \frac{v_1}{n_1} + \frac{v_2}{n_2} } \]
+     * <p>\[ t = \frac{m1 - m2 - \mu}{ \sqrt{ \frac{v_1}{n_1} + \frac{v_2}{n_2} } } \]
      *
      * <p>The homoscedastic t-statistic is:
      *
-     * <p>\[ t = \frac{m1 - m2 - \mu}{ \sqrt{v} \sqrt{ \frac{1}{n_1} + \frac{1}{n_2} } } \]
+     * <p>\[ t = \frac{m1 - m2 - \mu}{ \sqrt{ v (\frac{1}{n_1} + \frac{1}{n_2}) } } \]
      *
      * <p>where \( v \) is the pooled variance estimate:
      *
@@ -248,8 +248,8 @@ public final class TTest {
     }
 
     /**
-     * Computes a two-sample t statistic, comparing the difference in means of the
-     * samples to {@code mu}.
+     * Computes a two-sample t statistic on independent samples comparing the difference
+     * in means of the samples to {@code mu}.
      *
      * <p>Use the {@link DataDispersion} to control the computation of the variance.
      *
@@ -311,8 +311,13 @@ public final class TTest {
     }
 
     /**
-     * Performs a paired two-sample t-test comparing the mean difference between the
-     * samples to {@code mu}.
+     * Performs a paired two-sample t-test on related samples comparing the mean difference between
+     * the samples to {@code mu}.
+     *
+     * <p>The test is functionally equivalent to what would be returned by computing
+     * the one-sample t-test {@link #test(double[])}, with
+     * the sample array consisting of the (signed) differences between corresponding
+     * entries in {@code x} and {@code y}.
      *
      * @param x First sample values.
      * @param y Second sample values.
@@ -329,7 +334,7 @@ public final class TTest {
     }
 
     /**
-     * Performs a two-sample t-test, comparing the difference in means of the
+     * Performs a two-sample t-test on independent samples comparing the difference in means of the
      * datasets to {@code mu}.
      *
      * <p>Use the {@link DataDispersion} to control the computation of the variance.
@@ -340,7 +345,7 @@ public final class TTest {
      * <p>\[ v = \frac{ (\frac{v_1}{n_1} + \frac{v_2}{n_2})^2 }
      *                { \frac{(v_1/n_1)^2}{n_1-1} + \frac{(v_2/n_2)^2}{n_2-1} } \]
      *
-     * <p>The homoscedastic degrees of freedom are \( v = n_1 + n_2 - 2).
+     * <p>The homoscedastic degrees of freedom are \( v = n_1 + n_2 - 2 \).
      *
      * @param m1 First sample mean.
      * @param v1 First sample variance.
@@ -364,7 +369,7 @@ public final class TTest {
     }
 
     /**
-     * Performs a two-sample t-test on two independent samples comparing the difference in means of
+     * Performs a two-sample t-test on independent samples comparing the difference in means of
      * the samples to {@code mu}.
      *
      * <p>Use the {@link DataDispersion} to control the computation of the variance.

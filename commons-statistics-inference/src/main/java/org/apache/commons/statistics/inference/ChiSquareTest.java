@@ -19,7 +19,7 @@ package org.apache.commons.statistics.inference;
 import org.apache.commons.statistics.distribution.ChiSquaredDistribution;
 
 /**
- * Implements Chi-square test statistics.
+ * Implements chi-square test statistics.
  *
  * <p>This implementation handles both known and unknown distributions.
  *
@@ -80,7 +80,7 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Computes the Chi-square goodness-of-fit statistic comparing the {@code observed} counts to a
+     * Computes the chi-square goodness-of-fit statistic comparing the {@code observed} counts to a
      * uniform expected value (each category is equally likely).
      *
      * <p>Note: This is a specialized version of a comparison of {@code observed}
@@ -93,6 +93,7 @@ public final class ChiSquareTest {
      * @return Chi-square statistic
      * @throws IllegalArgumentException if the sample size is less than 2;
      * {@code observed} has negative entries; or all the the observations are zero.
+     * @see #test(long[])
      */
     public double statistic(long[] observed) {
         Arguments.checkValuesRequiredSize(observed.length, 2);
@@ -111,7 +112,7 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Computes the Chi-square goodness-of-fit statistic comparing {@code observed} and
+     * Computes the chi-square goodness-of-fit statistic comparing {@code observed} and
      * {@code expected} frequency counts.
      *
      * <p><strong>Note:</strong>This implementation rescales the {@code expected}
@@ -124,6 +125,7 @@ public final class ChiSquareTest {
      * @throws IllegalArgumentException if the sample size is less than 2; the array
      * sizes do not match; {@code expected} has entries that are not strictly
      * positive; {@code observed} has negative entries; or all the the observations are zero.
+     * @see #test(double[], long[])
      */
     public double statistic(double[] expected, long[] observed) {
         final double ratio = StatisticUtils.computeRatio(expected, observed);
@@ -138,7 +140,7 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Computes the Chi-square statistic associated with a Chi-square test of
+     * Computes the chi-square statistic associated with a chi-square test of
      * independence based on the input {@code counts} array, viewed as a two-way
      * table in row-major format.
      *
@@ -147,6 +149,7 @@ public final class ChiSquareTest {
      * @throws IllegalArgumentException if the number of rows or columns is less
      * than 2; the array is non-rectangular; the array has negative entries; or the
      * sum of a row or column is zero.
+     * @see #test(long[][])
      */
     public double statistic(long[][] counts) {
         Arguments.checkCategoriesRequiredSize(counts.length, 2);
@@ -174,7 +177,7 @@ public final class ChiSquareTest {
             checkNonZero(colSum[col], COLUMN, col);
         }
 
-        // Compute expected counts and Chi-square
+        // Compute expected counts and chi-square
         double chi2 = 0;
         for (int row = 0; row < nRows; row++) {
             for (int col = 0; col < nCols; col++) {
@@ -187,12 +190,12 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Computes a Chi-square statistic associated with a Chi-square test of
+     * Computes a chi-square statistic associated with a chi-square test of
      * independence of frequency counts in {@code observed1} and {@code observed2}.
      * The sums of frequency counts in the two samples are not required to be the
      * same. The formula used to compute the test statistic is:
      *
-     * <p>\[ sum_i{ \frac{(K * a_i - b_i / K)^2}{a_i + b_i} } \]
+     * <p>\[ \sum_i{ \frac{(K * a_i - b_i / K)^2}{a_i + b_i} } \]
      *
      * <p>where
      *
@@ -211,6 +214,7 @@ public final class ChiSquareTest {
      * sizes do not match; either array has entries that are negative; either all
      * counts of {@code observed1} or {@code observed2} are zero; or if the count at
      * some index is zero for both arrays.
+     * @see ChiSquareTest#test(long[], long[])
      */
     public double statistic(long[] observed1, long[] observed2) {
         Arguments.checkValuesRequiredSize(observed1.length, 2);
@@ -236,7 +240,7 @@ public final class ChiSquareTest {
         final boolean unequalCounts = colSum1 != colSum2;
         final double weight = unequalCounts ?
             Math.sqrt((double) colSum1 / (double) colSum2) : 1;
-        // Compute Chi-square
+        // Compute chi-square
         // This exploits an algebraic rearrangement of the generic n*m contingency table case
         // for a single sum squared addition per row.
         double chi2 = 0;
@@ -253,7 +257,7 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Perform a Chi-square goodness-of-fit test evaluating the null hypothesis that
+     * Perform a chi-square goodness-of-fit test evaluating the null hypothesis that
      * the {@code observed} counts conform to a uniform distribution (each category
      * is equally likely).
      *
@@ -261,6 +265,7 @@ public final class ChiSquareTest {
      * @return test result
      * @throws IllegalArgumentException if the sample size is less than 2;
      * {@code observed} has negative entries; or all the the observations are zero
+     * @see #statistic(long[])
      */
     public SignificanceResult test(long[] observed) {
         final int df = observed.length - 1;
@@ -270,8 +275,8 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Perform a Chi-square test evaluating the null hypothesis that the {@code observed}
-     * counts conform to the {@code expected} counts.
+     * Perform a chi-square goodness-of-fit test evaluating the null hypothesis that the
+     * {@code observed} counts conform to the {@code expected} counts.
      *
      * <p>The test can be configured to apply an adjustment to the degrees of freedom
      * if the observed data has been used to create the expected counts.
@@ -284,6 +289,7 @@ public final class ChiSquareTest {
      * positive; {@code observed} has negative entries; all the the observations are zero; or
      * the adjusted degrees of freedom are not strictly positive
      * @see #withDegreesOfFreedomAdjustment(int)
+     * @see #statistic(double[], long[])
      */
     public SignificanceResult test(double[] expected, long[] observed) {
         final int df = StatisticUtils.computeDegreesOfFreedom(observed.length, degreesOfFreedomAdjustment);
@@ -293,7 +299,7 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Perform a Chi-square test of independence based on the input {@code counts} array,
+     * Perform a chi-square test of independence based on the input {@code counts} array,
      * viewed as a two-way table.
      *
      * @param counts 2-way table.
@@ -301,6 +307,7 @@ public final class ChiSquareTest {
      * @throws IllegalArgumentException if the number of rows or columns is less
      * than 2; the array is non-rectangular; the array has negative entries; or the
      * sum of a row or column is zero.
+     * @see #statistic(long[][])
      */
     public SignificanceResult test(long[][] counts) {
         final double chi2 = statistic(counts);
@@ -310,7 +317,7 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Perform a Chi-square test of independence of frequency counts in
+     * Perform a chi-square test of independence of frequency counts in
      * {@code observed1} and {@code observed2}.
      *
      * <p>Note: This is a specialized version of a 2-by-n contingency table.
@@ -322,6 +329,7 @@ public final class ChiSquareTest {
      * sizes do not match; either array has entries that are negative; either all
      * counts of {@code observed1} or {@code observed2} are zero; or if the count at
      * some index is zero for both arrays.
+     * @see #statistic(long[], long[])
      */
     public SignificanceResult test(long[] observed1, long[] observed2) {
         final double chi2 = statistic(observed1, observed2);
@@ -330,7 +338,7 @@ public final class ChiSquareTest {
     }
 
     /**
-     * Compute the Chi-square test p-value.
+     * Compute the chi-square test p-value.
      *
      * @param chi2 Chi-square statistic.
      * @param degreesOfFreedom Degrees of freedom.

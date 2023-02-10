@@ -78,9 +78,10 @@ public final class WilcoxonSignedRankTest {
         }
 
         /**
-         * Return {@code true} if the data had tied values.
+         * Return {@code true} if the data had tied values (with equal ranks).
          *
          * <p>Note: The exact computation cannot be used when there are tied values.
+         * The p-value uses the asymptotic approximation using a tie correction.
          *
          * @return {@code true} if there were tied values
          */
@@ -89,9 +90,11 @@ public final class WilcoxonSignedRankTest {
         }
 
         /**
-         * Return {@code true} if the data had zero values.
+         * Return {@code true} if the data had zero values. This occurs when the differences between
+         * sample values matched the expected location shift: {@code z = x - y == mu}.
          *
          * <p>Note: The exact computation cannot be used when there are zero values.
+         * The p-value uses the asymptotic approximation.
          *
          * @return {@code true} if there were zero values
          */
@@ -205,8 +208,10 @@ public final class WilcoxonSignedRankTest {
      * by including them in the ranking of samples but excludes them from the test statistic
      * (<i>signed-rank zero procedure</i>).
      *
-     * <p>This method is equivalent to creating an array of differences
-     * {@code z = x - y} and calling {@link #statistic(double[]) statistic(z)}.
+     * <p>This method is functionally equivalent to creating an array of differences
+     * {@code z = x - y} and calling {@link #statistic(double[]) statistic(z)}; the
+     * implementation may use an optimised method to compute the differences and
+     * rank statistic if {@code mu != 0}.
      *
      * @param x First sample values.
      * @param y Second sample values.
@@ -230,7 +235,8 @@ public final class WilcoxonSignedRankTest {
      * by including them in the ranking of samples but excludes them from the test statistic
      * (<i>signed-rank zero procedure</i>).
      *
-     * <p>The {@link AlternativeHypothesis alternative hypothesis} is:
+     * <p>The test is defined by the {@link AlternativeHypothesis}.
+     *
      * <ul>
      * <li>'two-sided': the distribution of the difference is not symmetric about {@code mu}.
      * <li>'greater': the distribution of the difference is stochastically greater than a
@@ -251,7 +257,8 @@ public final class WilcoxonSignedRankTest {
      * <p><strong>Note: </strong>
      * Computation of the exact p-value requires the
      * sample size {@code <= 1023}. Exact computation requires tabulation of values
-     * not exceeding size {@code n(n+1)/2} and computes in order n^2/2.
+     * not exceeding size {@code n(n+1)/2} and computes in Order(n*n/2). Maximum
+     * memory usage is approximately 4 MiB.
      *
      * @param z Differences between sample values.
      * @return test result
@@ -273,8 +280,10 @@ public final class WilcoxonSignedRankTest {
      * by including them in the ranking of samples but excludes them
      * from the test statistic (<i>signed-rank zero procedure</i>).
      *
-     * <p>This method is equivalent to creating an array of differences
-     * {@code z = x - y} and calling {@link #test(double[]) test(z)}.
+     * <p>This method is functionally equivalent to creating an array of differences
+     * {@code z = x - y} and calling {@link #test(double[]) test(z)}; the
+     * implementation may use an optimised method to compute the differences and
+     * rank statistic if {@code mu != 0}.
      *
      * @param x First sample values.
      * @param y Second sample values.

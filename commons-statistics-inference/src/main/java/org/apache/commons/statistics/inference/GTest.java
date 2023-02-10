@@ -102,6 +102,7 @@ public final class GTest {
      * @return G-test statistic
      * @throws IllegalArgumentException if the sample size is less than 2;
      * {@code observed} has negative entries; or all the the observations are zero.
+     * @see #test(long[])
      */
     public double statistic(long[] observed) {
         Arguments.checkValuesRequiredSize(observed.length, 2);
@@ -143,6 +144,7 @@ public final class GTest {
      * @throws IllegalArgumentException if the sample size is less than 2; the array
      * sizes do not match; {@code expected} has entries that are not strictly
      * positive; {@code observed} has negative entries; or all the the observations are zero.
+     * @see #test(double[], long[])
      */
     public double statistic(double[] expected, long[] observed) {
         // g = 2 * sum{o * ln(o/e)}
@@ -186,6 +188,7 @@ public final class GTest {
      * @throws IllegalArgumentException if the number of rows or columns is less
      * than 2; the array is non-rectangular; the array has negative entries; or the
      * sum of a row or column is zero.
+     * @see ChiSquareTest#test(long[][])
      */
     public double statistic(long[][] counts) {
         Arguments.checkCategoriesRequiredSize(counts.length, 2);
@@ -252,6 +255,7 @@ public final class GTest {
      * @return test result
      * @throws IllegalArgumentException if the sample size is less than 2;
      * {@code observed} has negative entries; or all the the observations are zero
+     * @see #statistic(long[])
      */
     public SignificanceResult test(long[] observed) {
         final int df = observed.length - 1;
@@ -275,6 +279,7 @@ public final class GTest {
      * positive; {@code observed} has negative entries; all the the observations are zero; or
      * the adjusted degrees of freedom are not strictly positive
      * @see #withDegreesOfFreedomAdjustment(int)
+     * @see #statistic(double[], long[])
      */
     public SignificanceResult test(double[] expected, long[] observed) {
         final int df = StatisticUtils.computeDegreesOfFreedom(observed.length, degreesOfFreedomAdjustment);
@@ -292,6 +297,7 @@ public final class GTest {
      * @throws IllegalArgumentException if the number of rows or columns is less
      * than 2; the array is non-rectangular; the array has negative entries; or the
      * sum of a row or column is zero.
+     * @see #statistic(long[][])
      */
     public SignificanceResult test(long[][] counts) {
         final double g = statistic(counts);

@@ -133,13 +133,13 @@ public final class OneWayAnova {
          * creates an estimate of the added variance component
          * between groups as:
          *
-         * <p>\[ \text{between-group variance} = (\text{MS}_{bg} - \text{MS}_{wg}) / n_o \]
+         * <p>\[ \text{between-group variance} = A = (\text{MS}_{\text{bg}} - \text{MS}_{\text{wg}}) / n_o \]
          *
          * <p>where \( n_o \) is a number close to, but usually less than,
-         * the arithmetic mean of the sample size ( \(n_i\) ) of each
+         * the arithmetic mean of the sample size \(n_i\) of each
          * of the \( a \) groups:
          *
-         * <p>\[ n_o = \frac{1}{a-1} ( \sum_i{n_i} - \frac{\sum_i{n_i^2}}{\sum_i{n_i}} ) \]
+         * <p>\[ n_o = \frac{1}{a-1} \left( \sum_i{n_i} - \frac{\sum_i{n_i^2}}{\sum_i{n_i}} \right) \]
          *
          * <p>The added variance component among groups \( A \) is expressed
          * as a fraction of the total variance components \( A + B \) where
