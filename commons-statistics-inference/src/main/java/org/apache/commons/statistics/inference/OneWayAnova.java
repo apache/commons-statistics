@@ -191,9 +191,34 @@ public final class OneWayAnova {
     }
 
     /**
-     * Performs an ANOVA test for a collection of category data, evaluating the
-     * null hypothesis that there is no difference among the means of the data
-     * categories.
+     * Computes the F statistic for an ANOVA test for a collection of category data,
+     * evaluating the null hypothesis that there is no difference among the means of
+     * the data categories.
+     *
+     * <p>Special cases:
+     * <ul>
+     * <li>If the value in each category is the same (no variance within groups) but different
+     * between groups, the f-value is {@link Double#POSITIVE_INFINITY infinity}.
+     * <li>If the value in every group is the same (no variance within or between groups),
+     * the f-value is {@link Double#NaN NaN}.
+     * </ul>
+     *
+     * @param data Category summary data.
+     * @return F statistic
+     * @throws IllegalArgumentException if the number of categories is less than
+     * two; a contained category does not have at least one value; or all
+     * categories have only one value (zero degrees of freedom within groups)
+     */
+    public double statistic(Collection<double[]> data) {
+        final double[] f = new double[1];
+        aov(data, f);
+        return f[0];
+    }
+
+    /**
+     * Performs an ANOVA test for a collection of category data,
+     * evaluating the null hypothesis that there is no difference among the means of
+     * the data categories.
      *
      * <p>Special cases:
      * <ul>
@@ -210,6 +235,25 @@ public final class OneWayAnova {
      * categories have only one value (zero degrees of freedom within groups)
      */
     public Result test(Collection<double[]> data) {
+        return aov(data, null);
+    }
+
+    /**
+     * Performs an ANOVA test for a collection of category data, evaluating the null
+     * hypothesis that there is no difference among the means of the data categories.
+     *
+     * <p>This is a utility method to allow computation of the F statistic without
+     * the p-value or partitioning of the variance. If the {@code statistic} is not null
+     * the method will record the F statistic in the array and return null.
+     *
+     * @param data Category summary data.
+     * @param statistic Result for the F statistic (or null).
+     * @return test result (or null)
+     * @throws IllegalArgumentException if the number of categories is less than two; a
+     * contained category does not have at least one value; or all categories have only
+     * one value (zero degrees of freedom within groups)
+     */
+    private static Result aov(Collection<double[]> data, double[] statistic) {
         Arguments.checkCategoriesRequiredSize(data.size(), 2);
         long n = 0;
         for (final double[] array : data) {
@@ -276,6 +320,10 @@ public final class OneWayAnova {
         final double msbg = allSame ? 0 : ssbg / dfbg;
         final double mswg = eachSame ? 0 : sswg / dfwg;
         final double f = msbg / mswg;
+        if (statistic != null) {
+            statistic[0] = f;
+            return null;
+        }
         final double p = FDistribution.of(dfbg, dfwg).survivalProbability(f);
 
         // Support partitioning the variance

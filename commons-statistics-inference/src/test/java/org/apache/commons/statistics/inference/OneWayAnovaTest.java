@@ -35,6 +35,7 @@ class OneWayAnovaTest {
 
     @Test
     void testAnovaTestThrows() {
+        assertAnovaTestThrows(OneWayAnova.withDefaults()::statistic);
         assertAnovaTestThrows(OneWayAnova.withDefaults()::test);
     }
 
@@ -65,6 +66,7 @@ class OneWayAnovaTest {
         TestUtils.assertRelativelyEquals(msbg, r.getMSBG(), statEps, "msbg");
         TestUtils.assertRelativelyEquals(mswg, r.getMSWG(), statEps, "mswg");
         TestUtils.assertRelativelyEquals(f, r.getStatistic(), statEps, "statistic");
+        Assertions.assertEquals(r.getStatistic(), OneWayAnova.withDefaults().statistic(data), "statistic mismatch");
         if (Double.isNaN(p)) {
             Assertions.assertEquals(p, r.getPValue(), "p-value");
         } else {
