@@ -202,7 +202,7 @@
   <rule ref="category/java/errorprone.xml/TestClassWithoutTestCases">
     <properties>
       <property name="violationSuppressRegex"
-        value=".*'BinomialTest'.*|.*'ChiSquareTest'.*|.*'GTest'.*|.*'KolmogorovSmirnovTest'.*|.*'MannWhitneyUTest'.*|.*'TTest'.*|.*'WilcoxonSignedRankTest'.*"/>
+        value=".*'BinomialTest'.*|.*'ChiSquareTest'.*|.*'FisherExactTest'.*|.*'GTest'.*|.*'KolmogorovSmirnovTest'.*|.*'MannWhitneyUTest'.*|.*'TTest'.*|.*'WilcoxonSignedRankTest'.*"/>
     </properties>
   </rule>
 
