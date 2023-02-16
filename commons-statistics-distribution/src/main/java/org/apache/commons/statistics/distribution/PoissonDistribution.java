@@ -117,7 +117,7 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The variance is equal to the {@link #getMean() mean}.
+     * <p>The variance is equal to the {@linkplain #getMean() mean}.
      */
     @Override
     public double getVariance() {

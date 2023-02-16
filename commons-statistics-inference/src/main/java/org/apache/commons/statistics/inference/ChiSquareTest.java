@@ -52,7 +52,7 @@ public final class ChiSquareTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@link #withDegreesOfFreedomAdjustment(int) degrees of freedom adjustment = 0}
+     * <li>{@linkplain #withDegreesOfFreedomAdjustment(int) Degrees of freedom adjustment = 0}
      * </ul>
      *
      * @return default instance

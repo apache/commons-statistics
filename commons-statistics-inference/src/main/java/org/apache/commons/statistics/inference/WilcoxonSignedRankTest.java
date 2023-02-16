@@ -126,7 +126,7 @@ public final class WilcoxonSignedRankTest {
      * <li>{@link AlternativeHypothesis#TWO_SIDED}
      * <li>{@link PValueMethod#AUTO}
      * <li>{@link ContinuityCorrection#ENABLED}
-     * <li>{@link #withMu(double) mu = 0}
+     * <li>{@linkplain #withMu(double) mu = 0}
      * </ul>
      *
      * @return default instance
@@ -247,7 +247,7 @@ public final class WilcoxonSignedRankTest {
      * symmetric about {@code mu}.
      * </ul>
      *
-     * <p>If the p-value method is {@link PValueMethod#AUTO auto} an exact p-value
+     * <p>If the p-value method is {@linkplain PValueMethod#AUTO auto} an exact p-value
      * is computed if the samples contain less than 50 values; otherwise a normal
      * approximation is used.
      *

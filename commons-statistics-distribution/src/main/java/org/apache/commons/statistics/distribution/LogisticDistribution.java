@@ -167,7 +167,7 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>The mean is equal to the {@link #getLocation() location}.
+     * <p>The mean is equal to the {@linkplain #getLocation() location}.
      */
     @Override
     public double getMean() {
@@ -191,7 +191,7 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
      *
      * <p>The lower bound of the support is always negative infinity.
      *
-     * @return {@link Double#NEGATIVE_INFINITY negative infinity}.
+     * @return {@linkplain Double#NEGATIVE_INFINITY negative infinity}.
      */
     @Override
     public double getSupportLowerBound() {
@@ -203,7 +203,7 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return {@link Double#POSITIVE_INFINITY positive infinity}.
+     * @return {@linkplain Double#POSITIVE_INFINITY positive infinity}.
      */
     @Override
     public double getSupportUpperBound() {

@@ -256,7 +256,7 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return {@link Double#POSITIVE_INFINITY positive infinity}.
+     * @return {@linkplain Double#POSITIVE_INFINITY positive infinity}.
      */
     @Override
     public double getSupportUpperBound() {

@@ -85,7 +85,7 @@ public final class FisherExactTest {
      *
      * <p>Special cases:
      * <ul>
-     * <li>If the denominator is zero, the value is {@link Double#POSITIVE_INFINITY infinity}.
+     * <li>If the denominator is zero, the value is {@linkplain Double#POSITIVE_INFINITY infinity}.
      * <li>If a row or column sum is zero, the value is {@link Double#NaN NaN}.
      * </ul>
      *

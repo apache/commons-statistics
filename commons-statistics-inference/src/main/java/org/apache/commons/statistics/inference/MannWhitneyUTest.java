@@ -134,7 +134,7 @@ public final class MannWhitneyUTest {
      * <li>{@link AlternativeHypothesis#TWO_SIDED}
      * <li>{@link PValueMethod#AUTO}
      * <li>{@link ContinuityCorrection#ENABLED}
-     * <li>{@link #withMu(double) mu = 0}
+     * <li>{@linkplain #withMu(double) mu = 0}
      * </ul>
      *
      * @return default instance
@@ -240,7 +240,7 @@ public final class MannWhitneyUTest {
      * the distribution underlying {@code y}.
      * </ul>
      *
-     * <p>If the p-value method is {@link PValueMethod#AUTO auto} an exact p-value is
+     * <p>If the p-value method is {@linkplain PValueMethod#AUTO auto} an exact p-value is
      * computed if the samples contain less than 50 values; otherwise a normal
      * approximation is used.
      *
@@ -257,7 +257,7 @@ public final class MannWhitneyUTest {
      * which is limited to {@code n+m <= 1029} for any {@code n} and {@code m},
      * or {@code min(n, m) <= 37} for any {@code max(n, m)}.
      * An {@link OutOfMemoryError} is not expected using the
-     * limits configured for the {@link PValueMethod#AUTO auto} p-value computation
+     * limits configured for the {@linkplain PValueMethod#AUTO auto} p-value computation
      * as the maximum required memory is approximately 23 MiB.
      *
      * @param x First sample values.

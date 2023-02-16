@@ -28,7 +28,7 @@ import org.apache.commons.rng.sampling.distribution.InverseTransformContinuousSa
  * that do not vary from distribution to distribution.
  *
  * <p>This base class provides a default factory method for creating
- * a {@link ContinuousDistribution.Sampler sampler instance} that uses the
+ * a {@linkplain ContinuousDistribution.Sampler sampler instance} that uses the
  * <a href="https://en.wikipedia.org/wiki/Inverse_transform_sampling">
  * inversion method</a> for generating random samples that follow the
  * distribution.

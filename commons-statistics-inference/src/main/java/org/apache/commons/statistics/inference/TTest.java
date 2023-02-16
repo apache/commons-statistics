@@ -95,7 +95,7 @@ public final class TTest {
      * <ul>
      * <li>{@link AlternativeHypothesis#TWO_SIDED}
      * <li>{@link DataDispersion#HETEROSCEDASTIC}
-     * <li>{@link #withMu(double) mu = 0}
+     * <li>{@linkplain #withMu(double) mu = 0}
      * </ul>
      *
      * @return default instance

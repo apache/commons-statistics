@@ -190,7 +190,7 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
      *
      * <p>The lower bound of the support is always negative infinity.
      *
-     * @return {@link Double#NEGATIVE_INFINITY negative infinity}.
+     * @return {@linkplain Double#NEGATIVE_INFINITY negative infinity}.
      */
     @Override
     public double getSupportLowerBound() {
@@ -202,7 +202,7 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
      *
      * <p>The upper bound of the support is always positive infinity.
      *
-     * @return {@link Double#POSITIVE_INFINITY positive infinity}.
+     * @return {@linkplain Double#POSITIVE_INFINITY positive infinity}.
      */
     @Override
     public double getSupportUpperBound() {

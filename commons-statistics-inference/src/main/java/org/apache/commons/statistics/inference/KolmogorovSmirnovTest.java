@@ -262,7 +262,7 @@ public final class KolmogorovSmirnovTest {
          * used to inform a decision on the suitability of the test to the data.
          *
          * <p>This value is set to {@link Double#NaN NaN} if the {@link #getPValue() p-value} was
-         * {@link PValueMethod#ESTIMATE estimated}. The estimated p-value will have been created
+         * {@linkplain PValueMethod#ESTIMATE estimated}. The estimated p-value will have been created
          * using a distribution of possible D values given the underlying joint distribution of
          * the sample data. Comparison of the p-value to the upper p-value is not applicable.
          *
@@ -297,8 +297,8 @@ public final class KolmogorovSmirnovTest {
      * <li>{@link AlternativeHypothesis#TWO_SIDED}
      * <li>{@link PValueMethod#AUTO}
      * <li>{@link Inequality#NON_STRICT}
-     * <li>{@link #with(UniformRandomProvider) RNG = none}
-     * <li>{@link #withIterations(int) iterations = 1000}
+     * <li>{@linkplain #with(UniformRandomProvider) RNG = none}
+     * <li>{@linkplain #withIterations(int) Iterations = 1000}
      * </ul>
      *
      * @return default instance
@@ -527,7 +527,7 @@ public final class KolmogorovSmirnovTest {
      * the alternative is \(F_n(i) &lt; F_m(i)\) for at least one \( i \). The statistic is \( D_n^- \).
      * </ul>
      *
-     * <p>If the {@link PValueMethod p-value method} is auto, then an exact p computation
+     * <p>If the {@linkplain PValueMethod p-value method} is auto, then an exact p computation
      * is attempted if both sample sizes are less than 10000 using the methods presented in
      * Viehmann (2021) and Hodges (1958); otherwise an asymptotic p-value is returned.
      * The two-sided p-value is \(\overline{F}(d, \sqrt{mn / (m + n)})\) where \(\overline{F}\)

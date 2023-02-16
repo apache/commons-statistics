@@ -130,8 +130,8 @@ public final class OneWayAnova {
          * partitioning the variance allows comparison of the
          * variation between groups to the variation within groups.
          *
-         * <p>If the {@link #getMSBG() MSBG} is less than the
-         * {@link #getMSWG() MSWG} this returns 0. Otherwise this
+         * <p>If the {@linkplain #getMSBG() MSBG} is less than the
+         * {@linkplain #getMSWG() MSWG} this returns 0. Otherwise this
          * creates an estimate of the added variance component
          * between groups as:
          *
@@ -145,7 +145,7 @@ public final class OneWayAnova {
          *
          * <p>The added variance component among groups \( A \) is expressed
          * as a fraction of the total variance components \( A + B \) where
-         * \( B \) is the {@link #getMSWG() MSWG}.
+         * \( B \) is the {@linkplain #getMSWG() MSWG}.
          *
          * @return variance component between groups (in [0, 1]).
          */
@@ -200,7 +200,7 @@ public final class OneWayAnova {
      * <p>Special cases:
      * <ul>
      * <li>If the value in each category is the same (no variance within groups) but different
-     * between groups, the f-value is {@link Double#POSITIVE_INFINITY infinity}.
+     * between groups, the f-value is {@linkplain Double#POSITIVE_INFINITY infinity}.
      * <li>If the value in every group is the same (no variance within or between groups),
      * the f-value is {@link Double#NaN NaN}.
      * </ul>
@@ -225,7 +225,7 @@ public final class OneWayAnova {
      * <p>Special cases:
      * <ul>
      * <li>If the value in each category is the same (no variance within groups) but different
-     * between groups, the f-value is {@link Double#POSITIVE_INFINITY infinity} and the p-value is zero.
+     * between groups, the f-value is {@linkplain Double#POSITIVE_INFINITY infinity} and the p-value is zero.
      * <li>If the value in every group is the same (no variance within or between groups),
      * the f-value and p-value are {@link Double#NaN NaN}.
      * </ul>

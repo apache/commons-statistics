@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.ranking;
 
 /**
- * Strategies for handling {@link Double#NaN} values in rank transformations.
+ * Strategies for handling {@link Double#NaN NaN} values in rank transformations.
  *
  * @since 1.1
  */
@@ -25,13 +25,13 @@ public enum NaNStrategy {
 
     /**
      * NaNs are considered minimal in the ordering, equivalent to (that is, tied
-     * with) {@link Double#NEGATIVE_INFINITY}.
+     * with) {@linkplain Double#NEGATIVE_INFINITY negative infinity}.
      */
     MINIMAL,
 
     /**
      * NaNs are considered maximal in the ordering, equivalent to (that is, tied
-     * with) {@link Double#POSITIVE_INFINITY}.
+     * with) {@linkplain Double#POSITIVE_INFINITY positive infinity}.
      */
     MAXIMAL,
 
