@@ -1126,10 +1126,11 @@ class KolmogorovSmirnovTestTest {
     }
 
     private static void assertThrowsIllegalArgumentException(double[] x, double[] y) {
+        final KolmogorovSmirnovTest test = KolmogorovSmirnovTest.withDefaults();
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> KolmogorovSmirnovTest.withDefaults().statistic(x, y), "statistic");
+            () -> test.statistic(x, y), "statistic");
         Assertions.assertThrows(IllegalArgumentException.class,
-                () -> KolmogorovSmirnovTest.withDefaults().test(x, y), "test");
+            () -> test.test(x, y), "test");
     }
 
     @Test

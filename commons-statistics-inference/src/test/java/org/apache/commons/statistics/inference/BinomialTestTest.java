@@ -49,8 +49,8 @@ class BinomialTestTest {
         "1, 2, 0.5",
     })
     void testBinomialTestThrows(int n, int k, double p) {
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-            BinomialTest.withDefaults().test(n, k, p));
+        final BinomialTest test = BinomialTest.withDefaults();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> test.test(n, k, p));
     }
 
     /**
