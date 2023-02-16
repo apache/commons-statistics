@@ -48,21 +48,14 @@ class FisherExactTestTest {
 
     private void assertFisherExactTestInvalidTableThrows(Consumer<int[][]> action) {
         // Non 2-by-2 input
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-            FisherExactTest.withDefaults().test(new int[3][3]));
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-            FisherExactTest.withDefaults().test(new int[2][1]));
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-            FisherExactTest.withDefaults().test(new int[1][2]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> action.accept(new int[3][3]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> action.accept(new int[2][1]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> action.accept(new int[1][2]));
         // Non-square input
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-            FisherExactTest.withDefaults().test(new int[][] {
-                new int[2], new int[1]
-            }));
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-            FisherExactTest.withDefaults().test(new int[][] {
-                new int[1], new int[2]
-            }));
+        final int[][] x = {{1, 2}, {3}};
+        Assertions.assertThrows(IllegalArgumentException.class, () -> action.accept(x));
+        final int[][] y = {{1}, {2, 3}};
+        Assertions.assertThrows(IllegalArgumentException.class, () -> action.accept(y));
     }
 
     @ParameterizedTest
