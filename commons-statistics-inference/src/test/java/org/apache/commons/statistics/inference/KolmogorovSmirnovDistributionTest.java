@@ -495,7 +495,7 @@ class KolmogorovSmirnovDistributionTest {
         //final double p1 = onesf(x, n, DEFAULT_POWER);
         //final double p1 = onesf(x, n, DD::powScaled);
         //final double p1 = onesf(x, n, DEFAULT_MC);
-        //TestUtils.assertProbability(p, p1, eps, "sf");
+        TestUtils.assertProbability(p, p1, eps, "sf");
     }
 
     /**
