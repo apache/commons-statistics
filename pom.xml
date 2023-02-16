@@ -641,6 +641,12 @@ This is avoided by creating an empty directory when svn is not available.
     <module>commons-statistics-inference</module>
     <module>commons-statistics-regression</module>
     <module>commons-statistics-bom</module>
+    <!-- Include an aggregate module to build aggregate javadoc and test coverage reports -->
+    <module>commons-statistics-docs</module>
+    <!--
+        The examples are built only upon explicit request.
+        See profiles: "examples"; "release"
+    -->
   </modules>
 
 </project>

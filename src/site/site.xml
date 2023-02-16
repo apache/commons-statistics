@@ -41,6 +41,7 @@
          href="https://gitbox.apache.org/repos/asf/commons-statistics.git"/>
       <item name="Developers Guide" href="/developers.html"/>
       <item name="Release History" href="/release-history.html"/>
+      <item name="Javadoc" href="/commons-statistics-docs/apidocs/index.html" />
     </menu>
 
     <menu name="User Guide">

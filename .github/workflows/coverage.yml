@@ -39,9 +39,9 @@ jobs:
         java-version: ${{ matrix.java }}
         cache: 'maven'
     - name: Build with Maven
-      run: mvn -V test jacoco:report --no-transfer-progress
+      run: mvn -V test jacoco:report-aggregate --no-transfer-progress
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        files: ./commons-statistics-distribution/target/site/jacoco/jacoco.xml
+        files: ./commons-statistics-docs/target/site/jacoco-aggregate/jacoco.xml
