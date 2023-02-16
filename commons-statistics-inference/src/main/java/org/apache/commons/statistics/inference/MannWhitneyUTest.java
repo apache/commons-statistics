@@ -348,7 +348,7 @@ public final class MannWhitneyUTest {
 
         // https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test#Normal_approximation_and_tie_correction
         final double e = n1n2 * 0.5;
-        final double var = (n1n2 / 12.0) * ((n + 1.0) - c / n / (n - 1));
+        final double variance = (n1n2 / 12.0) * ((n + 1.0) - c / n / (n - 1));
 
         double z = u - e;
         if (continuityCorrection) {
@@ -363,7 +363,7 @@ public final class MannWhitneyUTest {
                 z -= Math.signum(z) * 0.5;
             }
         }
-        z /= Math.sqrt(var);
+        z /= Math.sqrt(variance);
 
         final NormalDistribution standardNormal = NormalDistribution.of(0, 1);
         if (alternative == AlternativeHypothesis.GREATER_THAN) {
