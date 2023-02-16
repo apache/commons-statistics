@@ -81,7 +81,7 @@ final class StatisticUtils {
      * @return the ratio
      * @throws IllegalArgumentException if the sample size is less than 2; the array
      * sizes do not match; {@code expected} has entries that are not strictly
-     * positive; {@code observed} has negative entries; or all the the observations are zero.
+     * positive; {@code observed} has negative entries; or all the observations are zero.
      */
     static double computeRatio(double[] expected, long[] observed) {
         Arguments.checkValuesRequiredSize(expected.length, 2);

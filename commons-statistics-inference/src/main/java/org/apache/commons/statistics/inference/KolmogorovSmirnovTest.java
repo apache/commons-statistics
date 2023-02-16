@@ -850,7 +850,7 @@ public final class KolmogorovSmirnovTest {
         // and the non-selected D value will be non-zero.
         tiesD[0] = tplus | tminus;
         // For simplicity the correct tiesD is not returned (correct value is commented).
-        // The only case that matters is is tiesD > D which is evaluated by the caller.
+        // The only case that matters is tiesD > D which is evaluated by the caller.
         // Note however that the distance of tiesD < D is a measure of how little the
         // tied region matters.
         if (alternative == AlternativeHypothesis.GREATER_THAN) {

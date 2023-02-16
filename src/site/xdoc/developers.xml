@@ -127,7 +127,7 @@
           </ul></li>
           <li>Assuming a generally favorable response to the idea on commons-dev,
           the next step is to file a report on the issue-tracking system (JIRA).
-          Create a JIRA ticket using the the feature title as the short
+          Create a JIRA ticket using the feature title as the short
           description. Incorporate feedback from the initial posting in the
           description. Add a reference to the discussion thread.
           </li>

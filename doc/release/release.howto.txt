@@ -422,7 +422,7 @@ module using JDK 11+ without running 'mvn clean' then the package-list will coex
 alongside the newly generated element-list. This allows the javadocs to be searchable
 from new and old JDKs.
 
-This process transfers more files than really needed in the the "staging" (i.e.
+This process transfers more files than really needed in the "staging" (i.e.
 non official) maven repository. The files expected in the repository are
   commons-statistics-<ModuleArtifactID>-1.0.pom
   commons-statistics-<ModuleArtifactID>-1.0.jar

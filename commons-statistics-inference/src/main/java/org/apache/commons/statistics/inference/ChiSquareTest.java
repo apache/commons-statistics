@@ -92,7 +92,7 @@ public final class ChiSquareTest {
      * @param observed Observed frequency counts.
      * @return Chi-square statistic
      * @throws IllegalArgumentException if the sample size is less than 2;
-     * {@code observed} has negative entries; or all the the observations are zero.
+     * {@code observed} has negative entries; or all the observations are zero.
      * @see #test(long[])
      */
     public double statistic(long[] observed) {
@@ -124,7 +124,7 @@ public final class ChiSquareTest {
      * @return Chi-square statistic
      * @throws IllegalArgumentException if the sample size is less than 2; the array
      * sizes do not match; {@code expected} has entries that are not strictly
-     * positive; {@code observed} has negative entries; or all the the observations are zero.
+     * positive; {@code observed} has negative entries; or all the observations are zero.
      * @see #test(double[], long[])
      */
     public double statistic(double[] expected, long[] observed) {
@@ -264,7 +264,7 @@ public final class ChiSquareTest {
      * @param observed Observed frequency counts.
      * @return test result
      * @throws IllegalArgumentException if the sample size is less than 2;
-     * {@code observed} has negative entries; or all the the observations are zero
+     * {@code observed} has negative entries; or all the observations are zero
      * @see #statistic(long[])
      */
     public SignificanceResult test(long[] observed) {
@@ -286,7 +286,7 @@ public final class ChiSquareTest {
      * @return test result
      * @throws IllegalArgumentException if the sample size is less than 2; the array
      * sizes do not match; {@code expected} has entries that are not strictly
-     * positive; {@code observed} has negative entries; all the the observations are zero; or
+     * positive; {@code observed} has negative entries; all the observations are zero; or
      * the adjusted degrees of freedom are not strictly positive
      * @see #withDegreesOfFreedomAdjustment(int)
      * @see #statistic(double[], long[])
