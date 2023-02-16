@@ -28,7 +28,7 @@ import org.apache.commons.statistics.distribution.HypergeometricDistribution;
  * <p>Fisher's test applies in the case that the row sums and column sums are fixed in advance
  * and not random.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Fisher%27s_exact_test">Fisher's exact test (Wikipedia)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Fisher%27s_exact_test">Fisher&#39;s exact test (Wikipedia)</a>
  * @since 1.1
  */
 public final class FisherExactTest {
