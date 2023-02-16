@@ -54,8 +54,25 @@ If the output is not quite correct, check for invisible trailing spaces!
   <body>
 
     <release version="1.1" date="TBD" description="
-New features, updates and bug fixes (requires Java 8).
+Adds ranking, inference and bom modules. (requires Java 8).
 ">
+      <action dev="aherbert" type="add" issue="STATISTICS-66">
+        Add a Bill of Materials (BOM) to aid in dependency management when referencing multiple
+        Apache Commons Statistics artifacts. The BOM should be used to ensure all imported
+        artifacts are compatible.
+      </action>
+      <action dev="aherbert" type="add" issue="STATISTICS-64">
+        "FisherExactTest": Add Fisher's exact test for 2x2 contingency tables.
+      </action>
+      <action dev="aherbert" type="add" issue="STATISTICS-62">
+        Add a commons-statistics-inference module for hypothesis testing. This ports and
+        updates functionality in org.apache.commons.math4.stat.inference including new support
+        for one-sided hypothesis testing.
+      </action>
+      <action dev="aherbert" type="add" issue="STATISTICS-63">
+        Add a commons-statistics-ranking module for rank transformations. This ports and
+        updates functionality in org.apache.commons.math4.stat.ranking.
+      </action>
     </release>
 
     <release version="1.0" date="2022-12-05" description="
