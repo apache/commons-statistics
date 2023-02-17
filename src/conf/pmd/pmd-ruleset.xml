@@ -157,7 +157,8 @@
       <property name="violationSuppressXPath"
         value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='NaturalRanking'
           or @SimpleName='KolmogorovSmirnovTest' or @SimpleName='DD' or @SimpleName='Arguments'
-          or @SimpleName='MannWhitneyUTest' or @SimpleName='WilcoxonSignedRankTest']"/>
+          or @SimpleName='MannWhitneyUTest' or @SimpleName='WilcoxonSignedRankTest'
+          or @SimpleName='HypergeometricDistribution']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/LogicInversion">

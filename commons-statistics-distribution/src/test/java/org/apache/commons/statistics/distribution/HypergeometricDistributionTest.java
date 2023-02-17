@@ -17,6 +17,7 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.simple.RandomSource;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
@@ -243,5 +245,36 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
             new int[] {68, 69},
             new double[] {4.570379934029859e-16, 7.4187180434325268e-18},
             DoubleTolerances.relative(5e-14));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "1, 0, 0",
+        "1, 1, 0",
+        "1, 0, 1",
+        "1, 1, 1",
+        "2, 1, 1",
+        "2, 1, 2",
+        "2, 2, 1",
+        "2, 2, 2",
+        "3, 1, 1",
+        "3, 1, 2",
+        "3, 1, 3",
+        "3, 2, 1",
+        "3, 2, 2",
+        "3, 2, 3",
+        "3, 3, 1",
+        "3, 3, 2",
+        "3, 3, 3",
+        // Mean = n * K / N
+        "15, 9, 7", // 4.2
+        "23, 13, 11", // 6.22
+        "200, 130, 70", // 45.5
+    })
+    void testAdditionalInverseMapping(int populationSize, int numberOfSuccesses, int sampleSize) {
+        final HypergeometricDistribution dist = HypergeometricDistribution.of(populationSize, numberOfSuccesses, sampleSize);
+        final int[] points = IntStream.rangeClosed(dist.getSupportLowerBound(), dist.getSupportUpperBound()).toArray();
+        testCumulativeProbabilityInverseMapping(dist, points);
+        testSurvivalProbabilityInverseMapping(dist, points);
     }
 }

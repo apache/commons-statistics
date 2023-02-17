@@ -61,6 +61,11 @@
     <Method name="lambda$createSampler$2" />
     <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS" />
   </Match>
+  <Match>
+    <Class name="org.apache.commons.statistics.distribution.HypergeometricDistribution" />
+    <Method name="getMidPoint" />
+    <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS" />
+  </Match>
 
   <Match>
     <Class name="org.apache.commons.statistics.ranking.NaturalRanking$DataPosition" />

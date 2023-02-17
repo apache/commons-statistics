@@ -56,6 +56,10 @@ If the output is not quite correct, check for invisible trailing spaces!
     <release version="1.1" date="TBD" description="
 Adds ranking, inference and bom modules. (requires Java 8).
 ">
+      <action dev="aherbert" type="add" issue="STATISTICS-70">
+        "HypergeometricDistribution": Improve the summation used for the cumulative
+        probability functions.
+      </action>
       <action dev="aherbert" type="add" issue="STATISTICS-66">
         Add a Bill of Materials (BOM) to aid in dependency management when referencing multiple
         Apache Commons Statistics artifacts. The BOM should be used to ensure all imported
