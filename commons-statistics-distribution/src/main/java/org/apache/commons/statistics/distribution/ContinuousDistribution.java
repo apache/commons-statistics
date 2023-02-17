@@ -122,8 +122,8 @@ public interface ContinuousDistribution {
      * returned value is:
      *
      * <p>\[ x = \begin{cases}
-     *       \inf \{ x \in \mathbb R : P(X \ge x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
-     *       \inf \{ x \in \mathbb R : P(X \ge x) \lt 1 \}  &amp; \text{for } p = 1
+     *       \inf \{ x \in \mathbb R : P(X \gt x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
+     *       \inf \{ x \in \mathbb R : P(X \gt x) \lt 1 \}  &amp; \text{for } p = 1
      *       \end{cases} \]
      *
      * <p>By default, this is defined as {@code inverseCumulativeProbability(1 - p)}, but

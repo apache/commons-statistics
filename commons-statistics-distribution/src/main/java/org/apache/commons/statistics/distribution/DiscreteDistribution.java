@@ -136,8 +136,8 @@ public interface DiscreteDistribution {
      * the returned value is:
      *
      * <p>\[ x = \begin{cases}
-     *       \inf \{ x \in \mathbb Z : P(X \ge x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
-     *       \inf \{ x \in \mathbb Z : P(X \ge x) \lt 1 \}  &amp; \text{for } p = 1
+     *       \inf \{ x \in \mathbb Z : P(X \gt x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
+     *       \inf \{ x \in \mathbb Z : P(X \gt x) \lt 1 \}  &amp; \text{for } p = 1
      *       \end{cases} \]
      *
      * <p>If the result exceeds the range of the data type {@code int},

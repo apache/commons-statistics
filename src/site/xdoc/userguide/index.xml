@@ -165,8 +165,8 @@ double p3 = pd.probability(4, 5);
         </p>
         <p>
           \[ x = \begin{cases}
-             \inf \{ x \in \mathbb R : P(X \ge x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
-             \inf \{ x \in \mathbb R : P(X \ge x) \lt 1 \}  &amp; \text{for } p = 1
+             \inf \{ x \in \mathbb R : P(X \gt x) \le p\}   &amp; \text{for } 0 \le p \lt 1 \\
+             \inf \{ x \in \mathbb R : P(X \gt x) \lt 1 \}  &amp; \text{for } p = 1
              \end{cases} \]
         </p>
 <source class="prettyprint">
@@ -177,9 +177,10 @@ double x2 = n.inverseSurvivalProbability(1e-300);
 </source>
         <p>
           For discrete <code>F</code>, the definition is the same, with \( \mathbb Z \)
-          (the integers) in place of \( \mathbb R \) (but note that, in the discrete case,
-          the &ge; in the definition can make a difference when <code>p</code> is an attained
-          value of the distribution).
+          (the integers) in place of \( \mathbb R \). Note that, in the discrete case,
+          the strict inequality on \( p \) in the definition can make a difference when
+          \( p \) is an attained value of the distribution. For example moving to the next
+          larger value of \( p \) will return the value \( x + 1 \) for inverse CDF.
         </p>
         <p>
           All distributions provide accessors for the parameters used to create the distribution,
