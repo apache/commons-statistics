@@ -783,7 +783,7 @@ abstract class BaseDiscreteDistributionTest
                     Assertions.assertEquals(
                         x,
                         xx,
-                        () -> "Incorrect CDF inverse value returned for " + px);
+                        () -> "Incorrect SF inverse value returned for " + px);
                 }
             }
         }
