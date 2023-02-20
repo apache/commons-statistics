@@ -43,7 +43,7 @@ double alpha = 1e-3;
 // Fail if we can *reject* the null hypothesis with confidence (1 - alpha)
 // that the observed match the expected
 if (ChiSquareTest.withDefaults().test(expected, observed).reject(alpha)) {
-    // Not significant ...
+    // Significant deviation from the expected ...
 }
 </source>
 

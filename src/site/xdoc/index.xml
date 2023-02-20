@@ -45,6 +45,21 @@ int x = p.inverseCumulativeProbability(0.99);
 </source>
 
       <p>
+        Hypothesis testing can be performed for various statistical tests, for example:
+      </p>
+
+<source class="prettyprint">
+double[] math    = {53, 69, 65, 65, 67, 79, 86, 65, 62, 69};   // mean = 68.0
+double[] science = {75, 65, 68, 63, 55, 65, 73, 45, 51, 52};   // mean = 61.2
+
+SignificanceResult result = TTest.withDefaults()
+                                 .with(AlternativeHypothesis.GREATER_THAN)
+                                 .pairedTest(math, science);
+result.getPValue();    // 0.05764
+result.reject(0.05);   // false
+</source>
+
+      <p>
         For more examples and advanced usage, see the <a href="userguide/index.html">userguide</a>.
       </p>
 

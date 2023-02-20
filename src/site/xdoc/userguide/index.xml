@@ -56,6 +56,17 @@
           </ul>
         </li>
         <li>
+          <a href="#inference">Inference</a>
+          <ul>
+            <li>
+              <a href="#inference_overview">Overview</a>
+            </li>
+            <li>
+              <a href="#inference_examples">Examples</a>
+            </li>
+          </ul>
+        </li>
+        <li>
           <a href="#ranking">Ranking</a>
         </li>
       </ul>
@@ -77,6 +88,14 @@
           <code><a href="../commons-statistics-distribution/index.html">
           commons-statistics-distribution</a></code> - Provides interfaces
           and classes for probability distributions.
+        </li>
+        <li>
+          <code><a href="../commons-statistics-inference/index.html">
+          commons-statistics-inference</a></code> - Provides hypothesis testing.
+        </li>
+        <li>
+          <code><a href="../commons-statistics-ranking/index.html">
+          commons-statistics-ranking</a></code> - Provides rank transformations.
         </li>
       </ul>
     </section>
@@ -333,6 +352,125 @@ double x2 = chi2.inverseSurvivalProbability(q);
           <code><a href="https://commons.apache.org/proper/commons-math/">commons-math</a></code>
           should update usage of the cumulative probability functions where appropriate.
         </p>
+      </subsection>
+    </section>
+    <section name="Inference" id="inference">
+      <p>
+        The <code>commons-statistics-inference</code> module provides hypothesis testing.
+      </p>
+      <subsection name="Overview" id="inference_overview">
+        <p>
+          The module provides test classes that implement a single, or family, of statistical
+          tests. Each test class provides methods to compute a test statistic and a p-value for the
+          significance of the statistic. These can be computed together using a <code>test</code>
+          method and returned as a
+          <a href="../commons-statistics-inference/apidocs/org/apache/commons/statistics/inference/DiscreteDistribution.html">SignificanceResult</a>.
+          The <code>SignificanceResult</code> has a method that can be used to <code>reject</code>
+          the null hypothesis at the provided significance level. Test classes may extend the
+          <code>SignificanceResult</code> to return more information about the test result,
+          for example the computed degrees of freedom.
+        </p>
+        <p>
+          Alternatively a <code>statistic</code> method is provided to compute <i>only</i> the
+          statistic as a <code>double</code> value. This statistic can be compared to a pre-computed
+          critical value, for example from a table of critical values.
+        </p>
+        <p>
+          A test is obtained using the <code>withDefaults()</code> method to return the test with
+          all options set to their default value. Any test options can be configured using
+          property change methods to return a new instance of the test. Tests that support an
+          <a href="../commons-statistics-inference/apidocs/org/apache/commons/statistics/inference/AlternativeHypothesis.html">
+          alternate hypothesis</a> will use a two-sided test by default. Test that support multiple
+          <a href="../commons-statistics-inference/apidocs/org/apache/commons/statistics/inference/PValueMethod.html">
+          p-value methods</a> will default to an appropriate computation for the size of the input
+          data. Unless otherwise noted test instances are immutable.
+        </p>
+      </subsection>
+      <subsection name="Examples" id="inference_examples">
+        <p>
+          A chi-square test that the observed counts conform to the expected frequencies.
+        </p>
+<source class="prettyprint">
+double[] expected = {0.25, 0.5, 0.25};
+long[] observed = {57, 123, 38};
+
+SignificanceResult result = ChiSquareTest.withDefaults()
+                                         .test(expected, observed);
+result.getPValue();    // 0.0316148
+result.reject(0.05);   // true
+result.reject(0.01);   // false
+</source>
+        <p>
+          A paired t-test that the student's marks in the math exam were greater than the science
+          exam. This fails to reject the null hypothesis (that there was no difference) with
+          95% confidence.
+        </p>
+<source class="prettyprint">
+double[] math    = {53, 69, 65, 65, 67, 79, 86, 65, 62, 69};   // mean = 68.0
+double[] science = {75, 65, 68, 63, 55, 65, 73, 45, 51, 52};   // mean = 61.2
+
+SignificanceResult result = TTest.withDefaults()
+                                 .with(AlternativeHypothesis.GREATER_THAN)
+                                 .pairedTest(math, science);
+result.getPValue();    // 0.05764
+result.reject(0.05);   // false
+</source>
+        <p>
+          A G-test that the allele frequencies conform to the expected Hardy-Weinberg proportions.
+          This is an example of an intrinsic hypothesis where the expected frequencies are computed
+          using the observations and the degrees of freedom must be adjusted.
+          The data is from McDonald (1989) Selection component analysis
+          of the Mpi locus in the amphipod Platorchestia platensis.
+          <i>Heredity</i> <b>62</b>: 243-249.
+        </p>
+<source class="prettyprint">
+// Allele frequencies: Mpi 90/90, Mpi 90/100, Mpi 100/100
+long[] observed = {1203, 2919, 1678};
+// Mpi 90 proportion
+double p = (2.0 * observed[0] + observed[1]) /
+           (2 * Arrays.stream(observed).sum());   // 5325 / 11600 = 0.459
+
+// Hardy-Weinberg proportions
+double[] expected = {p * p, 2 * p * (1 - p), (1 - p) * (1 - p)};
+// 0.211, 0.497, 0.293
+
+SignificanceResult result = GTest.withDefaults()
+                                 .withDegreesOfFreedomAdjustment(1)
+                                 .test(expected, observed);
+result.getStatistic();   // 1.03
+result.getPValue();      // 0.309
+result.reject(0.05);     // false
+</source>
+        <p>
+          A one-way analysis of variance test. This is an example where the result has more
+          information than the test statistic and the p-value.
+          The data is from McDonald <i>et al</i> (1991) Allozymes and morphometric characters of
+          three species of Mytilus in the Northern and Southern Hemispheres.
+          <i>Marine Biology</i> <b>111</b>: 323-333.
+        </p>
+<source class="prettyprint">
+double[] tillamook = {0.0571, 0.0813, 0.0831, 0.0976, 0.0817, 0.0859, 0.0735, 0.0659, 0.0923, 0.0836};
+double[] newport = {0.0873, 0.0662, 0.0672, 0.0819, 0.0749, 0.0649, 0.0835, 0.0725};
+double[] petersburg = {0.0974, 0.1352, 0.0817, 0.1016, 0.0968, 0.1064, 0.105};
+double[] magadan = {0.1033, 0.0915, 0.0781, 0.0685, 0.0677, 0.0697, 0.0764, 0.0689};
+double[] tvarminne = {0.0703, 0.1026, 0.0956, 0.0973, 0.1039, 0.1045};
+
+Collection&lt;double[]&gt; data = Arrays.asList(tillamook, newport, petersburg, magadan, tvarminne);
+OneWayAnova.Result result = OneWayAnova.withDefaults()
+                                       .test(data);
+result.getStatistic();   // 7.12
+result.getPValue();      // 2.8e-4
+result.reject(0.001);    // true
+</source>
+      <p>
+        The result also provides the between and within group degrees of freedom and the mean
+        squares allowing reporting of the results in a table:
+      </p>
+      <table>
+        <tr><th></th><th>degrees of freedom</th><th>mean square</th><th>F</th><th>p</th></tr>
+        <tr><td>between groups</td><td>4</td><td>0.001113</td><td>7.12</td><td>2.8e-4</td></tr>
+        <tr><td>within groups</td><td>34</td><td>0.000159</td><td></td><td></td></tr>
+      </table>
       </subsection>
     </section>
     <section name="Ranking" id="ranking">
