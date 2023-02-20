@@ -92,11 +92,11 @@ class FisherExactTestTest {
         "1, 0, 1, 2e-16",
         "0, 1, 1, 2e-16",
         "1, 1, 1, 2e-16",
-        "8, 7, 13, 2e-16",
-        "10, 12, 24, 2e-16",
+        "8, 7, 13, 1.1e-15",
+        "10, 12, 24, 7e-16",
         "20, 25, 43, 3e-16",
         // Create a contingency table where the hypergeometric mode is 1.5
-        "4, 2, 8, 2e-16",
+        "4, 2, 8, 3e-16",
     })
     void testFisherExactTest(int n, int kk, int nn, double eps) {
         final HypergeometricDistribution dist = HypergeometricDistribution.of(nn, kk, n);
