@@ -288,9 +288,9 @@ class DDTest {
             final BigDecimal e = bx.add(bd(sy));
             // double-double addition should be within 4 eps^2 with eps = 2^-53
             // A single addition is 2 eps^2. Note that the extra computation in add vs fastAdd
-            // does not improve the relative error of the double-double.
-            // XXX
-            // It may be sporadically failed by add as data is random. The test should be updated
+            // does not improve the maximum relative error of the double-double.
+            // Note:
+            // It may be sporadically failed by add as data is random. The test could be updated
             // to assert the RMS relative error of add is lower than fastAdd.
             TestUtils.assertEquals(e, s, 0x1.0p-106, () -> msg.get() + " scale=" + scale);
 
