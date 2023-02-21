@@ -927,7 +927,7 @@ class KolmogorovSmirnovDistributionTest {
             final double p4 = onesf(x, n, DEFAULT_MC);
             Assertions.assertTrue(p1 < p2 + p3 + p4, "Trivial use of the return values");
             // Add a header to allow to be pasted into a Jira ticket as a table
-            TestUtils.printf("||x||n||p||fastPow||pow||Relative||slowPow||Relative||BigDecimal||Relative||%n");
+            TestUtils.printf("||x||n||p||simplePow||fastPow||Relative||pow||Relative||BigDecimal||Relative||%n");
         }
 
         for (int p = minP; p <= maxP; p++) {
@@ -952,12 +952,12 @@ class KolmogorovSmirnovDistributionTest {
                 final double time4 = (t5 - t4) * 1e-9;
                 // Check (the pow computation is the reference).
                 // This limit supports the entire test range for p [4, 24].
-                TestUtils.assertProbability(p2, p1, 3e-15, () -> String.format("pow vs fastPow: %s %d", x, n));
+                TestUtils.assertProbability(p2, p1, 3e-15, () -> String.format("fastPow vs simplePow: %s %d", x, n));
                 if (n < limit3) {
-                    TestUtils.assertProbability(p2, p3, 2e-16, () -> String.format("pow vs slowPow: %s %d", x, n));
+                    TestUtils.assertProbability(p2, p3, 2e-16, () -> String.format("fastPow vs pow: %s %d", x, n));
                 }
                 if (n < limit4) {
-                    TestUtils.assertProbability(p2, p4, 2e-16, () -> String.format("pow vs BigDecimal: %s %d", x, n));
+                    TestUtils.assertProbability(p2, p4, 2e-16, () -> String.format("fastPow vs BigDecimal: %s %d", x, n));
                 }
                 if (output) {
                     TestUtils.printf("|%12.6g|%10d|%25s|%10.6f|%10.6f|%.3f|%10.6f|%.3f|%10.6f|%.3f|%n",
