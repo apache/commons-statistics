@@ -1096,24 +1096,24 @@ class KolmogorovSmirnovTestTest {
         Assertions.assertTrue(r.getUpperD() > r.getStatistic(), "upper D");
         Assertions.assertTrue(r.getUpperPValue() < r.getPValue(), "upper D");
 
-        // XXX extract to a test for estimateP
-//        // The p-value is not close to p(D=0.0640) due to random tie resolution.
-//        // exactP = 0.9659836534406034 (with dnm = (long) (d * n * m))
-//        // estimateP = 0.558364 (with 1000000 iterations)
-//        // Here we repeat call the test using different random seeds
-//        // for tie resolution and take an average p-value.
-//        // The relative error is stable around 0.065. Examples with a randomly seeded RNG:
-//        // Trials  Relative error
-//        // 1000    ~0.0622
-//        // 10000   ~0.0651
-//        // 100000  ~0.0628
-//        // For robustness use a fixed seed with a small number of trials
-//
-//        final double p = RandomSource.SPLIT_MIX_64.create(12345)
-//            .longs(100)
-//            .mapToDouble(seed -> KolmogorovSmirnovTest.kolmogorovSmirnovTest(x, y, false, seed))
-//            .average().getAsDouble();
-//        TestUtils.assertProbability(0.558364, p, 0.065, "p-value");
+        // Test a p-value estimation:
+        // o.a.c.m.stat.inference.KolmogorovSmirnovTest.bootstrap = 0.558364 (with 1000000 iterations)
+        //
+        // R 3.4.0, ks.boot implemented in Matching (Version 4.10.8).
+        // require('Matching')
+        // ks.boot(x, y, nboots=1000000)
+        // ks.boot.pvalue: 0.55919
+        //
+        // The p-value is very variable so relative epsilon is for 2 significant digits.
+        // Even with such low tolerance the test is sensitive to the RNG and a fixed seed
+        // RNG is used for each case. This method is a general estimate of the p-value.
+        final TwoResult r2 = KolmogorovSmirnovTest.withDefaults()
+            .with(PValueMethod.ESTIMATE)
+            .with(RandomSource.SPLIT_MIX_64.create(12345))
+            .test(x, y);
+        Assertions.assertEquals(r.getStatistic(), r2.getStatistic(), "statistic mismatch");
+        TestUtils.assertRelativelyEquals(0.558364, r2.getPValue(), 1e-2, "estimated p-value");
+        TestUtils.assertRelativelyEquals(0.55919, r2.getPValue(), 1e-2, "estimated p-value");
     }
 
     @Test
