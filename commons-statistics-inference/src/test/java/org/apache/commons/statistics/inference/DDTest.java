@@ -1335,12 +1335,12 @@ class DDTest {
         // and we can use the same relative error for both.
 
         // This method uses two epsilon values.
-        // The first is for simplePowScaled, the second for powScaled.
+        // The first is for simplePowScaled, the second for fastPowScaled.
         // van Mulbregt (2018) pp 22: Error of a compensated pow is ~ 16(n-1) eps^2.
         // The limit is:
         // Math.log(16.0 * (Integer.MAX_VALUE-1) * 0x1.0p-106) / Math.log(2) = -71.0
         // For this test the thresholds are slightly above this limit.
-        // Note: slowPowScaled does not require an epsilon as it is ~ eps^2.
+        // Note: powScaled does not require an epsilon as it is ~ eps^2.
 
         // Powers that approach and do overflow.
         // Here the fractional representation does not overflow.
@@ -1366,8 +1366,8 @@ class DDTest {
             DD.fastTwoSum(x, xx, s);
             final int n = rng.nextInt(2400, 2500);
             // Math.log(16.0 * (2499) * 0x1.0p-106) / Math.log(2) = -90.7
-            builder.add(Arguments.of(s.hi(), s.lo(), n, 0x1.0p-52, 0x1.0p-94));
-            builder.add(Arguments.of(s.hi(), s.lo(), -n, 0x1.0p-52, 0x1.0p-94));
+            builder.add(Arguments.of(s.hi(), s.lo(), n, 0x1.0p-52, 0x1.0p-93));
+            builder.add(Arguments.of(s.hi(), s.lo(), -n, 0x1.0p-52, 0x1.0p-93));
         }
 
         // Powers where the fractional representation overflow/underflow
@@ -1460,6 +1460,10 @@ class DDTest {
         // that could be used to correctly round the triple-double to a double-double.
         builder.add(Arguments.of(0.5319568842468022, -3.190137112420756E-17, 2473, 0x1.0p-51, 0x1.0p-94));
 
+        // Fails fastPow at 2^-94
+        builder.add(Arguments.of(0.5014627401015759, 4.9149107900633496E-17, 2424, 0x1.0p-52, 0x1.0p-93));
+        builder.add(Arguments.of(0.5014627401015759, 4.9149107900633496E-17, -2424, 0x1.0p-52, 0x1.0p-93));
+
         return builder.build();
     }
 
@@ -1469,8 +1473,8 @@ class DDTest {
         // Results are obtained from the debugging assertion
         // message in TestUtils and thus the BigDecimal is rounded to DECIMAL128 format.
         // simplePowScaled loses ~ 67-bits from a double-double (14-bits from a double).
-        // powScaled       loses ~ 26-bits from a double-double.
-        // slowPowScaled   loses ~ 1-bit from a double-double.
+        // fastPowScaled   loses ~ 26-bits from a double-double.
+        // powScaled       loses ~ 1-bit from a double-double.
         builder.add(Arguments.of(1.402774996679172, 4.203934137477261E-17, 58162209, 28399655, "0.5069511623667528687158515355802548", 0x1.0p-39, 0x1.0p-80));
         builder.add(Arguments.of(1.4024304626662112, -1.4084179645855846E-17, 55066019, 26868321, "0.8324073012126417513056910315887745", 0x1.0p-39, 0x1.0p-80));
         builder.add(Arguments.of(1.4125582593027008, -3.545476880711939E-17, 50869441, 25348771, "0.5062665858255789519032946906819150", 0x1.0p-39, 0x1.0p-80));
