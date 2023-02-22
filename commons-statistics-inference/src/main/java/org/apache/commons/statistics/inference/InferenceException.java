@@ -54,6 +54,8 @@ class InferenceException extends IllegalArgumentException {
     static final String X_GT_Y = "%s > %s";
     /** Error message for "too large" condition when "{@code x >= y}". */
     static final String X_GTE_Y = "%s >= %s";
+    /** Error message for "too small" condition when "{@code x < y}". */
+    static final String X_LT_Y = "%s < %s";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20221203L;

@@ -66,10 +66,29 @@
     <Method name="getMidPoint" />
     <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS" />
   </Match>
+  <!-- Same logic as above distribution is used in the internal helper class constructor -->
+  <Match>
+    <Class name="org.apache.commons.statistics.inference.Hypergeom" />
+    <Method name="&lt;init&gt;" />
+    <Bug pattern="FL_FLOATS_AS_LOOP_COUNTERS" />
+  </Match>
 
   <Match>
     <Class name="org.apache.commons.statistics.ranking.NaturalRanking$DataPosition" />
     <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS" />
+  </Match>
+
+  <!-- False positive of static method returning an immutable instance -->
+  <Match>
+    <Class name="org.apache.commons.statistics.inference.UnconditionedExactTest" />
+    <Bug pattern="MS_EXPOSE_REP" />
+  </Match>
+
+  <!-- False positive -->
+  <Match>
+    <Class name="org.apache.commons.statistics.inference.UnconditionedExactTest" />
+    <Method name="computePValue" />
+    <Bug pattern="DLS_DEAD_LOCAL_STORE" />
   </Match>
 
 </FindBugsFilter>
