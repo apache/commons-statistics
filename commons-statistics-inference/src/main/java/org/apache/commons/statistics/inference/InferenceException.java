@@ -50,10 +50,12 @@ class InferenceException extends IllegalArgumentException {
     static final String NOT_STRICTLY_POSITIVE = "Number %s is not greater than 0";
     /** Error message for "no data" condition. */
     static final String NO_DATA = "No data";
-    /** Error message for "too large" condition when "x > y". */
+    /** Error message for "too large" condition when "{@code x > y}". */
     static final String X_GT_Y = "%s > %s";
-    /** Error message for "too large" condition when "x >= y". */
+    /** Error message for "too large" condition when "{@code x >= y}". */
     static final String X_GTE_Y = "%s >= %s";
+    /** Error message for "too small" condition when "{@code x < y}". */
+    static final String X_LT_Y = "%s < %s";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20221203L;

@@ -145,23 +145,10 @@ class FisherExactTestTest {
 
     /**
      * Test the p-value at the mode.
-     * See also Math-1644 which is relevant to the same situation in the BinomialTest
+     * See also Math-1644 which is relevant to the same situation in the BinomialTest.
      */
     @ParameterizedTest
-    @CsvSource({
-        // k = mode = ceil((n+1)(K+1) / (N+2)) - 1, floor((n+1)(K+1) / (N+2))
-        // Exact mode
-        "2, 2, 7, 1",
-        "4, 3, 8, 2",
-        // Rounded
-        "2, 2, 5, 1",
-        "2, 2, 5, 2",
-        "4, 3, 10, 1",
-        "4, 3, 10, 2",
-        // mode == 1.5
-        "4, 2, 8, 1",
-        "4, 2, 8, 2",
-    })
+    @MethodSource
     void testMode(int n, int kk, int nn, int k) {
         final int[][] table = {
             {k, kk - k},
@@ -169,6 +156,23 @@ class FisherExactTestTest {
         };
         final double pval = FisherExactTest.withDefaults().test(table).getPValue();
         Assertions.assertTrue(pval <= 1, () -> "pval=" + pval);
+    }
+
+    static Stream<Arguments> testMode() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        // k = mode = ceil((n+1)(K+1) / (N+2)) - 1, floor((n+1)(K+1) / (N+2))
+        // Exact mode
+        builder.add(Arguments.of(2, 2, 7, 1));
+        builder.add(Arguments.of(4, 3, 8, 2));
+        // Rounded
+        builder.add(Arguments.of(2, 2, 5, 1));
+        builder.add(Arguments.of(2, 2, 5, 2));
+        builder.add(Arguments.of(4, 3, 10, 1));
+        builder.add(Arguments.of(4, 3, 10, 2));
+        // mode == 1.5
+        builder.add(Arguments.of(4, 2, 8, 1));
+        builder.add(Arguments.of(4, 2, 8, 2));
+        return builder.build();
     }
 
     @ParameterizedTest

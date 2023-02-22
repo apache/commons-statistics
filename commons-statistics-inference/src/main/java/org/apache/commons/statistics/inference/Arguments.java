@@ -100,7 +100,7 @@ final class Arguments {
     }
 
     /**
-     * Check that all values are {@code > 0}.
+     * Check that value is {@code > 0}.
      *
      * @param v Value to be tested.
      * @return the value
@@ -111,6 +111,21 @@ final class Arguments {
             throw new InferenceException(InferenceException.NOT_STRICTLY_POSITIVE, v);
         }
         return v;
+    }
+
+    /**
+     * Check that value is {@code > 0}.
+     *
+     * @param v Value to be tested.
+     * @return the value
+     * @throws IllegalArgumentException if the value is not strictly positive.
+     */
+    static double checkStrictlyPositive(double v) {
+        if (v > 0) {
+            return v;
+        }
+        // not positive or NaN
+        throw new InferenceException(InferenceException.NOT_STRICTLY_POSITIVE, v);
     }
 
     /**
