@@ -24,6 +24,9 @@ import java.util.EnumSet;
  * @since 1.1
  */
 final class Arguments {
+    /** Two. */
+    private static final int TWO = 2;
+
     /** No instances. */
     private Arguments() {}
 
@@ -224,5 +227,31 @@ final class Arguments {
             throw new InferenceException("Invalid option: " + v);
         }
         return v;
+    }
+
+    /**
+     * Check the input is a 2-by-2 contingency table.
+     *
+     * @param table Table.
+     * @throws IllegalArgumentException if the {@code table} is not a 2-by-2 table; any
+     * table entry is negative; or the sum is zero or is not an integer
+     */
+    static void checkTable(int[][] table) {
+        if (table.length != TWO || table[0].length != TWO || table[1].length != TWO) {
+            throw new InferenceException("Require a 2-by-2 contingency table");
+        }
+        // Must all be positive
+        final int a = table[0][0];
+        final int b = table[0][1];
+        final int c = table[1][0];
+        final int d = table[1][1];
+        // Bitwise OR combines the sign bit from all values
+        Arguments.checkNonNegative(a | b | c | d);
+        // Sum must be an integer
+        final long sum = (long) a + b + c + d;
+        if (sum > Integer.MAX_VALUE) {
+            throw new InferenceException(InferenceException.X_GT_Y, sum, Integer.MAX_VALUE);
+        }
+        Arguments.checkStrictlyPositive((int) sum);
     }
 }

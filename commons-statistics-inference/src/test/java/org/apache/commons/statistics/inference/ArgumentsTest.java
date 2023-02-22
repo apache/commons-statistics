@@ -20,6 +20,7 @@ import java.util.EnumSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /**
@@ -169,5 +170,38 @@ class ArgumentsTest {
             "Do not raise a NPE for null. The EnumSet handles this as false in contains(null)");
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> Arguments.checkOption(PValueMethod.ESTIMATE, allowed), "invalid", "option", PValueMethod.ESTIMATE.toString());
+    }
+
+    @Test
+    void testCheckTableInvalid2x2Throws() {
+        Assertions.assertThrows(NullPointerException.class, () -> Arguments.checkTable(null));
+        // Non 2-by-2 input
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Arguments.checkTable(new int[3][3]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Arguments.checkTable(new int[2][1]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Arguments.checkTable(new int[1][2]));
+        // Non-square input
+        final int[][] x = {{1, 2}, {3}};
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Arguments.checkTable(x));
+        final int[][] y = {{1}, {2, 3}};
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Arguments.checkTable(y));
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "0, 0, 0, 0",
+        // Overflow
+        "2147483647, 1, 0, 0",
+        "2147483647, 0, 1, 0",
+        "2147483647, 0, 0, 1",
+        "2147483647, 2147483647, 0, 0",
+        "2147483647, 0, 2147483647, 0",
+        "2147483647, 0, 0, 2147483647",
+        "2147483647, 0, 2147483647, 2147483647",
+        "2147483647, 2147483647, 0, 2147483647",
+        "2147483647, 2147483647, 2147483647, 2147483647",
+    })
+    void testCheckTableInvalidSumThrows(int a, int b, int c, int d) {
+        final int[][] table = {{a, b}, {c, d}};
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Arguments.checkTable(table));
     }
 }

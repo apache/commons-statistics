@@ -32,8 +32,6 @@ import org.apache.commons.statistics.distribution.HypergeometricDistribution;
  * @since 1.1
  */
 public final class FisherExactTest {
-    /** Two. */
-    private static final int TWO = 2;
     /** Default instance. */
     private static final FisherExactTest DEFAULT = new FisherExactTest(AlternativeHypothesis.TWO_SIDED);
 
@@ -101,7 +99,7 @@ public final class FisherExactTest {
      * @see #test(int[][])
      */
     public double statistic(int[][] table) {
-        checkTable(table);
+        Arguments.checkTable(table);
         final double a = table[0][0];
         final double b = table[0][1];
         final double c = table[1][0];
@@ -137,7 +135,7 @@ public final class FisherExactTest {
      * @see #statistic(int[][])
      */
     public SignificanceResult test(int[][] table) {
-        checkTable(table);
+        Arguments.checkTable(table);
         final int a = table[0][0];
         final int b = table[0][1];
         final int c = table[1][0];
@@ -213,31 +211,5 @@ public final class FisherExactTest {
         final double pk = distribution.probability(k);
         final double pm = distribution.probability(k == m1 ? m2 : m1);
         return pm > pk ? 1 - pm : 1;
-    }
-
-    /**
-     * Check the input is a 2-by-2 contingency table.
-     *
-     * @param table Table.
-     * @throws IllegalArgumentException if the {@code table} is not a 2-by-2 table; any
-     * table entry is negative; or the sum is zero or is not an integer
-     */
-    private static void checkTable(int[][] table) {
-        if (table.length != TWO || table[0].length != TWO || table[1].length != TWO) {
-            throw new InferenceException("Require a 2-by-2 contingency table");
-        }
-        // Must all be positive
-        final int a = table[0][0];
-        final int b = table[0][1];
-        final int c = table[1][0];
-        final int d = table[1][1];
-        // Bitwise OR combines the sign bit from all values
-        Arguments.checkNonNegative(a | b | c | d);
-        // Sum must be an integer
-        final long sum = (long) a + b + c + d;
-        if (sum > Integer.MAX_VALUE) {
-            throw new InferenceException(InferenceException.X_GT_Y, sum, Integer.MAX_VALUE);
-        }
-        Arguments.checkStrictlyPositive((int) sum);
     }
 }
