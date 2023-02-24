@@ -95,7 +95,6 @@ public final class FisherExactTest {
      * @return odds ratio
      * @throws IllegalArgumentException if the {@code table} is not a 2-by-2 table; any
      * table entry is negative; or the sum of the table is 0 or larger than a 32-bit signed integer.
-     * @see #with(AlternativeHypothesis)
      * @see #test(int[][])
      */
     public double statistic(int[][] table) {
