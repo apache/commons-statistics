@@ -1366,8 +1366,8 @@ class DDTest {
             DD.fastTwoSum(x, xx, s);
             final int n = rng.nextInt(2400, 2500);
             // Math.log(16.0 * (2499) * 0x1.0p-106) / Math.log(2) = -90.7
-            builder.add(Arguments.of(s.hi(), s.lo(), n, 0x1.0p-52, 0x1.0p-93));
-            builder.add(Arguments.of(s.hi(), s.lo(), -n, 0x1.0p-52, 0x1.0p-93));
+            builder.add(Arguments.of(s.hi(), s.lo(), n, 0x1.0p-51, 0x1.0p-93));
+            builder.add(Arguments.of(s.hi(), s.lo(), -n, 0x1.0p-51, 0x1.0p-93));
         }
 
         // Powers where the fractional representation overflow/underflow
@@ -1463,6 +1463,11 @@ class DDTest {
         // Fails fastPow at 2^-94
         builder.add(Arguments.of(0.5014627401015759, 4.9149107900633496E-17, 2424, 0x1.0p-52, 0x1.0p-93));
         builder.add(Arguments.of(0.5014627401015759, 4.9149107900633496E-17, -2424, 0x1.0p-52, 0x1.0p-93));
+
+        // Observed to fail simplePow at 2^-52 (requires ~ 1.01 * 2^-52)
+        // This is platform dependent due to the use of java.lang.Math functions.
+        builder.add(Arguments.of(0.7409802960884472, -2.4773863758919158E-17, 2416, 0x1.0p-51, 0x1.0p-93));
+        builder.add(Arguments.of(0.7409802960884472, -2.4773863758919158E-17, -2416, 0x1.0p-51, 0x1.0p-93));
 
         return builder.build();
     }
