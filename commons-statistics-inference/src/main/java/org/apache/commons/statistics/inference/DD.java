@@ -594,10 +594,10 @@ final class DD {
 
     /**
      * Checks if the number is not normal. This is functionally equivalent to:
-     * <pre>
+     * <pre>{@code
      * final double abs = Math.abs(a);
      * return (abs <= Double.MIN_NORMAL || !(abs <= Double.MAX_VALUE));
-     * </pre>
+     * }</pre>
      *
      * @param a The value.
      * @return true if the value is not normal

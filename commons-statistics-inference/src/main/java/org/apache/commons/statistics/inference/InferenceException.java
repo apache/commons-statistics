@@ -46,13 +46,13 @@ class InferenceException extends IllegalArgumentException {
     static final String ZERO_AT = "%s[%s] is zero";
     /** Error message for "invalid significance" condition when "x not in (0, 0.5]". */
     static final String INVALID_SIGNIFICANCE = "Not a significance: %s is out of range (0, 0.5]";
-    /** Error message for "not strictly positive" condition when "x <= 0". */
+    /** Error message for "not strictly positive" condition when "{@code x <= 0}". */
     static final String NOT_STRICTLY_POSITIVE = "Number %s is not greater than 0";
     /** Error message for "no data" condition. */
     static final String NO_DATA = "No data";
-    /** Error message for "too large" condition when "x > y". */
+    /** Error message for "too large" condition when "{@code x > y}". */
     static final String X_GT_Y = "%s > %s";
-    /** Error message for "too large" condition when "x >= y". */
+    /** Error message for "too large" condition when "{@code x >= y}". */
     static final String X_GTE_Y = "%s >= %s";
 
     /** Serializable version identifier. */

@@ -85,7 +85,7 @@ final class SquareMatrixSupport {
      * distribution as described in:
      * <ul>
      * <li>
-     * Marsaglia, G., Tsang, W. W., & Wang, J. (2003).
+     * Marsaglia, G., Tsang, W. W., &amp; Wang, J. (2003).
      * <a href="https://doi.org/10.18637/jss.v008.i18">Evaluating Kolmogorov's Distribution.</a>
      * Journal of Statistical Software, 8(18), 1–4.
      * </ul>
