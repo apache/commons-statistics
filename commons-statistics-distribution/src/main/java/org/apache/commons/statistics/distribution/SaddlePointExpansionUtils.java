@@ -82,7 +82,6 @@ final class SaddlePointExpansionUtils {
      * href="https://mathworld.wolfram.com/StirlingsSeries.html">
      * https://mathworld.wolfram.com/StirlingsSeries.html</a></li>
      * </ol>
-     * </p>
      *
      * <p>Note: This function has been modified for integer {@code z}.</p>
      *
@@ -112,7 +111,6 @@ final class SaddlePointExpansionUtils {
      * href="http://www.herine.net/stat/papers/dbinom.pdf">
      * http://www.herine.net/stat/papers/dbinom.pdf</a></li>
      * </ol>
-     * </p>
      *
      * <p>Note: This function has been modified for integer {@code x}.</p>
      *

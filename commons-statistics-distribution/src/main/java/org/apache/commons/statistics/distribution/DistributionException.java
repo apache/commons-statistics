@@ -22,9 +22,9 @@ import java.util.Locale;
  * Package private exception class with constants for frequently used messages.
  */
 class DistributionException extends IllegalArgumentException {
-    /** Error message for "too large" condition when "x > y". */
+    /** Error message for "too large" condition when {@code x > y}. */
     static final String TOO_LARGE = "%s > %s";
-    /** Error message for "too small" condition when "x < y". */
+    /** Error message for "too small" condition when {@code x < y}. */
     static final String TOO_SMALL = "%s < %s";
     /** Error message for "out of range" condition when "x not in [a, b]". */
     static final String OUT_OF_RANGE = "Number %s is out of range [%s, %s]";
@@ -36,11 +36,11 @@ class DistributionException extends IllegalArgumentException {
     static final String INVALID_PROBABILITY = "Not a probability: %s is out of range [0, 1]";
     /** Error message for "invalid non-zero probability" condition when "x not in (0, 1]". */
     static final String INVALID_NON_ZERO_PROBABILITY = "Not a non-zero probability: %s is out of range (0, 1]";
-    /** Error message for "negative" condition when "x < 0". */
+    /** Error message for "negative" condition when {@code x < 0}. */
     static final String NEGATIVE = "Number %s is negative";
-    /** Error message for "not strictly positive" condition when "x <= 0". */
+    /** Error message for "not strictly positive" condition when {@code x <= 0}. */
     static final String NOT_STRICTLY_POSITIVE = "Number %s is not greater than 0";
-    /** Error message for "not strictly positive" condition when "x <= 0". */
+    /** Error message for "not strictly positive finite" condition when {@code x <= 0 || x == inf}. */
     static final String NOT_STRICTLY_POSITIVE_FINITE = "Number %s is not greater than 0 and finite";
 
     /** Serializable version identifier. */
