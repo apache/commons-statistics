@@ -116,6 +116,10 @@
     <commons.jacoco.methodRatio>1.00</commons.jacoco.methodRatio>
     <commons.jacoco.haltOnFailure>true</commons.jacoco.haltOnFailure>
 
+    <!-- Tempory use of versions in CP 57 -->
+    <commons.pmd.version>3.20.0</commons.pmd.version>
+    <commons.pmd-impl.version>6.55.0</commons.pmd-impl.version>
+
     <commons.site.path>statistics</commons.site.path>
     <commons.scmPubUrl>https://svn.apache.org/repos/infra/websites/production/commons/content/proper/commons-statistics</commons.scmPubUrl>
     <commons.scmPubCheckoutDirectory>site-content</commons.scmPubCheckoutDirectory>
