@@ -103,7 +103,7 @@
     <commons.jira.pid>12321632</commons.jira.pid>
     <commons.encoding>UTF-8</commons.encoding>
     <!-- JVM target version, in the newer JDK 9+ format. -->
-    <jvm.target>8</jvm.target>
+    <commons.compiler.release>8</commons.compiler.release>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <!-- Workaround to avoid duplicating config files. -->
