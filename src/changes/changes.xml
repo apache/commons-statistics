@@ -80,6 +80,9 @@ Adds ranking, inference and bom modules. (requires Java 8).
         Add a commons-statistics-ranking module for rank transformations. This ports and
         updates functionality in org.apache.commons.math4.stat.ranking.
       </action>
+      <action type="update" dev="ggregory">
+        Bump commons-parent from 57 to 58.
+      </action>
     </release>
 
     <release version="1.0" date="2022-12-05" description="
