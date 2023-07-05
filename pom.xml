@@ -634,6 +634,7 @@ This is avoided by creating an empty directory when svn is not available.
   </profiles>
 
   <modules>
+    <module>commons-statistics-descriptive</module>
     <module>commons-statistics-distribution</module>
     <module>commons-statistics-ranking</module>
     <module>commons-statistics-inference</module>
