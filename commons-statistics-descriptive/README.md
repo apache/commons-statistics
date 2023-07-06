@@ -43,11 +43,11 @@
 Apache Commons Statistics Descriptive
 ===================
 
-[![Travis-CI Status](https://travis-ci.org/apache/commons-statistics.svg)](https://travis-ci.org/apache/commons-statistics)
-[![GitHub Actions Status](https://github.com/apache/commons-statistics/workflows/Java%20CI/badge.svg)](https://github.com/apache/commons-statistics/actions)
-[![Coverage Status](https://coveralls.io/repos/apache/commons-statistics/badge.svg)](https://coveralls.io/r/apache/commons-statistics)
+[![Build Status](https://github.com/apache/commons-statistics/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-statistics/actions/workflows/maven.yml)
+[![Coverage Status](https://codecov.io/gh/apache/commons-statistics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-statistics)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-descriptive/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-descriptive/)
 [![Javadocs](https://javadoc.io/badge/org.apache.commons/commons-statistics-descriptive/1.1.svg)](https://javadoc.io/doc/org.apache.commons/commons-statistics-descriptive/1.1)
+[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 Descriptive statistics.
 
@@ -80,7 +80,7 @@ There are some guidelines which will make applying PRs easier for us:
 + No tabs! Please use spaces for indentation.
 + Respect the code style.
 + Create minimal diffs - disable on save actions like reformat source code or organize imports. If you feel the source code should be reformatted create a separate PR for this change.
-+ Provide JUnit tests for your changes and make sure your changes don't break any existing tests by running ```mvn clean test```.
++ Provide JUnit tests for your changes and make sure your changes don't break any existing tests by running ```mvn```.
 
 If you plan to contribute on a regular basis, please consider filing a [contributor license agreement](https://www.apache.org/licenses/#clas).
 You can learn more about contributing via GitHub in our [contribution guidelines](CONTRIBUTING.md).
@@ -89,7 +89,7 @@ License
 -------
 This code is under the [Apache Licence v2](https://www.apache.org/licenses/LICENSE-2.0).
 
-See the `NOTICE.txt` file for required notices and attributions.
+See the `NOTICE` file for required notices and attributions.
 
 Donations
 ---------
