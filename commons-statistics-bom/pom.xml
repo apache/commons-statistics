@@ -25,7 +25,6 @@
   </parent>
 
   <artifactId>commons-statistics-bom</artifactId>
-  <version>1.1-SNAPSHOT</version>
   <name>Apache Commons Statistics (Bill of Materials)</name>
   <packaging>pom</packaging>
 

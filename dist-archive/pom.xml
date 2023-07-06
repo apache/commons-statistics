@@ -27,7 +27,6 @@ under the License.
   </parent>
 
   <artifactId>commons-statistics</artifactId>
-  <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Apache Commons Statistics (full distribution)</name>
   <description>This module creates the Apache Commons Statistics distribution.</description>
