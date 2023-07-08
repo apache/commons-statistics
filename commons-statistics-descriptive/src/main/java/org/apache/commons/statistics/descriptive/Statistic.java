@@ -50,6 +50,6 @@ public enum Statistic {
     /** Represents the geometric mean of the input value(s). */
     GEOMETRIC_MEAN,
 
-    /** Represents the quadratic of the input value(s). */
+    /** Represents the quadratic mean of the input value(s). */
     QUADRATIC_MEAN
 }
