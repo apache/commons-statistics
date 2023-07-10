@@ -36,5 +36,5 @@ public interface DoubleStatisticAccumulator<T extends DoubleStatistic> {
      *
      * @return  the {@code DoubleStatistic}.
      */
-    T get();
+    T getDoubleStatistic();
 }
