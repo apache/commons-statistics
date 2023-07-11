@@ -38,11 +38,8 @@ public enum Statistic {
     /** Represents the sum of the squares of the input value(s). */
     SUM_OF_SQUARES,
 
-    /** Represents the sample variance of the input value(s). */
+    /** Represents the variance of the input value(s). */
     VARIANCE,
-
-    /** Represents the population variance of the input value(s). */
-    POPULATION_VARIANCE,
 
     /** Represents the standard deviation of the input value(s). */
     STANDARD_DEVIATION,
