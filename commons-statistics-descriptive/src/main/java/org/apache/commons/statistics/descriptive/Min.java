@@ -75,14 +75,8 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
 
         /** {@inheritDoc} */
         @Override
-        public <U extends DoubleStatisticAccumulator<Min>> void combine(U other) {
-            final Min otherMin = other.getDoubleStatistic();
-            accept(otherMin.getAsDouble());
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public Min getDoubleStatistic() {
+        public Min combine(Min other) {
+            accept(other.getAsDouble());
             return this;
         }
     }
