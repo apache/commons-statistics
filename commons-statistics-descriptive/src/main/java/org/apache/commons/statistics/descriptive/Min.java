@@ -19,37 +19,92 @@ package org.apache.commons.statistics.descriptive;
 /**
  * Returns the minimum of the available values.
  *
- * <p>The result is <code>NaN</code> if any of the values is <code>NaN</code>.</p>
+ * <p>The result is <code>NaN</code> if any of the values is <code>NaN</code>.
+ *
+ * <p>The result is <code>POSITIVE_INFINITY</code> if no values are added.
+ *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
  *
  * <p><strong>This implementation is not thread safe.</strong>
  * If multiple threads access an instance of this class concurrently,
- * and at least  one of the threads invokes the <code>accept()</code> or
- * <code>combine()</code> method, it must be synchronized externally.</p>
+ * and at least one of the threads invokes the <code>accept()</code> or
+ * <code>combine()</code> method, it must be synchronized externally.
+ *
  * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
  * as <code>accumulator</code> and <code>combiner</code> functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
- * safe and efficient parallel execution.</p>
+ * safe and efficient parallel execution.
  */
 public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator<Min> {
 
-    /**
-     * Helper function that returns a new instance of {@link UnsupportedOperationException}.
-     * @return a new {@code UnsupportedOperationException} instance
-     */
-    static UnsupportedOperationException uoe() {
-        return new UnsupportedOperationException();
+    Min() {
     }
 
     /**
+     * Creates a {@code Min} implementation which does not store the input value(s) it consumes.
+     *
+     * <p>The result is <code>NaN</code> if any of the values is <code>NaN</code>.
+     *
+     * <p>The result is {@link Double#POSITIVE_INFINITY POSITIVE_INFINITY}
+     * if no values have been added.
+     *
+     * @return {@code Min} implementation
+     *
+     */
+    public static Min create() {
+        return new StorelessMin();
+    }
+
+    /**
+     * Returns a {@code Min} instance that has the minimum of all input value(s).
+     *
+     * <p>The result is <code>NaN</code> if any of the values is <code>NaN</code>.
+     *
+     * <p>When the input is an empty array, the result is
+     * {@link Double#POSITIVE_INFINITY POSITIVE_INFINITY}.
+     *
+     * @param values Values
+     * @return Min instance
+     */
+    public static Min of(double... values) {
+        final StorelessMin storelessMin = new StorelessMin();
+        for (final double d: values) {
+            storelessMin.accept(d);
+        }
+        return storelessMin;
+    }
+
+    /**
+     * Updates the state of the statistic to reflect the addition of {@code value}.
+     * @param value Value.
+     */
+    public abstract void accept(double value);
+
+    /**
+     * Gets the {@code min}.
+     *
+     * <p>When no values have been added, the result is
+     * {@link Double#POSITIVE_INFINITY POSITIVE_INFINITY}.
+     *
+     * @return The {@code min}.
+     */
+    public abstract double getAsDouble();
+
+    /** {@inheritDoc} */
+    public abstract Min combine(Min other);
+
+    /**
      * {@code Min} implementation that does not store the input value(s) processed so far.
+     *
+     * <p>Uses JDK's {@link Math#min Math.min} as an underlying function
+     * to compute the {@code minimum}
      */
     private static final class StorelessMin extends Min {
 
-        /**Current min. */
+        /** Current min. */
         private double min;
 
         /**
@@ -59,15 +114,13 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
             min = Double.POSITIVE_INFINITY;
         }
 
-        /**
-         * Updates the state of Min statistic to reflect the addition of the new value.
-         * @param value  the new value.
-         */
+        /** {@inheritDoc} */
         @Override
         public void accept(double value) {
             min = Double.min(min, value);
         }
 
+        /** {@inheritDoc} */
         @Override
         public double getAsDouble() {
             return min;
@@ -79,65 +132,5 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
             accept(other.getAsDouble());
             return this;
         }
-    }
-
-    /**
-     * Immutable {@code Min} implementation.
-     */
-    private static final class ImmutableMin extends Min {
-
-        /**Min delegate. */
-        private final Min delegate;
-
-        /**
-         * Initializes the Min delegate.
-         * @param delegate  Min delegate
-         */
-        ImmutableMin(final Min delegate) {
-            this.delegate = delegate;
-        }
-
-        @Override
-        public void accept(double value) {
-            throw uoe();
-        }
-
-        @Override
-        public double getAsDouble() {
-            return delegate.getAsDouble();
-        }
-
-        @Override
-        public <U extends DoubleStatisticAccumulator<Min>> void combine(U other) {
-            throw uoe();
-        }
-
-        @Override
-        public Min getDoubleStatistic() {
-            return this;
-        }
-    }
-
-    /**
-     * Creates a {@code Min} implementation which does not store the input value(s) it consumes.
-     *
-     * @return {@code Min} implementation that does not store the input value(s) processed.
-     */
-    public static Min createStoreless() {
-        return new StorelessMin();
-    }
-
-    /**
-     * Returns an immutable {@code Min} object that has the minimum of all the input value(s).
-     *
-     * @param values  the input values for which we would need to compute the minimum
-     * @return Immutable Min implementation that does not store the input value(s) processed.
-     */
-    public static Min of(double... values) {
-        final StorelessMin storelessMin = new StorelessMin();
-        for (final double d: values) {
-            storelessMin.accept(d);
-        }
-        return new ImmutableMin(storelessMin);
     }
 }

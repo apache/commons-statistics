@@ -23,7 +23,6 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.function.DoubleSupplier;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
@@ -35,7 +34,7 @@ final class MinTest {
 
     @Test
     public void testEmpty() {
-        Min min = Min.createStoreless();
+        Min min = Min.create();
         Min immutable = Min.of();
 
         Assertions.assertEquals(Double.POSITIVE_INFINITY, min.getAsDouble());
@@ -45,7 +44,7 @@ final class MinTest {
     @ParameterizedTest
     @MethodSource
     public void testMin(double[] values, double expectedMin) {
-        Min stat = Min.createStoreless();
+        Min stat = Min.create();
         for (final double value: values) {
             stat.accept(value);
         }
@@ -76,8 +75,8 @@ final class MinTest {
     @ParameterizedTest
     @MethodSource
     public void testCombine(double[] first, double[] second, double expectedMin) {
-        Min firstMin = Min.createStoreless();
-        Min secondMin = Min.createStoreless();
+        Min firstMin = Min.create();
+        Min secondMin = Min.create();
 
         Arrays.stream(first).forEach(firstMin);
         Arrays.stream(second).forEach(secondMin);
@@ -108,11 +107,11 @@ final class MinTest {
     @ParameterizedTest
     @MethodSource
     public void testParallelStream(double[] values, double expectedMin) {
-        double actualMin = Arrays.stream(values).parallel().collect(Min::createStoreless, Min::accept, Min::combine).getAsDouble();
+        double actualMin = Arrays.stream(values).parallel().collect(Min::create, Min::accept, Min::combine).getAsDouble();
         Assertions.assertEquals(expectedMin, actualMin);
 
         DoubleStream nanStream = DoubleStream.of(Double.NaN, Double.NaN, Double.NaN);
-        Assertions.assertTrue(Double.isNaN(nanStream.parallel().collect(Min::createStoreless, Min::accept, Min::combine).getAsDouble()));
+        Assertions.assertTrue(Double.isNaN(nanStream.parallel().collect(Min::create, Min::accept, Min::combine).getAsDouble()));
     }
 
     static Stream<Arguments> testParallelStream() {
@@ -131,12 +130,12 @@ final class MinTest {
     @Test
     public void testCombineImmutable() {
         Min immutable = Min.of(1.1, 22.22, -333.333);
-        Min mutable = Min.createStoreless();
+        Min mutable = Min.create();
         mutable.combine(immutable);
         Assertions.assertEquals(-333.333, mutable.getAsDouble());
         Assertions.assertEquals(-333.333, immutable.getAsDouble());
 
-        Min mutable2 = Min.createStoreless();
+        Min mutable2 = Min.create();
         mutable2.accept(-4444.4444);
         mutable2.combine(immutable);
         Assertions.assertEquals(-4444.4444, mutable2.getAsDouble());
@@ -148,7 +147,7 @@ final class MinTest {
     @Test
     public void testSpecialValues() {
         double[] testArray = {0.0d, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
-        Min stat = Min.createStoreless();
+        Min stat = Min.create();
 
         stat.accept(testArray[0]);
         Assertions.assertEquals(0.0d, stat.getAsDouble());
@@ -171,7 +170,7 @@ final class MinTest {
     @ParameterizedTest
     @MethodSource
     public void testNaNs(double[] values, double expectedMin) {
-        Min stat = Min.createStoreless();
+        Min stat = Min.create();
         for (final double value: values) {
             stat.accept(value);
         }
@@ -191,7 +190,7 @@ final class MinTest {
     @Test
     public void testNaN() {
         double[] testArray = {0.0d, Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
-        Min stat = Min.createStoreless();
+        Min stat = Min.create();
 
         stat.accept(testArray[0]);
         Assertions.assertEquals(0.0d, stat.getAsDouble());
