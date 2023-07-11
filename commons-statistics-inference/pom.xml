@@ -27,7 +27,6 @@
   </parent>
 
   <artifactId>commons-statistics-inference</artifactId>
-  <version>1.1-SNAPSHOT</version>
   <name>Apache Commons Statistics Inference</name>
 
   <description>Statistical hypothesis testing.</description>

@@ -27,7 +27,6 @@
     </parent>
 
     <artifactId>commons-statistics-descriptive</artifactId>
-    <version>1.1-SNAPSHOT</version>
     <name>Apache Commons Statistics Descriptive</name>
 
     <description>Descriptive statistics.</description>

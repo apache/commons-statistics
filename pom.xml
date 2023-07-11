@@ -19,7 +19,7 @@
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-parent</artifactId>
-    <version>56</version>
+    <version>58</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
@@ -77,6 +77,10 @@
     <contributor>
       <name>Arturo Bernal</name>
     </contributor>
+    <contributor>
+      <name>Anirudh Joshi</name>
+      <email>janirudhg at gmail dot com</email>
+    </contributor>
   </contributors>
 
   <properties>
@@ -103,7 +107,7 @@
     <commons.jira.pid>12321632</commons.jira.pid>
     <commons.encoding>UTF-8</commons.encoding>
     <!-- JVM target version, in the newer JDK 9+ format. -->
-    <jvm.target>8</jvm.target>
+    <commons.compiler.release>8</commons.compiler.release>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <!-- Workaround to avoid duplicating config files. -->
@@ -455,24 +459,6 @@
   </reporting>
 
   <profiles>
-    <profile>
-      <id>compiler-release-property</id>
-      <activation>
-        <jdk>[9,)</jdk>
-      </activation>
-      <properties>
-        <!--
-          The "release" compiler property (available in JDK 9+) must be set in order to generate
-          binary-compatible artifacts for the target JVM. This flag sets the version of the platform
-          APIs to compile against, which is necessary when building with a later JDK but targeting
-          an earlier one. For example, use of the method reference new SplittableRandom()::nextInt
-          must target the method in SplittableRandom and not java.util.random.RandomGenerator
-          (added in JDK 17). If the release property is not set when compiling for Java 8, then the
-          Java 17 method will be referenced in the bytecode, causing a runtime error when running on 8.
-        -->
-        <maven.compiler.release>${jvm.target}</maven.compiler.release>
-      </properties>
-    </profile>
     <profile>
       <!-- Override a parent property if the SVN site checkout should not be performed.
            This should activate for child modules. -->

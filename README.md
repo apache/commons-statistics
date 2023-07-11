@@ -55,14 +55,14 @@ Documentation
 -------------
 
 More information can be found on the [Apache Commons Statistics homepage](https://commons.apache.org/proper/commons-statistics).
-The [Javadoc](https://commons.apache.org/proper/commons-statistics/javadocs/api-release) can be browsed.
+The [Javadoc](https://commons.apache.org/proper/commons-statistics/commons-statistics-distribution/javadocs/api-1.0) can be browsed.
 Questions related to the usage of Apache Commons Statistics should be posted to the [user mailing list][ml].
 
 Where can I get the latest release?
 -----------------------------------
 You can download source and binaries from our [download page](https://commons.apache.org/proper/commons-statistics/download_statistics.cgi).
 
-Alternatively you can pull it from the central Maven repositories:
+Alternatively, you can pull it from the central Maven repositories:
 
 ```xml
 <dependency>
