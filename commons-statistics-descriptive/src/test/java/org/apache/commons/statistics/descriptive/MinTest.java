@@ -23,6 +23,8 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.DoubleSupplier;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
@@ -211,4 +213,30 @@ final class MinTest {
 
         Assertions.assertEquals(Double.NaN, Min.of(testArray).getAsDouble());
     }
+
+    @ParameterizedTest
+    @MethodSource
+    public void testArrayOfArrays(double[][] input, double expectedMin) {
+
+        double actualMin = Arrays.stream(input)
+                .map(Min::of)
+                .reduce(Min::combine)
+                .map(DoubleSupplier::getAsDouble)
+                .orElseThrow(RuntimeException::new);
+
+        Assertions.assertEquals(expectedMin, actualMin);
+    }
+    static Stream<Arguments> testArrayOfArrays() {
+        return Stream.of(
+                Arguments.of(new double[][] {{1, 2}, {3, 4}}, 1),
+                Arguments.of(new double[][] {{+0.0, 2.0}, {1.0, -0.0, 3.14}}, -0.0),
+                Arguments.of(new double[][] {{+0.0, Double.NEGATIVE_INFINITY},
+                        {-0.0, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}}, Double.NEGATIVE_INFINITY),
+                Arguments.of(new double[][] {{1.1, 22.22}, {34.56, -5678.9, 2.718}, {Double.NaN, 0}},
+                        Double.NaN),
+                Arguments.of(new double[][] {{Double.NaN, Double.NaN}, {Double.NaN},
+                        {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN)
+        );
+    }
+
 }
