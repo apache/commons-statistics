@@ -24,17 +24,10 @@ package org.apache.commons.statistics.descriptive;
 public interface DoubleStatisticAccumulator<T extends DoubleStatistic> {
 
     /**
-     * Combines the state of another {@code DoubleStatisticAccumulator} into this one.
+     * Combines the state of another {@code DoubleStatistic} into this one.
      *
-     * @param other  another {@code DoubleStatisticAccumulator}
-     * @param <U>  the type of the other {@code DoubleStatisticAccumulator} accumulating the same {@code DoubleStatistic}.
+     * @param other another {@code DoubleStatistic} to be combined
+     * @return the current {@code DoubleStatistic} after combining {@code other}
      */
-    <U extends DoubleStatisticAccumulator<T>> void combine(U other);
-
-    /**
-     * Gets the {@link DoubleStatistic} being accumulated.
-     *
-     * @return  the {@code DoubleStatistic}.
-     */
-    T getDoubleStatistic();
+    T combine(T other);
 }
