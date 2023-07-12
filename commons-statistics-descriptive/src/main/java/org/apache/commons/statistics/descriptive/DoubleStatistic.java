@@ -21,7 +21,7 @@ import java.util.function.DoubleSupplier;
 
 
 /**
- * Represents a state object for computing a single {@link Statistic} over {@code double} valued input(s).
+ * Represents a state object for computing a single {@code Statistic} over {@code double} valued input(s).
  *
  * <p>Base interface implemented by all statistics.</p>
  */
