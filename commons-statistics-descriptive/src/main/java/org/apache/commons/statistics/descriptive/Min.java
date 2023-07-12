@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.util.Arrays;
+
 /**
  * Returns the minimum of the available values.
  *
@@ -40,7 +42,11 @@ package org.apache.commons.statistics.descriptive;
  */
 public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator<Min> {
 
+    /**
+     * Create a Min instance.
+     */
     Min() {
+        // No-op
     }
 
     /**
@@ -71,9 +77,7 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      */
     public static Min of(double... values) {
         final StorelessMin storelessMin = new StorelessMin();
-        for (final double d: values) {
-            storelessMin.accept(d);
-        }
+        Arrays.stream(values).forEach(storelessMin);
         return storelessMin;
     }
 
@@ -81,19 +85,22 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      * Updates the state of the statistic to reflect the addition of {@code value}.
      * @param value Value.
      */
+    @Override
     public abstract void accept(double value);
 
     /**
-     * Gets the {@code min}.
+     * Gets the minimum of all input values.
      *
      * <p>When no values have been added, the result is
      * {@link Double#POSITIVE_INFINITY POSITIVE_INFINITY}.
      *
      * @return The {@code min}.
      */
+    @Override
     public abstract double getAsDouble();
 
     /** {@inheritDoc} */
+    @Override
     public abstract Min combine(Min other);
 
     /**
@@ -107,9 +114,7 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
         /** Current min. */
         private double min;
 
-        /**
-         * Create a StorelessMin instance.
-         */
+        /** Create a StorelessMin instance. */
         StorelessMin() {
             min = Double.POSITIVE_INFINITY;
         }
