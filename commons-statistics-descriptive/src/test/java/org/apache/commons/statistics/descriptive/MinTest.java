@@ -33,21 +33,16 @@ import java.util.stream.Stream;
 final class MinTest {
 
     @Test
-    public void testEmpty() {
+    void testEmpty() {
         Min min = Min.create();
-        Min immutable = Min.of();
-
         Assertions.assertEquals(Double.POSITIVE_INFINITY, min.getAsDouble());
-        Assertions.assertEquals(Double.POSITIVE_INFINITY, immutable.getAsDouble());
     }
 
     @ParameterizedTest
     @MethodSource
-    public void testMin(double[] values, double expectedMin) {
+    void testMin(double[] values, double expectedMin) {
         Min stat = Min.create();
-        for (final double value: values) {
-            stat.accept(value);
-        }
+        Arrays.stream(values).forEach(stat);
         double actualMin = stat.getAsDouble();
         Assertions.assertEquals(expectedMin, actualMin, "min");
         Assertions.assertEquals(expectedMin, Min.of(values).getAsDouble(), "min");
@@ -65,32 +60,30 @@ final class MinTest {
         );
     }
 
-    @Test
-    public void testMinImmutable() {
-        Min stat = Min.of(1.0, 2.0, -1.0, 4.0);
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> stat.accept(3.14),
-                "cannot update an immutable instance");
-    }
-
     @ParameterizedTest
     @MethodSource
-    public void testCombine(double[] first, double[] second, double expectedMin) {
+    void testCombine(double[] first, double[] second, double expectedMin) {
         Min firstMin = Min.create();
         Min secondMin = Min.create();
 
         Arrays.stream(first).forEach(firstMin);
         Arrays.stream(second).forEach(secondMin);
 
+        double secondMinBeforeCombine = secondMin.getAsDouble();
         firstMin.combine(secondMin);
         Assertions.assertEquals(expectedMin, firstMin.getAsDouble());
-
-        secondMin.combine(firstMin);
-        Assertions.assertEquals(expectedMin, secondMin.getAsDouble());
+        Assertions.assertEquals(secondMinBeforeCombine, secondMin.getAsDouble());
     }
 
     static Stream<Arguments> testCombine() {
         return Stream.of(
+                Arguments.of(new double[] {}, new double[] {}, Double.POSITIVE_INFINITY),
+                Arguments.of(new double[] {3.14}, new double[] {}, 3.14),
+                Arguments.of(new double[] {}, new double[] {2.718}, 2.718),
+                Arguments.of(new double[] {}, new double[] {Double.NaN}, Double.NaN),
+                Arguments.of(new double[] {Double.NaN, Double.NaN}, new double[] {}, Double.NaN),
                 Arguments.of(new double[] {3.14}, new double[] {2.718}, 2.718),
+                Arguments.of(new double[] {-1, 0, 1}, new double[] {1.1, 2.2, 3.3}, -1),
                 Arguments.of(new double[] {3.14, 1.1, 22.22}, new double[] {2.718, 1.1, 333.333}, 1.1),
                 Arguments.of(new double[] {12.34, 56.78, -2.0}, new double[] {0.0, 23.45}, -2.0),
                 Arguments.of(new double[] {-2023.79, 11.11, 333.333}, new double[] {1.1}, -2023.79),
@@ -106,12 +99,9 @@ final class MinTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testParallelStream(double[] values, double expectedMin) {
+    void testParallelStream(double[] values, double expectedMin) {
         double actualMin = Arrays.stream(values).parallel().collect(Min::create, Min::accept, Min::combine).getAsDouble();
         Assertions.assertEquals(expectedMin, actualMin);
-
-        DoubleStream nanStream = DoubleStream.of(Double.NaN, Double.NaN, Double.NaN);
-        Assertions.assertTrue(Double.isNaN(nanStream.parallel().collect(Min::create, Min::accept, Min::combine).getAsDouble()));
     }
 
     static Stream<Arguments> testParallelStream() {
@@ -128,24 +118,13 @@ final class MinTest {
     }
 
     @Test
-    public void testCombineImmutable() {
-        Min immutable = Min.of(1.1, 22.22, -333.333);
-        Min mutable = Min.create();
-        mutable.combine(immutable);
-        Assertions.assertEquals(-333.333, mutable.getAsDouble());
-        Assertions.assertEquals(-333.333, immutable.getAsDouble());
-
-        Min mutable2 = Min.create();
-        mutable2.accept(-4444.4444);
-        mutable2.combine(immutable);
-        Assertions.assertEquals(-4444.4444, mutable2.getAsDouble());
-
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> immutable.combine(mutable),
-                "cannot update an immutable instance");
+    void testNanParallelStream() {
+        DoubleStream nanStream = DoubleStream.of(Double.NaN, Double.NaN, Double.NaN);
+        Assertions.assertTrue(Double.isNaN(nanStream.parallel().collect(Min::create, Min::accept, Min::combine).getAsDouble()));
     }
 
     @Test
-    public void testSpecialValues() {
+    void testSpecialValues() {
         double[] testArray = {0.0d, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
         Min stat = Min.create();
 
@@ -169,14 +148,12 @@ final class MinTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testNaNs(double[] values, double expectedMin) {
+    void testNaNs(double[] values, double expectedMin) {
         Min stat = Min.create();
         for (final double value: values) {
             stat.accept(value);
         }
         Assertions.assertEquals(expectedMin, stat.getAsDouble());
-
-        Assertions.assertTrue(Double.isNaN(Min.of(Double.NaN, Double.NaN, Double.NaN).getAsDouble()));
     }
 
     static Stream<Arguments> testNaNs() {
@@ -188,7 +165,7 @@ final class MinTest {
     }
 
     @Test
-    public void testNaN() {
+    void testNaN() {
         double[] testArray = {0.0d, Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
         Min stat = Min.create();
 
@@ -211,11 +188,13 @@ final class MinTest {
         Assertions.assertEquals(Double.NaN, stat.getAsDouble());
 
         Assertions.assertEquals(Double.NaN, Min.of(testArray).getAsDouble());
+
+        Assertions.assertTrue(Double.isNaN(Min.of(Double.NaN, Double.NaN, Double.NaN).getAsDouble()));
     }
 
     @ParameterizedTest
     @MethodSource
-    public void testArrayOfArrays(double[][] input, double expectedMin) {
+    void testArrayOfArrays(double[][] input, double expectedMin) {
 
         double actualMin = Arrays.stream(input)
                 .map(Min::of)
@@ -227,15 +206,16 @@ final class MinTest {
     }
     static Stream<Arguments> testArrayOfArrays() {
         return Stream.of(
+                Arguments.of(new double[][] {{}, {}, {}}, Double.POSITIVE_INFINITY),
+                Arguments.of(new double[][] {{}, {Double.NaN}, {-1.7}}, Double.NaN),
+                Arguments.of(new double[][] {{}, {Double.NaN}, {}}, Double.NaN),
+                Arguments.of(new double[][] {{}, {1.1, 2}, {-1.7}}, -1.7),
                 Arguments.of(new double[][] {{1, 2}, {3, 4}}, 1),
                 Arguments.of(new double[][] {{+0.0, 2.0}, {1.0, -0.0, 3.14}}, -0.0),
-                Arguments.of(new double[][] {{+0.0, Double.NEGATIVE_INFINITY},
-                        {-0.0, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}}, Double.NEGATIVE_INFINITY),
+                Arguments.of(new double[][] {{+0.0, Double.NEGATIVE_INFINITY}, {-0.0, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}}, Double.NEGATIVE_INFINITY),
                 Arguments.of(new double[][] {{1.1, 22.22}, {34.56, -5678.9, 2.718}, {Double.NaN, 0}},
                         Double.NaN),
-                Arguments.of(new double[][] {{Double.NaN, Double.NaN}, {Double.NaN},
-                        {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN)
+                Arguments.of(new double[][] {{Double.NaN, Double.NaN}, {Double.NaN}, {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN)
         );
     }
-
 }
