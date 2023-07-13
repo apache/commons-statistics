@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -50,13 +52,21 @@ final class MinTest {
 
     static Stream<Arguments> testMin() {
         return Stream.of(
+                Arguments.of(new double[] {}, Double.POSITIVE_INFINITY),
                 Arguments.of(new double[] {3.14}, 3.14),
                 Arguments.of(new double[] {12.34, 56.78, -2.0}, -2.0),
                 Arguments.of(new double[] {Double.NaN, 3.14, Double.NaN, Double.NaN}, Double.NaN),
+                Arguments.of(new double[] {-1d, 1d, Double.NaN}, Double.NaN),
+                Arguments.of(new double[] {0.0d, Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}, Double.NaN),
+                Arguments.of(new double[] {+0.0d, -0.0d, 1.0, 3.14}, -0.0d),
                 Arguments.of(new double[] {-0.0, +0.0}, -0.0),
                 Arguments.of(new double[] {0.0, -0.0}, -0.0),
+                Arguments.of(new double[] {0.0, +0.0}, +0.0),
                 Arguments.of(new double[] {1.2, -34.56, 456.789, -5678.9012}, -5678.9012),
-                Arguments.of(new double[] {-23467824, 23648, 2368, 23749, -23424, -23492, -92397747}, -92397747)
+                Arguments.of(new double[] {-23467824, 23648, 2368, 23749, -23424, -23492, -92397747}, -92397747),
+                Arguments.of(new double[] {0.0d, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.MIN_VALUE}, -0.0),
+                Arguments.of(new double[] {0.0d, +0.0d, -0.0d, Double.POSITIVE_INFINITY, -Double.MIN_VALUE}, -Double.MIN_VALUE),
+                Arguments.of(new double[] {0.0d, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.MIN_VALUE}, Double.NEGATIVE_INFINITY)
         );
     }
 
@@ -98,23 +108,10 @@ final class MinTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource(value = "testMin")
     void testParallelStream(double[] values, double expected) {
         double actual = Arrays.stream(values).parallel().collect(Min::create, Min::accept, Min::combine).getAsDouble();
         Assertions.assertEquals(expected, actual);
-    }
-
-    static Stream<Arguments> testParallelStream() {
-        return Stream.of(
-                Arguments.of(new double[] {3.14}, 3.14),
-                Arguments.of(new double[] {12.34, 56.78, -2.0}, -2.0),
-                Arguments.of(new double[] {1.2, -34.56, 456.789, -5678.9012}, -5678.9012),
-                Arguments.of(new double[] {-23467824, 23648, 2368, 23749, -23424, -23492, -92397747}, -92397747),
-                Arguments.of(new double[] {-1d, 1d, Double.NaN}, Double.NaN),
-                Arguments.of(new double[] {+0.0d, -0.0d, 1.0, 3.14}, -0.0d),
-                Arguments.of(new double[] {0.0d, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}, Double.NEGATIVE_INFINITY),
-                Arguments.of(new double[] {0.0d, Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}, Double.NaN)
-        );
     }
 
     @Test
@@ -124,70 +121,41 @@ final class MinTest {
     }
 
     @Test
-    void testSpecialValues() {
-        double[] testArray = {0.0d, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
+    void testIncrement() {
+        // Test the min after each incremental update
+        // First parameter of testArray is the value that would be added
+        // Second parameter of testArray is the min we expect after adding the value
+        double[][] testArray = {
+            {1729.22, 1729.22},
+            {153.75, 153.75},
+            {370.371, 153.75},
+            {0.0, 0.0},
+            {+0.0, 0.0},
+            {-0.0, -0.0},
+            {Double.POSITIVE_INFINITY, -0.0},
+            {Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY},
+            {Double.MIN_VALUE, Double.NEGATIVE_INFINITY}
+        };
+
         Min stat = Min.create();
 
-        stat.accept(testArray[0]);
-        Assertions.assertEquals(0.0d, stat.getAsDouble());
-
-        stat.accept(testArray[1]);
-        Assertions.assertEquals(0.0d, stat.getAsDouble());
-
-        stat.accept(testArray[2]);
-        Assertions.assertEquals(-0.0d, stat.getAsDouble());
-
-        stat.accept(testArray[3]);
-        Assertions.assertEquals(-0.0d, stat.getAsDouble());
-
-        stat.accept(testArray[4]);
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, stat.getAsDouble());
-
-        Assertions.assertEquals(Double.NEGATIVE_INFINITY, Min.of(testArray).getAsDouble());
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void testNaNs(double[] values, double expected) {
-        Min stat = Min.create();
-        for (final double value: values) {
+        for (final double[] valueAndExpected: testArray) {
+            final double value = valueAndExpected[0];
+            final double expected = valueAndExpected[1];
             stat.accept(value);
+            Assertions.assertEquals(expected, stat.getAsDouble());
         }
-        Assertions.assertEquals(expected, stat.getAsDouble());
-    }
-
-    static Stream<Arguments> testNaNs() {
-        return Stream.of(
-                Arguments.of(new double[] {Double.NaN, 2d, 3d}, Double.NaN),
-                Arguments.of(new double[] {1d, Double.NaN, 3d}, Double.NaN),
-                Arguments.of(new double[] {-1d, 1d, Double.NaN}, Double.NaN)
-        );
     }
 
     @Test
     void testNaN() {
-        double[] testArray = {0.0d, Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
+        // Test non-nan values cannot revert a NaN
+        double[] testArray = {Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
         Min stat = Min.create();
-
-        stat.accept(testArray[0]);
-        Assertions.assertEquals(0.0d, stat.getAsDouble());
-
-        stat.accept(testArray[1]);
-        Assertions.assertEquals(Double.NaN, stat.getAsDouble());
-
-        stat.accept(testArray[2]);
-        Assertions.assertEquals(Double.NaN, stat.getAsDouble());
-
-        stat.accept(testArray[3]);
-        Assertions.assertEquals(Double.NaN, stat.getAsDouble());
-
-        stat.accept(testArray[4]);
-        Assertions.assertEquals(Double.NaN, stat.getAsDouble());
-
-        stat.accept(testArray[5]);
-        Assertions.assertEquals(Double.NaN, stat.getAsDouble());
-
-        Assertions.assertEquals(Double.NaN, Min.of(testArray).getAsDouble());
+        for (final double x : testArray) {
+            stat.accept(x);
+            Assertions.assertEquals(Double.NaN, stat.getAsDouble());
+        }
 
         Assertions.assertTrue(Double.isNaN(Min.of(Double.NaN, Double.NaN, Double.NaN).getAsDouble()));
     }
@@ -206,16 +174,25 @@ final class MinTest {
 
     static Stream<Arguments> testArrayOfArrays() {
         return Stream.of(
-                Arguments.of(new double[][] {{}, {}, {}}, Double.POSITIVE_INFINITY),
-                Arguments.of(new double[][] {{}, {Double.NaN}, {-1.7}}, Double.NaN),
-                Arguments.of(new double[][] {{}, {Double.NaN}, {}}, Double.NaN),
-                Arguments.of(new double[][] {{}, {1.1, 2}, {-1.7}}, -1.7),
-                Arguments.of(new double[][] {{1, 2}, {3, 4}}, 1),
-                Arguments.of(new double[][] {{+0.0, 2.0}, {1.0, -0.0, 3.14}}, -0.0),
-                Arguments.of(new double[][] {{+0.0, Double.NEGATIVE_INFINITY}, {-0.0, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}}, Double.NEGATIVE_INFINITY),
-                Arguments.of(new double[][] {{1.1, 22.22}, {34.56, -5678.9, 2.718}, {Double.NaN, 0}},
-                        Double.NaN),
-                Arguments.of(new double[][] {{Double.NaN, Double.NaN}, {Double.NaN}, {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN)
+            Arguments.of(new double[][] {{}, {}, {}}, Double.POSITIVE_INFINITY),
+            Arguments.of(new double[][] {{}, {Double.NaN}, {-1.7}}, Double.NaN),
+            Arguments.of(new double[][] {{}, {Double.NaN}, {}}, Double.NaN),
+            Arguments.of(new double[][] {{}, {1.1, 2}, {-1.7}}, -1.7),
+            Arguments.of(new double[][] {{1, 2}, {3, 4}}, 1),
+            Arguments.of(new double[][] {{+0.0, 2.0}, {1.0, -0.0, 3.14}}, -0.0),
+            Arguments.of(new double[][] {{+0.0, Double.NEGATIVE_INFINITY}, {-0.0, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}}, Double.NEGATIVE_INFINITY),
+            Arguments.of(new double[][] {{1.1, 22.22}, {34.56, -5678.9, 2.718}, {Double.NaN, 0}},
+                Double.NaN),
+            Arguments.of(new double[][] {{Double.NaN, Double.NaN}, {Double.NaN}, {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN)
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "testMin")
+    void testMinRandomOrder(double[] values, double expected) {
+        UniformRandomProvider rng = RandomSource.SPLIT_MIX_64.create();
+        for (int i = 0; i < 10; i++) {
+            testMin(TestHelper.shuffle(rng, values), expected);
+        }
     }
 }
