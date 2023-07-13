@@ -57,8 +57,7 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      * <p>The result is {@link Double#POSITIVE_INFINITY POSITIVE_INFINITY}
      * if no values have been added.
      *
-     * @return {@code Min} implementation
-     *
+     * @return {@code Min} implementation.
      */
     public static Min create() {
         return new StorelessMin();
@@ -72,13 +71,13 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      * <p>When the input is an empty array, the result is
      * {@link Double#POSITIVE_INFINITY POSITIVE_INFINITY}.
      *
-     * @param values Values
-     * @return Min instance
+     * @param values Values.
+     * @return {@code Min} instance.
      */
     public static Min of(double... values) {
-        final StorelessMin storelessMin = new StorelessMin();
-        Arrays.stream(values).forEach(storelessMin);
-        return storelessMin;
+        final StorelessMin min = new StorelessMin();
+        Arrays.stream(values).forEach(min);
+        return min;
     }
 
     /**
@@ -94,7 +93,7 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      * <p>When no values have been added, the result is
      * {@link Double#POSITIVE_INFINITY POSITIVE_INFINITY}.
      *
-     * @return The {@code min}.
+     * @return {@code Minimum} of all values seen so far.
      */
     @Override
     public abstract double getAsDouble();
@@ -107,31 +106,27 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      * {@code Min} implementation that does not store the input value(s) processed so far.
      *
      * <p>Uses JDK's {@link Math#min Math.min} as an underlying function
-     * to compute the {@code minimum}
+     * to compute the {@code minimum}.
      */
-    private static final class StorelessMin extends Min {
+    private static class StorelessMin extends Min {
 
         /** Current min. */
-        private double min;
+        private double min = Double.POSITIVE_INFINITY;
 
-        /** Create a StorelessMin instance. */
+        /** Creates an instance. */
         StorelessMin() {
-            min = Double.POSITIVE_INFINITY;
         }
 
-        /** {@inheritDoc} */
         @Override
         public void accept(double value) {
             min = Double.min(min, value);
         }
 
-        /** {@inheritDoc} */
         @Override
         public double getAsDouble() {
             return min;
         }
 
-        /** {@inheritDoc} */
         @Override
         public Min combine(Min other) {
             accept(other.getAsDouble());

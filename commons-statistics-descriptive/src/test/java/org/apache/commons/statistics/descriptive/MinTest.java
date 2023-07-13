@@ -195,7 +195,6 @@ final class MinTest {
     @ParameterizedTest
     @MethodSource
     void testArrayOfArrays(double[][] input, double expectedMin) {
-
         double actualMin = Arrays.stream(input)
                 .map(Min::of)
                 .reduce(Min::combine)
@@ -204,6 +203,7 @@ final class MinTest {
 
         Assertions.assertEquals(expectedMin, actualMin);
     }
+
     static Stream<Arguments> testArrayOfArrays() {
         return Stream.of(
                 Arguments.of(new double[][] {{}, {}, {}}, Double.POSITIVE_INFINITY),
