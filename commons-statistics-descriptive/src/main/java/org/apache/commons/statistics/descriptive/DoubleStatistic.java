@@ -23,7 +23,7 @@ import java.util.function.DoubleSupplier;
 /**
  * Represents a state object for computing a single {@code Statistic} over {@code double} valued input(s).
  *
- * <p>Base interface implemented by all statistics.</p>
+ * <p>Base interface implemented by all statistics.
  */
 public interface DoubleStatistic extends DoubleConsumer, DoubleSupplier {
 }
