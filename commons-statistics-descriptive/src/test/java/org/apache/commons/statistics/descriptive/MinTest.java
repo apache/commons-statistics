@@ -40,12 +40,12 @@ final class MinTest {
 
     @ParameterizedTest
     @MethodSource
-    void testMin(double[] values, double expectedMin) {
+    void testMin(double[] values, double expected) {
         Min stat = Min.create();
         Arrays.stream(values).forEach(stat);
-        double actualMin = stat.getAsDouble();
-        Assertions.assertEquals(expectedMin, actualMin, "min");
-        Assertions.assertEquals(expectedMin, Min.of(values).getAsDouble(), "min");
+        double actual = stat.getAsDouble();
+        Assertions.assertEquals(expected, actual, "min");
+        Assertions.assertEquals(expected, Min.of(values).getAsDouble(), "min");
     }
 
     static Stream<Arguments> testMin() {
@@ -62,7 +62,7 @@ final class MinTest {
 
     @ParameterizedTest
     @MethodSource
-    void testCombine(double[] first, double[] second, double expectedMin) {
+    void testCombine(double[] first, double[] second, double expected) {
         Min firstMin = Min.create();
         Min secondMin = Min.create();
 
@@ -71,7 +71,7 @@ final class MinTest {
 
         double secondMinBeforeCombine = secondMin.getAsDouble();
         firstMin.combine(secondMin);
-        Assertions.assertEquals(expectedMin, firstMin.getAsDouble());
+        Assertions.assertEquals(expected, firstMin.getAsDouble());
         Assertions.assertEquals(secondMinBeforeCombine, secondMin.getAsDouble());
     }
 
@@ -99,9 +99,9 @@ final class MinTest {
 
     @ParameterizedTest
     @MethodSource
-    void testParallelStream(double[] values, double expectedMin) {
-        double actualMin = Arrays.stream(values).parallel().collect(Min::create, Min::accept, Min::combine).getAsDouble();
-        Assertions.assertEquals(expectedMin, actualMin);
+    void testParallelStream(double[] values, double expected) {
+        double actual = Arrays.stream(values).parallel().collect(Min::create, Min::accept, Min::combine).getAsDouble();
+        Assertions.assertEquals(expected, actual);
     }
 
     static Stream<Arguments> testParallelStream() {
@@ -148,12 +148,12 @@ final class MinTest {
 
     @ParameterizedTest
     @MethodSource
-    void testNaNs(double[] values, double expectedMin) {
+    void testNaNs(double[] values, double expected) {
         Min stat = Min.create();
         for (final double value: values) {
             stat.accept(value);
         }
-        Assertions.assertEquals(expectedMin, stat.getAsDouble());
+        Assertions.assertEquals(expected, stat.getAsDouble());
     }
 
     static Stream<Arguments> testNaNs() {
@@ -194,14 +194,14 @@ final class MinTest {
 
     @ParameterizedTest
     @MethodSource
-    void testArrayOfArrays(double[][] input, double expectedMin) {
-        double actualMin = Arrays.stream(input)
+    void testArrayOfArrays(double[][] input, double expected) {
+        double actual = Arrays.stream(input)
                 .map(Min::of)
                 .reduce(Min::combine)
                 .map(DoubleSupplier::getAsDouble)
                 .orElseThrow(RuntimeException::new);
 
-        Assertions.assertEquals(expectedMin, actualMin);
+        Assertions.assertEquals(expected, actual);
     }
 
     static Stream<Arguments> testArrayOfArrays() {
