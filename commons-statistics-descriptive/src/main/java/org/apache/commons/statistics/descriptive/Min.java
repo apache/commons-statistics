@@ -115,6 +115,7 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
 
         /** Creates an instance. */
         StorelessMin() {
+            // No-op
         }
 
         @Override
