@@ -17,5 +17,7 @@
 
 /**
  * Implementations of univariate statistics.
+ *
+ * @since 1.1
  */
 package org.apache.commons.statistics.descriptive;

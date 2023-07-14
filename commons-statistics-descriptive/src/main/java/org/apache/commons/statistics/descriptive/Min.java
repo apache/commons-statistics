@@ -39,6 +39,8 @@ import java.util.Arrays;
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
+ *
+ * @since 1.1
  */
 public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator<Min> {
 
@@ -112,11 +114,6 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
 
         /** Current min. */
         private double min = Double.POSITIVE_INFINITY;
-
-        /** Creates an instance. */
-        StorelessMin() {
-            // No-op
-        }
 
         @Override
         public void accept(double value) {
