@@ -16,11 +16,11 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.numbers.gamma.Beta;
+import org.apache.commons.numbers.gamma.LogBeta;
 import org.apache.commons.numbers.gamma.RegularizedBeta;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.TSampler;
-import org.apache.commons.numbers.gamma.Beta;
-import org.apache.commons.numbers.gamma.LogBeta;
 
 /**
  * Implementation of Student's t-distribution.

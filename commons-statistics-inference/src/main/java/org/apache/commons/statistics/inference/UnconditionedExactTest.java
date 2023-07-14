@@ -22,7 +22,6 @@ import java.util.function.Consumer;
 import java.util.function.DoublePredicate;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntToDoubleFunction;
-
 import org.apache.commons.numbers.combinatorics.LogBinomialCoefficient;
 import org.apache.commons.statistics.inference.BrentOptimizer.PointValuePair;
 

@@ -17,11 +17,10 @@
 package org.apache.commons.statistics.distribution;
 
 import java.util.Arrays;
-
-import org.apache.commons.rng.simple.RandomSource;
-import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.commons.math3.stat.inference.GTest;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

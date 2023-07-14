@@ -17,9 +17,9 @@
 
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.numbers.gamma.Erfc;
 import org.apache.commons.numbers.gamma.InverseErfc;
-import org.apache.commons.numbers.gamma.ErfDifference;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.distribution.GaussianSampler;
 import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
