@@ -20,6 +20,8 @@ package org.apache.commons.statistics.descriptive;
  * A mutable result container that accumulates a {@code DoubleStatistic}.
  *
  * @param <T> {@code DoubleStatistic} being accumulated.
+ *
+ * @since 1.1
  */
 public interface DoubleStatisticAccumulator<T extends DoubleStatistic> {
 

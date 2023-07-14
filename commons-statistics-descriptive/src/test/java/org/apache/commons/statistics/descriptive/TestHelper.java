@@ -17,19 +17,29 @@
 package org.apache.commons.statistics.descriptive;
 
 import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
 
 /**
  * Helper class for tests in {@code o.a.c.s.descriptive} module.
  */
-public final class TestHelper {
+final class TestHelper {
 
     /** Class contains only static methods. */
     private TestHelper() {}
 
     /**
+     * Creates a RNG instance.
+     *
+     * @return A new RNG instance.
+     */
+    static UniformRandomProvider createRNG() {
+        return RandomSource.SPLIT_MIX_64.create();
+    }
+
+    /**
      * Shuffles the entries of the given array.
      *
-     * <p>Fisher-Yates shuffle copied from
+     * <p>Uses Fisher-Yates shuffle copied from
      * <a href="https://github.com/apache/commons-rng/blob/master/commons-rng-sampling/src/main/java/org/apache/commons/rng/sampling/ArraySampler.java">
      *     RNG ArraySampler.</a>
      *
@@ -37,8 +47,9 @@ public final class TestHelper {
      *
      * @param rng Source of randomness.
      * @param array Array whose entries will be shuffled (in-place).
+     * @return Shuffled input array.
      */
-    public static double[] shuffle(UniformRandomProvider rng, double[] array) {
+    static double[] shuffle(UniformRandomProvider rng, double[] array) {
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, rng.nextInt(i));
         }

@@ -55,7 +55,7 @@
             <artifactId>commons-rng-sampling</artifactId>
             <scope>test</scope>
         </dependency>
-        
+
     </dependencies>
 
 </project>
