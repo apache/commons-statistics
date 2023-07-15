@@ -18,8 +18,8 @@ package org.apache.commons.statistics.examples.distribution;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.statistics.distribution.WeibullDistribution;
 import org.apache.commons.statistics.distribution.ContinuousDistribution;
+import org.apache.commons.statistics.distribution.WeibullDistribution;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

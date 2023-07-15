@@ -18,8 +18,8 @@ package org.apache.commons.statistics.examples.distribution;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.statistics.distribution.ZipfDistribution;
 import org.apache.commons.statistics.distribution.DiscreteDistribution;
+import org.apache.commons.statistics.distribution.ZipfDistribution;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
