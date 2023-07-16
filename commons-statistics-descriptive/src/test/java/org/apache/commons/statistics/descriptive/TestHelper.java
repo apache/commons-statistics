@@ -43,7 +43,7 @@ final class TestHelper {
      * <a href="https://github.com/apache/commons-rng/blob/master/commons-rng-sampling/src/main/java/org/apache/commons/rng/sampling/ArraySampler.java">
      *     RNG ArraySampler.</a>
      *
-     * <p>This can be removed when {@code commons-rng-sampling 1.6} is released.
+     * <p>TODO: This can be removed when {@code commons-rng-sampling 1.6} is released.
      *
      * @param rng Source of randomness.
      * @param array Array whose entries will be shuffled (in-place).
