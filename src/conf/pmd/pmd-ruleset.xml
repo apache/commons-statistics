@@ -90,7 +90,7 @@
     <properties>
       <property name="violationSuppressXPath"
         value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='DD'
-          or @SimpleName='Two' or @SimpleName='One']"/>
+          or @SimpleName='Two' or @SimpleName='One' or @SimpleName='Min']"/>
     </properties>
   </rule>
   <rule ref="category/java/codestyle.xml/PrematureDeclaration">
