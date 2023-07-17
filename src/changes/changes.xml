@@ -56,16 +56,9 @@ If the output is not quite correct, check for invisible trailing spaces!
     <release version="1.1" date="TBD" description="
 Adds ranking, inference, descriptive and bom modules. (requires Java 8).
 ">
-      <action dev="aherbert" due-to="Anirudh Joshi"  type="add" issue="STATISTICS-72">
-        "Min": Add a minimum statistic.
-      </action>
       <action dev="aherbert" due-to="Anirudh Joshi"  type="add" issue="STATISTICS-71">
-        "DoubleStatistic/DoubleStatisticAccumulator": Add base interfaces for statistic
-        implementations.
-      </action>
-      <action dev="aherbert" due-to="Anirudh Joshi"  type="add" issue="STATISTICS-73">
-        "commons-statistics-descriptive": Add new descriptive module which
-        contains the implementations of all univariate statistics.
+        Add commons-statistics-descriptive module for implementations of univariate statistics.
+        Contains base interfaces for statistics and implementations for Min, Max.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-69">
         "UncoditionedExactTest": Add an unconditioned exact test for 2x2 contingency tables.
