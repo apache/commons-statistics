@@ -81,7 +81,7 @@ final class MinTest {
         Arrays.stream(values).forEach(stat);
         double actual = stat.getAsDouble();
         Assertions.assertEquals(expected, actual, "min");
-        Assertions.assertEquals(expected, Min.of(values).getAsDouble(), "min");
+        Assertions.assertEquals(expected, Min.of(values).getAsDouble(), "of(values)");
     }
 
     static Stream<Arguments> testMin() {
