@@ -56,6 +56,11 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-numbers-core</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
