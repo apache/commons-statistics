@@ -23,6 +23,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test cases for {@link TDistribution}.
@@ -147,5 +148,20 @@ class TDistributionTest extends BaseContinuousDistributionTest {
         final double p = dist.cumulativeProbability(x);
         Assertions.assertEquals(cdf, p, 6 * Math.ulp(cdf),
             () -> "cdf error: " + (Double.doubleToLongBits(cdf) - Double.doubleToRawLongBits(p)));
+    }
+
+    /**
+     * Test the inverse probability edge case for p=0.5.
+     * The inverse can use symmetry {@code isf(p) = -icdf(p)}. When p=0.5 the inverse
+     * will generate -0.0 for the negation. This test ensures both return the more logical 0.0.
+     */
+    @ParameterizedTest
+    @ValueSource(doubles = {1, 42, 1e25})
+    void testInverseSymmetryEdgeCase(double df) {
+        final TDistribution dist = TDistribution.of(df);
+        final double p = 0.5;
+        final double t = 0.0;
+        Assertions.assertEquals(t, dist.inverseCumulativeProbability(p));
+        Assertions.assertEquals(t, dist.inverseSurvivalProbability(p));
     }
 }

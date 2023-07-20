@@ -274,7 +274,8 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     @Override
     public double inverseSurvivalProbability(double p) {
         // Exploit symmetry
-        return -inverseCumulativeProbability(p);
+        // Subtract from 0 avoids returning -0.0 for p=0.5
+        return 0.0 - inverseCumulativeProbability(p);
     }
 
     /**
