@@ -911,9 +911,9 @@ final class KolmogorovSmirnovDistribution {
             } else {
                 fpow = power;
             }
-            // SD requires a more precise summation using all the terms that can ba added.
+            // SD requires a more precise summation using all the terms that can be added.
             // For the regular summation we must sum at least 50% of the terms. The number
-            // of bits required bits to sum remaining terms of the same magnitude is log2(N/2).
+            // of required bits to sum remaining terms of the same magnitude is log2(N/2).
             // These guards bits are conservative and > ~99% of terms are typically used.
             final DDAdd fadd = sd ? DD::add : DD::fastAdd;
             final int sumBits = sd ? SD_SUM_PRECISION_BITS : SUM_PRECISION_BITS + log2(maxN >> 1);
