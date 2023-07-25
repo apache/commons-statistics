@@ -16,8 +16,6 @@
  */
 package org.apache.commons.statistics.descriptive;
 
-import java.util.Arrays;
-
 /**
  * Returns the minimum of the available values.
  *
@@ -77,9 +75,7 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      * @return {@code Min} instance.
      */
     public static Min of(double... values) {
-        final StorelessMin min = new StorelessMin();
-        Arrays.stream(values).forEach(min);
-        return min;
+        return Statistics.add(new StorelessMin(), values);
     }
 
     /**

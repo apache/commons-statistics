@@ -16,8 +16,6 @@
  */
 package org.apache.commons.statistics.descriptive;
 
-import java.util.Arrays;
-
 /**
  * Returns the sum of the available values.
  *
@@ -79,9 +77,7 @@ public abstract class Sum implements DoubleStatistic, DoubleStatisticAccumulator
      * @return {@code Sum} instance.
      */
     public static Sum of(double... values) {
-        final WrappedSum sum = new WrappedSum();
-        Arrays.stream(values).forEach(sum);
-        return sum;
+        return Statistics.add(new WrappedSum(), values);
     }
 
     /**

@@ -16,8 +16,6 @@
  */
 package org.apache.commons.statistics.descriptive;
 
-import java.util.Arrays;
-
 /**
  * Returns the maximum of the available values.
  *
@@ -77,9 +75,7 @@ public abstract class Max implements DoubleStatistic, DoubleStatisticAccumulator
      * @return {@code Max} instance.
      */
     public static Max of(double... values) {
-        final StorelessMax max = new StorelessMax();
-        Arrays.stream(values).forEach(max);
-        return max;
+        return Statistics.add(new StorelessMax(), values);
     }
 
     /**
