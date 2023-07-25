@@ -16,8 +16,11 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.util.function.Supplier;
+import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Helper class for tests in {@code o.a.c.s.descriptive} module.
@@ -26,6 +29,22 @@ final class TestHelper {
 
     /** Class contains only static methods. */
     private TestHelper() {}
+
+    /**
+     * Helper function to assert that {@code actual} is equal to {@code expected} as defined
+     * by {@link org.apache.commons.numbers.core.Precision#equalsIncludingNaN(double, double, int)
+     * Precision.equalsIncludingNaN(x, y, maxUlps)}.
+     *
+     * @param expected expected value.
+     * @param actual actual value.
+     * @param ulps {@code (ulps - 1)} is the number of floating point
+     * values between {@code actual} and {@code expected}.
+     * @param msg additional debug message to log when the assertion fails.
+     */
+    static void assertEquals(double expected, double actual, int ulps, Supplier<String> msg) {
+        Assertions.assertTrue(Precision.equalsIncludingNaN(expected, actual, ulps),
+                () -> expected + " != " + actual + " within " + ulps + " ulp(s): " + msg.get());
+    }
 
     /**
      * Creates a RNG instance.
