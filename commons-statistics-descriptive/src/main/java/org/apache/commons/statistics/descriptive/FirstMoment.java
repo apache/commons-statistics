@@ -92,22 +92,6 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
     }
 
     /**
-     * Create a FirstMoment instance with the given parameters.
-     * @param m1 First moment.
-     * @param n Number of values.
-     * @param nonFiniteValue Running sum of values seen so far.
-     * @param dev Deviation of most recently added value from the first moment.
-     * @param nDev Deviation of most recently added value from the first moment normalized by sample size.
-     */
-    FirstMoment(final double m1, final long n, final double nonFiniteValue, final double dev, final double nDev) {
-        this.m1 = m1;
-        this.n = n;
-        this.nonFiniteValue = nonFiniteValue;
-        this.dev = dev;
-        this.nDev = nDev;
-    }
-
-    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      * @param value Value.
      */
