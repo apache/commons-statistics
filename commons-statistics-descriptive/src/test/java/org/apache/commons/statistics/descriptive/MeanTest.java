@@ -122,8 +122,8 @@ final class MeanTest {
         for (double value : values) {
             mean.accept(value);
         }
-        TestHelper.assertEquals(expected, mean.getAsDouble(), 0, () -> "mean non-finite");
-        TestHelper.assertEquals(expected, Mean.of(values).getAsDouble(), 0, () -> "of (values) non-finite");
+        Assertions.assertEquals(expected, mean.getAsDouble(), "mean non-finite");
+        Assertions.assertEquals(expected, Mean.of(values).getAsDouble(), "of (values) non-finite");
     }
 
     @ParameterizedTest
@@ -133,7 +133,7 @@ final class MeanTest {
                 .parallel()
                 .collect(Mean::create, Mean::accept, Mean::combine)
                 .getAsDouble();
-        TestHelper.assertEquals(expected, ans, 0, () -> "parallel stream non-finite");
+        Assertions.assertEquals(expected, ans, "parallel stream non-finite");
     }
 
     @ParameterizedTest
@@ -196,11 +196,14 @@ final class MeanTest {
         double[] data = TestHelper.concatenate(array1, array2);
         int n = array1.length;
         for (int i = 1; i <= 10; i++) {
+            for (int j = 1; j <= 10; j++) {
+                TestHelper.shuffle(rng, array1);
+                TestHelper.shuffle(rng, array2);
+                testCombine(array1, array2);
+            }
             TestHelper.shuffle(rng, data);
             System.arraycopy(data, 0, array1, 0, n);
             System.arraycopy(data, n, array2, 0, array2.length);
-            TestHelper.shuffle(rng, array1);
-            TestHelper.shuffle(rng, array2);
             testCombine(array1, array2);
         }
     }
@@ -256,7 +259,7 @@ final class MeanTest {
         Arrays.stream(values[1]).forEach(mean2);
         double mean2BeforeCombine = mean2.getAsDouble();
         mean1.combine(mean2);
-        TestHelper.assertEquals(expected, mean1.getAsDouble(), 0, () -> "combine");
+        Assertions.assertEquals(expected, mean1.getAsDouble(), "combine non-finite");
         Assertions.assertEquals(mean2BeforeCombine, mean2.getAsDouble());
     }
 
@@ -267,11 +270,14 @@ final class MeanTest {
         double[] data = TestHelper.concatenate(values[0], values[1]);
         int n = values[0].length;
         for (int i = 1; i <= 10; i++) {
+            for (int j = 1; j <= 10; j++) {
+                TestHelper.shuffle(rng, values[0]);
+                TestHelper.shuffle(rng, values[1]);
+                testCombineNonFinite(values, expected);
+            }
             TestHelper.shuffle(rng, data);
             System.arraycopy(data, 0, values[0], 0, n);
             System.arraycopy(data, n, values[1], 0, values[1].length);
-            TestHelper.shuffle(rng, values[0]);
-            TestHelper.shuffle(rng, values[1]);
             testCombineNonFinite(values, expected);
         }
     }
@@ -284,7 +290,7 @@ final class MeanTest {
                 .reduce(Mean::combine)
                 .map(Mean::getAsDouble)
                 .orElseThrow(RuntimeException::new);
-        TestHelper.assertEquals(expected, actual, 0, () -> "array of arrays combined mean non-finite");
+        Assertions.assertEquals(expected, actual, "array of arrays combined mean non-finite");
     }
 
     static Stream<Arguments> testCombineNonFinite() {
