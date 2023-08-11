@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.util.Arrays;
 import java.util.function.Supplier;
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.UniformRandomProvider;
@@ -31,9 +32,25 @@ final class TestHelper {
     private TestHelper() {}
 
     /**
+     * Helper function to concatenate arrays.
+     *
+     * @param arrays Arrays to be concatenated.
+     * @return A new array containing elements from all input arrays in the order they appear.
+     */
+    static double[] concatenate(double[]... arrays) {
+        return Arrays.stream(arrays)
+                .flatMapToDouble(Arrays::stream)
+                .toArray();
+    }
+
+    /**
      * Helper function to assert that {@code actual} is equal to {@code expected} as defined
-     * by {@link org.apache.commons.numbers.core.Precision#equalsIncludingNaN(double, double, int)
-     * Precision.equalsIncludingNaN(x, y, maxUlps)}.
+     * by {@link org.apache.commons.numbers.core.Precision#equals(double, double, int)
+     * Precision.equals(x, y, maxUlps)}.
+     *
+     * <p> Note: This uses {@code ULP} tolerance only if both {@code actual} and {@code expected} are finite.
+     * Otherwise, it uses a binary equality through {@link Assertions#assertEquals(double, double, String)
+     * Assertions.assertEquals(expected, actual, message)}.
      *
      * @param expected expected value.
      * @param actual actual value.
@@ -42,8 +59,13 @@ final class TestHelper {
      * @param msg additional debug message to log when the assertion fails.
      */
     static void assertEquals(double expected, double actual, int ulps, Supplier<String> msg) {
-        Assertions.assertTrue(Precision.equalsIncludingNaN(expected, actual, ulps),
-                () -> expected + " != " + actual + " within " + ulps + " ulp(s): " + msg.get());
+        // Require strict equivalence of non-finite values
+        if (Double.isFinite(expected) && Double.isFinite(actual)) {
+            Assertions.assertTrue(Precision.equals(expected, actual, ulps),
+                    () -> expected + " != " + actual + " within " + ulps + " ulp(s): " + msg.get());
+        } else {
+            Assertions.assertEquals(expected, actual, msg);
+        }
     }
 
     /**
