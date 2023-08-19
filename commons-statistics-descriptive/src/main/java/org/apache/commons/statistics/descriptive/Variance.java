@@ -114,11 +114,11 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
         double accum2 = 0.0;
         double squaredDevSum;
         for (final double value : values) {
-            dev = value * 0.5 - mean * 0.5;
+            dev = value - mean;
             accum += dev * dev;
             accum2 += dev;
         }
-        double accum2Squared = accum2 * accum2;
+        final double accum2Squared = accum2 * accum2;
         final long n = values.length;
         // The sum of squared deviations is accum - (accum2 * accum2 / n).
         // To prevent squaredDevSum from spuriously attaining a NaN value
@@ -127,9 +127,7 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
         if (accum2Squared == Double.POSITIVE_INFINITY) {
             squaredDevSum = Double.POSITIVE_INFINITY;
         } else {
-            accum *= 4;
-            accum2Squared *= 4;
-            squaredDevSum = accum - (accum2Squared / n);
+            squaredDevSum = accum - (accum2 * accum2 / n);
         }
         return StorelessSampleVariance.create(squaredDevSum, mean, n, accum2 + (mean * n));
     }

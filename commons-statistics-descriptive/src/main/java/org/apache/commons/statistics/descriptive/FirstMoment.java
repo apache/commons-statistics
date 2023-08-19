@@ -160,4 +160,21 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
     double getNonFiniteValue() {
         return nonFiniteValue;
     }
+
+    /**
+     * Gets the deviation of most recently added value from first moment.
+     * @return Deviation.
+     */
+    double getDev() {
+        return dev;
+    }
+
+    /**
+     * Gets the deviation of most recently added value from first moment,
+     * normalized by sample size.
+     * @return Normalized Deviation.
+     */
+    double getDevNormalizedByN() {
+        return nDev;
+    }
 }
