@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
@@ -26,67 +28,51 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test for {@link Mean}.
+ * Test for {@link Variance}.
  */
-final class MeanTest {
-    private static final int ULP_ARRAY = 2;
-
-    private static final int ULP_STREAM = 5;
-
-    private static final int ULP_COMBINE = 5;
+final class VarianceTest {
 
     @Test
     void testEmpty() {
-        Mean mean = Mean.create();
-        Assertions.assertEquals(Double.NaN, mean.getAsDouble());
-    }
-
-    @Test
-    void testNan() {
-        Mean mean = Mean.create();
-        double[] testArray = {Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
-        for (double value : testArray) {
-            mean.accept(value);
-        }
-        Assertions.assertEquals(Double.NaN, mean.getAsDouble());
+        Variance var = Variance.create();
+        Assertions.assertEquals(Double.NaN, var.getAsDouble());
     }
 
     @ParameterizedTest
-    @MethodSource(value = "testMean")
-    void testMean(double[] values) {
-        double expected = TestHelper.computeExpectedMean(values);
-        Mean mean = Mean.create();
+    @MethodSource(value = "testVariance")
+    void testVariance(double[] values) {
+        double expected = computeExpectedVariance(values);
+        Variance var = Variance.create();
         for (double value : values) {
-            mean.accept(value);
+            var.accept(value);
         }
-        TestHelper.assertEquals(expected, mean.getAsDouble(), ULP_STREAM, () -> "mean");
-        TestHelper.assertEquals(expected, Mean.of(values).getAsDouble(), ULP_ARRAY, () -> "of (values)");
+        TestHelper.assertEquals(expected, var.getAsDouble(), 7, () -> "variance");
+        TestHelper.assertEquals(expected, Variance.of(values).getAsDouble(), 5, () -> "of (values)");
     }
 
     @ParameterizedTest
-    @MethodSource(value = "testMean")
+    @MethodSource(value = "testVariance")
     void testParallelStream(double[] values) {
-        double expected = TestHelper.computeExpectedMean(values);
-        double ans = Arrays.stream(values)
+        double expected = computeExpectedVariance(values);
+        double actual = Arrays.stream(values)
                 .parallel()
-                .collect(Mean::create, Mean::accept, Mean::combine)
+                .collect(Variance::create, Variance::accept, Variance::combine)
                 .getAsDouble();
-        TestHelper.assertEquals(expected, ans, ULP_COMBINE, () -> "parallel stream");
+        TestHelper.assertEquals(expected, actual, 7, () -> "parallel stream");
     }
 
     @ParameterizedTest
-    @MethodSource(value = "testMean")
-    void testMeanRandomOrder(double[] values) {
+    @MethodSource(value = "testVariance")
+    void testVarianceRandomOrder(double[] values) {
         UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 1; i <= 10; i++) {
-            testMean(TestHelper.shuffle(rng, values));
+            testVariance(TestHelper.shuffle(rng, values));
             testParallelStream(TestHelper.shuffle(rng, values));
         }
     }
 
-    static Stream<Arguments> testMean() {
+    static Stream<Arguments> testVariance() {
         return Stream.of(
-            Arguments.of(new double[] {0.0}),
             Arguments.of(new double[] {10, 8, 13, 9, 11, 14, 6, 4, 12, 7, 5}),
             Arguments.of(new double[] {8.04, 6.95, 7.58, 8.81, 8.33, 9.96, 7.24, 4.26, 10.84, 4.82, 5.68}),
             Arguments.of(new double[] {9.14, 8.14, 8.74, 8.77, 9.26, 8.10, 6.13, 3.10, 9.13, 7.26, 4.74, 7.46, 6.77, 12.74, 7.11, 7.81, 8.84, 6.08, 5.39, 8.15, 6.42, 5.73}),
@@ -114,55 +100,55 @@ final class MeanTest {
             Arguments.of(new double[] {Double.MAX_VALUE, -Double.MAX_VALUE}),
             Arguments.of(new double[] {1, -Double.MAX_VALUE}),
             Arguments.of(new double[] {1, 1, 1, -Double.MAX_VALUE}),
-            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE / 2}),
-            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE, -Double.MAX_VALUE})
+            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE / 2})
         );
     }
 
     @ParameterizedTest
-    @MethodSource(value = "testMeanNonFinite")
-    void testMeanNonFinite(double[] values, double expected) {
-        Mean mean = Mean.create();
+    @MethodSource(value = "testVarianceNonFinite")
+    void testVarianceNonFinite(double[] values, double expected) {
+        Variance var = Variance.create();
         for (double value : values) {
-            mean.accept(value);
+            var.accept(value);
         }
-        Assertions.assertEquals(expected, mean.getAsDouble(), "mean non-finite");
-        Assertions.assertEquals(expected, Mean.of(values).getAsDouble(), "of (values) non-finite");
+        Assertions.assertEquals(expected, var.getAsDouble(), "variance non-finite");
+        Assertions.assertEquals(expected, Variance.of(values).getAsDouble(), "of (values) non-finite");
     }
 
     @ParameterizedTest
-    @MethodSource(value = "testMeanNonFinite")
+    @MethodSource(value = "testVarianceNonFinite")
     void testParallelStreamNonFinite(double[] values, double expected) {
         double ans = Arrays.stream(values)
                 .parallel()
-                .collect(Mean::create, Mean::accept, Mean::combine)
+                .collect(Variance::create, Variance::accept, Variance::combine)
                 .getAsDouble();
         Assertions.assertEquals(expected, ans, "parallel stream non-finite");
     }
 
     @ParameterizedTest
-    @MethodSource(value = "testMeanNonFinite")
-    void testMeanRandomOrderNonFinite(double[] values, double expected) {
+    @MethodSource(value = "testVarianceNonFinite")
+    void testVarianceRandomOrderNonFinite(double[] values, double expected) {
         UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 1; i <= 10; i++) {
-            testMeanNonFinite(TestHelper.shuffle(rng, values), expected);
+            testVarianceNonFinite(TestHelper.shuffle(rng, values), expected);
             testParallelStreamNonFinite(TestHelper.shuffle(rng, values), expected);
         }
     }
-
-    static Stream<Arguments> testMeanNonFinite() {
+    static Stream<Arguments> testVarianceNonFinite() {
         return Stream.of(
             Arguments.of(new double[] {}, Double.NaN),
             Arguments.of(new double[] {Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY},
                 Double.NaN),
             Arguments.of(new double[] {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY},
-                Double.POSITIVE_INFINITY),
+                Double.NaN),
             Arguments.of(new double[] {Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY},
-                Double.NEGATIVE_INFINITY),
+                Double.NaN),
             Arguments.of(new double[] {Double.POSITIVE_INFINITY, Double.MAX_VALUE},
-                Double.POSITIVE_INFINITY),
+                Double.NaN),
             Arguments.of(new double[] {Double.NEGATIVE_INFINITY, -Double.MIN_VALUE},
-                Double.NEGATIVE_INFINITY),
+                Double.NaN),
+            Arguments.of(new double[] {Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY,
+                Double.NEGATIVE_INFINITY}, Double.NaN),
             Arguments.of(new double[] {Double.NaN, 34.56, 89.74}, Double.NaN),
             Arguments.of(new double[] {34.56, Double.NaN, 89.74}, Double.NaN),
             Arguments.of(new double[] {34.56, 89.74, Double.NaN}, Double.NaN),
@@ -170,11 +156,11 @@ final class MeanTest {
                 Double.NaN),
             Arguments.of(new double[] {Double.NaN, Double.NaN, Double.NaN}, Double.NaN),
             Arguments.of(new double[] {Double.NEGATIVE_INFINITY, Double.MAX_VALUE},
-                Double.NEGATIVE_INFINITY),
+                Double.NaN),
             Arguments.of(new double[] {Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY,
-                Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY}, Double.POSITIVE_INFINITY),
+                Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY}, Double.NaN),
             Arguments.of(new double[] {-Double.MAX_VALUE, Double.POSITIVE_INFINITY},
-                Double.POSITIVE_INFINITY)
+                Double.NaN)
         );
     }
 
@@ -182,22 +168,15 @@ final class MeanTest {
     @MethodSource(value = "testCombine")
     void testCombine(double[] array1, double[] array2) {
         final double[] combinedArray = TestHelper.concatenate(array1, array2);
-        final double expected = TestHelper.computeExpectedMean(combinedArray);
-        Mean mean1 = Mean.create();
-        Mean mean2 = Mean.create();
-        Arrays.stream(array1).forEach(mean1);
-        Arrays.stream(array2).forEach(mean2);
-        final double mean1BeforeCombine = mean1.getAsDouble();
-        final double mean2BeforeCombine = mean2.getAsDouble();
-        mean1.combine(mean2);
-        TestHelper.assertEquals(expected, mean1.getAsDouble(), ULP_COMBINE, () -> "combine");
-        Assertions.assertEquals(mean2BeforeCombine, mean2.getAsDouble());
-        // Combine in reversed order
-        Mean mean1b = Mean.create();
-        Arrays.stream(array1).forEach(mean1b);
-        mean2.combine(mean1b);
-        TestHelper.assertEquals(expected, mean2.getAsDouble(), ULP_COMBINE, () -> "combine");
-        Assertions.assertEquals(mean1BeforeCombine, mean1b.getAsDouble());
+        final double expected = computeExpectedVariance(combinedArray);
+        Variance var1 = Variance.create();
+        Variance var2 = Variance.create();
+        Arrays.stream(array1).forEach(var1);
+        Arrays.stream(array2).forEach(var2);
+        final double var2BeforeCombine = var2.getAsDouble();
+        var1.combine(var2);
+        TestHelper.assertEquals(expected, var1.getAsDouble(), 7, () -> "combine");
+        Assertions.assertEquals(var2BeforeCombine, var2.getAsDouble());
     }
 
     @ParameterizedTest
@@ -223,14 +202,14 @@ final class MeanTest {
     @MethodSource(value = "testCombine")
     void testArrayOfArrays(double[] array1, double[] array2) {
         final double[] combinedArray = TestHelper.concatenate(array1, array2);
-        final double expected = TestHelper.computeExpectedMean(combinedArray);
+        final double expected = computeExpectedVariance(combinedArray);
         final double[][] values = {array1, array2};
         double actual = Arrays.stream(values)
-                .map(Mean::of)
-                .reduce(Mean::combine)
-                .map(Mean::getAsDouble)
+                .map(Variance::of)
+                .reduce(Variance::combine)
+                .map(Variance::getAsDouble)
                 .orElseThrow(RuntimeException::new);
-        TestHelper.assertEquals(expected, actual, ULP_COMBINE, () -> "array of arrays combined mean");
+        TestHelper.assertEquals(expected, actual, 2, () -> "array of arrays combined variance");
     }
 
     static Stream<Arguments> testCombine() {
@@ -254,28 +233,24 @@ final class MeanTest {
             Arguments.of(new double[] {-Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {-Double.MAX_VALUE, 1}, new double[] {1}),
             Arguments.of(new double[] {Double.MAX_VALUE, 3.1415E153}, new double[] {}),
+            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {1}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {1, 1, 1}, new double[] {-Double.MAX_VALUE}),
-            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {1, 1E300}),
-            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
-            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {Double.MAX_VALUE, -Double.MAX_VALUE}),
-            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
-            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE, -Double.MAX_VALUE}),
-            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE})
+            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {1, 1E300})
         );
     }
 
     @ParameterizedTest
     @MethodSource(value = "testCombineNonFinite")
     void testCombineNonFinite(double[][] values, double expected) {
-        Mean mean1 = Mean.create();
-        Mean mean2 = Mean.create();
-        Arrays.stream(values[0]).forEach(mean1);
-        Arrays.stream(values[1]).forEach(mean2);
-        double mean2BeforeCombine = mean2.getAsDouble();
-        mean1.combine(mean2);
-        Assertions.assertEquals(expected, mean1.getAsDouble(), "combine non-finite");
-        Assertions.assertEquals(mean2BeforeCombine, mean2.getAsDouble());
+        Variance var1 = Variance.create();
+        Variance var2 = Variance.create();
+        Arrays.stream(values[0]).forEach(var1);
+        Arrays.stream(values[1]).forEach(var2);
+        double mean2BeforeCombine = var2.getAsDouble();
+        var1.combine(var2);
+        Assertions.assertEquals(expected, var1.getAsDouble(), "combine non-finite");
+        Assertions.assertEquals(mean2BeforeCombine, var2.getAsDouble());
     }
 
     @ParameterizedTest
@@ -301,28 +276,45 @@ final class MeanTest {
     @MethodSource(value = "testCombineNonFinite")
     void testArrayOfArraysNonFinite(double[][] values, double expected) {
         double actual = Arrays.stream(values)
-                .map(Mean::of)
-                .reduce(Mean::combine)
-                .map(Mean::getAsDouble)
+                .map(Variance::of)
+                .reduce(Variance::combine)
+                .map(Variance::getAsDouble)
                 .orElseThrow(RuntimeException::new);
-        Assertions.assertEquals(expected, actual, "array of arrays combined mean non-finite");
+        Assertions.assertEquals(expected, actual, "array of arrays combined variance non-finite");
     }
 
     static Stream<Arguments> testCombineNonFinite() {
         return Stream.of(
             Arguments.of(new double[][] {{}, {}}, Double.NaN),
             Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.NEGATIVE_INFINITY}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.POSITIVE_INFINITY}}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY}, {Double.NEGATIVE_INFINITY}}, Double.NEGATIVE_INFINITY),
-            Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.MAX_VALUE}}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[][] {{-Double.MAX_VALUE}, {Double.POSITIVE_INFINITY}}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY}, {-Double.MIN_VALUE}}, Double.NEGATIVE_INFINITY),
+            Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.POSITIVE_INFINITY}}, Double.NaN),
+            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY}, {Double.NEGATIVE_INFINITY}}, Double.NaN),
+            Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.MAX_VALUE}}, Double.NaN),
+            Arguments.of(new double[][] {{-Double.MAX_VALUE}, {Double.POSITIVE_INFINITY}}, Double.NaN),
+            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY}, {-Double.MIN_VALUE}}, Double.NaN),
             Arguments.of(new double[][] {{Double.NaN, 34.56, 89.74}, {Double.NaN}}, Double.NaN),
             Arguments.of(new double[][] {{34.56}, {Double.NaN, 89.74}}, Double.NaN),
             Arguments.of(new double[][] {{34.56, 89.74}, {Double.NaN, Double.NaN}}, Double.NaN),
             Arguments.of(new double[][] {{Double.NaN, 3.14, Double.NaN, Double.NaN}, {}}, Double.NaN),
             Arguments.of(new double[][] {{Double.NaN, Double.NaN, Double.NaN}, {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY, -Double.MAX_VALUE, -Double.MIN_VALUE}, {Double.MAX_VALUE, Double.MIN_VALUE}}, Double.NEGATIVE_INFINITY)
+            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY, -Double.MAX_VALUE, -Double.MIN_VALUE}, {Double.MAX_VALUE, Double.MIN_VALUE}}, Double.NaN)
         );
+    }
+
+    // Helper function to compute the expected value of Variance using BigDecimal.
+    static double computeExpectedVariance(double[] values) {
+        long n = values.length;
+        if (n == 1) {
+            return BigDecimal.ZERO.doubleValue();
+        }
+        double mean = TestHelper.computeExpectedMean(values);
+        BigDecimal bd = BigDecimal.ZERO;
+        for (double value : values) {
+            BigDecimal bdDiff = BigDecimal.valueOf(value)
+                    .subtract(BigDecimal.valueOf(mean));
+            bdDiff = bdDiff.multiply(bdDiff);
+            bd = bd.add(bdDiff);
+        }
+        return bd.divide(BigDecimal.valueOf(n - 1), MathContext.DECIMAL128).doubleValue();
     }
 }

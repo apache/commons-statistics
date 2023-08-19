@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import org.apache.commons.numbers.core.Precision;
@@ -41,6 +43,19 @@ final class TestHelper {
         return Arrays.stream(arrays)
                 .flatMapToDouble(Arrays::stream)
                 .toArray();
+    }
+
+    /**
+     * Helper function to compute the expected value of Mean using BigDecimal.
+     * @param values Values.
+     * @return Mean of values.
+     */
+    static double computeExpectedMean(double[] values) {
+        BigDecimal bd = BigDecimal.ZERO;
+        for (double value : values) {
+            bd = bd.add(new BigDecimal(value));
+        }
+        return bd.divide(BigDecimal.valueOf(values.length), MathContext.DECIMAL128).doubleValue();
     }
 
     /**
