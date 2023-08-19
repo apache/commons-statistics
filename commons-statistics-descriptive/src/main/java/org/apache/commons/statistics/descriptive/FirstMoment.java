@@ -170,8 +170,7 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
     }
 
     /**
-     * Gets the deviation of most recently added value from first moment,
-     * normalized by sample size.
+     * Gets the deviation of most recently added value from first moment, normalized by sample size.
      * @return Normalized Deviation.
      */
     double getDevNormalizedByN() {
