@@ -42,8 +42,8 @@ package org.apache.commons.statistics.descriptive;
  *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
- * one of the threads invokes the <code>increment()</code> or
- * <code>clear()</code> method, it must be synchronized externally.
+ * one of the threads invokes the <code>accept()</code> or
+ * <code>combine()</code> method, it must be synchronized externally.
  *
  * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
  * as <code>accumulator</code> and <code>combiner</code> functions of
@@ -151,7 +151,6 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
         StorelessMean() {
             firstMoment = new FirstMoment();
         }
-
 
         /**
          * Creates a StorelessMean instance with an External Moment.
