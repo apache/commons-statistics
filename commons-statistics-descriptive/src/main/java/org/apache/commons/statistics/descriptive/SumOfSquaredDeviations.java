@@ -29,15 +29,15 @@ package org.apache.commons.statistics.descriptive;
  * </ul>
  * Then
  * <p>
- * new value = old value + dev^2 * (n -1) / n.
+ * new value = old value + dev^2 * (n - 1) / n.
  * <p>
  *
  * Returns the sum of squared deviations of all values seen so far.
  *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
- * one of the threads invokes the <code>increment()</code> or
- * <code>clear()</code> method, it must be synchronized externally.
+ * one of the threads invokes the <code>accept()</code> or
+ * <code>combine()</code> method, it must be synchronized externally.
  *
  * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
  * as <code>accumulator</code> and <code>combiner</code> functions of
