@@ -19,6 +19,7 @@ package org.apache.commons.statistics.inference;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.IntStream;
+import org.apache.commons.numbers.core.DD;
 import org.apache.commons.numbers.core.Precision;
 
 /**
@@ -88,17 +89,17 @@ final class StatisticUtils {
         Arguments.checkValuesSizeMatch(expected.length, observed.length);
         Arguments.checkStrictlyPositive(expected);
         Arguments.checkNonNegative(observed);
-        final DD e = DD.create();
-        final DD o = DD.create();
+        DD e = DD.ZERO;
+        DD o = DD.ZERO;
         for (int i = 0; i < observed.length; i++) {
-            DD.fastAdd(e.hi(), e.lo(), expected[i], e);
-            add(o, observed[i]);
+            e = e.add(expected[i]);
+            o = add(o, observed[i]);
         }
         if (o.doubleValue() == 0) {
             throw new InferenceException(InferenceException.NO_DATA);
         }
         // sum(o) / sum(e)
-        final double ratio = DD.divide(o.hi(), o.lo(), e.hi(), e.lo(), e).doubleValue();
+        final double ratio = o.divide(e).doubleValue();
         // Allow a sum within 1 ulp of 1.0
         return Precision.equals(ratio, 1.0, 0) ? 1.0 : ratio;
     }
@@ -108,18 +109,15 @@ final class StatisticUtils {
      *
      * @param sum Sum.
      * @param v Value.
+     * @return the new sum
      */
-    private static void add(DD sum, long v) {
-        // Split into hi and lo parts so the high part has 53-bits
-        final double hi = v;
-        final long lo = v - (long) hi;
+    private static DD add(DD sum, long v) {
         // The condition here is a high probability branch if the sample is
-        // frequency counts which are typically in the 32-bit integer range.
-        if (lo == 0) {
-            DD.fastAdd(sum.hi(), sum.lo(), hi, sum);
-        } else {
-            DD.fastAdd(sum.hi(), sum.lo(), hi, lo, sum);
-        }
+        // frequency counts which are typically in the 32-bit integer range,
+        // i.e. all the upper bits are zero.
+        return (v >>> Integer.SIZE) == 0 ?
+            sum.add(v) :
+            sum.add(DD.of(v));
     }
 
     /**
@@ -138,12 +136,12 @@ final class StatisticUtils {
         // Single pass high accuracy sum. The total cannot be more than 2^63 * 2^31 bits
         // so can be exactly represented in a double-double. Cumulative error in the sum
         // is (n-1) * 4eps with eps = 2^-106. The sum should be exact to double precision.
-        final DD dd = DD.create();
+        DD dd = DD.ZERO;
         for (final long v : x) {
-            add(dd, v);
+            dd = add(dd, v);
         }
 
-        return DD.divide(dd.hi(), dd.lo(), n, 0, dd).doubleValue();
+        return dd.divide(n).doubleValue();
     }
 
     /**

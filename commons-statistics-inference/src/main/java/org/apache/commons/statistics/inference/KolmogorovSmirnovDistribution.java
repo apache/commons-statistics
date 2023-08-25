@@ -20,6 +20,8 @@ package org.apache.commons.statistics.inference;
 import java.util.Arrays;
 import org.apache.commons.numbers.combinatorics.Factorial;
 import org.apache.commons.numbers.combinatorics.LogFactorial;
+import org.apache.commons.numbers.core.DD;
+import org.apache.commons.numbers.core.DDMath;
 import org.apache.commons.numbers.core.Sum;
 import org.apache.commons.statistics.inference.SquareMatrixSupport.RealSquareMatrix;
 
@@ -714,35 +716,15 @@ final class KolmogorovSmirnovDistribution {
              * (x+xx)^n = (f+ff) * 2^exp
              * </pre>
              *
-             * @param x High part of x.
-             * @param xx Low part of x.
+             * @param x x.
              * @param n Power.
-             * @param f Fraction part.
-             * @return Power of two scale factor (integral exponent).
-             * @see DD#frexp(double, double, DD)
-             * @see DD#fastPowScaled(double, double, int, DD)
-             * @see DD#powScaled(double, double, int, DD)
+             * @param exp Result power of two scale factor (integral exponent).
+             * @return Fraction part.
+             * @see DD#frexp(int[])
+             * @see DD#pow(int, long[])
+             * @see DDMath#pow(DD, int, long[])
              */
-            long pow(double x, double xx, int n, DD f);
-        }
-
-        /**
-         * Defines an addition of two double-double numbers.
-         */
-        private interface DDAdd {
-            /**
-             * Compute the sum of {@code (x,xx)} and {@code (y,yy)}.
-             *
-             * @param x High part of x.
-             * @param xx Low part of x.
-             * @param y High part of y.
-             * @param yy Low part of y.
-             * @param s Sum.
-             * @return the sum
-             * @see DD#add(double, double, double, double, DD)
-             * @see DD#fastAdd(double, double, double, double, DD)
-             */
-            DD add(double x, double xx, double y, double yy, DD s);
+            DD pow(DD x, int n, long[] exp);
         }
 
         /** No instances. */
@@ -838,17 +820,15 @@ final class KolmogorovSmirnovDistribution {
          * @param n Sample size (assumed to be positive).
          * @param power Function to compute the scaled power (can be null).
          * @return \(P(D_n^+ &ge; x)\)
-         * @see DD#fastPowScaled(double, double, int, DD)
-         * @see DD#powScaled(double, double, int, DD)
+         * @see DD#pow(int, long[])
+         * @see DDMath#pow(DD, int, long[])
          */
         static double sf(double x, int n, ScaledPower power) {
             // Compute only the SF using Algorithm 1 pp 12.
-            // Only require 1 double-double for all intermediate computations.
-            final DD z = DD.create();
 
             // Compute: k = floor(n*x), alpha = nx - k; x = (k+alpha)/n with 0 <= alpha < 1
-            final int k = splitX(n, x, z);
-            final double alpha = z.hi();
+            final double[] alpha = {0};
+            final int k = splitX(n, x, alpha);
 
             // Choose the algorithm:
             // Eq (13) Smirnov/Birnbaum-Tingey; or Smirnov/Dwass Eq (31)
@@ -860,7 +840,7 @@ final class KolmogorovSmirnovDistribution {
             // Where N is the number of terms - 1. This differs from Algorithm 1 by dropping
             // a SD term when it should be zero (to working precision).
             final int regN = n - k - 1;
-            final int sdN = k - ((alpha == 0) ? 1 : 0);
+            final int sdN = k - ((alpha[0] == 0) ? 1 : 0);
 
             // SD : Figure 3 (c) (pp. 6)
             // Terms Aj (j = n -> 0) have alternating signs through the range and may involve
@@ -907,50 +887,50 @@ final class KolmogorovSmirnovDistribution {
             ScaledPower fpow;
             if (power == POWER_DEFAULT) {
                 // SD has only a few terms. Use a high accuracy power.
-                fpow = sd ? DD::powScaled : DD::fastPowScaled;
+                fpow = sd ? DDMath::pow : DD::pow;
             } else {
                 fpow = power;
             }
-            // SD requires a more precise summation using all the terms that can be added.
             // For the regular summation we must sum at least 50% of the terms. The number
             // of required bits to sum remaining terms of the same magnitude is log2(N/2).
             // These guards bits are conservative and > ~99% of terms are typically used.
-            final DDAdd fadd = sd ? DD::add : DD::fastAdd;
             final int sumBits = sd ? SD_SUM_PRECISION_BITS : SUM_PRECISION_BITS + log2(maxN >> 1);
 
             // Working variable for the exponent of scaled values
-            long e;
+            final int[] ie = {0};
+            final long[] le = {0};
 
-            // Compute A0. The terms Aj may over/underflow.
+            // The terms Aj may over/underflow.
             // This is handled by maintaining the sum(Aj) using a fractional representation.
+            // sum(Aj) maintained as 2^e * f with f in [0.5, 1)
+            DD sum;
+            long esum;
+
+            // Compute A0
             if (sd) {
                 // A0 = (1+x)^(n-1)
-                DD.fastTwoSum(1, x, z);
-                e = fpow.pow(z.hi(), z.lo(), n - 1, z);
+                sum = fpow.pow(DD.ofSum(1, x), n - 1, le);
+                esum = le[0];
             } else {
                 // A0 = (1-x)^n / x
-                DD.fastTwoSum(1, -x, z);
-                e = fpow.pow(z.hi(), z.lo(), n, z);
+                sum = fpow.pow(DD.ofDifference(1, x), n, le);
+                esum = le[0];
                 // x in (1/n, 1 - 1/n) so the divide of the fraction is safe
-                DD.divide(z.hi(), z.lo(), x, 0, z);
-                e += DD.frexp(z.hi(), z.lo(), z);
+                sum = sum.divide(x).frexp(ie);
+                esum += ie[0];
             }
 
-            // sum(Aj) maintained as 2^e * f with f in [0.5, 1)
-            final DD sum = z.copy();
-            long esum = e;
             // Binomial coefficient c(n, j) maintained as 2^e * f with f in [1, 2)
             // This value is integral but maintained to limited precision
-            final DD c = DD.create(1);
+            DD c = DD.ONE;
             long ec = 0;
             for (int i = 1; i <= maxN; i++) {
                 // c(n, j) = c(n, j-1) * (n-j+1) / j
-                DD.uncheckedDivide(n - i + 1, i, z);
-                DD.uncheckedMultiply(c.hi(), c.lo(), z.hi(), z.lo(), c);
+                c = c.multiply(DD.fromQuotient(n - i + 1, i));
                 // Here we maintain c in [1, 2) to restrict the scaled Aj term to [0.25, 2].
                 final int b = Math.getExponent(c.hi());
                 if (b != 0) {
-                    DD.ldexp(c.hi(), c.lo(), -b, c);
+                    c = c.scalb(-b);
                     ec += b;
                 }
                 // Compute Aj
@@ -958,25 +938,20 @@ final class KolmogorovSmirnovDistribution {
                 // Algorithm 4 pp. 27
                 // S = ((j/n) + x)^(j-1)
                 // T = ((n-j)/n - x)^(n-j)
-                DD.uncheckedDivide(j, n, z);
-                DD.fastAdd(z.hi(), z.lo(), x, z);
-                final long es = fpow.pow(z.hi(), z.lo(), j - 1, z);
-                final double s = z.hi();
-                final double ss = z.lo();
-                DD.uncheckedDivide(n - j, n, z);
-                DD.fastAdd(z.hi(), z.lo(), -x, z);
-                final long et = fpow.pow(z.hi(), z.lo(), n - j, z);
+                final DD s = fpow.pow(DD.fromQuotient(j, n).add(x), j - 1, le);
+                final long es = le[0];
+                final DD t = fpow.pow(DD.fromQuotient(n - j, n).subtract(x), n - j, le);
+                final long et = le[0];
                 // Aj = C(n, j) * T * S
                 //    = 2^e * [1, 2] * [0.5, 1] * [0.5, 1]
                 //    = 2^e * [0.25, 2]
-                e = ec + es + et;
+                final long eaj = ec + es + et;
                 // Only compute and add to the sum when the exponents overlap by n-bits.
-                if (e > esum - sumBits) {
-                    DD.uncheckedMultiply(c.hi(), c.lo(), z.hi(), z.lo(), z);
-                    DD.uncheckedMultiply(z.hi(), z.lo(), s, ss, z);
+                if (eaj > esum - sumBits) {
+                    DD aj = c.multiply(t).multiply(s);
                     // Scaling must offset by the scale of the sum
-                    DD.ldexp(z.hi(), z.lo(), (int) (e - esum), z);
-                    fadd.add(sum.hi(), sum.lo(), z.hi(), z.lo(), sum);
+                    aj = aj.scalb((int) (eaj - esum));
+                    sum = sum.add(aj);
                 } else {
                     // Terms are expected to increase in magnitude then reduce.
                     // Here the terms are insignificant and we can stop.
@@ -985,18 +960,19 @@ final class KolmogorovSmirnovDistribution {
                 }
 
                 // Re-scale the sum
-                esum += DD.frexp(sum.hi(), sum.lo(), sum);
+                sum = sum.frexp(ie);
+                esum += ie[0];
             }
 
             // p = x * sum(Ai). Since the sum is normalised
             // this is safe as long as x does not approach a sub-normal.
             // Typically x in (1/n, 1 - 1/n).
-            DD.multiply(sum.hi(), sum.lo(), x, sum);
+            sum = sum.multiply(x);
             // Rescale the result
-            DD.ldexp(sum.hi(), sum.lo(), (int) esum, sum);
+            sum = sum.scalb((int) esum);
             if (sd) {
                 // SF = 1 - CDF
-                DD.add(-sum.hi(), -sum.lo(), 1, sum);
+                sum = sum.negate().add(1);
             }
             return clipProbability(sum.doubleValue());
         }
@@ -1015,13 +991,13 @@ final class KolmogorovSmirnovDistribution {
          *
          * @param n Sample size.
          * @param x Statistic.
-         * @param z Used for computation. Return {@code alpha} in the high part.
+         * @param alpha Output alpha.
          * @return k
          */
-        static int splitX(int n, double x, DD z) {
+        static int splitX(int n, double x, double[] alpha) {
             // Described on page 14 in van Mulbregt [1].
             // nx = U+V (exact)
-            DD.twoProd(n, x, z);
+            DD z = DD.ofProduct(n, x);
             final double u = z.hi();
             final double v = z.lo();
             // Integer part of nx is *almost* the integer part of U.
@@ -1033,7 +1009,7 @@ final class KolmogorovSmirnovDistribution {
                 k += v < 0 ? -1 : 0;
             }
             // nx = k + ((U - k) + V) = k + (U1 + V1)
-            DD.fastAdd(u, v, -k, z);
+            z = z.subtract(k);
             // alpha = (U1, V1) = z
             // alpha is in [0, 1) in double-double precision.
             // Ensure the high part is in [0, 1) (i.e. in double precision).
@@ -1041,7 +1017,9 @@ final class KolmogorovSmirnovDistribution {
                 // Here alpha is ~ 1.0-eps.
                 // This occurs when x ~ j/n and n is large.
                 k += 1;
-                DD.set(0, z);
+                alpha[0] = 0;
+            } else {
+                alpha[0] = z.hi();
             }
             return k;
         }

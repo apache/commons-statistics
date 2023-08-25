@@ -19,6 +19,8 @@ package org.apache.commons.statistics.inference;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import org.apache.commons.numbers.core.DD;
+import org.apache.commons.numbers.core.DDMath;
 import org.apache.commons.statistics.inference.KolmogorovSmirnovDistribution.One.ScaledPower;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -408,8 +410,8 @@ class KolmogorovSmirnovDistributionTest {
      * <ul>
      * <li>At the switch point the asymptotic approximation agrees to ~ 6 digits
      * until p is much smaller than a realistic alpha for significance testing.
-     * <li>Use powScaled is with 1 ulp of fastPowScaled and ~ 20% slower. Thus the power
-     * function is not changing the precision of the result.
+     * <li>Use {@link DDMath#pow(DD, int, long[])} is with 1 ulp of {@link DD#pow(int, long[])}
+     * and ~ 2-3x slower. Thus the power function is not changing the precision of the result.
      * </ul>
      */
     @ParameterizedTest
@@ -427,7 +429,7 @@ class KolmogorovSmirnovDistributionTest {
         "4e-3, 1000001, 1.2630034559846114e-14, 2e-16", // Requires 6.0*n*x not 6.0*(n*x)
         "7e-3, 1000001, 2.7357189636541477e-43, 2e-16",
         "1e-2, 1000001, 1.374426245809477e-87, 2e-16",
-        // Computed using the double-double implementation (fastPowScaled, with timings)
+        // Computed using the double-double implementation (DD.pow, with timings)
         "1.0E-4, 1000001, 0.9801333136251243, 6e-8", // 0.724783s
         "0.001, 1000001, 0.13524481927494492, 6e-8", // 0.709156s
         "0.0015, 1000001, 0.011097829274951359, 2e-6", // 0.699217s
@@ -439,7 +441,7 @@ class KolmogorovSmirnovDistributionTest {
         "0.004, 1000001, 1.2628687945778359E-14, 2e-4", // 0.613186s
         "0.007, 1000001, 2.7328605923747603E-43, 2e-3", // 0.534130s
         "0.01, 1000001, 1.3683915090193192E-87, 5e-3", // 0.487097s
-        // Computed using the double-double implementation (powScaled, with timings)
+        // Computed using the double-double implementation (DDMath.pow, with timings)
         "1.0E-4, 1000001, 0.9801333136251243, 6e-8", // 2.119189s
         "0.001, 1000001, 0.13524481927494492, 6e-8", // 1.933861s
         "0.0015, 1000001, 0.011097829274951359, 2e-6", // 1.914388s
@@ -458,13 +460,13 @@ class KolmogorovSmirnovDistributionTest {
         "2e-4, 10000000, 0.44926905508659115, 2e-16",
         "8e-4, 10000000, 2.7593005372427517e-06, 2e-16",
         "1e-3, 10000000, 2.059779966512744e-09, 2e-16",
-        // Computed using the double-double implementation (fastPowScaled, with timings)
+        // Computed using the double-double implementation (DD.pow, with timings)
         "1.0E-6, 10000000, 0.9999793335473409, 1e-8", // 8.119499s
         "2.0E-6, 10000000, 0.9999186699759279, 1e-8", // 8.073493s
         "2.0E-4, 10000000, 0.4492690623747514, 2e-8", // 8.014497s
         "8.0E-4, 10000000, 2.7592963140010787E-6, 2e-6", // 7.610442s
         "0.001, 10000000, 2.059771738419037E-9, 5e-6", // 7.383041s
-        // Computed using the double-double implementation (powScaled, with timings)
+        // Computed using the double-double implementation (DDMath.pow, with timings)
         "1.0E-6, 10000000, 0.9999793335473409, 1e-8", // 22.379404s
         "2.0E-6, 10000000, 0.9999186699759279, 1e-8", // 22.142838s
         "2.0E-4, 10000000, 0.4492690623747514, 2e-8", // 22.130956s
@@ -480,7 +482,7 @@ class KolmogorovSmirnovDistributionTest {
         "2e-4, 1073741824, 4.94686617627386e-38, 2e-16",
         "3e-4, 1073741824, 1.1542138829781214e-84, 2e-16",
         "5e-4, 1073741824, 6.914816492890092e-234, 2e-16",
-        // Computed using the double-double implementation (fastPowScaled, with timings)
+        // Computed using the double-double implementation (DD.pow, with timings)
         "1.0E-6, 1073741824, 0.9978541553094261, 6e-11", // 1067.231777s
         "1.0E-5, 1073741824, 0.806739041685089, 1e-10", // 1066.338235s
         "1.0E-4, 1073741824, 4.715937547939542E-10, 5e-8", // 974.019864s
@@ -492,7 +494,7 @@ class KolmogorovSmirnovDistributionTest {
         final double p1 = KolmogorovSmirnovDistribution.One.sf(x, n);
         // Use to obtain double-double result with timing
         //final double p1 = onesf(x, n, DEFAULT_POWER);
-        //final double p1 = onesf(x, n, DD::powScaled);
+        //final double p1 = onesf(x, n, DDMath::pow);
         //final double p1 = onesf(x, n, DEFAULT_MC);
         TestUtils.assertProbability(p, p1, eps, "sf");
     }
@@ -543,14 +545,14 @@ class KolmogorovSmirnovDistributionTest {
         TestUtils.assertProbability(p, p1, eps, "sf");
         TestUtils.assertProbability(p, p2, eps, "sf BigDecimal");
         // For small N we can use either double-double power function.
-        final double p3 = onesf(x, n, DD::fastPowScaled);
-        final double p4 = onesf(x, n, DD::powScaled);
+        final double p3 = onesf(x, n, DD::pow);
+        final double p4 = onesf(x, n, DDMath::pow);
         // Check at least one computation matched the default
         Assertions.assertTrue(p1 == p3 || p1 == p4, "Default implementation differs");
-        TestUtils.assertProbability(p, p3, eps, "sf fastPow");
-        TestUtils.assertProbability(p, p4, eps, "sf pow");
+        TestUtils.assertProbability(p, p3, eps, "sf DD.pow");
+        TestUtils.assertProbability(p, p4, eps, "sf DDMath.pow");
         // simplePow also works
-        final double p5 = onesf(x, n, DDExt::simplePowScaled);
+        final double p5 = onesf(x, n, KolmogorovSmirnovDistributionTest::simplePowScaled);
         TestUtils.assertProbability(p, p5, eps, "sf simplePow");
     }
 
@@ -575,7 +577,7 @@ class KolmogorovSmirnovDistributionTest {
         "8e-3, 123456, 1.3636949699766825e-07, 2e-16",
         "3e-2, 123456, 2.9034013257947777e-97, 2e-16",
         // Close to the asymptotic limit (1e6).
-        // Timings for the fastPowScaled.
+        // Timings for the DD.pow.
         "1e-6, 999000, 0.9999972844391667, 2e-16", // 0.000114s
         "1e-5, 999000, 0.9997935546914299, 2e-15", // 0.701445s
         "1e-3, 999000, 0.13551585067528177, 2e-15", // 0.684693s
@@ -630,7 +632,7 @@ class KolmogorovSmirnovDistributionTest {
         "0.6e-8, 500000000",
     })
     void testSplitX(double x, int n) {
-        final DD alpha = DD.create();
+        final double[] alpha = {0};
         final BigDecimal bn = bd(n);
         for (final double x1 : new double[] {x, Math.nextDown(x), Math.nextUp(x)}) {
             final int k = KolmogorovSmirnovDistribution.One.splitX(n, x1, alpha);
@@ -642,7 +644,7 @@ class KolmogorovSmirnovDistributionTest {
                 ealpha = 0;
             }
             Assertions.assertEquals(ek, k, () -> String.format("n=%d, x=%s : k", n, x1));
-            Assertions.assertEquals(ealpha, alpha.hi(), () -> String.format("n=%d, x=%s : alpha", n, x1));
+            Assertions.assertEquals(ealpha, alpha[0], () -> String.format("n=%d, x=%s : alpha", n, x1));
         }
     }
 
@@ -919,13 +921,13 @@ class KolmogorovSmirnovDistributionTest {
             // Do a trivial warm-up and use the p-values
             final double x = 0.05;
             final int n = 100;
-            final double p1 = KolmogorovSmirnovDistribution.One.sf(x, n, DDExt::simplePowScaled);
-            final double p2 = KolmogorovSmirnovDistribution.One.sf(x, n, DD::fastPowScaled);
-            final double p3 = KolmogorovSmirnovDistribution.One.sf(x, n, DD::powScaled);
+            final double p1 = KolmogorovSmirnovDistribution.One.sf(x, n, KolmogorovSmirnovDistributionTest::simplePowScaled);
+            final double p2 = KolmogorovSmirnovDistribution.One.sf(x, n, DD::pow);
+            final double p3 = KolmogorovSmirnovDistribution.One.sf(x, n, DDMath::pow);
             final double p4 = onesf(x, n, DEFAULT_MC);
             Assertions.assertTrue(p1 < p2 + p3 + p4, "Trivial use of the return values");
             // Add a header to allow to be pasted into a Jira ticket as a table
-            TestUtils.printf("||x||n||p||simplePow||fastPow||Relative||pow||Relative||BigDecimal||Relative||%n");
+            TestUtils.printf("||x||n||p||simplePow||pow||Relative||DDMath||Relative||BigDecimal||Relative||%n");
         }
 
         for (int p = minP; p <= maxP; p++) {
@@ -935,12 +937,12 @@ class KolmogorovSmirnovDistributionTest {
             final double rn = Math.sqrt(n);
             for (final double x : new double[] {5.0 / n, 7.0 / n, 11.0 / n, 1.0 / rn, 2.0 / rn}) {
                 final long t1 = System.nanoTime();
-                final double p1 = KolmogorovSmirnovDistribution.One.sf(x, n, DDExt::simplePowScaled);
+                final double p1 = KolmogorovSmirnovDistribution.One.sf(x, n, KolmogorovSmirnovDistributionTest::simplePowScaled);
                 final long t2 = System.nanoTime();
-                final double p2 = KolmogorovSmirnovDistribution.One.sf(x, n, DD::fastPowScaled);
+                final double p2 = KolmogorovSmirnovDistribution.One.sf(x, n, DD::pow);
                 final long t3 = System.nanoTime();
                 // Avoid really long computation
-                final double p3 = n < limit3 ? KolmogorovSmirnovDistribution.One.sf(x, n, DD::powScaled) : 0;
+                final double p3 = n < limit3 ? KolmogorovSmirnovDistribution.One.sf(x, n, DDMath::pow) : 0;
                 final long t4 = System.nanoTime();
                 final double p4 = n < limit4 ? onesf(x, n, DEFAULT_MC) : 0;
                 final long t5 = System.nanoTime();
@@ -950,12 +952,12 @@ class KolmogorovSmirnovDistributionTest {
                 final double time4 = (t5 - t4) * 1e-9;
                 // Check (the pow computation is the reference).
                 // This limit supports the entire test range for p [4, 24].
-                TestUtils.assertProbability(p2, p1, 3e-15, () -> String.format("fastPow vs simplePow: %s %d", x, n));
+                TestUtils.assertProbability(p2, p1, 3e-15, () -> String.format("pow vs simplePow: %s %d", x, n));
                 if (n < limit3) {
-                    TestUtils.assertProbability(p2, p3, 2e-16, () -> String.format("fastPow vs pow: %s %d", x, n));
+                    TestUtils.assertProbability(p2, p3, 2e-16, () -> String.format("pow vs DDMath: %s %d", x, n));
                 }
                 if (n < limit4) {
-                    TestUtils.assertProbability(p2, p4, 2e-16, () -> String.format("fastPow vs BigDecimal: %s %d", x, n));
+                    TestUtils.assertProbability(p2, p4, 2e-16, () -> String.format("pow vs BigDecimal: %s %d", x, n));
                 }
                 if (output) {
                     TestUtils.printf("|%12.6g|%10d|%25s|%10.6f|%10.6f|%.3f|%10.6f|%.3f|%10.6f|%.3f|%n",
@@ -989,8 +991,8 @@ class KolmogorovSmirnovDistributionTest {
      * @param n Sample size (assumed to be positive).
      * @param power Function to compute the scaled power (can be null).
      * @return \(P(D_n^+ &ge; x)\)
-     * @see DD#fastPowScaled
-     * @see DD#powScaled
+     * @see DD#pow(int, long[])
+     * @see DDMath#pow(int, long[])
      */
     private static double onesf(double x, int n, ScaledPower power) {
         // Guard input to allow all test cases.
@@ -1240,5 +1242,23 @@ class KolmogorovSmirnovDistributionTest {
      */
     private static BigDecimal div22(int a, int b, MathContext mc) {
         return divDD(bd(a), bd(b), mc);
+    }
+
+    /**
+     * Compute the number {@code x} raised to the power {@code n}.
+     *
+     * <p>Note: This is a wrapper around the simple power function from Commons Numbers
+     * to implement the correct method signature. The method originated in this project
+     * and was moved to Commons Numbers when the DD class was moved. The class exists
+     * only for testing in the test-jar artifact of Numbers core.
+     *
+     * @param x High part of x.
+     * @param xx Low part of x.
+     * @param n Power.
+     * @param exp Power of two scale factor (integral exponent).
+     * @return Fraction part.
+     */
+    private static DD simplePowScaled(DD x, int n, long[] exp) {
+        return org.apache.commons.numbers.core.DDExt.simplePowScaled(x.hi(), x.lo(), n, exp);
     }
 }
