@@ -98,6 +98,8 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
         for (final double value : values) {
             correction += value - xbar;
         }
+        // Correction maybe infinite
+        correction = Double.isFinite(correction) ? correction : 0;
         return StorelessMean.create(xbar + (correction / values.length), mean.getN(), mean.getNonFiniteValue());
     }
 

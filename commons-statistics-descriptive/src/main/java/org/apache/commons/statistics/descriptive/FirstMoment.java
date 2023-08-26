@@ -61,7 +61,7 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
     /**
      * Deviation of most recently added value from the previous first moment,
      * normalized by current sample size. Retained to prevent repeated
-     * computation in higher order moments
+     * computation in higher order moments.
      */
     private double nDev;
 
@@ -100,10 +100,13 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
         n++;
         nonFiniteValue += value;
         // To prevent overflow, dev is computed by scaling down and then scaling up.
-        // We choose to scale down and scale up by a factor of two to ensure that the scaling is lossless.
-        dev = (value * 0.5 - m1 * 0.5) * 2;
-        nDev = dev / n;
+        // We choose to scale down by a factor of two to ensure that the scaling is lossless.
+        dev = value * 0.5 - m1 * 0.5;
+        // Here nDev cannot overflow as dev is <= MAX_VALUE when n > 1; or <= MAX_VALUE / 2 when n = 1
+        nDev = (dev / n) * 2;
         m1 += nDev;
+        // Scale up the deviation.
+        dev *= 2;
     }
 
     /**
@@ -129,16 +132,23 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
     public FirstMoment combine(FirstMoment other) {
         if (n == 0) {
             n = other.n;
+            nonFiniteValue = other.nonFiniteValue;
             dev = other.dev;
             nDev = other.nDev;
             m1 = other.m1;
-            nonFiniteValue = other.nonFiniteValue;
         } else if (other.n != 0) {
             n += other.n;
-            dev = (other.m1 * 0.5 - m1 * 0.5) * 2;
-            nDev = dev * ((double) other.n / n);
-            m1 += nDev;
             nonFiniteValue += other.nonFiniteValue;
+            dev = other.m1 * 0.5 - m1 * 0.5;
+            // In contrast to the accept method, here nDev can be close to MAX_VALUE
+            // if the weight (other.n / n) approaches 1. So we cannot yet rescale nDev and
+            // instead have to combine it with the scaled-down value of m1.
+            nDev = dev * ((double) other.n / n);
+            m1 = m1 * 0.5 + nDev;
+            // Scale up the terms.
+            m1 *= 2;
+            dev *= 2;
+            nDev *= 2;
         }
         return this;
     }

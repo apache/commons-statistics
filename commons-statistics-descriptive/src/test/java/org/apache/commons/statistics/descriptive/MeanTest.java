@@ -111,7 +111,8 @@ final class MeanTest {
             Arguments.of(new double[] {Double.MAX_VALUE, -Double.MAX_VALUE}),
             Arguments.of(new double[] {1, -Double.MAX_VALUE}),
             Arguments.of(new double[] {1, 1, 1, -Double.MAX_VALUE}),
-            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE / 2})
+            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE / 2}),
+            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE, -Double.MAX_VALUE})
         );
     }
 
@@ -246,7 +247,8 @@ final class MeanTest {
             Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {1}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {1, 1, 1}, new double[] {-Double.MAX_VALUE}),
-            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {1, 1E300})
+            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {1, 1E300}),
+            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {Double.MAX_VALUE, -Double.MAX_VALUE})
         );
     }
 
