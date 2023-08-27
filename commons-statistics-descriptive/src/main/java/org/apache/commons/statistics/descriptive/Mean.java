@@ -98,6 +98,8 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
         for (final double value : values) {
             correction += value - xbar;
         }
+        // Correction may be infinite
+        correction = Double.isFinite(correction) ? correction : 0;
         return StorelessMean.create(xbar + (correction / values.length), mean.getN(), mean.getNonFiniteValue());
     }
 
@@ -121,12 +123,6 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
     /** {@inheritDoc} */
     @Override
     public abstract Mean combine(Mean other);
-
-    /**
-     * Gets the number of values that have been added.
-     * @return Number of values.
-     */
-    public abstract long getN();
 
     /**
      * {@code Mean} implementation that does not store the input value(s) processed so far.
@@ -186,8 +182,11 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
             return this;
         }
 
-        @Override
-        public long getN() {
+        /**
+         * Gets the number of values that have been added.
+         * @return Number of values.
+         */
+        long getN() {
             return firstMoment.getN();
         }
 
