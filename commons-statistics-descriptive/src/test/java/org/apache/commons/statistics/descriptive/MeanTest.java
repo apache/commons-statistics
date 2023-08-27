@@ -31,6 +31,11 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test for {@link Mean}.
  */
 final class MeanTest {
+    private static final int ULP_ARRAY = 2;
+
+    private static final int ULP_STREAM = 5;
+
+    private static final int ULP_COMBINE = 5;
 
     @Test
     void testEmpty() {
@@ -56,8 +61,8 @@ final class MeanTest {
         for (double value : values) {
             mean.accept(value);
         }
-        TestHelper.assertEquals(expected, mean.getAsDouble(), 5, () -> "mean");
-        TestHelper.assertEquals(expected, Mean.of(values).getAsDouble(), 2, () -> "of (values)");
+        TestHelper.assertEquals(expected, mean.getAsDouble(), ULP_STREAM, () -> "mean");
+        TestHelper.assertEquals(expected, Mean.of(values).getAsDouble(), ULP_ARRAY, () -> "of (values)");
     }
 
     @ParameterizedTest
@@ -68,7 +73,7 @@ final class MeanTest {
                 .parallel()
                 .collect(Mean::create, Mean::accept, Mean::combine)
                 .getAsDouble();
-        TestHelper.assertEquals(expected, ans, 5, () -> "parallel stream");
+        TestHelper.assertEquals(expected, ans, ULP_COMBINE, () -> "parallel stream");
     }
 
     @ParameterizedTest
@@ -184,10 +189,17 @@ final class MeanTest {
         Mean mean2 = Mean.create();
         Arrays.stream(array1).forEach(mean1);
         Arrays.stream(array2).forEach(mean2);
+        final double mean1BeforeCombine = mean1.getAsDouble();
         final double mean2BeforeCombine = mean2.getAsDouble();
         mean1.combine(mean2);
-        TestHelper.assertEquals(expected, mean1.getAsDouble(), 5, () -> "combine");
+        TestHelper.assertEquals(expected, mean1.getAsDouble(), ULP_COMBINE, () -> "combine");
         Assertions.assertEquals(mean2BeforeCombine, mean2.getAsDouble());
+        // Combine in reversed order
+        Mean mean1b = Mean.create();
+        Arrays.stream(array1).forEach(mean1b);
+        mean2.combine(mean1b);
+        TestHelper.assertEquals(expected, mean2.getAsDouble(), ULP_COMBINE, () -> "combine");
+        Assertions.assertEquals(mean1BeforeCombine, mean1b.getAsDouble());
     }
 
     @ParameterizedTest
@@ -220,7 +232,7 @@ final class MeanTest {
                 .reduce(Mean::combine)
                 .map(Mean::getAsDouble)
                 .orElseThrow(RuntimeException::new);
-        TestHelper.assertEquals(expected, actual, 2, () -> "array of arrays combined mean");
+        TestHelper.assertEquals(expected, actual, ULP_COMBINE, () -> "array of arrays combined mean");
     }
 
     static Stream<Arguments> testCombine() {
@@ -244,11 +256,14 @@ final class MeanTest {
             Arguments.of(new double[] {-Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {-Double.MAX_VALUE, 1}, new double[] {1}),
             Arguments.of(new double[] {Double.MAX_VALUE, 3.1415E153}, new double[] {}),
-            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {1}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {1, 1, 1}, new double[] {-Double.MAX_VALUE}),
             Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {1, 1E300}),
-            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {Double.MAX_VALUE, -Double.MAX_VALUE})
+            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
+            Arguments.of(new double[] {Double.MAX_VALUE}, new double[] {Double.MAX_VALUE, -Double.MAX_VALUE}),
+            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE}),
+            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE, -Double.MAX_VALUE}),
+            Arguments.of(new double[] {Double.MAX_VALUE, Double.MAX_VALUE}, new double[] {-Double.MAX_VALUE, -Double.MAX_VALUE, -Double.MAX_VALUE})
         );
     }
 
