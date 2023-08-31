@@ -120,10 +120,6 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
     @Override
     public abstract double getAsDouble();
 
-    /** {@inheritDoc} */
-    @Override
-    public abstract Mean combine(Mean other);
-
     /**
      * {@code Mean} implementation that does not store the input value(s) processed so far.
      */
