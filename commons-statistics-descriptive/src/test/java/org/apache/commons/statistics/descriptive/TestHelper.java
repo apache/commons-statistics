@@ -48,14 +48,14 @@ final class TestHelper {
     /**
      * Helper function to compute the expected value of Mean using BigDecimal.
      * @param values Values.
-     * @return Mean of values.
+     * @return Mean of values rounded to <a href = "https://en.wikipedia.org/wiki/Decimal128_floating-point_format"> DECIMAL128 precision.
      */
-    static double computeExpectedMean(double[] values) {
+    static BigDecimal computeExpectedMean(double[] values) {
         BigDecimal bd = BigDecimal.ZERO;
         for (double value : values) {
             bd = bd.add(new BigDecimal(value));
         }
-        return bd.divide(BigDecimal.valueOf(values.length), MathContext.DECIMAL128).doubleValue();
+        return bd.divide(BigDecimal.valueOf(values.length), MathContext.DECIMAL128);
     }
 
     /**

@@ -186,7 +186,7 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
          * @return Number of values.
          */
         long getN() {
-            return firstMoment.getN();
+            return firstMoment.n;
         }
 
         /**
