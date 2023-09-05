@@ -27,6 +27,10 @@ import org.junit.jupiter.api.Assertions;
  * Helper class for tests in {@code o.a.c.s.descriptive} module.
  */
 final class TestHelper {
+    /** Positive zero bits. */
+    private static final long POSITIVE_ZERO_DOUBLE_BITS = Double.doubleToRawLongBits(+0.0);
+    /** Negative zero bits. */
+    private static final long NEGATIVE_ZERO_DOUBLE_BITS = Double.doubleToRawLongBits(-0.0);
 
     /** Class contains only static methods. */
     private TestHelper() {}
@@ -61,11 +65,65 @@ final class TestHelper {
     static void assertEquals(double expected, double actual, int ulps, Supplier<String> msg) {
         // Require strict equivalence of non-finite values
         if (Double.isFinite(expected) && Double.isFinite(actual)) {
-            Assertions.assertTrue(Precision.equals(expected, actual, ulps),
-                    () -> expected + " != " + actual + " within " + ulps + " ulp(s): " + msg.get());
+            if (!Precision.equals(expected, actual, ulps)) {
+                Assertions.fail(() -> msg.get() + ": " + expected + " != " + actual +
+                    " within " + ulps + " ulp(s); difference = " + formatUlpDifference(expected, actual));
+            }
         } else {
             Assertions.assertEquals(expected, actual, msg);
         }
+    }
+
+    /**
+     * Format the difference in ULP between two arguments. This will return "0" for values
+     * that are binary equal, or for the difference between zeros of opposite signs.
+     *
+     * @param a first argument
+     * @param b second argument
+     * @return Signed ULP difference between the arguments as a string
+     */
+    private static String formatUlpDifference(double expected, double actual) {
+        final long e = Double.doubleToLongBits(expected);
+        final long a = Double.doubleToLongBits(actual);
+
+        // Code adapted from Precision#equals(double, double, int).
+        // Compute the absolute delta; the sign is maintained separately
+        // to allow reporting errors above Long.MAX_VALUE.
+
+        if (e == a) {
+            // Binary equal
+            return "0";
+        }
+        int sign;
+        long delta;
+        if ((a ^ e) < 0L) {
+            // The difference is the count of numbers between each and zero.
+            // This makes -0.0 and 0.0 equal.
+            long d1;
+            long d2;
+            if (a < e) {
+                sign = -1;
+                d1 = e - POSITIVE_ZERO_DOUBLE_BITS;
+                d2 = a - NEGATIVE_ZERO_DOUBLE_BITS;
+            } else {
+                sign = 1;
+                d1 = a - POSITIVE_ZERO_DOUBLE_BITS;
+                d2 = e - NEGATIVE_ZERO_DOUBLE_BITS;
+            }
+            // This may overflow but we report it using an unsigned formatter.
+            delta = d1 + d2;
+        } else {
+            if (a < e) {
+                sign = -1;
+                delta = e - a;
+            } else {
+                sign = 1;
+                delta = a - e;
+            }
+        }
+        return sign < 0 ?
+            "-" + Long.toUnsignedString(delta) :
+            Long.toUnsignedString(delta);
     }
 
     /**
