@@ -998,19 +998,12 @@ final class KolmogorovSmirnovDistribution {
             // Described on page 14 in van Mulbregt [1].
             // nx = U+V (exact)
             DD z = DD.ofProduct(n, x);
-            final double u = z.hi();
-            final double v = z.lo();
             // Integer part of nx is *almost* the integer part of U.
             // Compute k = floor((U,V)) (changed from the listing of floor(U)).
-            int k = (int) Math.floor(u);
-            // Incorporate the round-off of u in the floor
-            if (k == u) {
-                // u is an integer. If v < 0 then the floor is 1 lower.
-                k += v < 0 ? -1 : 0;
-            }
+            int k = (int) z.floor().hi();
             // nx = k + ((U - k) + V) = k + (U1 + V1)
+            // alpha = (U1, V1) = z - k
             z = z.subtract(k);
-            // alpha = (U1, V1) = z
             // alpha is in [0, 1) in double-double precision.
             // Ensure the high part is in [0, 1) (i.e. in double precision).
             if (z.hi() == 1) {

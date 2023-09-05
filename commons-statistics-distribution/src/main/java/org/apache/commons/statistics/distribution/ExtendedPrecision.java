@@ -16,30 +16,19 @@
  */
 package org.apache.commons.statistics.distribution;
 
+import org.apache.commons.numbers.core.DD;
+
 /**
  * Computes extended precision floating-point operations.
  *
- * <p>It is based on the 1971 paper
- * <a href="https://doi.org/10.1007/BF01397083">
- * Dekker (1971) A floating-point technique for extending the available precision</a>
- * Numer. Math. 18, 224-242.
- *
- * <p>Adapted from {@code org.apache.commons.numbers.core.ExtendedPrecision}.
+ * <p>Extended precision computation is delegated to the {@link DD} class. The methods here
+ * verify the arguments to the computations will not overflow.
  */
 final class ExtendedPrecision {
-    /** sqrt(2 pi) as a double. Computed to 64-digits precision and converted to double. */
-    static final double SQRT2PI = 2.5066282746310007;
-    /** Round-off from sqrt(2 pi) as a double.
-     * Computed from the value sqrt(2 pi) to 64-digits precision minus {@link #SQRT2PI}. */
-    static final double SQRT2PI_R = -1.8328579980459167e-16;
+    /** sqrt(2 pi) as a double-double number.
+     * Divided into two parts from the value sqrt(2 pi) computed to 64 decimal digits. */
+    static final DD SQRT2PI = DD.ofSum(2.5066282746310007, -1.8328579980459167e-16);
 
-    /**
-     * The multiplier used to split the double value into high and low parts. From
-     * Dekker (1971): "The constant should be chosen equal to 2^(p - p/2) + 1,
-     * where p is the number of binary digits in the mantissa". Here p is 53
-     * and the multiplier is {@code 2^27 + 1}.
-     */
-    private static final double MULTIPLIER = 1.0 + 0x1.0p27;
     /** Threshold for a big number that may overflow when squared. 2^500. */
     private static final double BIG = 0x1.0p500;
     /** Threshold for a small number that may underflow when squared. 2^-500. */
@@ -48,24 +37,12 @@ final class ExtendedPrecision {
     private static final double SCALE_UP = 0x1.0p600;
     /** Scale down by 2^600. */
     private static final double SCALE_DOWN = 0x1.0p-600;
-    /** Upper bits of sqrt(2 pi). */
-    private static final double SQRT2PI_H;
-    /** Lower bits of sqrt(2 pi). */
-    private static final double SQRT2PI_L;
     /** X squared value where {@code exp(-0.5*x*x)} cannot increase accuracy using the round-off
      * from x squared. */
     private static final int EXP_M_HALF_XX_MIN_VALUE = 2;
     /** Approximate x squared value where {@code exp(-0.5*x*x) == 0}. This is above
      * {@code -2 * ln(2^-1074)} due to rounding performed within the exp function. */
     private static final int EXP_M_HALF_XX_MAX_VALUE = 1491;
-
-    static {
-        // Initialise constants
-
-        // Split the upper 53-bits for extended precision multiplication
-        SQRT2PI_H = highPartUnscaled(SQRT2PI);
-        SQRT2PI_L = SQRT2PI - SQRT2PI_H;
-    }
 
     /** No instances. */
     private ExtendedPrecision() {}
@@ -98,18 +75,7 @@ final class ExtendedPrecision {
      * @return the result
      */
     private static double computeXsqrt2pi(double a) {
-        // Split the number
-        final double ha = highPartUnscaled(a);
-        final double la = a - ha;
-
-        // Extended precision product with sqrt(2 * pi)
-        final double x = a * SQRT2PI;
-        final double xx = productLow(ha, la, SQRT2PI_H, SQRT2PI_L, x);
-
-        // Add the term a multiplied by the round-off from sqrt(2 * pi)
-        // result = a * (SQRT2PI + SQRT2PI_R)
-        // Sum from small to high
-        return a * SQRT2PI_R + xx + x;
+        return SQRT2PI.multiply(a).hi();
     }
 
     /**
@@ -144,37 +110,7 @@ final class ExtendedPrecision {
      * @return the result
      */
     private static double computeSqrt2aa(double a) {
-        // Split the number
-        final double ha = highPartUnscaled(a);
-        final double la = a - ha;
-
-        // Extended precision product
-        final double x = 2 * a * a;
-        final double xx = productLow(ha, la, 2 * ha, 2 * la, x);
-
-        // Standard sqrt
-        final double c = Math.sqrt(x);
-
-        // Edge case.
-        // Occurs if a has limited precision in the mantissa including
-        // the special cases of 0 and 1.
-        if (xx == 0) {
-            return c;
-        }
-
-        // Dekker's double precision sqrt2 algorithm.
-        // See Dekker, 1971, pp 242.
-        final double hc = highPartUnscaled(c);
-        final double lc = c - hc;
-        final double u = c * c;
-        final double uu = productLow(hc, lc, hc, lc, u);
-        final double cc = (x - u - uu + xx) * 0.5 / c;
-
-        // Extended precision result:
-        // y = c + cc
-        // yy = c - y + cc
-        // Return only y
-        return c + cc;
+        return DD.ofProduct(2 * a, a).sqrt().hi();
     }
 
     /**
@@ -200,12 +136,8 @@ final class ExtendedPrecision {
             // exp(-745.5) == 0
             return 0;
         }
-        // Split the number
-        final double hx = highPartUnscaled(x);
-        final double lx = x - hx;
-        // Compute the round-off
-        final double zz = squareLow(hx, lx, z);
-        return expxx(-0.5 * z, -0.5 * zz);
+        final DD x2 = DD.ofSquare(x);
+        return expxx(-0.5 * x2.hi(), -0.5 * x2.lo());
     }
 
     /**
@@ -236,88 +168,10 @@ final class ExtendedPrecision {
         // The round-off b is limited to ~ 0.5 * ulp(746) ~ 5.68e-14
         // and we can use an approximation for expm1 (x/1! + x^2/2! + ...)
         // The second term is required for the expm1 result but the
-        // bits are not significant to change the product with exp(a)
+        // bits are not significant to change the following sum with exp(a)
 
         final double ea = Math.exp(a);
         // b ~ expm1(b)
         return ea * b + ea;
-    }
-
-    /**
-     * Implement Dekker's method to split a value into two parts. Multiplying by (2^s + 1) creates
-     * a big value from which to derive the two split parts.
-     * <pre>
-     * c = (2^s + 1) * a
-     * a_big = c - a
-     * a_hi = c - a_big
-     * a_lo = a - a_hi
-     * a = a_hi + a_lo
-     * </pre>
-     *
-     * <p>The multiplicand allows a p-bit value to be split into
-     * (p-s)-bit value {@code a_hi} and a non-overlapping (s-1)-bit value {@code a_lo}.
-     * Combined they have (p-1) bits of significand but the sign bit of {@code a_lo}
-     * contains a bit of information. The constant is chosen so that s is ceil(p/2) where
-     * the precision p for a double is 53-bits (1-bit of the mantissa is assumed to be
-     * 1 for a non sub-normal number) and s is 27.
-     *
-     * <p>This conversion does not use scaling and the result of overflow is NaN. Overflow
-     * may occur when the exponent of the input value is above 996.
-     *
-     * <p>Splitting a NaN or infinite value will return NaN.
-     *
-     * @param value Value.
-     * @return the high part of the value.
-     * @see Math#getExponent(double)
-     */
-    private static double highPartUnscaled(double value) {
-        final double c = MULTIPLIER * value;
-        return c - (c - value);
-    }
-
-    /**
-     * Compute the low part of the double length number {@code (z,zz)} for the exact
-     * product of {@code x} and {@code y} using Dekker's mult12 algorithm. The standard
-     * precision product {@code x*y} must be provided. The numbers {@code x} and {@code y}
-     * should already be split into low and high parts.
-     *
-     * <p>Note: This uses the high part of the result {@code (z,zz)} as {@code x * y} and not
-     * {@code hx * hy + hx * ty + tx * hy} as specified in Dekker's original paper.
-     * See Shewchuk (1997) for working examples.
-     *
-     * @param hx High part of first factor.
-     * @param lx Low part of first factor.
-     * @param hy High part of second factor.
-     * @param ly Low part of second factor.
-     * @param xy Product of the factors.
-     * @return <code>lx * ly - (((xy - hx * hy) - lx * hy) - hx * ly)</code>
-     * @see <a href="https://www-2.cs.cmu.edu/afs/cs/project/quake/public/papers/robust-arithmetic.ps">
-     * Shewchuk (1997) Theorum 18</a>
-     */
-    private static double productLow(double hx, double lx, double hy, double ly, double xy) {
-        // Compute the multiply low part:
-        // err1 = xy - hx * hy
-        // err2 = err1 - lx * hy
-        // err3 = err2 - hx * ly
-        // low = lx * ly - err3
-        return lx * ly - (((xy - hx * hy) - lx * hy) - hx * ly);
-    }
-
-    /**
-     * Compute the low part of the double length number {@code (z,zz)} for the exact
-     * square of {@code x} using Dekker's mult12 algorithm. The standard precision product
-     * {@code x*x} must be provided. The number {@code x} should already be split into low
-     * and high parts.
-     *
-     * <p>Note: This is a specialisation of
-     * {@link #productLow(double, double, double, double, double)}.
-     *
-     * @param hx High part of factor.
-     * @param lx Low part of factor.
-     * @param xx Square of the factor.
-     * @return <code>lx * lx - (((xx - hx * hx) - lx * hx) - hx * lx)</code>
-     */
-    private static double squareLow(double hx, double lx, double xx) {
-        return lx * lx - ((xx - hx * hx) - 2 * lx * hx);
     }
 }

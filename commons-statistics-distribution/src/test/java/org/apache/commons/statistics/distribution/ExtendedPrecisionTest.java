@@ -107,11 +107,10 @@ class ExtendedPrecisionTest {
         final double value = sqrt2pi.doubleValue();
         final double roundOff = sqrt2pi.subtract(new BigDecimal(value)).doubleValue();
         // Adding the round-off does not change the value
-        Assertions.assertEquals(ExtendedPrecision.SQRT2PI,
-                                ExtendedPrecision.SQRT2PI + ExtendedPrecision.SQRT2PI_R, "value + round-off");
+        Assertions.assertEquals(value, value + roundOff, "value + round-off");
         // Check constants
-        Assertions.assertEquals(value, ExtendedPrecision.SQRT2PI, "sqrt(2 pi)");
-        Assertions.assertEquals(roundOff, ExtendedPrecision.SQRT2PI_R, "sqrt(2 pi) round-off");
+        Assertions.assertEquals(value, ExtendedPrecision.SQRT2PI.hi(), "sqrt(2 pi)");
+        Assertions.assertEquals(roundOff, ExtendedPrecision.SQRT2PI.lo(), "sqrt(2 pi) round-off");
         // Sanity check against JDK Math
         Assertions.assertEquals(value, Math.sqrt(2 * Math.PI), Math.ulp(value), "Math.sqrt(2 pi)");
     }
@@ -143,8 +142,8 @@ class ExtendedPrecisionTest {
         }
         // Currently the argument is assumed to be positive.
         Assertions.assertEquals(Double.NaN, ExtendedPrecision.sqrt2xx(Double.NaN));
-        // Big negative numbers overflow and the extended precision computation generates NaN.
-        Assertions.assertEquals(Double.NaN, ExtendedPrecision.sqrt2xx(-1e300));
+        // Big negative numbers overflow the square and the extended precision computation generates the overflow result.
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, ExtendedPrecision.sqrt2xx(-1e300));
     }
 
     /**
