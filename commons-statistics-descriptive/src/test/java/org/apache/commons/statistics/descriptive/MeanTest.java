@@ -227,11 +227,18 @@ final class MeanTest {
 
     static Stream<Arguments> testCombineMeanNonFinite() {
         return Stream.of(
+            Arguments.of(new double[][] {{}, {}}, Double.NaN),
+            Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.NEGATIVE_INFINITY}}, Double.NaN),
             Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.POSITIVE_INFINITY}}, Double.POSITIVE_INFINITY),
             Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY}, {Double.NEGATIVE_INFINITY}}, Double.NEGATIVE_INFINITY),
             Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.MAX_VALUE}}, Double.POSITIVE_INFINITY),
             Arguments.of(new double[][] {{-Double.MAX_VALUE}, {Double.POSITIVE_INFINITY}}, Double.POSITIVE_INFINITY),
             Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY}, {-Double.MIN_VALUE}}, Double.NEGATIVE_INFINITY),
+            Arguments.of(new double[][] {{Double.NaN, 34.56, 89.74}, {Double.NaN}}, Double.NaN),
+            Arguments.of(new double[][] {{34.56}, {Double.NaN, 89.74}}, Double.NaN),
+            Arguments.of(new double[][] {{34.56, 89.74}, {Double.NaN, Double.NaN}}, Double.NaN),
+            Arguments.of(new double[][] {{Double.NaN, 3.14, Double.NaN, Double.NaN}, {}}, Double.NaN),
+            Arguments.of(new double[][] {{Double.NaN, Double.NaN, Double.NaN}, {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN),
             Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY, -Double.MAX_VALUE, -Double.MIN_VALUE}, {Double.MAX_VALUE, Double.MIN_VALUE}}, Double.NEGATIVE_INFINITY)
         );
     }
