@@ -36,31 +36,25 @@ package org.apache.commons.statistics.descriptive;
  *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
- * one of the threads invokes the <code>accept()</code> or
- * <code>combine()</code> method, it must be synchronized externally.
+ * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
+ * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
- * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
+ * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept} and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
  * as <code>accumulator</code> and <code>combiner</code> functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
  */
-class SumOfSquaredDeviations implements DoubleStatistic, DoubleStatisticAccumulator<SumOfSquaredDeviations> {
+class SumOfSquaredDeviations extends FirstMoment implements DoubleStatistic {
     /** Sum of squared deviations of the values that have been added. */
     private double squaredDevSum;
 
-    /** First moment instance which holds the first moment of values that have been added.
-     * This is required because {@link FirstMoment#getDev()} and {@link FirstMoment#getDevNormalizedByN()} are
-     * used in the updating the sum of squared deviations.
-     */
-    private final FirstMoment firstMoment;
-
     /**
-     * Create a FirstMoment instance.
+     * Create a SumOfSquaredDeviations instance.
      */
     SumOfSquaredDeviations() {
-        firstMoment = new FirstMoment();
+        // No-op
     }
 
     /**
@@ -73,8 +67,8 @@ class SumOfSquaredDeviations implements DoubleStatistic, DoubleStatisticAccumula
      * @param nonFiniteValue Sum of values.
      */
     SumOfSquaredDeviations(double squaredDevSum, double mean, long n, double nonFiniteValue) {
+        super(mean, n, nonFiniteValue);
         this.squaredDevSum = squaredDevSum;
-        firstMoment = new FirstMoment(mean, n, nonFiniteValue);
     }
 
     /**
@@ -83,13 +77,8 @@ class SumOfSquaredDeviations implements DoubleStatistic, DoubleStatisticAccumula
      */
     @Override
     public void accept(double value) {
-        firstMoment.accept(value);
-        if (Double.isInfinite(value)) {
-            squaredDevSum = Double.NaN;
-            return;
-        }
-        final double n = firstMoment.getN();
-        squaredDevSum += (n - 1) * firstMoment.getDev() * firstMoment.getDevNormalizedByN();
+        super.accept(value);
+        squaredDevSum += (n - 1) * dev * nDev;
     }
 
     /**
@@ -99,29 +88,34 @@ class SumOfSquaredDeviations implements DoubleStatistic, DoubleStatisticAccumula
      */
     @Override
     public double getAsDouble() {
-        return squaredDevSum;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public SumOfSquaredDeviations combine(SumOfSquaredDeviations other) {
-        final long oldN = firstMoment.getN();
-        final long otherN = other.getN();
-        if (oldN == 0) {
-            squaredDevSum = other.squaredDevSum;
-        } else if (otherN != 0) {
-            final double sqDiffOfMean =
-                Math.pow((other.firstMoment.getAsDouble() * 0.5 - firstMoment.getAsDouble() * 0.5) * 2, 2);
-            squaredDevSum += other.squaredDevSum + sqDiffOfMean * ((double) (oldN * otherN) / (oldN + otherN));
-        }
-        firstMoment.combine(other.firstMoment);
-        return this;
+        return Double.isFinite(super.getAsDouble()) ? squaredDevSum : Double.NaN;
     }
 
     /**
-     * @return Number of values seen so far.
+     * Gets a new FirstMoment instance with all of its parameters copied from the current instance.
+     * @return The FirstMoment instance.
      */
-    long getN() {
-        return firstMoment.getN();
+    FirstMoment getFirstMoment() {
+        return new FirstMoment(m1, n, super.getNonFiniteValue(), dev, nDev);
+    }
+
+    /**
+     * Combines the state of another {@code SumOfSquaredDeviations} into this one.
+     *
+     * @param other Another {@code SumOfSquaredDeviations} to be combined.
+     * @return {@code this} instance after combining {@code other}.
+     */
+    public SumOfSquaredDeviations combine(SumOfSquaredDeviations other) {
+        final long oldN = n;
+        final long otherN = other.n;
+        if (oldN == 0) {
+            squaredDevSum = other.squaredDevSum;
+        } else if (otherN != 0) {
+            final double diffOfMean = other.getFirstMoment().getAsDouble() - m1;
+            final double sqDiffOfMean = diffOfMean * diffOfMean;
+            squaredDevSum += other.squaredDevSum + sqDiffOfMean * ((double) (oldN * otherN) / (oldN + otherN));
+        }
+        super.combine(other.getFirstMoment());
+        return this;
     }
 }

@@ -47,23 +47,23 @@ package org.apache.commons.statistics.descriptive;
  */
 class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMoment> {
     /** Count of values that have been added. */
-    private long n;
+    protected long n;
 
     /** First moment of values that have been added. */
-    private double m1;
+    protected double m1;
 
     /**
      * Deviation of most recently added value from the previous first moment.
      * Retained to prevent repeated computation in higher order moments.
      */
-    private double dev;
+    protected double dev;
 
     /**
      * Deviation of most recently added value from the previous first moment,
      * normalized by current sample size. Retained to prevent repeated
      * computation in higher order moments.
      */
-    private double nDev;
+    protected double nDev;
 
     /**
      * Running sum of values seen so far.
@@ -89,6 +89,22 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
         this.m1 = m1;
         this.n = n;
         this.nonFiniteValue = nonFiniteValue;
+    }
+
+    /**
+     * Create a FirstMoment instance with the given parameters.
+     * @param m1 First moment.
+     * @param n Number of values.
+     * @param nonFiniteValue Running sum of values seen so far.
+     * @param dev Deviation of most recently added value from the first moment.
+     * @param nDev Deviation of most recently added value from the first moment normalized by sample size.
+     */
+    FirstMoment(final double m1, final long n, final double nonFiniteValue, final double dev, final double nDev) {
+        this.m1 = m1;
+        this.n = n;
+        this.nonFiniteValue = nonFiniteValue;
+        this.dev = dev;
+        this.nDev = nDev;
     }
 
     /**
@@ -154,33 +170,10 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
     }
 
     /**
-     * @return Number of values seen so far.
-     */
-    long getN() {
-        return n;
-    }
-
-    /**
      * Gets the running sum of the values seen so far.
      * @return Running Sum.
      */
     double getNonFiniteValue() {
         return nonFiniteValue;
-    }
-
-    /**
-     * Gets the deviation of most recently added value from first moment.
-     * @return Deviation.
-     */
-    double getDev() {
-        return dev;
-    }
-
-    /**
-     * Gets the deviation of most recently added value from first moment, normalized by sample size.
-     * @return Normalized Deviation.
-     */
-    double getDevNormalizedByN() {
-        return nDev;
     }
 }

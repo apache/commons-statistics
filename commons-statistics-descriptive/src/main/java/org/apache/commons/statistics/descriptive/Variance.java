@@ -53,8 +53,8 @@ package org.apache.commons.statistics.descriptive;
  *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
- * one of the threads invokes the <code>accept()</code> or
- * <code>combine()</code> method, it must be synchronized externally.
+ * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
+ * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
  * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
  * as <code>accumulator</code> and <code>combiner</code> functions of
@@ -114,11 +114,11 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
         double accum2 = 0.0;
         double squaredDevSum;
         for (final double value : values) {
-            dev = value - mean;
+            dev = value * 0.5 - mean * 0.5;
             accum += dev * dev;
             accum2 += dev;
         }
-        final double accum2Squared = accum2 * accum2;
+        double accum2Squared = accum2 * accum2;
         final long n = values.length;
         // The sum of squared deviations is accum - (accum2 * accum2 / n).
         // To prevent squaredDevSum from spuriously attaining a NaN value
@@ -127,7 +127,9 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
         if (accum2Squared == Double.POSITIVE_INFINITY) {
             squaredDevSum = Double.POSITIVE_INFINITY;
         } else {
-            squaredDevSum = accum - (accum2 * accum2 / n);
+            accum *= 4;
+            accum2Squared *= 4;
+            squaredDevSum = accum - (accum2Squared / n);
         }
         return StorelessSampleVariance.create(squaredDevSum, mean, n, accum2 + (mean * n));
     }
@@ -213,11 +215,11 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
         @Override
         public double getAsDouble() {
             final double sumOfSquaredDev = squaredDeviationSum.getAsDouble();
-            final double n = squaredDeviationSum.getN();
+            final double n = squaredDeviationSum.n;
             if (n == 0) {
                 return Double.NaN;
             } else if (n == 1 && Double.isFinite(sumOfSquaredDev)) {
-                return 0d;
+                return 0;
             }
             return sumOfSquaredDev / (n - 1);
         }
@@ -228,6 +230,5 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
             squaredDeviationSum.combine(that.squaredDeviationSum);
             return this;
         }
-
     }
 }
