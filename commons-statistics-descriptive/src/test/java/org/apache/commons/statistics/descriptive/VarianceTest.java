@@ -29,11 +29,11 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test for {@link Variance}.
  */
 final class VarianceTest {
-    private static final int ULP_ARRAY = 5;
+    private static final int ULP_ARRAY = 4;
 
-    private static final int ULP_STREAM = 7;
+    private static final int ULP_STREAM = 5;
 
-    private static final int ULP_COMBINE_ACCEPT = 7;
+    private static final int ULP_COMBINE_ACCEPT = 5;
 
     private static final int ULP_COMBINE_OF = 2;
 

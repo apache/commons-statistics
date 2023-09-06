@@ -92,8 +92,8 @@ final class TestHelper {
      * Format the difference in ULP between two arguments. This will return "0" for values
      * that are binary equal, or for the difference between zeros of opposite signs.
      *
-     * @param a first argument
-     * @param b second argument
+     * @param expected first argument
+     * @param actual second argument
      * @return Signed ULP difference between the arguments as a string
      */
     private static String formatUlpDifference(double expected, double actual) {
