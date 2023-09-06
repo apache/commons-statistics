@@ -19,11 +19,18 @@ package org.apache.commons.statistics.descriptive;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.provider.Arguments;
 
+/**
+ * Utility class which provides the data for tests in {o.a.c.s.descriptive} module.
+ */
 final class TestData {
 
     /** Class contains only static methods. */
     private TestData() {}
 
+    /**
+     * Function which supplies data to test the <code>accept()</code> and <code>of()</code> methods.
+     * @return Stream of 1-d arrays.
+     */
     static Stream<double[]> testValues() {
         return Stream.of(
             new double[] {0.0},
@@ -60,18 +67,33 @@ final class TestData {
         );
     }
 
-    static Stream<Arguments> testValuesNonFinite() {
+    /**
+     * Function which supplies data with non-finite values to test the <code>accept()</code> and <code>of()</code> methods.
+     * @return Stream of 1-d arrays.
+     */
+    static Stream<double[]> testValuesNonFinite() {
         return Stream.of(
-            Arguments.of(new double[]{}, Double.NaN),
-            Arguments.of(new double[]{Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}, Double.NaN),
-            Arguments.of(new double[]{Double.NaN, 34.56, 89.74}, Double.NaN),
-            Arguments.of(new double[]{34.56, Double.NaN, 89.74}, Double.NaN),
-            Arguments.of(new double[]{34.56, 89.74, Double.NaN}, Double.NaN),
-            Arguments.of(new double[]{Double.NaN, 3.14, Double.NaN, Double.NaN}, Double.NaN),
-            Arguments.of(new double[]{Double.NaN, Double.NaN, Double.NaN}, Double.NaN)
+            new double[]{},
+            new double[]{Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY},
+            new double[]{Double.NaN, 34.56, 89.74},
+            new double[]{34.56, Double.NaN, 89.74},
+            new double[]{34.56, 89.74, Double.NaN},
+            new double[]{Double.NaN, 3.14, Double.NaN, Double.NaN},
+            new double[]{Double.NaN, Double.NaN, Double.NaN},
+            new double[]{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY},
+            new double[]{Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY},
+            new double[]{Double.POSITIVE_INFINITY, Double.MAX_VALUE},
+            new double[]{Double.NEGATIVE_INFINITY, -Double.MIN_VALUE},
+            new double[]{Double.NEGATIVE_INFINITY, Double.MAX_VALUE},
+            new double[]{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY},
+            new double[]{-Double.MAX_VALUE, Double.POSITIVE_INFINITY}
         );
     }
 
+    /**
+     * Function which supplies data to test the <code>combine()</code> method.
+     * @return Stream of 1-d arrays.
+     */
     static Stream<Arguments> testCombine() {
         return Stream.of(
             Arguments.of(new double[] {}, new double[] {1}),
@@ -100,15 +122,26 @@ final class TestData {
         );
     }
 
-    static Stream<Arguments> testCombineNonFinite() {
+    /**
+     * Function which supplies data with non-finite values to test the <code>combine()</code> method.
+     * @return Stream of 2-d arrays.
+     */
+    static Stream<double[][]> testCombineNonFinite() {
         return Stream.of(
-            Arguments.of(new double[][] {{}, {}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.NEGATIVE_INFINITY}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.NaN, 34.56, 89.74}, {Double.NaN}}, Double.NaN),
-            Arguments.of(new double[][] {{34.56}, {Double.NaN, 89.74}}, Double.NaN),
-            Arguments.of(new double[][] {{34.56, 89.74}, {Double.NaN, Double.NaN}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.NaN, 3.14, Double.NaN, Double.NaN}, {}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.NaN, Double.NaN, Double.NaN}, {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN)
+            new double[][] {{}, {}},
+            new double[][] {{Double.POSITIVE_INFINITY}, {Double.NEGATIVE_INFINITY}},
+            new double[][] {{Double.NaN, 34.56, 89.74}, {Double.NaN}},
+            new double[][] {{34.56}, {Double.NaN, 89.74}},
+            new double[][] {{34.56, 89.74}, {Double.NaN, Double.NaN}},
+            new double[][] {{Double.NaN, 3.14, Double.NaN, Double.NaN}, {}},
+            new double[][] {{Double.NaN, Double.NaN, Double.NaN}, {Double.NaN, Double.NaN, Double.NaN}},
+            new double[][] {{Double.POSITIVE_INFINITY}, {Double.POSITIVE_INFINITY}},
+            new double[][] {{Double.NEGATIVE_INFINITY}, {Double.NEGATIVE_INFINITY}},
+            new double[][] {{Double.POSITIVE_INFINITY}, {Double.MAX_VALUE}},
+            new double[][] {{-Double.MAX_VALUE}, {Double.POSITIVE_INFINITY}},
+            new double[][] {{Double.NEGATIVE_INFINITY}, {-Double.MIN_VALUE}},
+            new double[][] {{Double.NEGATIVE_INFINITY, -Double.MAX_VALUE, -Double.MIN_VALUE},
+                {Double.MAX_VALUE, Double.MIN_VALUE}}
         );
     }
 }

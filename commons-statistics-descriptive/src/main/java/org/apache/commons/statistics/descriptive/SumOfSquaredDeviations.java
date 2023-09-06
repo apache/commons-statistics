@@ -39,14 +39,13 @@ package org.apache.commons.statistics.descriptive;
  * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
  * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
- * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept} and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
- * as <code>accumulator</code> and <code>combiner</code> functions of
- * {@link java.util.stream.Collector Collector} on a parallel stream,
- * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
- * provides the necessary partitioning, isolation, and merging of results for
- * safe and efficient parallel execution.
+ * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept} and
+ * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} as <code>accumulator</code> and
+ * <code>combiner</code> functions of {@link java.util.stream.Collector Collector} on a parallel stream, because the
+ * parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()} provides the necessary
+ * partitioning, isolation, and merging of results for safe and efficient parallel execution.
  */
-class SumOfSquaredDeviations extends FirstMoment implements DoubleStatistic {
+class SumOfSquaredDeviations extends FirstMoment {
     /** Sum of squared deviations of the values that have been added. */
     private double squaredDevSum;
 
@@ -86,17 +85,8 @@ class SumOfSquaredDeviations extends FirstMoment implements DoubleStatistic {
      *
      * @return {@code SumOfSquaredDeviations} of all values seen so far.
      */
-    @Override
-    public double getAsDouble() {
-        return Double.isFinite(super.getAsDouble()) ? squaredDevSum : Double.NaN;
-    }
-
-    /**
-     * Gets a new FirstMoment instance with all of its parameters copied from the current instance.
-     * @return The FirstMoment instance.
-     */
-    FirstMoment getFirstMoment() {
-        return new FirstMoment(m1, n, super.getNonFiniteValue(), dev, nDev);
+    public double getSumOfSquaredDeviations() {
+        return Double.isFinite(super.getFirstMoment()) ? squaredDevSum : Double.NaN;
     }
 
     /**
@@ -111,11 +101,11 @@ class SumOfSquaredDeviations extends FirstMoment implements DoubleStatistic {
         if (oldN == 0) {
             squaredDevSum = other.squaredDevSum;
         } else if (otherN != 0) {
-            final double diffOfMean = other.getFirstMoment().getAsDouble() - m1;
+            final double diffOfMean = other.getFirstMoment() - m1;
             final double sqDiffOfMean = diffOfMean * diffOfMean;
             squaredDevSum += other.squaredDevSum + sqDiffOfMean * ((double) (oldN * otherN) / (oldN + otherN));
         }
-        super.combine(other.getFirstMoment());
+        super.combine(other);
         return this;
     }
 }

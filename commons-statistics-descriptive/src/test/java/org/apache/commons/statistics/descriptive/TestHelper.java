@@ -39,7 +39,6 @@ final class TestHelper {
 
     /**
      * Helper function to concatenate arrays.
-     *
      * @param arrays Arrays to be concatenated.
      * @return A new array containing elements from all input arrays in the order they appear.
      */
@@ -52,7 +51,7 @@ final class TestHelper {
     /**
      * Helper function to compute the expected value of Mean using BigDecimal.
      * @param values Values.
-     * @return Mean of values rounded to <a href = "https://en.wikipedia.org/wiki/Decimal128_floating-point_format"> DECIMAL128 precision.
+     * @return Mean of values rounded to <a href = "https://en.wikipedia.org/wiki/Decimal128_floating-point_format"> DECIMAL128 precision</a>.
      */
     static BigDecimal computeExpectedMean(double[] values) {
         BigDecimal bd = BigDecimal.ZERO;

@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.util.function.DoubleConsumer;
+
 /**
  * Computes the first moment (arithmetic mean) using the definitional formula:
  *
@@ -45,7 +47,7 @@ package org.apache.commons.statistics.descriptive;
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
  */
-class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMoment> {
+class FirstMoment implements DoubleConsumer {
     /** Count of values that have been added. */
     protected long n;
 
@@ -118,8 +120,7 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
      * <p> {@code Infinity}, if infinities of the same sign have been encountered.
      * <p> {@code NaN} otherwise.
      */
-    @Override
-    public double getAsDouble() {
+    public double getFirstMoment() {
         if (Double.isFinite(m1)) {
             return n == 0 ? Double.NaN : m1;
         }
@@ -127,8 +128,12 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
         return nonFiniteValue;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Combines the state of another {@code FirstMoment} into this one.
+     *
+     * @param other Another {@code FirstMoment} to be combined.
+     * @return {@code this} instance after combining {@code other}.
+     */
     public FirstMoment combine(FirstMoment other) {
         if (n == 0) {
             n = other.n;
@@ -159,21 +164,5 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
      */
     double getNonFiniteValue() {
         return nonFiniteValue;
-    }
-
-    /**
-     * Gets the deviation of most recently added value from first moment.
-     * @return Deviation.
-     */
-    double getDev() {
-        return dev;
-    }
-
-    /**
-     * Gets the deviation of most recently added value from first moment, normalized by sample size.
-     * @return Normalized Deviation.
-     */
-    double getDevNormalizedByN() {
-        return nDev;
     }
 }

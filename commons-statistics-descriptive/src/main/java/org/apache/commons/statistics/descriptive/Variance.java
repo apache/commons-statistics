@@ -109,6 +109,9 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
      */
     public static Variance of(double... values) {
         final double mean = Mean.of(values).getAsDouble();
+        if (!Double.isFinite(mean)) {
+            return StorelessSampleVariance.create(Math.abs(mean), mean, values.length, Math.abs(mean));
+        }
         double accum = 0.0;
         double dev;
         double accum2 = 0.0;
@@ -124,10 +127,10 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
         // To prevent squaredDevSum from spuriously attaining a NaN value
         // when accum2Squared (which implies accum is also infinite) is infinite, assign it
         // an infinite value which is its intended value.
-        if (accum2Squared == Double.POSITIVE_INFINITY) {
+        if (accum == Double.POSITIVE_INFINITY) {
             squaredDevSum = Double.POSITIVE_INFINITY;
         } else {
-            squaredDevSum = accum - (accum2 * accum2 / n);
+            squaredDevSum = accum - (accum2Squared / n);
         }
         return StorelessSampleVariance.create(squaredDevSum, mean, n, accum2 + (mean * n));
     }
@@ -212,7 +215,7 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
 
         @Override
         public double getAsDouble() {
-            final double sumOfSquaredDev = squaredDeviationSum.getAsDouble();
+            final double sumOfSquaredDev = squaredDeviationSum.getSumOfSquaredDeviations();
             final double n = squaredDeviationSum.n;
             if (n == 0) {
                 return Double.NaN;

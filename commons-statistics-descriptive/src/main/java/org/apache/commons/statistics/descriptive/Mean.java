@@ -167,7 +167,7 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
 
         @Override
         public double getAsDouble() {
-            return firstMoment.getAsDouble();
+            return firstMoment.getFirstMoment();
         }
 
         @Override

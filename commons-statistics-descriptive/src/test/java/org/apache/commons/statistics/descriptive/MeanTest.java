@@ -17,12 +17,10 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
@@ -86,7 +84,10 @@ final class MeanTest {
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
-    void testMeanNonFinite(double[] values, double expected) {
+    void testMeanNonFinite(double[] values) {
+        final double expected = Arrays.stream(values)
+                .average()
+                .orElse(Double.NaN);
         Mean mean = Mean.create();
         for (double value : values) {
             mean.accept(value);
@@ -97,7 +98,10 @@ final class MeanTest {
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
-    void testParallelStreamNonFinite(double[] values, double expected) {
+    void testParallelStreamNonFinite(double[] values) {
+        final double expected = Arrays.stream(values)
+                .average()
+                .orElse(Double.NaN);
         final double ans = Arrays.stream(values)
                 .parallel()
                 .collect(Mean::create, Mean::accept, Mean::combine)
@@ -106,25 +110,13 @@ final class MeanTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite", "testMeanNonFinite"})
-    void testMeanRandomOrderNonFinite(double[] values, double expected) {
+    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
+    void testMeanRandomOrderNonFinite(double[] values) {
         UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 1; i <= 10; i++) {
-            testMeanNonFinite(TestHelper.shuffle(rng, values), expected);
-            testParallelStreamNonFinite(TestHelper.shuffle(rng, values), expected);
+            testMeanNonFinite(TestHelper.shuffle(rng, values));
+            testParallelStreamNonFinite(TestHelper.shuffle(rng, values));
         }
-    }
-
-    static Stream<Arguments> testMeanNonFinite() {
-        return Stream.of(
-            Arguments.of(new double[]{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[]{Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY}, Double.NEGATIVE_INFINITY),
-            Arguments.of(new double[]{Double.POSITIVE_INFINITY, Double.MAX_VALUE}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[]{Double.NEGATIVE_INFINITY, -Double.MIN_VALUE}, Double.NEGATIVE_INFINITY),
-            Arguments.of(new double[]{Double.NEGATIVE_INFINITY, Double.MAX_VALUE}, Double.NEGATIVE_INFINITY),
-            Arguments.of(new double[]{Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[]{-Double.MAX_VALUE, Double.POSITIVE_INFINITY}, Double.POSITIVE_INFINITY)
-        );
     }
 
     @ParameterizedTest
@@ -183,8 +175,12 @@ final class MeanTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite", "testCombineMeanNonFinite"})
-    void testCombineNonFinite(double[][] values, double expected) {
+    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite")
+    void testCombineNonFinite(double[][] values) {
+        final double expected = Arrays.stream(values)
+                .flatMapToDouble(Arrays::stream)
+                .average()
+                .orElse(Double.NaN);
         Mean mean1 = Mean.create();
         Mean mean2 = Mean.create();
         Arrays.stream(values[0]).forEach(mean1);
@@ -196,8 +192,8 @@ final class MeanTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite", "testCombineMeanNonFinite"})
-    void testCombineRandomOrderNonFinite(double[][] values, double expected) {
+    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite")
+    void testCombineRandomOrderNonFinite(double[][] values) {
         UniformRandomProvider rng = TestHelper.createRNG();
         final double[] data = TestHelper.concatenate(values[0], values[1]);
         final int n = values[0].length;
@@ -205,40 +201,28 @@ final class MeanTest {
             for (int j = 1; j <= 10; j++) {
                 TestHelper.shuffle(rng, values[0]);
                 TestHelper.shuffle(rng, values[1]);
-                testCombineNonFinite(values, expected);
+                testCombineNonFinite(values);
             }
             TestHelper.shuffle(rng, data);
             System.arraycopy(data, 0, values[0], 0, n);
             System.arraycopy(data, n, values[1], 0, values[1].length);
-            testCombineNonFinite(values, expected);
+            testCombineNonFinite(values);
         }
     }
 
     @ParameterizedTest
-    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite", "testCombineMeanNonFinite"})
-    void testArrayOfArraysNonFinite(double[][] values, double expected) {
+    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite")
+    void testArrayOfArraysNonFinite(double[][] values) {
+        final double expected = Arrays.stream(values)
+                .flatMapToDouble(Arrays::stream)
+                .average()
+                .orElse(Double.NaN);
         final double actual = Arrays.stream(values)
                 .map(Mean::of)
                 .reduce(Mean::combine)
                 .map(Mean::getAsDouble)
                 .orElseThrow(RuntimeException::new);
         Assertions.assertEquals(expected, actual, "array of arrays combined mean non-finite");
-    }
-
-    static Stream<Arguments> testCombineMeanNonFinite() {
-        return Stream.of(
-            Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.POSITIVE_INFINITY}}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY}, {Double.NEGATIVE_INFINITY}}, Double.NEGATIVE_INFINITY),
-            Arguments.of(new double[][] {{Double.POSITIVE_INFINITY}, {Double.MAX_VALUE}}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[][] {{-Double.MAX_VALUE}, {Double.POSITIVE_INFINITY}}, Double.POSITIVE_INFINITY),
-            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY}, {-Double.MIN_VALUE}}, Double.NEGATIVE_INFINITY),
-            Arguments.of(new double[][] {{Double.NaN, 34.56, 89.74}, {Double.NaN}}, Double.NaN),
-            Arguments.of(new double[][] {{34.56}, {Double.NaN, 89.74}}, Double.NaN),
-            Arguments.of(new double[][] {{34.56, 89.74}, {Double.NaN, Double.NaN}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.NaN, 3.14, Double.NaN, Double.NaN}, {}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.NaN, Double.NaN, Double.NaN}, {Double.NaN, Double.NaN, Double.NaN}}, Double.NaN),
-            Arguments.of(new double[][] {{Double.NEGATIVE_INFINITY, -Double.MAX_VALUE, -Double.MIN_VALUE}, {Double.MAX_VALUE, Double.MIN_VALUE}}, Double.NEGATIVE_INFINITY)
-        );
     }
 
     // Helper function which converts the mean of BigDecimal type to a double type.
