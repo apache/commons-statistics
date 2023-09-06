@@ -39,6 +39,7 @@ final class TestHelper {
 
     /**
      * Helper function to concatenate arrays.
+     *
      * @param arrays Arrays to be concatenated.
      * @return A new array containing elements from all input arrays in the order they appear.
      */
