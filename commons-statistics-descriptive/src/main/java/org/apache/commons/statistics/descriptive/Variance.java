@@ -95,9 +95,9 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
      * if:
      * <ul>
      *     <li>the input array is empty,</li>
-     *     <li>any of the values is <code>NaN</code>, or</li>
-     *     <li>an infinite value of either sign is encountered</li>
-     *     <li>if the sum of the squared deviations from the mean is infinite</li>
+     *     <li>any of the values is <code>NaN</code></li>
+     *     <li>an infinite value of either sign is encountered, or</li>
+     *     <li>the sum of the squared deviations from the mean is infinite</li>
      * </ul>
      *
      * <p>Note: {@code Variance} computed using {@link Variance#accept Variance.accept()} may be different
