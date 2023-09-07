@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.util.function.DoubleConsumer;
+
 /**
  * Computes the first moment (arithmetic mean) using the definitional formula:
  *
@@ -35,8 +37,8 @@ package org.apache.commons.statistics.descriptive;
  *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
- * one of the threads invokes the <code>increment()</code> or
- * <code>clear()</code> method, it must be synchronized externally.
+ * one of the threads invokes the <code>accept()</code> or
+ * <code>combine()</code> method, it must be synchronized externally.
  *
  * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
  * as <code>accumulator</code> and <code>combiner</code> functions of
@@ -45,25 +47,25 @@ package org.apache.commons.statistics.descriptive;
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
  */
-class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMoment> {
+class FirstMoment implements DoubleConsumer {
     /** Count of values that have been added. */
-    private long n;
+    protected long n;
 
     /** First moment of values that have been added. */
-    private double m1;
+    protected double m1;
 
     /**
      * Deviation of most recently added value from the previous first moment.
      * Retained to prevent repeated computation in higher order moments.
      */
-    private double dev;
+    protected double dev;
 
     /**
      * Deviation of most recently added value from the previous first moment,
      * normalized by current sample size. Retained to prevent repeated
      * computation in higher order moments.
      */
-    private double nDev;
+    protected double nDev;
 
     /**
      * Running sum of values seen so far.
@@ -118,8 +120,7 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
      * <p> {@code Infinity}, if infinities of the same sign have been encountered.
      * <p> {@code NaN} otherwise.
      */
-    @Override
-    public double getAsDouble() {
+    public double getFirstMoment() {
         if (Double.isFinite(m1)) {
             return n == 0 ? Double.NaN : m1;
         }
@@ -127,8 +128,12 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
         return nonFiniteValue;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Combines the state of another {@code FirstMoment} into this one.
+     *
+     * @param other Another {@code FirstMoment} to be combined.
+     * @return {@code this} instance after combining {@code other}.
+     */
     public FirstMoment combine(FirstMoment other) {
         if (n == 0) {
             n = other.n;
@@ -151,13 +156,6 @@ class FirstMoment implements DoubleStatistic, DoubleStatisticAccumulator<FirstMo
             nDev *= 2;
         }
         return this;
-    }
-
-    /**
-     * @return Number of values seen so far.
-     */
-    long getN() {
-        return n;
     }
 
     /**

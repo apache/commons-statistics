@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.junit.jupiter.api.Assertions;
@@ -24,97 +26,95 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test for {@link Mean}.
+ * Test for {@link Variance}.
  */
-final class MeanTest {
-    private static final int ULP_ARRAY = 2;
+final class VarianceTest {
+    private static final int ULP_ARRAY = 4;
 
     private static final int ULP_STREAM = 5;
 
-    private static final int ULP_COMBINE = 5;
+    private static final int ULP_COMBINE_ACCEPT = 6;
+
+    private static final int ULP_COMBINE_OF = 2;
 
     @Test
     void testEmpty() {
-        Mean mean = Mean.create();
-        Assertions.assertEquals(Double.NaN, mean.getAsDouble());
+        Variance var = Variance.create();
+        Assertions.assertEquals(Double.NaN, var.getAsDouble());
     }
 
     @Test
-    void testNan() {
-        Mean mean = Mean.create();
+    void testNaN() {
+        Variance variance = Variance.create();
         double[] testArray = {Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
         for (double value : testArray) {
-            mean.accept(value);
+            variance.accept(value);
         }
-        Assertions.assertEquals(Double.NaN, mean.getAsDouble());
+        Assertions.assertEquals(Double.NaN, variance.getAsDouble());
     }
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValues")
-    void testMean(double[] values) {
-        final double expected = computeExpected(values);
-        Mean mean = Mean.create();
+    void testVariance(double[] values) {
+        final double expected = computeExpectedVariance(values);
+        Variance var = Variance.create();
         for (double value : values) {
-            mean.accept(value);
+            var.accept(value);
         }
-        TestHelper.assertEquals(expected, mean.getAsDouble(), ULP_STREAM, () -> "mean");
-        TestHelper.assertEquals(expected, Mean.of(values).getAsDouble(), ULP_ARRAY, () -> "of (values)");
+        TestHelper.assertEquals(expected, var.getAsDouble(), ULP_STREAM, () -> "variance");
+        TestHelper.assertEquals(expected, Variance.of(values).getAsDouble(), ULP_ARRAY, () -> "of (values)");
     }
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValues")
     void testParallelStream(double[] values) {
-        final double expected = computeExpected(values);
-        final double ans = Arrays.stream(values)
+        final double expected = computeExpectedVariance(values);
+        final double actual = Arrays.stream(values)
                 .parallel()
-                .collect(Mean::create, Mean::accept, Mean::combine)
+                .collect(Variance::create, Variance::accept, Variance::combine)
                 .getAsDouble();
-        TestHelper.assertEquals(expected, ans, ULP_COMBINE, () -> "parallel stream");
+        TestHelper.assertEquals(expected, actual, ULP_COMBINE_ACCEPT, () -> "parallel stream");
     }
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValues")
-    void testMeanRandomOrder(double[] values) {
+    void testVarianceRandomOrder(double[] values) {
         UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 1; i <= 10; i++) {
-            testMean(TestHelper.shuffle(rng, values));
+            testVariance(TestHelper.shuffle(rng, values));
             testParallelStream(TestHelper.shuffle(rng, values));
         }
     }
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
-    void testMeanNonFinite(double[] values) {
-        final double expected = Arrays.stream(values)
-                .average()
-                .orElse(Double.NaN);
-        Mean mean = Mean.create();
+    void testVarianceNonFinite(double[] values) {
+        final double expected = Double.NaN;
+        Variance var = Variance.create();
         for (double value : values) {
-            mean.accept(value);
+            var.accept(value);
         }
-        Assertions.assertEquals(expected, mean.getAsDouble(), "mean non-finite");
-        Assertions.assertEquals(expected, Mean.of(values).getAsDouble(), "of (values) non-finite");
+        Assertions.assertEquals(expected, var.getAsDouble(), "variance non-finite");
+        Assertions.assertEquals(expected, Variance.of(values).getAsDouble(), "of (values) non-finite");
     }
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
     void testParallelStreamNonFinite(double[] values) {
-        final double expected = Arrays.stream(values)
-                .average()
-                .orElse(Double.NaN);
+        final double expected = Double.NaN;
         final double ans = Arrays.stream(values)
                 .parallel()
-                .collect(Mean::create, Mean::accept, Mean::combine)
+                .collect(Variance::create, Variance::accept, Variance::combine)
                 .getAsDouble();
         Assertions.assertEquals(expected, ans, "parallel stream non-finite");
     }
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
-    void testMeanRandomOrderNonFinite(double[] values) {
+    void testVarianceRandomOrderNonFinite(double[] values) {
         UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 1; i <= 10; i++) {
-            testMeanNonFinite(TestHelper.shuffle(rng, values));
+            testVarianceNonFinite(TestHelper.shuffle(rng, values));
             testParallelStreamNonFinite(TestHelper.shuffle(rng, values));
         }
     }
@@ -123,22 +123,22 @@ final class MeanTest {
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombine")
     void testCombine(double[] array1, double[] array2) {
         final double[] combinedArray = TestHelper.concatenate(array1, array2);
-        final double expected = computeExpected(combinedArray);
-        Mean mean1 = Mean.create();
-        Mean mean2 = Mean.create();
-        Arrays.stream(array1).forEach(mean1);
-        Arrays.stream(array2).forEach(mean2);
-        final double mean1BeforeCombine = mean1.getAsDouble();
-        final double mean2BeforeCombine = mean2.getAsDouble();
-        mean1.combine(mean2);
-        TestHelper.assertEquals(expected, mean1.getAsDouble(), ULP_COMBINE, () -> "combine");
-        Assertions.assertEquals(mean2BeforeCombine, mean2.getAsDouble());
-        // Combine in reversed order
-        Mean mean1b = Mean.create();
-        Arrays.stream(array1).forEach(mean1b);
-        mean2.combine(mean1b);
-        TestHelper.assertEquals(expected, mean2.getAsDouble(), ULP_COMBINE, () -> "combine");
-        Assertions.assertEquals(mean1BeforeCombine, mean1b.getAsDouble());
+        final double expected = computeExpectedVariance(combinedArray);
+        Variance var1 = Variance.create();
+        Variance var2 = Variance.create();
+        Arrays.stream(array1).forEach(var1);
+        Arrays.stream(array2).forEach(var2);
+        final double var1BeforeCombine = var1.getAsDouble();
+        final double var2BeforeCombine = var2.getAsDouble();
+        var1.combine(var2);
+        TestHelper.assertEquals(expected, var1.getAsDouble(), ULP_COMBINE_ACCEPT, () -> "combine");
+        Assertions.assertEquals(var2BeforeCombine, var2.getAsDouble());
+        // Combine in reverse order
+        Variance var1b = Variance.create();
+        Arrays.stream(array1).forEach(var1b);
+        var2.combine(var1b);
+        TestHelper.assertEquals(expected, var2.getAsDouble(), ULP_COMBINE_ACCEPT, () -> "combine");
+        Assertions.assertEquals(var1BeforeCombine, var1b.getAsDouble());
     }
 
     @ParameterizedTest
@@ -164,31 +164,28 @@ final class MeanTest {
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombine")
     void testArrayOfArrays(double[] array1, double[] array2) {
         final double[] combinedArray = TestHelper.concatenate(array1, array2);
-        final double expected = computeExpected(combinedArray);
+        final double expected = computeExpectedVariance(combinedArray);
         final double[][] values = {array1, array2};
         final double actual = Arrays.stream(values)
-                .map(Mean::of)
-                .reduce(Mean::combine)
-                .map(Mean::getAsDouble)
+                .map(Variance::of)
+                .reduce(Variance::combine)
+                .map(Variance::getAsDouble)
                 .orElseThrow(RuntimeException::new);
-        TestHelper.assertEquals(expected, actual, ULP_COMBINE, () -> "array of arrays combined mean");
+        TestHelper.assertEquals(expected, actual, ULP_COMBINE_OF, () -> "array of arrays combined variance");
     }
 
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite")
     void testCombineNonFinite(double[][] values) {
-        final double expected = Arrays.stream(values)
-                .flatMapToDouble(Arrays::stream)
-                .average()
-                .orElse(Double.NaN);
-        Mean mean1 = Mean.create();
-        Mean mean2 = Mean.create();
-        Arrays.stream(values[0]).forEach(mean1);
-        Arrays.stream(values[1]).forEach(mean2);
-        final double mean2BeforeCombine = mean2.getAsDouble();
-        mean1.combine(mean2);
-        Assertions.assertEquals(expected, mean1.getAsDouble(), "combine non-finite");
-        Assertions.assertEquals(mean2BeforeCombine, mean2.getAsDouble());
+        final double expected = Double.NaN;
+        Variance var1 = Variance.create();
+        Variance var2 = Variance.create();
+        Arrays.stream(values[0]).forEach(var1);
+        Arrays.stream(values[1]).forEach(var2);
+        final double mean2BeforeCombine = var2.getAsDouble();
+        var1.combine(var2);
+        Assertions.assertEquals(expected, var1.getAsDouble(), "combine non-finite");
+        Assertions.assertEquals(mean2BeforeCombine, var2.getAsDouble());
     }
 
     @ParameterizedTest
@@ -213,20 +210,29 @@ final class MeanTest {
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite")
     void testArrayOfArraysNonFinite(double[][] values) {
-        final double expected = Arrays.stream(values)
-                .flatMapToDouble(Arrays::stream)
-                .average()
-                .orElse(Double.NaN);
+        final double expected = Double.NaN;
         final double actual = Arrays.stream(values)
-                .map(Mean::of)
-                .reduce(Mean::combine)
-                .map(Mean::getAsDouble)
+                .map(Variance::of)
+                .reduce(Variance::combine)
+                .map(Variance::getAsDouble)
                 .orElseThrow(RuntimeException::new);
-        Assertions.assertEquals(expected, actual, "array of arrays combined mean non-finite");
+        Assertions.assertEquals(expected, actual, "array of arrays combined variance non-finite");
     }
 
-    // Helper function which converts the mean of BigDecimal type to a double type.
-    private static double computeExpected(double[] values) {
-        return TestHelper.computeExpectedMean(values).doubleValue();
+    // Helper function to compute the expected value of Variance using BigDecimal.
+    static double computeExpectedVariance(double[] values) {
+        long n = values.length;
+        if (n == 1) {
+            return 0;
+        }
+        BigDecimal mean = TestHelper.computeExpectedMean(values);
+        BigDecimal bd = BigDecimal.ZERO;
+        for (double value : values) {
+            BigDecimal bdDiff = new BigDecimal(value, MathContext.DECIMAL128);
+            bdDiff = bdDiff.subtract(mean);
+            bdDiff = bdDiff.pow(2);
+            bd = bd.add(bdDiff);
+        }
+        return bd.divide(BigDecimal.valueOf(n - 1), MathContext.DECIMAL128).doubleValue();
     }
 }

@@ -16,6 +16,8 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import org.apache.commons.numbers.core.Precision;
@@ -45,6 +47,19 @@ final class TestHelper {
         return Arrays.stream(arrays)
                 .flatMapToDouble(Arrays::stream)
                 .toArray();
+    }
+
+    /**
+     * Helper function to compute the expected value of Mean using BigDecimal.
+     * @param values Values.
+     * @return Mean of values rounded to <a href = "https://en.wikipedia.org/wiki/Decimal128_floating-point_format"> DECIMAL128 precision</a>.
+     */
+    static BigDecimal computeExpectedMean(double[] values) {
+        BigDecimal bd = BigDecimal.ZERO;
+        for (double value : values) {
+            bd = bd.add(new BigDecimal(value));
+        }
+        return bd.divide(BigDecimal.valueOf(values.length), MathContext.DECIMAL128);
     }
 
     /**
@@ -78,8 +93,8 @@ final class TestHelper {
      * Format the difference in ULP between two arguments. This will return "0" for values
      * that are binary equal, or for the difference between zeros of opposite signs.
      *
-     * @param a first argument
-     * @param b second argument
+     * @param expected first argument
+     * @param actual second argument
      * @return Signed ULP difference between the arguments as a string
      */
     private static String formatUlpDifference(double expected, double actual) {
