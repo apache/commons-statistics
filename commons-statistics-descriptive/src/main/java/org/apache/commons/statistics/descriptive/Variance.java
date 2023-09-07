@@ -95,7 +95,7 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
      * if:
      * <ul>
      *     <li>the input array is empty,</li>
-     *     <li>any of the values is <code>NaN</code></li>
+     *     <li>any of the values is <code>NaN</code>,</li>
      *     <li>an infinite value of either sign is encountered, or</li>
      *     <li>the sum of the squared deviations from the mean is infinite</li>
      * </ul>
