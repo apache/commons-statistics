@@ -28,7 +28,7 @@ final class TestData {
     private TestData() {}
 
     /**
-     * Function which supplies data to test the <code>accept()</code> and <code>of()</code> methods.
+     * Function which supplies test data for a statistic as a single array.
      * @return Stream of 1-d arrays.
      */
     static Stream<double[]> testValues() {
@@ -68,7 +68,8 @@ final class TestData {
     }
 
     /**
-     * Function which supplies data with non-finite values to test the <code>accept()</code> and <code>of()</code> methods.
+     * Function which supplies test data for a statistic as a single array.
+     * Each case will contain at least one non-finite value.
      * @return Stream of 1-d arrays.
      */
     static Stream<double[]> testValuesNonFinite() {
@@ -91,7 +92,7 @@ final class TestData {
     }
 
     /**
-     * Function which supplies data to test the <code>combine()</code> method.
+     * Function which supplies test data for a statistic as a pair of double[] arrays.
      * @return Stream of 1-d arrays.
      */
     static Stream<Arguments> testCombine() {
@@ -123,7 +124,8 @@ final class TestData {
     }
 
     /**
-     * Function which supplies data with non-finite values to test the <code>combine()</code> method.
+     * Function which supplies test data for a statistic as a double[][] array.
+     * Each case will contain at least one non-finite value.
      * @return Stream of 2-d arrays.
      */
     static Stream<double[][]> testCombineNonFinite() {

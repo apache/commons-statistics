@@ -97,6 +97,7 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
      *     <li>the input array is empty,</li>
      *     <li>any of the values is <code>NaN</code>, or</li>
      *     <li>an infinite value of either sign is encountered</li>
+     *     <li>if the sum of the squared deviations from the mean is infinite</li>
      * </ul>
      *
      * <p>Note: {@code Variance} computed using {@link Variance#accept Variance.accept()} may be different
@@ -110,7 +111,7 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
     public static Variance of(double... values) {
         final double mean = Mean.of(values).getAsDouble();
         if (!Double.isFinite(mean)) {
-            return StorelessSampleVariance.create(Math.abs(mean), mean, values.length, Math.abs(mean));
+            return StorelessSampleVariance.create(Math.abs(mean), mean, values.length, mean);
         }
         double accum = 0.0;
         double dev;
@@ -123,10 +124,9 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
         }
         final double accum2Squared = accum2 * accum2;
         final long n = values.length;
-        // The sum of squared deviations is accum - (accum2 * accum2 / n).
+        // The sum of squared deviations is accum - (accum2Squared / n).
         // To prevent squaredDevSum from spuriously attaining a NaN value
-        // when accum2Squared (which implies accum is also infinite) is infinite, assign it
-        // an infinite value which is its intended value.
+        // when accum is infinite, assign it an infinite value which is its intended value.
         if (accum == Double.POSITIVE_INFINITY) {
             squaredDevSum = Double.POSITIVE_INFINITY;
         } else {

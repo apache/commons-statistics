@@ -86,7 +86,7 @@ class SumOfSquaredDeviations extends FirstMoment {
      * @return {@code SumOfSquaredDeviations} of all values seen so far.
      */
     public double getSumOfSquaredDeviations() {
-        return Double.isFinite(super.getFirstMoment()) ? squaredDevSum : Double.NaN;
+        return Double.isFinite(getFirstMoment()) ? squaredDevSum : Double.NaN;
     }
 
     /**
@@ -103,7 +103,7 @@ class SumOfSquaredDeviations extends FirstMoment {
         } else if (otherN != 0) {
             final double diffOfMean = other.getFirstMoment() - m1;
             final double sqDiffOfMean = diffOfMean * diffOfMean;
-            squaredDevSum += other.squaredDevSum + sqDiffOfMean * ((double) (oldN * otherN) / (oldN + otherN));
+            squaredDevSum += other.squaredDevSum + sqDiffOfMean * (((double) oldN * otherN) / ((double) oldN + otherN));
         }
         super.combine(other);
         return this;
