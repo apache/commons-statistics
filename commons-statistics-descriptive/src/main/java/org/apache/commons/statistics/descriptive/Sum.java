@@ -28,8 +28,8 @@ package org.apache.commons.statistics.descriptive;
  *
  * <p><strong>This implementation is not thread safe.</strong>
  * If multiple threads access an instance of this class concurrently,
- * and at least one of the threads invokes the <code>accept()</code> or
- * <code>combine()</code> method, it must be synchronized externally.
+ * and at least one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
+ * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
  * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
  * as <code>accumulator</code> and <code>combiner</code> functions of
@@ -96,10 +96,6 @@ public abstract class Sum implements DoubleStatistic, DoubleStatisticAccumulator
      */
     @Override
     public abstract double getAsDouble();
-
-    /** {@inheritDoc} */
-    @Override
-    public abstract Sum combine(Sum other);
 
     /**
      * {@code Sum} implementation that does not store the input value(s) processed so far.
