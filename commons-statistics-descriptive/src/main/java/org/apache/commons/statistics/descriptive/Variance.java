@@ -43,10 +43,10 @@ package org.apache.commons.statistics.descriptive;
  * should only be used when the full array of values is not available.
  *
  * <p>
- * Returns <code>Double.NaN</code> if no data values have been added and
- * returns <code>0</code> if there is just one finite value in the data set.
- * Note that <code>Double.NaN</code> may also be returned if the input includes
- * <code>Double.NaN</code> and / or infinite values.
+ * Returns {@code NaN} if no data values have been added and
+ * returns {@code 0} if there is just one finite value in the data set.
+ * Note that {@code NaN} may also be returned if the input includes
+ * {@code NaN} and / or infinite values.
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
@@ -56,8 +56,9 @@ package org.apache.commons.statistics.descriptive;
  * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
  * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
- * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
- * as <code>accumulator</code> and <code>combiner</code> functions of
+ * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept}
+ * and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ * as {@code accumulator} and {@code combiner} functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
@@ -77,10 +78,10 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
     /**
      * Creates a {@code Variance} implementation which does not store the input value(s) it consumes.
      *
-     * <p>The result is <code>NaN</code> if:
+     * <p>The result is {@code NaN} if:
      * <ul>
      *     <li>no values have been added,</li>
-     *     <li>any of the values is <code>NaN</code>, or</li>
+     *     <li>any of the values is {@code NaN}, or</li>
      *     <li>an infinite value of either sign is encountered</li>
      * </ul>
      *
@@ -91,11 +92,11 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
     }
 
     /**
-     * Returns a {@code Variance} instance that has the variance of all input values, or <code>NaN</code>
+     * Returns a {@code Variance} instance that has the variance of all input values, or {@code NaN}
      * if:
      * <ul>
      *     <li>the input array is empty,</li>
-     *     <li>any of the values is <code>NaN</code>,</li>
+     *     <li>any of the values is {@code NaN},</li>
      *     <li>an infinite value of either sign is encountered, or</li>
      *     <li>the sum of the squared deviations from the mean is infinite</li>
      * </ul>
@@ -145,14 +146,14 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
     /**
      * Gets the variance of all input values.
      *
-     * <p>The result is <code>NaN</code> if :
+     * <p>The result is {@code NaN} if :
      * <ul>
      *     <li>the input array is empty,</li>
-     *     <li>any of the values is <code>NaN</code>, or</li>
+     *     <li>any of the values is {@code NaN}, or</li>
      *     <li>an infinite value of either sign is encountered</li>
      * </ul>
      *
-     * <p>The result is <code>0</code> if there is just one finite value in the data set.
+     * <p>The result is {@code 0} if there is just one finite value in the data set.
      *
      * @return {@code Variance} of all values seen so far.
      */

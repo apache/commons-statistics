@@ -26,22 +26,23 @@ import java.util.function.DoubleConsumer;
  * <p> To limit numeric errors, the value of the statistic is computed using the
  * following recursive updating algorithm:
  * <ol>
- * <li>Initialize <code>m = </code> the first value</li>
+ * <li>Initialize {@code m = } the first value</li>
  * <li>For each additional value, update using <br>
- *   <code>m = m + (new value - m) / (number of observations)</code></li>
+ *   {@code m = m + (new value - m) / (number of observations)}</li>
  * </ol>
  *
- * <p>Returns <code>Double.NaN</code> if the dataset is empty. Note that
- * <code>NaN</code> may also be returned if the input includes NaN and / or infinite
- *  values of opposite sign.
+ * <p>Returns {@code NaN} if the dataset is empty. Note that
+ * {@code NaN} may also be returned if the input includes {@code NaN} and / or infinite
+ * values of opposite sign.
  *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
  * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
  * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
- * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
- * as <code>accumulator</code> and <code>combiner</code> functions of
+ * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept}
+ * and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ * as {@code accumulator} and {@code combiner} functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
@@ -114,7 +115,7 @@ class FirstMoment implements DoubleConsumer {
     /**
      * Gets the first moment of all input values.
      *
-     * <p>When no values have been added, the result is <code>NaN</code>.
+     * <p>When no values have been added, the result is {@code NaN}.
      *
      * @return {@code First moment} of all values seen so far, if it is finite.
      * <p> {@code Infinity}, if infinities of the same sign have been encountered.

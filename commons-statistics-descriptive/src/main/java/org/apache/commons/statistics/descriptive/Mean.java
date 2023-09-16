@@ -20,9 +20,9 @@ package org.apache.commons.statistics.descriptive;
  * Computes the arithmetic mean of a set of values. Uses the following recursive
  * updating algorithm:
  * <ol>
- * <li>Initialize <code>m = </code> the first value</li>
+ * <li>Initialize {@code m = } the first value</li>
  * <li>For each additional value, update using <br>
- *   <code>m = m + (new value - m) / (number of observations)</code></li>
+ *   {@code m = m + (new value - m) / (number of observations)}</li>
  * </ol>
  *
  * <p>If {@link #of(double...)} is used to compute the mean of a variable number
@@ -33,8 +33,8 @@ package org.apache.commons.statistics.descriptive;
  * Sample Means and Variances," Robert F. Ling, Journal of the American
  * Statistical Association, Vol. 69, No. 348 (Dec., 1974), pp. 859-866.
  *
- * <p>Returns <code>NaN</code> if the dataset is empty. Note that
- * <code>NaN</code> may also be returned if the input includes <code>NaN</code> and / or infinite
+ * <p>Returns {@code NaN} if the dataset is empty. Note that
+ * {@code NaN} may also be returned if the input includes {@code NaN} and / or infinite
  * values of opposite sign.
  *
  * <p>This class is designed to work with (though does not require)
@@ -45,8 +45,9 @@ package org.apache.commons.statistics.descriptive;
  * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
  * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
- * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
- * as <code>accumulator</code> and <code>combiner</code> functions of
+ * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept}
+ * and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ * as {@code accumulator} and {@code combiner} functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
@@ -66,7 +67,7 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
     /**
      * Creates a {@code Mean} implementation which does not store the input value(s) it consumes.
      *
-     * <p>The result is <code>NaN</code> if any of the values is <code>NaN</code> or
+     * <p>The result is {@code NaN} if any of the values is {@code NaN} or
      * if no values have been added.
      *
      * @return {@code Mean} implementation.
@@ -76,7 +77,7 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
     }
 
     /**
-     * Returns a {@code Mean} instance that has the arithmetic mean of all input values, or <code>NaN</code>
+     * Returns a {@code Mean} instance that has the arithmetic mean of all input values, or {@code NaN}
      * if the input array is empty.
      *
      * <p>Note: {@code Mean} computed using {@link Mean#accept Mean.accept()} may be different
@@ -113,7 +114,7 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
     /**
      * Gets the mean of all input values.
      *
-     * <p>When no values have been added, the result is <code>NaN</code>.
+     * <p>When no values have been added, the result is {@code NaN}.
      *
      * @return {@code Mean} of all values seen so far.
      */

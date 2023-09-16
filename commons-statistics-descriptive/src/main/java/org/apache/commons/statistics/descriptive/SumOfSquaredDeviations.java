@@ -39,11 +39,13 @@ package org.apache.commons.statistics.descriptive;
  * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
  * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
- * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept} and
- * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} as <code>accumulator</code> and
- * <code>combiner</code> functions of {@link java.util.stream.Collector Collector} on a parallel stream, because the
- * parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()} provides the necessary
- * partitioning, isolation, and merging of results for safe and efficient parallel execution.
+ * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept}
+ * and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ * as {@code accumulator} and {@code combiner} functions of
+ * {@link java.util.stream.Collector Collector} on a parallel stream,
+ * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
+ * provides the necessary partitioning, isolation, and merging of results for
+ * safe and efficient parallel execution.
  */
 class SumOfSquaredDeviations extends FirstMoment {
     /** Sum of squared deviations of the values that have been added. */

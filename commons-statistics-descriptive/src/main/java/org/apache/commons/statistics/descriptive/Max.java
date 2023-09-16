@@ -19,9 +19,9 @@ package org.apache.commons.statistics.descriptive;
 /**
  * Returns the maximum of the available values.
  *
- * <p>The result is <code>NaN</code> if any of the values is <code>NaN</code>.
+ * <p>The result is {@code NaN} if any of the values is {@code NaN}.
  *
- * <p>The result is <code>NEGATIVE_INFINITY</code> if no values are added.
+ * <p>The result is {@link Double#NEGATIVE_INFINITY negative infinity} if no values are added.
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
@@ -31,8 +31,9 @@ package org.apache.commons.statistics.descriptive;
  * and at least one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
  * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
  *
- * <p>However, it is safe to use <code>accept()</code> and <code>combine()</code>
- * as <code>accumulator</code> and <code>combiner</code> functions of
+ * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept}
+ * and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ * as {@code accumulator} and {@code combiner} functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
@@ -52,9 +53,9 @@ public abstract class Max implements DoubleStatistic, DoubleStatisticAccumulator
     /**
      * Creates a {@code Max} implementation which does not store the input value(s) it consumes.
      *
-     * <p>The result is <code>NaN</code> if any of the values is <code>NaN</code>.
+     * <p>The result is {@code NaN} if any of the values is {@code NaN}.
      *
-     * <p>The result is {@link Double#NEGATIVE_INFINITY NEGATIVE_INFINITY}
+     * <p>The result is {@link Double#NEGATIVE_INFINITY negative infinity}
      * if no values have been added.
      *
      * @return {@code Max} implementation.
@@ -66,10 +67,10 @@ public abstract class Max implements DoubleStatistic, DoubleStatisticAccumulator
     /**
      * Returns a {@code Max} instance that has the maximum of all input value(s).
      *
-     * <p>The result is <code>NaN</code> if any of the values is <code>NaN</code>.
+     * <p>The result is {@code NaN} if any of the values is {@code NaN}.
      *
      * <p>When the input is an empty array, the result is
-     * {@link Double#NEGATIVE_INFINITY NEGATIVE_INFINITY}.
+     * {@link Double#NEGATIVE_INFINITY negative infinity}.
      *
      * @param values Values.
      * @return {@code Max} instance.
@@ -89,7 +90,7 @@ public abstract class Max implements DoubleStatistic, DoubleStatisticAccumulator
      * Gets the maximum of all input values.
      *
      * <p>When no values have been added, the result is
-     * {@link Double#NEGATIVE_INFINITY NEGATIVE_INFINITY}.
+     * {@link Double#NEGATIVE_INFINITY negative infinity}.
      *
      * @return {@code Maximum} of all values seen so far.
      */
