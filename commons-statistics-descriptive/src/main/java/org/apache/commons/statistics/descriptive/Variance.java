@@ -159,10 +159,6 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
     @Override
     public abstract double getAsDouble();
 
-    /** {@inheritDoc} */
-    @Override
-    public abstract Variance combine(Variance other);
-
     /**
      * {@code Variance} implementation that does not store the input value(s) processed so far.
      */
