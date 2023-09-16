@@ -110,7 +110,7 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
 
         @Override
         public void accept(double value) {
-            min = Double.min(min, value);
+            min = Math.min(min, value);
         }
 
         @Override

@@ -110,7 +110,7 @@ public abstract class Max implements DoubleStatistic, DoubleStatisticAccumulator
 
         @Override
         public void accept(double value) {
-            max = Double.max(max, value);
+            max = Math.max(max, value);
         }
 
         @Override
