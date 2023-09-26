@@ -110,7 +110,7 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
      * @return {@code Variance} instance.
      */
     public static Variance of(double... values) {
-        final double mean = Mean.of(values).getAsDouble();
+        final double mean = FirstMoment.of(values).getFirstMoment();
         if (!Double.isFinite(mean)) {
             return StorelessSampleVariance.create(Math.abs(mean), mean, values.length, mean);
         }

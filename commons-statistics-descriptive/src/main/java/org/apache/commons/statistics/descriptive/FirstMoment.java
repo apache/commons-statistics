@@ -47,6 +47,16 @@ import java.util.function.DoubleConsumer;
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
+ *
+ * <p>References:
+ * <ul>
+ *   <li>Chan, Golub, Levesque (1983)
+ *       Algorithms for Computing the Sample Variance.
+ *       American Statistician, vol. 37, no. 3, pp. 242-247.
+ *   <li>Ling (1974)
+ *       Comparison of Several Algorithms for Computing Sample Means and Variances.
+ *       Journal of the American Statistical Association, Vol. 69, No. 348, pp. 859-866.
+ * </ul>
  */
 class FirstMoment implements DoubleConsumer {
     /** Count of values that have been added. */
@@ -76,30 +86,65 @@ class FirstMoment implements DoubleConsumer {
     private double nonFiniteValue;
 
     /**
-     * Create a FirstMoment instance.
+     * Create an instance.
      */
     FirstMoment() {
         // No-op
     }
 
     /**
-     * Create a FirstMoment instance with the given first moment and number of values.
+     * Create an instance with the given first moment.
+     *
      * @param m1 First moment.
      * @param n Number of values.
-     * @param nonFiniteValue Running sum of values seen so far (Used as a return value for first moment when it is non-finite).
+     * @param nonFiniteValue Running sum of values seen so far.
      */
-    FirstMoment(final double m1, final long n, final double nonFiniteValue) {
+    FirstMoment(double m1, long n, double nonFiniteValue) {
         this.m1 = m1;
         this.n = n;
         this.nonFiniteValue = nonFiniteValue;
     }
 
     /**
+     * Returns a {@code FirstMoment} instance that has the arithmetic mean of all input
+     * values, or {@code NaN} if the input array is empty.
+     *
+     * <p>Note: {@code FirstMoment} computed using {@link FirstMoment#accept
+     * FirstMoment.accept()} may be different from this instance.
+     *
+     * @param values Values.
+     * @return {@code FirstMoment} instance.
+     */
+    static FirstMoment of(double... values) {
+        // "Corrected two-pass algorithm"
+
+        // First pass
+        final FirstMoment m1 = Statistics.add(new FirstMoment(), values);
+        final double xbar = m1.getFirstMoment();
+        if (!Double.isFinite(xbar)) {
+            return m1;
+        }
+        // Second pass
+        double correction = 0;
+        for (final double x : values) {
+            correction += x - xbar;
+        }
+        // Note: Correction may be infinite
+        correction = Double.isFinite(correction) ? correction : 0;
+        return new FirstMoment(xbar + (correction / values.length), m1.n, m1.nonFiniteValue);
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
+     *
      * @param value Value.
      */
     @Override
     public void accept(double value) {
+        // "Updating one-pass algorithm"
+        // See: Chan et al (1983) Equation 1.3a
+        // This is modified with scaling to avoid overflow for all finite input.
+
         n++;
         nonFiniteValue += value;
         // To prevent overflow, dev is computed by scaling down and then scaling up.
@@ -117,11 +162,11 @@ class FirstMoment implements DoubleConsumer {
      *
      * <p>When no values have been added, the result is {@code NaN}.
      *
-     * @return {@code First moment} of all values seen so far, if it is finite.
-     * <p> {@code Infinity}, if infinities of the same sign have been encountered.
-     * <p> {@code NaN} otherwise.
+     * @return {@code First moment} of all values seen so far, if it is finite;
+     *         {@code +/-Infinity}, if infinities of the same sign have been encountered;
+     *         {@code NaN} otherwise.
      */
-    public double getFirstMoment() {
+    double getFirstMoment() {
         if (Double.isFinite(m1)) {
             return n == 0 ? Double.NaN : m1;
         }
@@ -135,7 +180,7 @@ class FirstMoment implements DoubleConsumer {
      * @param other Another {@code FirstMoment} to be combined.
      * @return {@code this} instance after combining {@code other}.
      */
-    public FirstMoment combine(FirstMoment other) {
+    FirstMoment combine(FirstMoment other) {
         if (n == 0) {
             n = other.n;
             nonFiniteValue = other.nonFiniteValue;
@@ -157,13 +202,5 @@ class FirstMoment implements DoubleConsumer {
             nDev *= 2;
         }
         return this;
-    }
-
-    /**
-     * Gets the running sum of the values seen so far.
-     * @return Running Sum.
-     */
-    double getNonFiniteValue() {
-        return nonFiniteValue;
     }
 }

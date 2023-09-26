@@ -89,19 +89,7 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
      * @return {@code Mean} instance.
      */
     public static Mean of(double... values) {
-        final StorelessMean mean = Statistics.add(new StorelessMean(), values);
-
-        if (!Double.isFinite(mean.getAsDouble())) {
-            return mean;
-        }
-        final double xbar = mean.getAsDouble();
-        double correction = 0;
-        for (final double value : values) {
-            correction += value - xbar;
-        }
-        // Correction may be infinite
-        correction = Double.isFinite(correction) ? correction : 0;
-        return StorelessMean.create(xbar + (correction / values.length), mean.getN(), mean.getNonFiniteValue());
+        return new StorelessMean(FirstMoment.of(values));
     }
 
     /**
@@ -132,33 +120,19 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
         private final FirstMoment firstMoment;
 
         /**
-         * Creates a StorelessMean instance with an External Moment.
+         * Creates an instance with a moment.
          *
          * @param m1 First moment.
-         * @param n Number of values.
-         * @param nonFiniteValue Sum of values, which may be non-finite.
          */
-        private StorelessMean(final double m1, final long n, final double nonFiniteValue) {
-            firstMoment = new FirstMoment(m1, n, nonFiniteValue);
+        StorelessMean(FirstMoment m1) {
+            firstMoment = m1;
         }
 
         /**
-         * Create a Mean instance.
+         * Create an instance.
          */
         StorelessMean() {
-            firstMoment = new FirstMoment();
-        }
-
-        /**
-         * Creates a StorelessMean instance with an External Moment.
-         *
-         * @param m1 First moment.
-         * @param n Number of values.
-         * @param nonFinite Sum of values, which may be non-finite.
-         * @return A StorelessMean instance.
-         */
-        static StorelessMean create(final double m1, final long n, final double nonFinite) {
-            return new StorelessMean(m1, n, nonFinite);
+            this(new FirstMoment());
         }
 
         @Override
@@ -176,22 +150,6 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
             final StorelessMean that = (StorelessMean) other;
             firstMoment.combine(that.firstMoment);
             return this;
-        }
-
-        /**
-         * Gets the number of values that have been added.
-         * @return Number of values.
-         */
-        long getN() {
-            return firstMoment.n;
-        }
-
-        /**
-         * Gets the running sum of the values seen so far.
-         * @return Running Sum.
-         */
-        double getNonFiniteValue() {
-            return firstMoment.getNonFiniteValue();
         }
     }
 }

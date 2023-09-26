@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.util.Arrays;
+import java.util.function.DoubleConsumer;
 
 /**
  * Utility methods for statistics.
@@ -34,7 +35,7 @@ final class Statistics {
      * @param values Values.
      * @return the statistic
      */
-    static <T extends DoubleStatistic> T add(T statistic, double[] values) {
+    static <T extends DoubleConsumer> T add(T statistic, double[] values) {
         Arrays.stream(values).forEach(statistic);
         return statistic;
     }
