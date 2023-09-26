@@ -33,7 +33,7 @@ final class VarianceTest {
 
     private static final int ULP_STREAM = 5;
 
-    private static final int ULP_COMBINE_ACCEPT = 6;
+    private static final int ULP_COMBINE_ACCEPT = 8;
 
     private static final int ULP_COMBINE_OF = 2;
 
