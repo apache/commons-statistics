@@ -46,30 +46,83 @@ package org.apache.commons.statistics.descriptive;
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
+ *
+ * <p>References:
+ * <ul>
+ *   <li>Chan, Golub, Levesque (1983)
+ *       Algorithms for Computing the Sample Variance,
+ *       American Statistician, vol. 37, no. 3, pp. 242-247.
+ * </ul>
  */
 class SumOfSquaredDeviations extends FirstMoment {
     /** Sum of squared deviations of the values that have been added. */
-    private double squaredDevSum;
+    private double sumSquaredDev;
 
     /**
-     * Create a SumOfSquaredDeviations instance.
+     * Create an instance.
      */
     SumOfSquaredDeviations() {
         // No-op
     }
 
     /**
-     * Create a SumOfSquaredDeviations instance with the given sum of
-     * squared deviations and a FirstMoment instance.
+     * Create an instance with the given sum of
+     * squared deviations and first moment.
      *
-     * @param squaredDevSum Sum of squared deviations.
-     * @param mean Mean of values.
+     * @param sumSquaredDev Sum of squared deviations.
+     * @param m1 First moment.
      * @param n Number of values.
-     * @param nonFiniteValue Sum of values.
+     * @param nonFiniteValue Running sum of values seen so far.
      */
-    SumOfSquaredDeviations(double squaredDevSum, double mean, long n, double nonFiniteValue) {
-        super(mean, n, nonFiniteValue);
-        this.squaredDevSum = squaredDevSum;
+    SumOfSquaredDeviations(double sumSquaredDev, double m1, long n, double nonFiniteValue) {
+        super(m1, n, nonFiniteValue);
+        this.sumSquaredDev = sumSquaredDev;
+    }
+
+    /**
+     * Returns a {@code SumOfSquaredDeviations} instance that has the variance of all input values, or {@code NaN}
+     * if:
+     * <ul>
+     *     <li>the input array is empty,</li>
+     *     <li>any of the values is {@code NaN},</li>
+     *     <li>an infinite value of either sign is encountered, or</li>
+     *     <li>the sum of the squared deviations from the mean is infinite</li>
+     * </ul>
+     *
+     * <p>Note: {@code SumOfSquaredDeviations} computed using
+     * {@link SumOfSquaredDeviations#accept SumOfSquaredDeviations.accept()} may be different
+     * from this instance.
+     *
+     * <p>See {@link SumOfSquaredDeviations} for details on the computing algorithm.
+     *
+     * @param values Values.
+     * @return {@code SumOfSquaredDeviations} instance.
+     */
+    static SumOfSquaredDeviations of(double... values) {
+        // "Corrected two-pass algorithm"
+        // See: Chan et al (1983) Equation 1.7
+
+        final double m1 = FirstMoment.of(values).getFirstMoment();
+        if (!Double.isFinite(m1)) {
+            return new SumOfSquaredDeviations(Math.abs(m1), m1, values.length, m1);
+        }
+        double s = 0;
+        double ss = 0;
+        for (final double x : values) {
+            final double dx = x - m1;
+            s += dx;
+            ss += dx * dx;
+        }
+        final long n = values.length;
+        // The sum of squared deviations is ss - (s * s / n).
+        // The second term ideally should be zero; in practice it is a good approximation
+        // of the error in the first term.
+        // To prevent sumSquaredDev from spuriously attaining a NaN value
+        // when ss is infinite, assign it an infinite value which is its intended value.
+        final double sumSquaredDev = ss == Double.POSITIVE_INFINITY ?
+            Double.POSITIVE_INFINITY :
+            ss - (s * s / n);
+        return new SumOfSquaredDeviations(sumSquaredDev, m1, n, s + (m1 * n));
     }
 
     /**
@@ -78,8 +131,10 @@ class SumOfSquaredDeviations extends FirstMoment {
      */
     @Override
     public void accept(double value) {
+        // "Updating one-pass algorithm"
+        // See: Chan et al (1983) Equation 1.3b
         super.accept(value);
-        squaredDevSum += (n - 1) * dev * nDev;
+        sumSquaredDev += (n - 1) * dev * nDev;
     }
 
     /**
@@ -87,8 +142,8 @@ class SumOfSquaredDeviations extends FirstMoment {
      *
      * @return {@code SumOfSquaredDeviations} of all values seen so far.
      */
-    public double getSumOfSquaredDeviations() {
-        return Double.isFinite(getFirstMoment()) ? squaredDevSum : Double.NaN;
+    double getSumOfSquaredDeviations() {
+        return Double.isFinite(getFirstMoment()) ? sumSquaredDev : Double.NaN;
     }
 
     /**
@@ -97,15 +152,16 @@ class SumOfSquaredDeviations extends FirstMoment {
      * @param other Another {@code SumOfSquaredDeviations} to be combined.
      * @return {@code this} instance after combining {@code other}.
      */
-    public SumOfSquaredDeviations combine(SumOfSquaredDeviations other) {
-        final long oldN = n;
-        final long otherN = other.n;
-        if (oldN == 0) {
-            squaredDevSum = other.squaredDevSum;
-        } else if (otherN != 0) {
+    SumOfSquaredDeviations combine(SumOfSquaredDeviations other) {
+        final long m = other.n;
+        if (n == 0) {
+            sumSquaredDev = other.sumSquaredDev;
+        } else if (m != 0) {
+            // "Updating one-pass algorithm"
+            // See: Chan et al (1983) Equation 1.5b (modified for the mean)
             final double diffOfMean = other.getFirstMoment() - m1;
             final double sqDiffOfMean = diffOfMean * diffOfMean;
-            squaredDevSum += other.squaredDevSum + sqDiffOfMean * (((double) oldN * otherN) / ((double) oldN + otherN));
+            sumSquaredDev += other.sumSquaredDev + sqDiffOfMean * (((double) n * m) / ((double) n + m));
         }
         super.combine(other);
         return this;

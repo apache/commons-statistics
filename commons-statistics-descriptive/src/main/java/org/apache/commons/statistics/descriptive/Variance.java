@@ -110,30 +110,7 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
      * @return {@code Variance} instance.
      */
     public static Variance of(double... values) {
-        final double mean = FirstMoment.of(values).getFirstMoment();
-        if (!Double.isFinite(mean)) {
-            return StorelessSampleVariance.create(Math.abs(mean), mean, values.length, mean);
-        }
-        double accum = 0.0;
-        double dev;
-        double accum2 = 0.0;
-        double squaredDevSum;
-        for (final double value : values) {
-            dev = value - mean;
-            accum += dev * dev;
-            accum2 += dev;
-        }
-        final double accum2Squared = accum2 * accum2;
-        final long n = values.length;
-        // The sum of squared deviations is accum - (accum2Squared / n).
-        // To prevent squaredDevSum from spuriously attaining a NaN value
-        // when accum is infinite, assign it an infinite value which is its intended value.
-        if (accum == Double.POSITIVE_INFINITY) {
-            squaredDevSum = Double.POSITIVE_INFINITY;
-        } else {
-            squaredDevSum = accum - (accum2Squared / n);
-        }
-        return StorelessSampleVariance.create(squaredDevSum, mean, n, accum2 + (mean * n));
+        return new StorelessSampleVariance(SumOfSquaredDeviations.of(values));
     }
 
     /**
@@ -169,63 +146,45 @@ public abstract class Variance implements DoubleStatistic, DoubleStatisticAccumu
          * An instance of {@link SumOfSquaredDeviations}, which is used to
          * compute the variance.
          */
-        private final SumOfSquaredDeviations squaredDeviationSum;
+        private final SumOfSquaredDeviations ss;
 
         /**
-         * Creates a StorelessVariance instance with the sum of squared
-         * deviations from the mean.
+         * Creates an instance with the sum of squared deviations from the mean.
          *
-         * @param squaredDevSum Sum of squared deviations.
-         * @param mean Mean of values.
-         * @param n Number of values.
-         * @param sumOfValues Sum of values.
+         * @param ss Sum of squared deviations.
          */
-        private StorelessSampleVariance(double squaredDevSum, double mean, long n, double sumOfValues) {
-            squaredDeviationSum = new SumOfSquaredDeviations(squaredDevSum, mean, n, sumOfValues);
+        StorelessSampleVariance(SumOfSquaredDeviations ss) {
+            this.ss = ss;
         }
 
         /**
-         * Create a SumOfSquaredDeviations instance.
+         * Create an instance.
          */
         StorelessSampleVariance() {
-            squaredDeviationSum = new SumOfSquaredDeviations();
-        }
-
-        /**
-         * Creates a StorelessVariance instance with the sum of squared
-         * deviations from the mean.
-         *
-         * @param squaredDevSum Sum of squared deviations.
-         * @param mean Mean of values.
-         * @param n Number of values.
-         * @param sumOfValues Sum of values.
-         * @return A StorelessVariance instance.
-         */
-        static StorelessSampleVariance create(double squaredDevSum, double mean, long n, double sumOfValues) {
-            return new StorelessSampleVariance(squaredDevSum, mean, n, sumOfValues);
+            this(new SumOfSquaredDeviations());
         }
 
         @Override
         public void accept(double value) {
-            squaredDeviationSum.accept(value);
+            ss.accept(value);
         }
 
         @Override
         public double getAsDouble() {
-            final double sumOfSquaredDev = squaredDeviationSum.getSumOfSquaredDeviations();
-            final double n = squaredDeviationSum.n;
+            final double sumOfSquaredDev = ss.getSumOfSquaredDeviations();
+            final long n = ss.n;
             if (n == 0) {
                 return Double.NaN;
             } else if (n == 1 && Double.isFinite(sumOfSquaredDev)) {
                 return 0;
             }
-            return sumOfSquaredDev / (n - 1);
+            return sumOfSquaredDev / (n - 1.0);
         }
 
         @Override
         public Variance combine(Variance other) {
             final StorelessSampleVariance that = (StorelessSampleVariance) other;
-            squaredDeviationSum.combine(that.squaredDeviationSum);
+            ss.combine(that.ss);
             return this;
         }
     }
