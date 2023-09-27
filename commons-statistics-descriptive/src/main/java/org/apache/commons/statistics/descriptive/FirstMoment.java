@@ -93,19 +93,6 @@ class FirstMoment implements DoubleConsumer {
     }
 
     /**
-     * Create an instance with the given first moment.
-     *
-     * @param m1 First moment.
-     * @param n Number of values.
-     * @param nonFiniteValue Running sum of values seen so far.
-     */
-    FirstMoment(double m1, long n, double nonFiniteValue) {
-        this.m1 = m1;
-        this.n = n;
-        this.nonFiniteValue = nonFiniteValue;
-    }
-
-    /**
      * Returns a {@code FirstMoment} instance that has the arithmetic mean of all input
      * values, or {@code NaN} if the input array is empty.
      *
@@ -130,8 +117,10 @@ class FirstMoment implements DoubleConsumer {
             correction += x - xbar;
         }
         // Note: Correction may be infinite
-        correction = Double.isFinite(correction) ? correction : 0;
-        return new FirstMoment(xbar + (correction / values.length), m1.n, m1.nonFiniteValue);
+        if (Double.isFinite(correction)) {
+            m1.m1 += correction / values.length;
+        }
+        return m1;
     }
 
     /**
