@@ -20,19 +20,15 @@ package org.apache.commons.statistics.descriptive;
  * Computes the sum of squared deviations from the sample mean. This
  * statistic is related to the second moment.
  *
- * <p>
- * The following recursive updating formula is used:
- * <p>
- * Let <ul>
- * <li> dev = (current obs - previous mean) </li>
- * <li> n = number of observations (including current obs) </li>
+ * <p>The following recursive updating formula is used:
+ * <p>Let
+ * <ul>
+ *  <li> dev = (current obs - previous mean) </li>
+ *  <li> n = number of observations (including current obs) </li>
  * </ul>
- * Then
- * <p>
- * new value = old value + dev^2 * (n - 1) / n.
- * <p>
- *
- * Returns the sum of squared deviations of all values seen so far.
+ * <p>Then
+ * <p>new value = old value + dev^2 * (n - 1) / n
+ * <p>returns the sum of squared deviations of all values seen so far.
  *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
@@ -90,8 +86,7 @@ class SumOfSquaredDeviations extends FirstMoment {
      * </ul>
      *
      * <p>Note: {@code SumOfSquaredDeviations} computed using
-     * {@link SumOfSquaredDeviations#accept SumOfSquaredDeviations.accept()} may be different
-     * from this instance.
+     * {@link #accept accept} may be different from this instance.
      *
      * <p>See {@link SumOfSquaredDeviations} for details on the computing algorithm.
      *

@@ -17,11 +17,14 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Returns the maximum of the available values.
+ * Returns the maximum of the available values. Uses {@link Math#max Math.max} as an
+ * underlying function to compute the {@code maximum}.
  *
- * <p>The result is {@code NaN} if any of the values is {@code NaN}.
- *
- * <p>The result is {@link Double#NEGATIVE_INFINITY negative infinity} if no values are added.
+ * <ul>
+ *   <li>The result is {@link Double#NEGATIVE_INFINITY negative infinity} if no values are added.
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
+ *   <li>The value {@code -0.0} is considered strictly smaller than {@code 0.0}.
+ * </ul>
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
@@ -40,28 +43,29 @@ package org.apache.commons.statistics.descriptive;
  * safe and efficient parallel execution.
  *
  * @since 1.1
+ * @see Math#max(double, double)
  */
-public abstract class Max implements DoubleStatistic, DoubleStatisticAccumulator<Max> {
+public final class Max implements DoubleStatistic, DoubleStatisticAccumulator<Max> {
+
+    /** Current maximum. */
+    private double maximum = Double.NEGATIVE_INFINITY;
 
     /**
-     * Create a Max instance.
+     * Create an instance.
      */
-    Max() {
-        //No-op
+    private Max() {
+        // No-op
     }
 
     /**
-     * Creates a {@code Max} implementation which does not store the input value(s) it consumes.
+     * Creates a {@code Max} instance.
      *
-     * <p>The result is {@code NaN} if any of the values is {@code NaN}.
+     * <p>The initial result is {@link Double#NEGATIVE_INFINITY negative infinity}.
      *
-     * <p>The result is {@link Double#NEGATIVE_INFINITY negative infinity}
-     * if no values have been added.
-     *
-     * @return {@code Max} implementation.
+     * @return {@code Max} instance.
      */
     public static Max create() {
-        return new StorelessMax();
+        return new Max();
     }
 
     /**
@@ -76,15 +80,18 @@ public abstract class Max implements DoubleStatistic, DoubleStatisticAccumulator
      * @return {@code Max} instance.
      */
     public static Max of(double... values) {
-        return Statistics.add(new StorelessMax(), values);
+        return Statistics.add(new Max(), values);
     }
 
     /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
+     *
      * @param value Value.
      */
     @Override
-    public abstract void accept(double value);
+    public void accept(double value) {
+        maximum = Math.max(maximum, value);
+    }
 
     /**
      * Gets the maximum of all input values.
@@ -92,36 +99,16 @@ public abstract class Max implements DoubleStatistic, DoubleStatisticAccumulator
      * <p>When no values have been added, the result is
      * {@link Double#NEGATIVE_INFINITY negative infinity}.
      *
-     * @return {@code Maximum} of all values seen so far.
+     * @return maximum of all values.
      */
     @Override
-    public abstract double getAsDouble();
+    public double getAsDouble() {
+        return maximum;
+    }
 
-    /**
-     * {@code Max} implementation that does not store the input value(s) processed so far.
-     *
-     * <p>Uses JDK's {@link Math#max Math.max} as an underlying function
-     * to compute the {@code maximum}.
-     */
-    private static class StorelessMax extends Max {
-
-        /** Current max. */
-        private double max = Double.NEGATIVE_INFINITY;
-
-        @Override
-        public void accept(double value) {
-            max = Math.max(max, value);
-        }
-
-        @Override
-        public double getAsDouble() {
-            return max;
-        }
-
-        @Override
-        public Max combine(Max other) {
-            accept(other.getAsDouble());
-            return this;
-        }
+    @Override
+    public Max combine(Max other) {
+        accept(other.getAsDouble());
+        return this;
     }
 }

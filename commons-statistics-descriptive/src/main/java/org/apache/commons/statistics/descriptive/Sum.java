@@ -19,14 +19,15 @@ package org.apache.commons.statistics.descriptive;
 /**
  * Returns the sum of the available values.
  *
- * <p>The result is {@code NaN} if any of the values is {@code NaN}.
- *
- * <p>The result is zero if no values are added.
+ * <ul>
+ *   <li>The result is zero if no values are added.
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
+ * </ul>
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
  *
- * <p><strong>This implementation is not thread safe.</strong>
+ * <p><strong>This instance is not thread safe.</strong>
  * If multiple threads access an instance of this class concurrently,
  * and at least one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
  * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
@@ -35,35 +36,35 @@ package org.apache.commons.statistics.descriptive;
  * and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
  * as {@code accumulator} and {@code combiner} functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
- * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
+ * because the parallel instance of {@link java.util.stream.Stream#collect Stream.collect()}
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
  *
  * @since 1.1
+ * @see org.apache.commons.numbers.core.Sum
  */
-public abstract class Sum implements DoubleStatistic, DoubleStatisticAccumulator<Sum> {
+public final class Sum implements DoubleStatistic, DoubleStatisticAccumulator<Sum> {
+
+    /** {@link org.apache.commons.numbers.core.Sum Sum} used to compute the sum. */
+    private final org.apache.commons.numbers.core.Sum delegate =
+            org.apache.commons.numbers.core.Sum.create();
 
     /**
-     * Create a Sum instance.
+     * Create an instance.
      */
-    Sum() {
-        //No-op
+    private Sum() {
+        // No-op
     }
 
     /**
-     * Creates a {@code Sum} implementation which does not store the input value(s) it consumes.
+     * Creates a {@code Sum} instance.
      *
-     * <p>The result is {@code NaN} if any of the values is {@code NaN} or the sum
-     * at any point is a {@code NaN}.
+     * <p>The initial result is zero.
      *
-     * <p>The result is zero if no values have been added.
-     *
-     * <p>Uses the {@link org.apache.commons.numbers.core.Sum Commons Numbers Sum} implementation.
-     *
-     * @return {@code Sum} implementation.
+     * @return {@code Sum} instance.
      */
     public static Sum create() {
-        return new WrappedSum();
+        return new Sum();
     }
 
     /**
@@ -78,52 +79,34 @@ public abstract class Sum implements DoubleStatistic, DoubleStatisticAccumulator
      * @return {@code Sum} instance.
      */
     public static Sum of(double... values) {
-        return Statistics.add(new WrappedSum(), values);
+        return Statistics.add(new Sum(), values);
     }
 
     /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
+     *
      * @param value Value.
      */
     @Override
-    public abstract void accept(double value);
+    public void accept(double value) {
+        delegate.accept(value);
+    }
 
     /**
      * Gets the sum of all input values.
      *
      * <p>When no values have been added, the result is zero.
      *
-     * @return {@code Sum} of all values seen so far.
+     * @return sum of all values.
      */
     @Override
-    public abstract double getAsDouble();
+    public double getAsDouble() {
+        return delegate.getAsDouble();
+    }
 
-    /**
-     * {@code Sum} implementation that does not store the input value(s) processed so far.
-     *
-     * <p>Delegates to the {@link org.apache.commons.numbers.core.Sum} implementation.
-     */
-    private static class WrappedSum extends Sum {
-
-        /** Create an instance of {@link org.apache.commons.numbers.core.Sum Sum}. */
-        private final org.apache.commons.numbers.core.Sum delegate =
-                org.apache.commons.numbers.core.Sum.create();
-
-        @Override
-        public void accept(double value) {
-            delegate.add(value);
-        }
-
-        @Override
-        public double getAsDouble() {
-            return delegate.getAsDouble();
-        }
-
-        @Override
-        public Sum combine(Sum other) {
-            final WrappedSum that = (WrappedSum) other;
-            delegate.add(that.delegate);
-            return this;
-        }
+    @Override
+    public Sum combine(Sum other) {
+        delegate.add(other.delegate);
+        return this;
     }
 }

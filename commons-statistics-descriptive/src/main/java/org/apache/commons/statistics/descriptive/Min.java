@@ -17,11 +17,14 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Returns the minimum of the available values.
+ * Returns the minimum of the available values. Uses {@link Math#min Math.min} as an
+ * underlying function to compute the {@code minimum}.
  *
- * <p>The result is {@code NaN} if any of the values is {@code NaN}.
- *
- * <p>The result is {@link Double#POSITIVE_INFINITY positive infinity} if no values are added.
+ * <ul>
+ *   <li>The result is {@link Double#POSITIVE_INFINITY positive infinity} if no values are added.
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
+ *   <li>The value {@code -0.0} is considered strictly smaller than {@code 0.0}.
+ * </ul>
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
@@ -40,28 +43,29 @@ package org.apache.commons.statistics.descriptive;
  * safe and efficient parallel execution.
  *
  * @since 1.1
+ * @see Math#min(double, double)
  */
-public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator<Min> {
+public final class Min implements DoubleStatistic, DoubleStatisticAccumulator<Min> {
+
+    /** Current minimum. */
+    private double minimum = Double.POSITIVE_INFINITY;
 
     /**
-     * Create a Min instance.
+     * Create an instance.
      */
-    Min() {
+    private Min() {
         // No-op
     }
 
     /**
-     * Creates a {@code Min} implementation which does not store the input value(s) it consumes.
+     * Creates a {@code Min} instance.
      *
-     * <p>The result is {@code NaN} if any of the values is {@code NaN}.
+     * <p>The initial result is {@link Double#POSITIVE_INFINITY positive infinity}.
      *
-     * <p>The result is {@link Double#POSITIVE_INFINITY positive infinity}
-     * if no values have been added.
-     *
-     * @return {@code Min} implementation.
+     * @return {@code Min} instance.
      */
     public static Min create() {
-        return new StorelessMin();
+        return new Min();
     }
 
     /**
@@ -76,15 +80,18 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      * @return {@code Min} instance.
      */
     public static Min of(double... values) {
-        return Statistics.add(new StorelessMin(), values);
+        return Statistics.add(new Min(), values);
     }
 
     /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
+     *
      * @param value Value.
      */
     @Override
-    public abstract void accept(double value);
+    public void accept(double value) {
+        minimum = Math.min(minimum, value);
+    }
 
     /**
      * Gets the minimum of all input values.
@@ -92,36 +99,16 @@ public abstract class Min implements DoubleStatistic, DoubleStatisticAccumulator
      * <p>When no values have been added, the result is
      * {@link Double#POSITIVE_INFINITY positive infinity}.
      *
-     * @return {@code Minimum} of all values seen so far.
+     * @return minimum of all values.
      */
     @Override
-    public abstract double getAsDouble();
+    public double getAsDouble() {
+        return minimum;
+    }
 
-    /**
-     * {@code Min} implementation that does not store the input value(s) processed so far.
-     *
-     * <p>Uses JDK's {@link Math#min Math.min} as an underlying function
-     * to compute the {@code minimum}.
-     */
-    private static class StorelessMin extends Min {
-
-        /** Current min. */
-        private double min = Double.POSITIVE_INFINITY;
-
-        @Override
-        public void accept(double value) {
-            min = Math.min(min, value);
-        }
-
-        @Override
-        public double getAsDouble() {
-            return min;
-        }
-
-        @Override
-        public Min combine(Min other) {
-            accept(other.getAsDouble());
-            return this;
-        }
+    @Override
+    public Min combine(Min other) {
+        accept(other.getAsDouble());
+        return this;
     }
 }

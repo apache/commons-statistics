@@ -17,25 +17,30 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Computes the arithmetic mean of a set of values. Uses the following recursive
- * updating algorithm:
+ * Computes the arithmetic mean of the available values.
+ *
+ * <ul>
+ *   <li>The result is {@code NaN} if no values are added.
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}, or the values include
+ *       infinite values of opposite sign.
+ *   <li>The result is {@code +/-infinity} if values include infinite values of same sign.
+ *   <li>The result is finite if all input values are finite.
+ * </ul>
+ *
+ * <p>Uses the following recursive updating algorithm:
  * <ol>
- * <li>Initialize {@code m = } the first value</li>
+ * <li>Initialize \( m_1 \) using the first value</li>
  * <li>For each additional value, update using <br>
- *   {@code m = m + (new value - m) / (number of observations)}</li>
+ *     \( m_{i+1} = m_i + (x - m_i) / (i + 1) \)</li>
  * </ol>
  *
  * <p>If {@link #of(double...)} is used to compute the mean of a variable number
  * of values, a two-pass, corrected algorithm is used, starting with
  * the recursive updating algorithm mentioned above, which protects the mean from overflow,
  * and then correcting this by adding the mean deviation of the data values from the
- * arithmetic mean. See, e.g. "Comparison of Several Algorithms for Computing
+ * one-pass mean. See, e.g. "Comparison of Several Algorithms for Computing
  * Sample Means and Variances," Robert F. Ling, Journal of the American
  * Statistical Association, Vol. 69, No. 348 (Dec., 1974), pp. 859-866.
- *
- * <p>Returns {@code NaN} if the dataset is empty. Note that
- * {@code NaN} may also be returned if the input includes {@code NaN} and / or infinite
- * values of opposite sign.
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
@@ -55,32 +60,45 @@ package org.apache.commons.statistics.descriptive;
  *
  * @since 1.1
  */
-public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulator<Mean> {
+public final class Mean implements DoubleStatistic, DoubleStatisticAccumulator<Mean> {
 
     /**
-     * Create a Mean instance.
+     * First moment used to compute the mean.
      */
-    Mean() {
-        // No-op
+    private final FirstMoment firstMoment;
+
+    /**
+     * Create an instance.
+     */
+    private Mean() {
+        this(new FirstMoment());
     }
 
     /**
-     * Creates a {@code Mean} implementation which does not store the input value(s) it consumes.
+     * Creates an instance with a moment.
      *
-     * <p>The result is {@code NaN} if any of the values is {@code NaN} or
-     * if no values have been added.
+     * @param m1 First moment.
+     */
+    private Mean(FirstMoment m1) {
+        firstMoment = m1;
+    }
+
+    /**
+     * Creates a {@code Mean} instance.
      *
-     * @return {@code Mean} implementation.
+     * <p>The initial result is {@code NaN}.
+     *
+     * @return {@code Mean} instance.
      */
     public static Mean create() {
-        return new StorelessMean();
+        return new Mean();
     }
 
     /**
      * Returns a {@code Mean} instance that has the arithmetic mean of all input values, or {@code NaN}
      * if the input array is empty.
      *
-     * <p>Note: {@code Mean} computed using {@link Mean#accept Mean.accept()} may be different
+     * <p>Note: {@code Mean} computed using {@link #accept(double) accept} may be different
      * from this mean.
      *
      * <p>See {@link Mean} for details on the computing algorithm.
@@ -89,67 +107,34 @@ public abstract class Mean implements DoubleStatistic, DoubleStatisticAccumulato
      * @return {@code Mean} instance.
      */
     public static Mean of(double... values) {
-        return new StorelessMean(FirstMoment.of(values));
+        return new Mean(FirstMoment.of(values));
     }
 
     /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
+     *
      * @param value Value.
      */
     @Override
-    public abstract void accept(double value);
+    public void accept(double value) {
+        firstMoment.accept(value);
+    }
 
     /**
      * Gets the mean of all input values.
      *
      * <p>When no values have been added, the result is {@code NaN}.
      *
-     * @return {@code Mean} of all values seen so far.
+     * @return mean of all values.
      */
     @Override
-    public abstract double getAsDouble();
+    public double getAsDouble() {
+        return firstMoment.getFirstMoment();
+    }
 
-    /**
-     * {@code Mean} implementation that does not store the input value(s) processed so far.
-     */
-    private static class StorelessMean extends Mean {
-
-        /**
-         * External Moment used to compute the mean.
-         */
-        private final FirstMoment firstMoment;
-
-        /**
-         * Creates an instance with a moment.
-         *
-         * @param m1 First moment.
-         */
-        StorelessMean(FirstMoment m1) {
-            firstMoment = m1;
-        }
-
-        /**
-         * Create an instance.
-         */
-        StorelessMean() {
-            this(new FirstMoment());
-        }
-
-        @Override
-        public void accept(double value) {
-            firstMoment.accept(value);
-        }
-
-        @Override
-        public double getAsDouble() {
-            return firstMoment.getFirstMoment();
-        }
-
-        @Override
-        public Mean combine(Mean other) {
-            final StorelessMean that = (StorelessMean) other;
-            firstMoment.combine(that.firstMoment);
-            return this;
-        }
+    @Override
+    public Mean combine(Mean other) {
+        firstMoment.combine(other.firstMoment);
+        return this;
     }
 }

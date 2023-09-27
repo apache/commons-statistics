@@ -143,6 +143,7 @@ class FirstMoment implements DoubleConsumer {
     public void accept(double value) {
         // "Updating one-pass algorithm"
         // See: Chan et al (1983) Equation 1.3a
+        // m_{i+1} = m_i + (x - m_i) / (i + 1)
         // This is modified with scaling to avoid overflow for all finite input.
 
         n++;
