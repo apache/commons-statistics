@@ -62,16 +62,13 @@ class SumOfSquaredDeviations extends FirstMoment {
     }
 
     /**
-     * Create an instance with the given sum of
-     * squared deviations and first moment.
+     * Create an instance with the given sum of squared deviations and first moment.
      *
      * @param sumSquaredDev Sum of squared deviations.
      * @param m1 First moment.
-     * @param n Number of values.
-     * @param nonFiniteValue Running sum of values seen so far.
      */
-    SumOfSquaredDeviations(double sumSquaredDev, double m1, long n, double nonFiniteValue) {
-        super(m1, n, nonFiniteValue);
+    private SumOfSquaredDeviations(double sumSquaredDev, FirstMoment m1) {
+        super(m1);
         this.sumSquaredDev = sumSquaredDev;
     }
 
@@ -97,14 +94,15 @@ class SumOfSquaredDeviations extends FirstMoment {
         // "Corrected two-pass algorithm"
         // See: Chan et al (1983) Equation 1.7
 
-        final double m1 = FirstMoment.of(values).getFirstMoment();
-        if (!Double.isFinite(m1)) {
-            return new SumOfSquaredDeviations(Math.abs(m1), m1, values.length, m1);
+        final FirstMoment m1 = FirstMoment.of(values);
+        final double xbar = m1.getFirstMoment();
+        if (!Double.isFinite(xbar)) {
+            return new SumOfSquaredDeviations(Math.abs(xbar), m1);
         }
         double s = 0;
         double ss = 0;
         for (final double x : values) {
-            final double dx = x - m1;
+            final double dx = x - xbar;
             s += dx;
             ss += dx * dx;
         }
@@ -117,7 +115,7 @@ class SumOfSquaredDeviations extends FirstMoment {
         final double sumSquaredDev = ss == Double.POSITIVE_INFINITY ?
             Double.POSITIVE_INFINITY :
             ss - (s * s / n);
-        return new SumOfSquaredDeviations(sumSquaredDev, m1, n, s + (m1 * n));
+        return new SumOfSquaredDeviations(sumSquaredDev, m1);
     }
 
     /**

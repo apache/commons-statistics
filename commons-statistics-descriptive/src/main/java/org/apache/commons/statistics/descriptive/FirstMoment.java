@@ -93,6 +93,17 @@ class FirstMoment implements DoubleConsumer {
     }
 
     /**
+     * Copy constructor.
+     *
+     * @param source Source to copy.
+     */
+    FirstMoment(FirstMoment source) {
+        m1 = source.m1;
+        n = source.n;
+        nonFiniteValue = source.nonFiniteValue;
+    }
+
+    /**
      * Returns a {@code FirstMoment} instance that has the arithmetic mean of all input
      * values, or {@code NaN} if the input array is empty.
      *
