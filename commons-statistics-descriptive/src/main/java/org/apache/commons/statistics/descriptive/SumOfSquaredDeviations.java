@@ -91,6 +91,10 @@ class SumOfSquaredDeviations extends FirstMoment {
      * @return {@code SumOfSquaredDeviations} instance.
      */
     static SumOfSquaredDeviations of(double... values) {
+        if (values.length == 0) {
+            return new SumOfSquaredDeviations();
+        }
+
         // "Corrected two-pass algorithm"
         // See: Chan et al (1983) Equation 1.7
 

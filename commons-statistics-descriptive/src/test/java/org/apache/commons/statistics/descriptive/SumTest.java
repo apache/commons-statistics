@@ -55,6 +55,12 @@ final class SumTest {
         }
         TestHelper.assertEquals(expected, sum.getAsDouble(), 1, () -> "sum");
         TestHelper.assertEquals(expected, Sum.of(values).getAsDouble(), 1, () -> "of (values)");
+
+        Sum sum2 = Sum.of();
+        for (double value : values) {
+            sum2.accept(value);
+        }
+        Assertions.assertEquals(sum.getAsDouble(), sum2.getAsDouble(), "of() + values");
     }
 
     static Stream<Arguments> testSum() {

@@ -82,6 +82,12 @@ final class MaxTest {
         double actual = stat.getAsDouble();
         Assertions.assertEquals(expected, actual, "max");
         Assertions.assertEquals(expected, Max.of(values).getAsDouble(), "of(values)");
+
+        Max stat2 = Max.of();
+        for (double value : values) {
+            stat2.accept(value);
+        }
+        Assertions.assertEquals(stat.getAsDouble(), stat2.getAsDouble(), "of() + values");
     }
 
     static Stream<Arguments> testMax() {

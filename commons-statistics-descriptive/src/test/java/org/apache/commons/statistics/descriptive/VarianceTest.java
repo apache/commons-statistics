@@ -63,6 +63,12 @@ final class VarianceTest {
         }
         TestHelper.assertEquals(expected, var.getAsDouble(), ULP_STREAM, () -> "variance");
         TestHelper.assertEquals(expected, Variance.of(values).getAsDouble(), ULP_ARRAY, () -> "of (values)");
+
+        Variance var2 = Variance.of();
+        for (double value : values) {
+            var2.accept(value);
+        }
+        Assertions.assertEquals(var.getAsDouble(), var2.getAsDouble(), "of() + values");
     }
 
     @ParameterizedTest

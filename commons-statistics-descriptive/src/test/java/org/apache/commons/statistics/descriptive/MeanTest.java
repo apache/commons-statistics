@@ -59,6 +59,12 @@ final class MeanTest {
         }
         TestHelper.assertEquals(expected, mean.getAsDouble(), ULP_STREAM, () -> "mean");
         TestHelper.assertEquals(expected, Mean.of(values).getAsDouble(), ULP_ARRAY, () -> "of (values)");
+
+        Mean mean2 = Mean.of();
+        for (double value : values) {
+            mean2.accept(value);
+        }
+        Assertions.assertEquals(mean.getAsDouble(), mean2.getAsDouble(), "of() + values");
     }
 
     @ParameterizedTest

@@ -120,6 +120,7 @@ class FirstMoment implements DoubleConsumer {
         final FirstMoment m1 = Statistics.add(new FirstMoment(), values);
         final double xbar = m1.getFirstMoment();
         if (!Double.isFinite(xbar)) {
+            // Note: Also occurs when the input is empty
             return m1;
         }
         // Second pass
