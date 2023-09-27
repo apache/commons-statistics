@@ -100,6 +100,12 @@ final class MeanTest {
         }
         Assertions.assertEquals(expected, mean.getAsDouble(), "mean non-finite");
         Assertions.assertEquals(expected, Mean.of(values).getAsDouble(), "of (values) non-finite");
+
+        Mean mean2 = Mean.of();
+        for (double value : values) {
+            mean2.accept(value);
+        }
+        Assertions.assertEquals(mean.getAsDouble(), mean2.getAsDouble(), "of() + values non-finite");
     }
 
     @ParameterizedTest

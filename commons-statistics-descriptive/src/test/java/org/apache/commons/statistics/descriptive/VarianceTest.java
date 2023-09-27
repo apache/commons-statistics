@@ -102,6 +102,12 @@ final class VarianceTest {
         }
         Assertions.assertEquals(expected, var.getAsDouble(), "variance non-finite");
         Assertions.assertEquals(expected, Variance.of(values).getAsDouble(), "of (values) non-finite");
+
+        Variance var2 = Variance.of();
+        for (double value : values) {
+            var2.accept(value);
+        }
+        Assertions.assertEquals(var.getAsDouble(), var2.getAsDouble(), "of() + values non-finite");
     }
 
     @ParameterizedTest
