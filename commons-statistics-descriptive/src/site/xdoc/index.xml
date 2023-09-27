@@ -34,8 +34,19 @@
         Example:
       </p>
 
-<source class="prettyprint">
-  <!-- TODO(ani5rudh): Document some example usages post implementation -->
+<source class="prettyprint">java.util.stream.Stream
+import org.apache.commons.statistics.descriptive.Variance;
+
+// Support a fixed size array
+double[] values = {1, 1, 2, 3, 5, 8, 13, 21};
+
+double v = Variance.of(values).getAsDouble();
+
+// Support streams
+double v2 = Stream.of("one", "two", "three", "four")
+                  .mapToDouble(String::length)
+                  .collect(Variance::create, Variance::accept, Variance::combine)
+                  .getAsDouble();
 </source>
 
       <p>
