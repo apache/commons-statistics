@@ -163,7 +163,7 @@ class FirstMoment implements DoubleConsumer {
      *
      * <p>When no values have been added, the result is {@code NaN}.
      *
-     * @return {@code First moment} of all values seen so far, if it is finite;
+     * @return {@code First moment} of all values, if it is finite;
      *         {@code +/-Infinity}, if infinities of the same sign have been encountered;
      *         {@code NaN} otherwise.
      */

@@ -52,7 +52,7 @@ package org.apache.commons.statistics.descriptive;
  */
 class SumOfSquaredDeviations extends FirstMoment {
     /** Sum of squared deviations of the values that have been added. */
-    private double sumSquaredDev;
+    protected double sumSquaredDev;
 
     /**
      * Create an instance.
@@ -120,6 +120,7 @@ class SumOfSquaredDeviations extends FirstMoment {
 
     /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
+     *
      * @param value Value.
      */
     @Override
@@ -133,7 +134,7 @@ class SumOfSquaredDeviations extends FirstMoment {
     /**
      * Gets the sum of squared deviations of all input values.
      *
-     * @return {@code SumOfSquaredDeviations} of all values seen so far.
+     * @return sum of squared deviations of all values.
      */
     double getSumOfSquaredDeviations() {
         return Double.isFinite(getFirstMoment()) ? sumSquaredDev : Double.NaN;
