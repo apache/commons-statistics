@@ -231,20 +231,27 @@ final class VarianceTest {
         Assertions.assertEquals(expected, actual, "array of arrays combined variance non-finite");
     }
 
-    // Helper function to compute the expected value of Variance using BigDecimal.
-    static double computeExpectedVariance(double[] values) {
+    /**
+     * Helper function to compute the expected variance using BigDecimal.
+     * @param values Values.
+     * @return Variance of values
+     */
+    private static double computeExpectedVariance(double[] values) {
+        return computeExpectedVariance(values, null);
+    }
+
+    /**
+     * Helper function to compute the expected variance using BigDecimal.
+     * @param values Values.
+     * @param mean Mean (result). Only computed if {@code length > 1}.
+     * @return Variance of values
+     */
+    static double computeExpectedVariance(double[] values, BigDecimal[] mean) {
         long n = values.length;
         if (n == 1) {
             return 0;
         }
-        BigDecimal mean = TestHelper.computeExpectedMean(values);
-        BigDecimal bd = BigDecimal.ZERO;
-        for (double value : values) {
-            BigDecimal bdDiff = new BigDecimal(value, MathContext.DECIMAL128);
-            bdDiff = bdDiff.subtract(mean);
-            bdDiff = bdDiff.pow(2);
-            bd = bd.add(bdDiff);
-        }
-        return bd.divide(BigDecimal.valueOf(n - 1), MathContext.DECIMAL128).doubleValue();
+        return TestHelper.computeExpectedSumOfSquaredDeviations(values, mean)
+            .divide(BigDecimal.valueOf(n - 1), MathContext.DECIMAL128).doubleValue();
     }
 }

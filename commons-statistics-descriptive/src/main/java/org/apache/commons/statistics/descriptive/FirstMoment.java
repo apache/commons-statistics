@@ -66,11 +66,15 @@ class FirstMoment implements DoubleConsumer {
     protected double m1;
 
     /**
-     * Deviation of most recently added value from the previous first moment.
+     * Half the deviation of most recently added value from the previous first moment.
      * Retained to prevent repeated computation in higher order moments.
-     * Note: This value is not used in the {@link #combine(FirstMoment)} method.
+     *
+     * <p>Note: This is (x - m1) / 2. It is computed as a half value to prevent overflow
+     * when computing for any finite value x and m.
+     *
+     * <p>This value is not used in the {@link #combine(FirstMoment)} method.
      */
-    protected double dev;
+    protected double halfDev;
 
     /**
      * Deviation of most recently added value from the previous first moment,
@@ -153,12 +157,10 @@ class FirstMoment implements DoubleConsumer {
         nonFiniteValue += value;
         // To prevent overflow, dev is computed by scaling down and then scaling up.
         // We choose to scale down by a factor of two to ensure that the scaling is lossless.
-        dev = value * 0.5 - m1 * 0.5;
-        // Here nDev cannot overflow as dev is <= MAX_VALUE when n > 1; or <= MAX_VALUE / 2 when n = 1
-        nDev = (dev / n) * 2;
+        halfDev = value * 0.5 - m1 * 0.5;
+        // nDev cannot overflow as halfDev is <= MAX_VALUE when n > 1; or <= MAX_VALUE / 2 when n = 1
+        nDev = (halfDev / n) * 2;
         m1 += nDev;
-        // Scale up the deviation.
-        dev *= 2;
     }
 
     /**

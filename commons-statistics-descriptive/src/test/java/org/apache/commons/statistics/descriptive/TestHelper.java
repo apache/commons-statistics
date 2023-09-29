@@ -63,6 +63,35 @@ final class TestHelper {
     }
 
     /**
+     * Compute expected sum-of-square deviations using BigDecimal.
+     * Uses the mean from {@link #computeExpectedMean(double[])}.
+     * This is optionally returned.
+     *
+     * @param values Values.
+     * @param mean Mean (result). Only computed if {@code length > 1}.
+     * @return sum-of-square deviations
+     */
+    static BigDecimal computeExpectedSumOfSquaredDeviations(double[] values, BigDecimal[] mean) {
+        long n = values.length;
+        if (n <= 1) {
+            return BigDecimal.ZERO;
+        }
+        final BigDecimal m = computeExpectedMean(values);
+        if (mean != null) {
+            mean[0] = m;
+        }
+        BigDecimal ss = BigDecimal.ZERO;
+        for (double value : values) {
+            BigDecimal bdDiff = new BigDecimal(value, MathContext.DECIMAL128);
+            bdDiff = bdDiff.subtract(m);
+            bdDiff = bdDiff.pow(2);
+            // Note: This is a sum of positive terms so summation with rounding is OK.
+            ss = ss.add(bdDiff, MathContext.DECIMAL128);
+        }
+        return ss;
+    }
+
+    /**
      * Helper function to assert that {@code actual} is equal to {@code expected} as defined
      * by {@link org.apache.commons.numbers.core.Precision#equals(double, double, int)
      * Precision.equals(x, y, maxUlps)}.
@@ -86,6 +115,37 @@ final class TestHelper {
             }
         } else {
             Assertions.assertEquals(expected, actual, msg);
+        }
+    }
+
+    /**
+     * Helper function to assert that {@code actual} is equal to {@code expected}
+     * if they are both finite as defined
+     * by {@link org.apache.commons.numbers.core.Precision#equals(double, double, int)
+     * Precision.equals(x, y, maxUlps)}.
+     *
+     * <p>If either of the values are not finite then the test asserts that their non-finite
+     * status matches. This method is used when a non-finite result is unspecified (i.e.
+     * +/- infinity or NaN are all considered the same).
+     *
+     * @param expected expected value.
+     * @param actual actual value.
+     * @param ulps {@code (ulps - 1)} is the number of floating point
+     * values between {@code actual} and {@code expected}.
+     * @param msg additional debug message to log when the assertion fails.
+     * @see #assertEquals(double, double, int, Supplier)
+     */
+    static void assertEqualsOrNonFinite(double expected, double actual, int ulps, Supplier<String> msg) {
+        // Require strict equivalence of non-finite values
+        final boolean fe = Double.isFinite(expected);
+        final boolean fa = Double.isFinite(actual);
+        if (fe && fa) {
+            if (!Precision.equals(expected, actual, ulps)) {
+                Assertions.fail(() -> msg.get() + ": " + expected + " != " + actual +
+                    " within " + ulps + " ulp(s); difference = " + formatUlpDifference(expected, actual));
+            }
+        } else {
+            Assertions.assertEquals(fe, fa, () -> msg.get() + ": non-finite mismatch");
         }
     }
 

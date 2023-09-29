@@ -62,6 +62,16 @@ class SumOfSquaredDeviations extends FirstMoment {
     }
 
     /**
+     * Copy constructor.
+     *
+     * @param source Source to copy.
+     */
+    SumOfSquaredDeviations(SumOfSquaredDeviations source) {
+        super(source);
+        sumSquaredDev = source.sumSquaredDev;
+    }
+
+    /**
      * Create an instance with the given sum of squared deviations and first moment.
      *
      * @param sumSquaredDev Sum of squared deviations.
@@ -73,7 +83,7 @@ class SumOfSquaredDeviations extends FirstMoment {
     }
 
     /**
-     * Returns a {@code SumOfSquaredDeviations} instance that has the variance of all input values, or {@code NaN}
+     * Returns a {@code SumOfSquaredDeviations} instance of all input values, or {@code NaN}
      * if:
      * <ul>
      *     <li>the input array is empty,</li>
@@ -101,7 +111,7 @@ class SumOfSquaredDeviations extends FirstMoment {
         final FirstMoment m1 = FirstMoment.of(values);
         final double xbar = m1.getFirstMoment();
         if (!Double.isFinite(xbar)) {
-            return new SumOfSquaredDeviations(Math.abs(xbar), m1);
+            return new SumOfSquaredDeviations(Double.NaN, m1);
         }
         double s = 0;
         double ss = 0;
@@ -132,7 +142,8 @@ class SumOfSquaredDeviations extends FirstMoment {
         // "Updating one-pass algorithm"
         // See: Chan et al (1983) Equation 1.3b
         super.accept(value);
-        sumSquaredDev += (n - 1) * dev * nDev;
+        // Note: account for the half-deviation representation
+        sumSquaredDev += (n - 1) * halfDev * nDev * 2;
     }
 
     /**
