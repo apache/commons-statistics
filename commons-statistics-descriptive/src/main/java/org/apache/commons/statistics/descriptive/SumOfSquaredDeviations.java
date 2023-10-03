@@ -157,9 +157,11 @@ class SumOfSquaredDeviations extends FirstMoment {
         } else if (m != 0) {
             // "Updating one-pass algorithm"
             // See: Chan et al (1983) Equation 1.5b (modified for the mean)
-            final double diffOfMean = other.getFirstMoment() - m1;
+            final double diffOfMean = other.m1 - m1;
             final double sqDiffOfMean = diffOfMean * diffOfMean;
-            sumSquaredDev += other.sumSquaredDev + sqDiffOfMean * (((double) n * m) / ((double) n + m));
+            // Enforce symmetry
+            sumSquaredDev = (sumSquaredDev + other.sumSquaredDev) +
+                sqDiffOfMean * (((double) n * m) / ((double) n + m));
         }
         super.combine(other);
         return this;

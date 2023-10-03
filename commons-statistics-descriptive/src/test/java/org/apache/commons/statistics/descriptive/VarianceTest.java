@@ -149,7 +149,7 @@ final class VarianceTest {
         Variance var1b = Variance.create();
         Arrays.stream(array1).forEach(var1b);
         var2.combine(var1b);
-        TestHelper.assertEquals(expected, var2.getAsDouble(), ULP_COMBINE_ACCEPT, () -> "combine");
+        Assertions.assertEquals(var1.getAsDouble(), var2.getAsDouble(), () -> "combine reversed");
         Assertions.assertEquals(var1BeforeCombine, var1b.getAsDouble());
     }
 

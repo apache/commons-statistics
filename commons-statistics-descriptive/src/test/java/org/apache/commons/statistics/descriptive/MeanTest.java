@@ -149,7 +149,7 @@ final class MeanTest {
         Mean mean1b = Mean.create();
         Arrays.stream(array1).forEach(mean1b);
         mean2.combine(mean1b);
-        TestHelper.assertEquals(expected, mean2.getAsDouble(), ULP_COMBINE, () -> "combine");
+        Assertions.assertEquals(mean1.getAsDouble(), mean2.getAsDouble(), () -> "combine reversed");
         Assertions.assertEquals(mean1BeforeCombine, mean1b.getAsDouble());
     }
 
