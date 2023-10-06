@@ -57,7 +57,7 @@ public final class Sum implements DoubleStatistic, DoubleStatisticAccumulator<Su
     }
 
     /**
-     * Creates a {@code Sum} instance.
+     * Creates an instance.
      *
      * <p>The initial result is zero.
      *
@@ -68,7 +68,7 @@ public final class Sum implements DoubleStatistic, DoubleStatisticAccumulator<Su
     }
 
     /**
-     * Returns a {@code Sum} instance that has the sum of all input value(s).
+     * Returns an instance populated using the input {@code values}.
      *
      * <p>The result is {@code NaN} if any of the values is {@code NaN}
      * or the sum at any point is a {@code NaN}.

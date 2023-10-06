@@ -17,8 +17,12 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Computes the variance of the available values. By default, the
- * "sample variance" is computed.
+ * Computes the variance of the available values. Uses the following definition
+ * of the <em>sample variance</em>:
+ *
+ * <p>\[ \tfrac{1}{n-1} \sum_{i=1}^n (x_i-\overline{x})^2 \]
+ *
+ * <p>where \( \overline{x} \) is the sample mean, and \( n \) is the number of samples.
  *
  * <ul>
  *   <li>The result is {@code NaN} if no values are added.
@@ -27,28 +31,11 @@ package org.apache.commons.statistics.descriptive;
  *   <li>The result is zero if there is one finite value in the data set.
  * </ul>
  *
- * <p>The definitional formula for sample variance is:
+ * <p>The {@link #accept(double)} method uses a recursive updating algorithm based on West's
+ * algorithm (see Chan and Lewis (1979)).
  *
- * <p>\[ \frac{1}{n - 1} \sum_i^n{(x_i - \mu)^2} \]
- *
- * <p>where \( \mu \) is the sample mean.
- *
- * <p>This formula does not have good numerical properties, so this
- * instance does not use it to compute the statistic.
-
- * <ul>
- *   <li>The {@link #accept(double)} method computes the variance using
- *       updating formulae based on West's algorithm, as described in
- *       <a href="http://doi.acm.org/10.1145/359146.359152"> Chan, T. F. and
- *       J. G. Lewis 1979, <i>Communications of the ACM</i>,
- *       vol. 22 no. 9, pp. 526-531.</a>
- *
- *   <li>The {@link #of(double...)} method leverages the fact that it has the
- *       full array of values in memory to execute a two-pass algorithm.
- *       Specifically, this method uses the "corrected two-pass algorithm" from
- *       Chan, Golub, Levesque, <i>Algorithms for Computing the Sample Variance</i>,
- *       American Statistician, vol. 37, no. 3 (1983) pp. 242-247.
- * </ul>
+ * <p>The {@link #of(double...)} method uses the corrected two-pass algorithm from
+ * Chan <i>et al</i>, (1983).
  *
  * <p>Note that adding values using {@link #accept(double) accept} and then executing
  * {@link #getAsDouble() getAsDouble} will
@@ -72,6 +59,19 @@ package org.apache.commons.statistics.descriptive;
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
  *
+ * <p>References:
+ * <ul>
+ *   <li>Chan and Lewis (1979)
+ *       Computing standard deviations: accuracy.
+ *       Communications of the ACM, 22, 526-531.
+ *       <a href="http://doi.acm.org/10.1145/359146.359152">doi: 10.1145/359146.359152</a>
+ *   <li>Chan, Golub and Levesque (1983)
+ *       Algorithms for Computing the Sample Variance: Analysis and Recommendations.
+ *       American Statistician, 37, 242-247.
+ *       <a href="https://doi.org/10.2307/2683386">doi: 10.2307/2683386</a>
+ * </ul>
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Variance">Variance (Wikipedia)</a>
  * @since 1.1
  */
 public final class Variance implements DoubleStatistic, DoubleStatisticAccumulator<Variance> {
@@ -99,7 +99,7 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
     }
 
     /**
-     * Creates a {@code Variance} instance.
+     * Creates an instance.
      *
      * <p>The initial result is {@code NaN}.
      *
@@ -110,11 +110,10 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
     }
 
     /**
-     * Returns a {@code Variance} instance that has the variance of all input values, or {@code NaN}
-     * if the input array is empty.
+     * Returns an instance populated using the input {@code values}.
      *
-     * <p>Note: {@code Variance} computed using {@link #accept(double) accept} may be different
-     * from this variance.
+     * <p>Note: {@code Variance} computed using {@link #accept(double) accept} may be
+     * different from this variance.
      *
      * <p>See {@link Variance} for details on the computing algorithm.
      *

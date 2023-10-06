@@ -58,7 +58,7 @@ public final class Min implements DoubleStatistic, DoubleStatisticAccumulator<Mi
     }
 
     /**
-     * Creates a {@code Min} instance.
+     * Creates an instance.
      *
      * <p>The initial result is {@link Double#POSITIVE_INFINITY positive infinity}.
      *
@@ -69,7 +69,7 @@ public final class Min implements DoubleStatistic, DoubleStatisticAccumulator<Mi
     }
 
     /**
-     * Returns a {@code Min} instance that has the minimum of all input value(s).
+     * Returns an instance populated using the input {@code values}.
      *
      * <p>The result is {@code NaN} if any of the values is {@code NaN}.
      *

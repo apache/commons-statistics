@@ -110,11 +110,10 @@ class FirstMoment implements DoubleConsumer {
     }
 
     /**
-     * Returns a {@code FirstMoment} instance that has the arithmetic mean of all input
-     * values, or {@code NaN} if the input array is empty.
+     * Returns an instance populated using the input {@code values}.
      *
-     * <p>Note: {@code FirstMoment} computed using {@link FirstMoment#accept
-     * FirstMoment.accept()} may be different from this instance.
+     * <p>Note: {@code FirstMoment} computed using {@link #accept} may be different from
+     * this instance.
      *
      * @param values Values.
      * @return {@code FirstMoment} instance.

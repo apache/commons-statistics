@@ -17,7 +17,12 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Computes the arithmetic mean of the available values.
+ * Computes the arithmetic mean of the available values. Uses the following definition
+ * of the <em>sample mean</em>:
+ *
+ * <p>\[ \frac{1}{n} \sum_{i=1}^n x_i \]
+ *
+ * <p>where \( n \) is the number of samples.
  *
  * <ul>
  *   <li>The result is {@code NaN} if no values are added.
@@ -27,20 +32,17 @@ package org.apache.commons.statistics.descriptive;
  *   <li>The result is finite if all input values are finite.
  * </ul>
  *
- * <p>Uses the following recursive updating algorithm:
+ * <p>The {@link #accept(double)} method uses the following recursive updating algorithm
+ * that protects the mean from overflow:
  * <ol>
  * <li>Initialize \( m_1 \) using the first value</li>
  * <li>For each additional value, update using <br>
  *     \( m_{i+1} = m_i + (x - m_i) / (i + 1) \)</li>
  * </ol>
  *
- * <p>If {@link #of(double...)} is used to compute the mean of a variable number
- * of values, a two-pass, corrected algorithm is used, starting with
- * the recursive updating algorithm mentioned above, which protects the mean from overflow,
- * and then correcting this by adding the mean deviation of the data values from the
- * one-pass mean. See, e.g. "Comparison of Several Algorithms for Computing
- * Sample Means and Variances," Robert F. Ling, Journal of the American
- * Statistical Association, Vol. 69, No. 348 (Dec., 1974), pp. 859-866.
+ * <p>The {@link #of(double...)} method uses a corrected two-pass algorithm, starting with
+ * the recursive updating algorithm mentioned above, and then correcting this by adding the
+ * mean deviation of the data values from the one-pass mean (see Ling (1974)).
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
@@ -58,6 +60,15 @@ package org.apache.commons.statistics.descriptive;
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
  *
+ * <p>References:
+ * <ul>
+ *   <li>Ling, R.F. (1974)
+ *       Comparison of Several Algorithms for Computing Sample Means and Variances.
+ *       Journal of the American Statistical Association, 69, 859-866.
+ *       <a href="https://doi.org/10.2307/2286154">doi: 10.2307/2286154</a>
+ * </ul>
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Mean">Mean (Wikipedia)</a>
  * @since 1.1
  */
 public final class Mean implements DoubleStatistic, DoubleStatisticAccumulator<Mean> {
@@ -84,7 +95,7 @@ public final class Mean implements DoubleStatistic, DoubleStatisticAccumulator<M
     }
 
     /**
-     * Creates a {@code Mean} instance.
+     * Creates an instance.
      *
      * <p>The initial result is {@code NaN}.
      *
@@ -95,11 +106,10 @@ public final class Mean implements DoubleStatistic, DoubleStatisticAccumulator<M
     }
 
     /**
-     * Returns a {@code Mean} instance that has the arithmetic mean of all input values, or {@code NaN}
-     * if the input array is empty.
+     * Returns an instance populated using the input {@code values}.
      *
-     * <p>Note: {@code Mean} computed using {@link #accept(double) accept} may be different
-     * from this mean.
+     * <p>Note: {@code Mean} computed using {@link #accept(double) accept} may be
+     * different from this mean.
      *
      * <p>See {@link Mean} for details on the computing algorithm.
      *

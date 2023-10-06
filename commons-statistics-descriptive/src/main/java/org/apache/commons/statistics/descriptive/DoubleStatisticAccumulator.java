@@ -17,18 +17,18 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * A mutable result container that accumulates a {@code DoubleStatistic}.
+ * A mutable result container that accumulates a {@link DoubleStatistic}.
  *
- * @param <T> {@code DoubleStatistic} being accumulated.
+ * @param <T> {@link DoubleStatistic} being accumulated.
  *
  * @since 1.1
  */
 public interface DoubleStatisticAccumulator<T extends DoubleStatistic> {
 
     /**
-     * Combines the state of another {@code DoubleStatistic} into this one.
+     * Combines the state of the {@code other} statistic into this one.
      *
-     * @param other Another {@code DoubleStatistic} to be combined.
+     * @param other Another statistic to be combined.
      * @return {@code this} instance after combining {@code other}.
      */
     T combine(T other);

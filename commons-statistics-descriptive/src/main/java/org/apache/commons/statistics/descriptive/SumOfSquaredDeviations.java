@@ -45,9 +45,10 @@ package org.apache.commons.statistics.descriptive;
  *
  * <p>References:
  * <ul>
- *   <li>Chan, Golub, Levesque (1983)
- *       Algorithms for Computing the Sample Variance,
- *       American Statistician, vol. 37, no. 3, pp. 242-247.
+ *   <li>Chan, Golub and Levesque (1983)
+ *       Algorithms for Computing the Sample Variance: Analysis and Recommendations.
+ *       American Statistician, 37, 242-247.
+ *       <a href="https://doi.org/10.2307/2683386">doi: 10.2307/2683386</a>
  * </ul>
  */
 class SumOfSquaredDeviations extends FirstMoment {
@@ -83,19 +84,10 @@ class SumOfSquaredDeviations extends FirstMoment {
     }
 
     /**
-     * Returns a {@code SumOfSquaredDeviations} instance of all input values, or {@code NaN}
-     * if:
-     * <ul>
-     *     <li>the input array is empty,</li>
-     *     <li>any of the values is {@code NaN},</li>
-     *     <li>an infinite value of either sign is encountered, or</li>
-     *     <li>the sum of the squared deviations from the mean is infinite</li>
-     * </ul>
+     * Returns an instance populated using the input {@code values}.
      *
-     * <p>Note: {@code SumOfSquaredDeviations} computed using
-     * {@link #accept accept} may be different from this instance.
-     *
-     * <p>See {@link SumOfSquaredDeviations} for details on the computing algorithm.
+     * <p>Note: {@code SumOfSquaredDeviations} computed using {@link #accept accept} may be
+     * different from this instance.
      *
      * @param values Values.
      * @return {@code SumOfSquaredDeviations} instance.

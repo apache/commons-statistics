@@ -58,7 +58,7 @@ public final class Max implements DoubleStatistic, DoubleStatisticAccumulator<Ma
     }
 
     /**
-     * Creates a {@code Max} instance.
+     * Creates an instance.
      *
      * <p>The initial result is {@link Double#NEGATIVE_INFINITY negative infinity}.
      *
@@ -69,7 +69,7 @@ public final class Max implements DoubleStatistic, DoubleStatisticAccumulator<Ma
     }
 
     /**
-     * Returns a {@code Max} instance that has the maximum of all input value(s).
+     * Returns an instance populated using the input {@code values}.
      *
      * <p>The result is {@code NaN} if any of the values is {@code NaN}.
      *
