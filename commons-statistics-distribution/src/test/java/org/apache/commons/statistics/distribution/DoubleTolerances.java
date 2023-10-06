@@ -26,8 +26,10 @@ import org.apache.commons.numbers.core.Precision;
  *
  * <p>Floating-point comparisons are based on
  * {@link Precision org.apache.commons.numbers.core.Precision}.
+ *
+ * <p>This class is public and has public methods to allow testing within the other modules.
  */
-final class DoubleTolerances {
+public final class DoubleTolerances {
     /** A tolerance for numerical equality. This is immutable. */
     private static final DoubleTolerance EQUALS = new AbstractDoubleTolerance() {
         @Override
@@ -57,7 +59,7 @@ final class DoubleTolerances {
      * @see Double#equals(Object)
      * @see Double#doubleToLongBits(double)
      */
-    static DoubleTolerance equals() {
+    public static DoubleTolerance equals() {
         return EQUALS;
     }
 
@@ -84,7 +86,7 @@ final class DoubleTolerances {
      * @throws IllegalArgumentException if {@code eps < 0} or is not finite
      * @see Precision#equalsIncludingNaN(double, double, int)
      */
-    static DoubleTolerance ulps(final int maxUlps) {
+    public static DoubleTolerance ulps(final int maxUlps) {
         return new AbstractDoubleTolerance() {
             @Override
             public boolean test(double a, double b) {
@@ -119,7 +121,7 @@ final class DoubleTolerances {
      * @throws IllegalArgumentException if {@code eps < 0} or is not finite
      * @see Precision#equalsIncludingNaN(double, double, double)
      */
-    static DoubleTolerance absolute(final double eps) {
+    public static DoubleTolerance absolute(final double eps) {
         if (!Double.isFinite(eps) ||
             eps < 0d) {
             throw new IllegalArgumentException("Invalid epsilon value: " + eps);
@@ -163,7 +165,7 @@ final class DoubleTolerances {
      * @throws IllegalArgumentException if {@code eps < 0} or is not finite
      * @see Precision#equalsIncludingNaN(double, double, double)
      */
-    static DoubleTolerance relative(final double eps) {
+    public static DoubleTolerance relative(final double eps) {
         if (!Double.isFinite(eps) ||
             eps < 0d) {
             throw new IllegalArgumentException("Invalid epsilon value: " + eps);

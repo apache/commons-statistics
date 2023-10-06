@@ -30,6 +30,33 @@ final class TestData {
     private TestData() {}
 
     /**
+     * A stream of test data for the moments. This is provided so all moment
+     * statistics based on the mean (first raw moment) can use the same cases.
+     *
+     * @return the stream of test data
+     */
+    static Stream<double[]> momentTestData() {
+        final double max = Double.MAX_VALUE;
+        return Stream.of(
+            // Large numbers
+            new double[] {10E-50, 5E-100, 25E-200, 35.345E-50},
+            // Small numbers
+            new double[] {0.001, 0.0002, 0.00003, 10000.11, 0.000004},
+            // Overflow of the sum which prevents using the sum for the mean}
+            new double[] {max, max},
+            new double[] {-max, -max},
+            new double[] {max, max, max, max},
+            new double[] {max, max / 2},
+            new double[] {max, max, -max},
+            new double[] {-max, -max / 2, -max / 4},
+            // Extreme range
+            new double[] {-max, 1, 1},
+            // zeros
+            new double[10]
+        );
+    }
+
+    /**
      * Function which supplies test data for a statistic as a single array.
      * @return Stream of 1-d arrays.
      */

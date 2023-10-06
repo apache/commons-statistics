@@ -26,9 +26,11 @@ import java.util.Objects;
  *
  * <p>This interface is intended for comparing outputs of a computation where floating
  * point errors may have occurred.
+ *
+ * <p>This interface is public and has public methods to allow testing within the other modules.
  */
 @FunctionalInterface
-interface DoubleTolerance {
+public interface DoubleTolerance {
     /**
      * Evaluates this tolerance predicate on the given arguments.
      *

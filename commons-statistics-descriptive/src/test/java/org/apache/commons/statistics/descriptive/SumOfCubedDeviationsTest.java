@@ -17,14 +17,8 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Arrays;
-import java.util.function.Supplier;
-import org.apache.commons.rng.UniformRandomProvider;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import java.util.stream.Stream;
+import org.apache.commons.statistics.distribution.DoubleTolerance;
 
 /**
  * Test for {@link SumOfCubedDeviations}.
@@ -37,231 +31,57 @@ import org.junit.jupiter.params.provider.MethodSource;
  * updating algorithm can suffer from large relative error when
  * the final statistic is close to zero.
  */
-final class SumOfCubedDeviationsTest {
-    private static final int ULP_ARRAY = 20;
-    private static final int ULP_STREAM = 60;
-    private static final int ULP_COMBINE_ACCEPT = 110;
-    private static final int ULP_COMBINE_OF = 20;
+final class SumOfCubedDeviationsTest extends BaseDoubleStatisticTest<SumOfCubedDeviationsWrapper> {
 
-    @Test
-    void testEmpty() {
-        Assertions.assertEquals(Double.NaN, SumOfCubedDeviations.of().getSumOfCubedDeviations());
+    @Override
+    protected String getStatisticName() {
+        return "SumOfCubedDeviations";
     }
 
-    @Test
-    void testNaN() {
-        SumOfCubedDeviations sc = new SumOfCubedDeviations();
-        double[] testArray = {Double.NaN, +0.0d, -0.0d, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY};
-        for (double value : testArray) {
-            sc.accept(value);
-        }
-        Assertions.assertEquals(Double.NaN, sc.getSumOfCubedDeviations());
+    @Override
+    protected SumOfCubedDeviationsWrapper create() {
+        return new SumOfCubedDeviationsWrapper(new SumOfCubedDeviations());
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValues")
-    void testSumOfCubedDeviations(double[] values) {
-        final double expected = computeExpectedSC(values);
-        SumOfCubedDeviations sc = new SumOfCubedDeviations();
-        for (double value : values) {
-            sc.accept(value);
-        }
-        assertStreaming(values.length, expected, sc.getSumOfCubedDeviations(), ULP_STREAM,
-            () -> "sum-of-cubed deviations");
-        TestHelper.assertEqualsOrNonFinite(expected, SumOfCubedDeviations.of(values).getSumOfCubedDeviations(), ULP_ARRAY,
-            () -> "of (values)");
-
-        SumOfCubedDeviations sc2 = SumOfCubedDeviations.of();
-        for (double value : values) {
-            sc2.accept(value);
-        }
-        Assertions.assertEquals(sc.getSumOfCubedDeviations(), sc2.getSumOfCubedDeviations(), "of() + values");
+    @Override
+    protected SumOfCubedDeviationsWrapper create(double... values) {
+        return new SumOfCubedDeviationsWrapper(SumOfCubedDeviations.of(values));
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValues")
-    void testParallelStream(double[] values) {
-        final double expected = computeExpectedSC(values);
-        final double actual = Arrays.stream(values)
-                .parallel()
-                .collect(SumOfCubedDeviations::new, SumOfCubedDeviations::accept, SumOfCubedDeviations::combine)
-                .getSumOfCubedDeviations();
-        assertStreaming(values.length, expected, actual, ULP_COMBINE_ACCEPT,
-            () -> "sum-of-cubed deviations (in parallel)");
+    @Override
+    protected double getEmptyValue() {
+        return Double.NaN;
     }
 
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValues")
-    void testSumOfCubedDeviationsRandomOrder(double[] values) {
-        UniformRandomProvider rng = TestHelper.createRNG();
-        for (int i = 1; i <= 10; i++) {
-            testSumOfCubedDeviations(TestHelper.shuffle(rng, values));
-            testParallelStream(TestHelper.shuffle(rng, values));
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
-    void testSumOfCubedDeviationsNonFinite(double[] values) {
-        final double expected = Double.NaN;
-        SumOfCubedDeviations sc = new SumOfCubedDeviations();
-        for (double value : values) {
-            sc.accept(value);
-        }
-        Assertions.assertEquals(expected, sc.getSumOfCubedDeviations(), "sc non-finite");
-        Assertions.assertEquals(expected, SumOfCubedDeviations.of(values).getSumOfCubedDeviations(), "of (values) non-finite");
-
-        SumOfCubedDeviations sc2 = SumOfCubedDeviations.of();
-        for (double value : values) {
-            sc2.accept(value);
-        }
-        Assertions.assertEquals(sc.getSumOfCubedDeviations(), sc2.getSumOfCubedDeviations(), "of() + values non-finite");
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
-    void testParallelStreamNonFinite(double[] values) {
-        final double expected = Double.NaN;
-        final double ans = Arrays.stream(values)
-                .parallel()
-                .collect(SumOfCubedDeviations::new, SumOfCubedDeviations::accept, SumOfCubedDeviations::combine)
-                .getSumOfCubedDeviations();
-        Assertions.assertEquals(expected, ans, "parallel stream non-finite");
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testValuesNonFinite")
-    void testSumOfCubedDeviationsRandomOrderNonFinite(double[] values) {
-        UniformRandomProvider rng = TestHelper.createRNG();
-        for (int i = 1; i <= 10; i++) {
-            testSumOfCubedDeviationsNonFinite(TestHelper.shuffle(rng, values));
-            testParallelStreamNonFinite(TestHelper.shuffle(rng, values));
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombine")
-    void testCombine(double[] array1, double[] array2) {
-        final double[] combinedArray = TestHelper.concatenate(array1, array2);
-        final double expected = computeExpectedSC(combinedArray);
-        SumOfCubedDeviations sc1 = new SumOfCubedDeviations();
-        SumOfCubedDeviations sc2 = new SumOfCubedDeviations();
-        Arrays.stream(array1).forEach(sc1);
-        Arrays.stream(array2).forEach(sc2);
-        final double sc1BeforeCombine = sc1.getSumOfCubedDeviations();
-        final double sc2BeforeCombine = sc2.getSumOfCubedDeviations();
-        sc1.combine(sc2);
-        TestHelper.assertEqualsOrNonFinite(expected, sc1.getSumOfCubedDeviations(), ULP_COMBINE_ACCEPT, () -> "combine");
-        Assertions.assertEquals(sc2BeforeCombine, sc2.getSumOfCubedDeviations());
-        // Combine in reverse order
-        SumOfCubedDeviations sc1b = new SumOfCubedDeviations();
-        Arrays.stream(array1).forEach(sc1b);
-        sc2.combine(sc1b);
-        Assertions.assertEquals(sc1.getSumOfCubedDeviations(), sc2.getSumOfCubedDeviations(), () -> "combine reversed");
-        Assertions.assertEquals(sc1BeforeCombine, sc1b.getSumOfCubedDeviations());
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombine")
-    void testCombineRandomOrder(double[] array1, double[] array2) {
-        UniformRandomProvider rng = TestHelper.createRNG();
-        double[] data = TestHelper.concatenate(array1, array2);
-        final int n = array1.length;
-        for (int i = 1; i <= 10; i++) {
-            for (int j = 1; j <= 10; j++) {
-                TestHelper.shuffle(rng, array1);
-                TestHelper.shuffle(rng, array2);
-                testCombine(array1, array2);
-            }
-            TestHelper.shuffle(rng, data);
-            System.arraycopy(data, 0, array1, 0, n);
-            System.arraycopy(data, n, array2, 0, array2.length);
-            testCombine(array1, array2);
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombine")
-    void testArrayOfArrays(double[] array1, double[] array2) {
-        final double[] combinedArray = TestHelper.concatenate(array1, array2);
-        final double expected = computeExpectedSC(combinedArray);
-        final double[][] values = {array1, array2};
-        final double actual = Arrays.stream(values)
-                .map(SumOfCubedDeviations::of)
-                .reduce(SumOfCubedDeviations::combine)
-                .map(SumOfCubedDeviations::getSumOfCubedDeviations)
-                .orElseThrow(RuntimeException::new);
-        TestHelper.assertEqualsOrNonFinite(expected, actual, ULP_COMBINE_OF, () -> "array of arrays combined");
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite")
-    void testCombineNonFinite(double[][] values) {
-        final double expected = Double.NaN;
-        SumOfCubedDeviations sc1 = new SumOfCubedDeviations();
-        SumOfCubedDeviations sc2 = new SumOfCubedDeviations();
-        Arrays.stream(values[0]).forEach(sc1);
-        Arrays.stream(values[1]).forEach(sc2);
-        final double mean2BeforeCombine = sc2.getSumOfCubedDeviations();
-        sc1.combine(sc2);
-        Assertions.assertEquals(expected, sc1.getSumOfCubedDeviations(), "combine non-finite");
-        Assertions.assertEquals(mean2BeforeCombine, sc2.getSumOfCubedDeviations());
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite")
-    void testCombineRandomOrderNonFinite(double[][] values) {
-        UniformRandomProvider rng = TestHelper.createRNG();
-        final double[] data = TestHelper.concatenate(values[0], values[1]);
-        final int n = values[0].length;
-        for (int i = 1; i <= 10; i++) {
-            for (int j = 1; j <= 10; j++) {
-                TestHelper.shuffle(rng, values[0]);
-                TestHelper.shuffle(rng, values[1]);
-                testCombineNonFinite(values);
-            }
-            TestHelper.shuffle(rng, data);
-            System.arraycopy(data, 0, values[0], 0, n);
-            System.arraycopy(data, n, values[1], 0, values[1].length);
-            testCombineNonFinite(values);
-        }
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testCombineNonFinite")
-    void testArrayOfArraysNonFinite(double[][] values) {
-        final double expected = Double.NaN;
-        final double actual = Arrays.stream(values)
-                .map(SumOfCubedDeviations::of)
-                .reduce(SumOfCubedDeviations::combine)
-                .map(SumOfCubedDeviations::getSumOfCubedDeviations)
-                .orElseThrow(RuntimeException::new);
-        Assertions.assertEquals(expected, actual, "array of arrays combined non-finite");
-    }
-
-    @ParameterizedTest
-    @MethodSource(value = "org.apache.commons.statistics.descriptive.TestData#testMultiCombine")
-    void testMultiCombine(double[][] values) {
-        final double[] combinedArray = TestHelper.concatenate(values);
-        final double expected = computeExpectedSC(combinedArray);
-        final double actual = Arrays.stream(values)
-                .map(SumOfCubedDeviations::of)
-                .reduce(SumOfCubedDeviations::combine)
-                .map(SumOfCubedDeviations::getSumOfCubedDeviations)
-                .orElseThrow(RuntimeException::new);
-        // Level to pass all test data
-        final int ulp = 79;
-        TestHelper.assertEqualsOrNonFinite(expected, actual, ulp, () -> "multi combine");
-    }
-
-    /**
-     * Compute expected sum-of-cubed deviations using BigDecimal.
-     *
-     * @param values Values.
-     * @return sum-of-cubed deviations
-     */
-    private static double computeExpectedSC(double[] values) {
+    @Override
+    protected double getExpectedValue(double[] values) {
         return computeExpectedSC(values, null);
+    }
+
+    @Override
+    protected double getExpectedNonFiniteValue(double[] values) {
+        // The non-finite behaviour is undefined.
+        // This is handled using a special DoubleTolerance.
+        return Double.NaN;
+    }
+
+    @Override
+    protected DoubleTolerance getTolerance() {
+        // The sum-of-cubed deviations is not very precise due to cancellation in the sum.
+        // Both the accept and array tests observe failures at over 200 ulp.
+        return TestHelper.equalsOrNonFinite(createAbsOrRelTolerance(0, 5e-14));
+    }
+
+    @Override
+    protected Stream<StatisticTestData> streamTestData() {
+        final Stream.Builder<StatisticTestData> builder = Stream.builder();
+        TestData.momentTestData().forEach(x -> builder.accept(addCase(x)));
+        // The value 2^1023 will overflow the sum of squared deviations
+        builder.accept(addCase(0, 0, 0x1.0p1023));
+        // The value 2^500 will overflow the sum of cubed deviations but not
+        // the sum of squared deviations
+        builder.accept(addCase(0, 0, 0x1.0p500));
+        return builder.build();
     }
 
     /**
@@ -285,10 +105,12 @@ final class SumOfCubedDeviationsTest {
         BigDecimal bd = BigDecimal.ZERO;
         // Compute using double to get the IEEE result of any overflow
         final double xbar = mean.doubleValue();
+        // Round mean to nearest double
+        final BigDecimal mu = new BigDecimal(xbar);
         double sum = 0;
         for (double value : values) {
-            BigDecimal bdDiff = new BigDecimal(value, MathContext.DECIMAL128);
-            bdDiff = bdDiff.subtract(mean);
+            BigDecimal bdDiff = new BigDecimal(value);
+            bdDiff = bdDiff.subtract(mu);
             bdDiff = bdDiff.pow(3);
             // Note: This sum has cancellation so we compute without rounding.
             bd = bd.add(bdDiff);
@@ -302,31 +124,5 @@ final class SumOfCubedDeviationsTest {
         // array [-x, 0, x] where x^3 overflows cannot be computed with either
         // the updating or array based algorithm.
         return Double.isFinite(sc) ? sc : sum;
-    }
-
-    /**
-     * Assert the actual result from the streaming algorithm.
-     *
-     * <p>Note: Close to zero the streaming method is very dependent on the input order
-     * and can be very far from the expected result in ULPs.
-     * This simply checks the value is small.
-     *
-     * @param size Size of the data.
-     * @param expected Expected value.
-     * @param actual Actual value.
-     * @param ulp ULP tolerance.
-     * @param msg Failure message.
-     */
-    private static void assertStreaming(int size, double expected, double actual, int ulp,
-        Supplier<String> msg) {
-        if (size > 2 && Math.abs(expected) < 1e-10) {
-            // Close to zero the streaming method is very dependent on the input order.
-            // This simply checks the value is small.
-            Assertions.assertEquals(expected, actual, 4e-13, msg);
-        } else {
-            // Non-finite values are not maintained by the implementation
-            TestHelper.assertEqualsOrNonFinite(expected, actual, ULP_COMBINE_ACCEPT,
-                msg);
-        }
     }
 }

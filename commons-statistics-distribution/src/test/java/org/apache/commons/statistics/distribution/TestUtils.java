@@ -25,8 +25,10 @@ import org.junit.jupiter.api.Assertions;
 
 /**
  * Test utilities.
+ *
+ * <p>This class is public and has public methods to allow testing within the other modules.
  */
-final class TestUtils {
+public final class TestUtils {
     /**
      * The relative error threshold below which absolute error is reported in ULP.
      */
@@ -69,6 +71,10 @@ final class TestUtils {
      * <p>This should be followed by the ULP error value then '>'.
      */
     private static final String ULP_ERROR_FORMAT = ">, ulp error: <";
+    /** Positive zero bits. */
+    private static final long POSITIVE_ZERO_DOUBLE_BITS = Double.doubleToRawLongBits(+0.0);
+    /** Negative zero bits. */
+    private static final long NEGATIVE_ZERO_DOUBLE_BITS = Double.doubleToRawLongBits(-0.0);
 
     /**
      * Collection of static methods used in math unit tests.
@@ -88,7 +94,7 @@ final class TestUtils {
      * @param tolerance The tolerance.
      * @throws AssertionError If the values are not considered equal
      */
-    static void assertEquals(double expected, double actual, DoubleTolerance tolerance) {
+    public static void assertEquals(double expected, double actual, DoubleTolerance tolerance) {
         assertEquals(expected, actual, tolerance, (String) null);
     }
 
@@ -104,7 +110,7 @@ final class TestUtils {
      * @param message The message.
      * @throws AssertionError If the values are not considered equal
      */
-    static void assertEquals(double expected, double actual, DoubleTolerance tolerance, String message) {
+    public static void assertEquals(double expected, double actual, DoubleTolerance tolerance, String message) {
         if (!tolerance.test(expected, actual)) {
             throw new AssertionError(format(expected, actual, tolerance, message));
         }
@@ -123,7 +129,7 @@ final class TestUtils {
      * @param messageSupplier The message supplier.
      * @throws AssertionError If the values are not considered equal
      */
-    static void assertEquals(double expected, double actual, DoubleTolerance tolerance,
+    public static void assertEquals(double expected, double actual, DoubleTolerance tolerance,
         Supplier<String> messageSupplier) {
         if (!tolerance.test(expected, actual)) {
             throw new AssertionError(
@@ -169,14 +175,52 @@ final class TestUtils {
         final StringBuilder msg = new StringBuilder(EXPECTED_FORMAT).append(expected).append(ACTUAL_FORMAT)
             .append(actual).append(RELATIVE_ERROR_FORMAT).append(rel);
         if (rel < ULP_THRESHOLD) {
-            final long ulp = Math.abs(Double.doubleToRawLongBits(expected) - Double.doubleToRawLongBits(actual));
-            msg.append(ULP_ERROR_FORMAT).append(ulp);
+            msg.append(ULP_ERROR_FORMAT).append(formatUlpDifference(expected, actual));
         } else {
             msg.append(ABSOLUTE_ERROR_FORMAT).append(diff);
         }
         msg.append('>');
         appendTolerance(msg, tolerance);
         return msg.toString();
+    }
+
+    /**
+     * Format the absolute difference in ULP between two arguments. This will return "0" for values
+     * that are binary equal, or for the difference between zeros of opposite signs.
+     *
+     * @param expected first argument
+     * @param actual second argument
+     * @return Absolute ULP difference between the arguments as a string
+     */
+    private static String formatUlpDifference(double expected, double actual) {
+        final long e = Double.doubleToLongBits(expected);
+        final long a = Double.doubleToLongBits(actual);
+
+        // Code adapted from Precision#equals(double, double, int).
+        // Compute the absolute delta; this is done carefully if there is a sign difference
+        // to allow reporting errors above Long.MAX_VALUE.
+
+        if (e == a) {
+            // Binary equal
+            return "0";
+        }
+        if ((a ^ e) < 0L) {
+            // The difference is the count of numbers between each and zero.
+            // This makes -0.0 and 0.0 equal.
+            long d1;
+            long d2;
+            if (a < e) {
+                d1 = e - POSITIVE_ZERO_DOUBLE_BITS;
+                d2 = a - NEGATIVE_ZERO_DOUBLE_BITS;
+            } else {
+                d1 = a - POSITIVE_ZERO_DOUBLE_BITS;
+                d2 = e - NEGATIVE_ZERO_DOUBLE_BITS;
+            }
+            // This may overflow so we report it using an unsigned formatter
+            return Long.toUnsignedString(d1 + d2);
+        }
+        // Same sign, no overflow of the difference
+        return Long.toString(Math.abs(e - a));
     }
 
     /**

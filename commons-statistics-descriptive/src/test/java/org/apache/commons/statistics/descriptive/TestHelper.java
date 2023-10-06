@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
+import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.junit.jupiter.api.Assertions;
 
 /**
@@ -33,6 +34,34 @@ final class TestHelper {
     private static final long POSITIVE_ZERO_DOUBLE_BITS = Double.doubleToRawLongBits(+0.0);
     /** Negative zero bits. */
     private static final long NEGATIVE_ZERO_DOUBLE_BITS = Double.doubleToRawLongBits(-0.0);
+    /**
+     * Cached seed. Using the same seed ensures all statistics use the same shuffled
+     * data for tests executed in the same JVM.
+     * Native seed for XO_RO_SHI_RO_128_PP is long[] (size 2).
+     */
+    private static final long[] SEED = RandomSource.createLongArray(2);
+
+    /**
+     * A {@link DoubleTolerance} that considers finite values equal using the {@code ==} operator,
+     * and all non-finite values equal.
+     */
+    private static class EqualsNonFinite implements DoubleTolerance, Supplier<String> {
+        /** An instance. */
+        static final EqualsNonFinite INSTANCE = new EqualsNonFinite();
+
+        @Override
+        public boolean test(double a, double b) {
+            return Double.isFinite(a) ?
+                a == b :
+                !Double.isFinite(b);
+        }
+
+        @Override
+        public String get() {
+            // Note: This method provides an assertion message for the tolerance
+            return "(== or non-finite match)";
+        }
+    }
 
     /** Class contains only static methods. */
     private TestHelper() {}
@@ -47,6 +76,24 @@ final class TestHelper {
         return Arrays.stream(arrays)
                 .flatMapToDouble(Arrays::stream)
                 .toArray();
+    }
+
+    /**
+     * Helper function to reverse the concatenation of arrays. The array is copied
+     * sequentially into the destination arrays.
+     *
+     * <p>Warning: No lengths checks are performed. It is assume the combine length
+     * of the destination arrays is equal to the length of the data.
+     *
+     * @param data Array to be unconcatenated.
+     * @param arrays Destination arrays.
+     */
+    static void unconcatenate(double[] data, double[]... arrays) {
+        int from = 0;
+        for (final double[] a : arrays) {
+            System.arraycopy(data, from, a, 0, a.length);
+            from += a.length;
+        }
     }
 
     /**
@@ -80,10 +127,12 @@ final class TestHelper {
         if (mean != null) {
             mean[0] = m;
         }
+        // Round mean to nearest double
+        final BigDecimal mu = new BigDecimal(m.doubleValue());
         BigDecimal ss = BigDecimal.ZERO;
         for (double value : values) {
-            BigDecimal bdDiff = new BigDecimal(value, MathContext.DECIMAL128);
-            bdDiff = bdDiff.subtract(m);
+            BigDecimal bdDiff = new BigDecimal(value);
+            bdDiff = bdDiff.subtract(mu);
             bdDiff = bdDiff.pow(2);
             // Note: This is a sum of positive terms so summation with rounding is OK.
             ss = ss.add(bdDiff, MathContext.DECIMAL128);
@@ -202,12 +251,49 @@ final class TestHelper {
     }
 
     /**
+     * Create a tolerance using the provided tolerance for finite values; all non-finite
+     * values are considered equal.
+     *
+     * @param tol Finite value tolerance.
+     * @return the tolerance
+     */
+    static DoubleTolerance equalsOrNonFinite(DoubleTolerance tol) {
+        return tol.or(EqualsNonFinite.INSTANCE);
+    }
+
+    /**
+     * Creates a seed for the RNG.
+     *
+     * @return the seed
+     * @see #createRNG(long[])
+     */
+    static long[] createRNGSeed() {
+        // This could be generated dynamically.
+        // However using the same seed across all tests ensures:
+        // 1. Related statistics use the same shuffled data, e.g. Mean and Variance.
+        // 2. Different tests of the same statistic use the same shuffle data.
+        // This allows settings test tolerances appropriately across the test suite.
+        return SEED.clone();
+    }
+
+    /**
      * Creates a RNG instance.
      *
      * @return A new RNG instance.
      */
     static UniformRandomProvider createRNG() {
         return RandomSource.SPLIT_MIX_64.create();
+    }
+
+    /**
+     * Creates a RNG instance.
+     *
+     * @param seed Seed.
+     * @return A new RNG instance.
+     * @see #createRNGSeed()
+     */
+    static UniformRandomProvider createRNG(long[] seed) {
+        return RandomSource.XO_RO_SHI_RO_128_PP.create(seed);
     }
 
     /**
@@ -231,6 +317,26 @@ final class TestHelper {
     }
 
     /**
+     * Shuffles the entries of the given array.
+     *
+     * <p>Uses Fisher-Yates shuffle copied from
+     * <a href="https://github.com/apache/commons-rng/blob/master/commons-rng-sampling/src/main/java/org/apache/commons/rng/sampling/ArraySampler.java">
+     *     RNG ArraySampler.</a>
+     *
+     * <p>TODO: This can be removed when {@code commons-rng-sampling 1.6} is released.
+     *
+     * @param rng Source of randomness.
+     * @param array Array whose entries will be shuffled (in-place).
+     * @return Shuffled input array.
+     */
+    static <T> T[] shuffle(UniformRandomProvider rng, T[] array) {
+        for (int i = array.length; i > 1; i--) {
+            swap(array, i - 1, rng.nextInt(i));
+        }
+        return array;
+    }
+
+    /**
      * Swaps the two specified elements in the array.
      *
      * @param array Array.
@@ -239,6 +345,19 @@ final class TestHelper {
      */
     private static void swap(double[] array, int i, int j) {
         final double tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+
+    /**
+     * Swaps the two specified elements in the array.
+     *
+     * @param array Array.
+     * @param i First index.
+     * @param j Second index.
+     */
+    private static <T> void swap(T[] array, int i, int j) {
+        final T tmp = array[i];
         array[i] = array[j];
         array[j] = tmp;
     }
