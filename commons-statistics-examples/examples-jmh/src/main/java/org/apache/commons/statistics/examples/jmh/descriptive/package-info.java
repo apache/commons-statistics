@@ -14,30 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.statistics.descriptive;
-
-import java.util.function.DoubleConsumer;
 
 /**
- * Utility methods for statistics.
+ * Benchmarks for the {@code org.apache.commons.statistics.descriptive} components.
+ *
+ * @since 1.1
  */
-final class Statistics {
-
-    /** No instances. */
-    private Statistics() {}
-
-    /**
-     * Add all the {@code values} to the {@code statistic}.
-     *
-     * @param <T> Type of the statistic
-     * @param statistic Statistic.
-     * @param values Values.
-     * @return the statistic
-     */
-    static <T extends DoubleConsumer> T add(T statistic, double[] values) {
-        for (final double x : values) {
-            statistic.accept(x);
-        }
-        return statistic;
-    }
-}
+package org.apache.commons.statistics.examples.jmh.descriptive;
