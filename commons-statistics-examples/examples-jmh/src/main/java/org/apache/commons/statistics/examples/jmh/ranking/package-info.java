@@ -17,5 +17,7 @@
 
 /**
  * Benchmarks for the {@code org.apache.commons.statistics.ranking} components.
+ *
+ * @since 1.1
  */
 package org.apache.commons.statistics.examples.jmh.ranking;
