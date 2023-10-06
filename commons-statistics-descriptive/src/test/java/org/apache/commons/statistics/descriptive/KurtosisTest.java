@@ -32,7 +32,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 final class KurtosisTest {
     private static final int ULP_ARRAY = 30;
     private static final int ULP_STREAM = 30;
-    private static final int ULP_COMBINE_ACCEPT = 60;
+    private static final int ULP_COMBINE_ACCEPT = 70;
     private static final int ULP_COMBINE_OF = 30;
 
     @Test

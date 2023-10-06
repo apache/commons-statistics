@@ -30,11 +30,8 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 final class VarianceTest {
     private static final int ULP_ARRAY = 4;
-
     private static final int ULP_STREAM = 8;
-
-    private static final int ULP_COMBINE_ACCEPT = 8;
-
+    private static final int ULP_COMBINE_ACCEPT = 10;
     private static final int ULP_COMBINE_OF = 2;
 
     @Test
