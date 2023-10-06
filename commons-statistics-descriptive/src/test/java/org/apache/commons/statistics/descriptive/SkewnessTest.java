@@ -274,6 +274,9 @@ final class SkewnessTest {
         // Capture the mean for reuse.
         final BigDecimal[] mean = new BigDecimal[1];
         final double variance = VarianceTest.computeExpectedVariance(values, mean);
+        if (!Double.isFinite(variance)) {
+            return Double.NaN;
+        }
         // Here we add a check for a zero denominator.
         final double denom = variance * Math.sqrt(variance);
         if (denom == 0) {

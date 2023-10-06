@@ -231,6 +231,12 @@ final class VarianceTest {
         Assertions.assertEquals(expected, actual, "array of arrays combined variance non-finite");
     }
 
+    @Test
+    void testNonFiniteSumOfSquareDeviations() {
+        final Variance var = Variance.of(0, 0x1.0p1023);
+        Assertions.assertEquals(Double.NaN, var.getAsDouble());
+    }
+
     /**
      * Helper function to compute the expected variance using BigDecimal.
      * @param values Values.
@@ -251,7 +257,10 @@ final class VarianceTest {
         if (n == 1) {
             return 0;
         }
-        return TestHelper.computeExpectedSumOfSquaredDeviations(values, mean)
-            .divide(BigDecimal.valueOf(n - 1), MathContext.DECIMAL128).doubleValue();
+        final BigDecimal s2 = TestHelper.computeExpectedSumOfSquaredDeviations(values, mean);
+        if (!Double.isFinite(s2.doubleValue())) {
+            return Double.NaN;
+        }
+        return s2.divide(BigDecimal.valueOf(n - 1), MathContext.DECIMAL128).doubleValue();
     }
 }

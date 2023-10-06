@@ -143,14 +143,16 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
      */
     @Override
     public double getAsDouble() {
-        final double sumOfSquaredDev = ss.getSumOfSquaredDeviations();
-        final long n = ss.n;
-        if (n == 0) {
+        // This method checks the sum of squared is finite
+        // to provide a consistent NaN when the computation is not possible.
+        // Note: The SS checks for n=0 and returns NaN.
+        final double m2 = ss.getSumOfSquaredDeviations();
+        if (!Double.isFinite(m2)) {
             return Double.NaN;
-        } else if (n == 1 && Double.isFinite(sumOfSquaredDev)) {
-            return 0;
         }
-        return sumOfSquaredDev / (n - 1.0);
+        final long n = ss.n;
+        // Avoid a divide by zero
+        return n == 1 ? 0 : m2 / (n - 1.0);
     }
 
     @Override
