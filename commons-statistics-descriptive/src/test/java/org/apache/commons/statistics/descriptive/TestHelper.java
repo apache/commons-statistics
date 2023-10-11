@@ -20,20 +20,14 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.function.Supplier;
-import org.apache.commons.numbers.core.Precision;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
-import org.junit.jupiter.api.Assertions;
 
 /**
  * Helper class for tests in {@code o.a.c.s.descriptive} module.
  */
 final class TestHelper {
-    /** Positive zero bits. */
-    private static final long POSITIVE_ZERO_DOUBLE_BITS = Double.doubleToRawLongBits(+0.0);
-    /** Negative zero bits. */
-    private static final long NEGATIVE_ZERO_DOUBLE_BITS = Double.doubleToRawLongBits(-0.0);
     /**
      * Cached seed. Using the same seed ensures all statistics use the same shuffled
      * data for tests executed in the same JVM.
@@ -141,116 +135,6 @@ final class TestHelper {
     }
 
     /**
-     * Helper function to assert that {@code actual} is equal to {@code expected} as defined
-     * by {@link org.apache.commons.numbers.core.Precision#equals(double, double, int)
-     * Precision.equals(x, y, maxUlps)}.
-     *
-     * <p> Note: This uses {@code ULP} tolerance only if both {@code actual} and {@code expected} are finite.
-     * Otherwise, it uses a binary equality through {@link Assertions#assertEquals(double, double, String)
-     * Assertions.assertEquals(expected, actual, message)}.
-     *
-     * @param expected expected value.
-     * @param actual actual value.
-     * @param ulps {@code (ulps - 1)} is the number of floating point
-     * values between {@code actual} and {@code expected}.
-     * @param msg additional debug message to log when the assertion fails.
-     */
-    static void assertEquals(double expected, double actual, int ulps, Supplier<String> msg) {
-        // Require strict equivalence of non-finite values
-        if (Double.isFinite(expected) && Double.isFinite(actual)) {
-            if (!Precision.equals(expected, actual, ulps)) {
-                Assertions.fail(() -> msg.get() + ": " + expected + " != " + actual +
-                    " within " + ulps + " ulp(s); difference = " + formatUlpDifference(expected, actual));
-            }
-        } else {
-            Assertions.assertEquals(expected, actual, msg);
-        }
-    }
-
-    /**
-     * Helper function to assert that {@code actual} is equal to {@code expected}
-     * if they are both finite as defined
-     * by {@link org.apache.commons.numbers.core.Precision#equals(double, double, int)
-     * Precision.equals(x, y, maxUlps)}.
-     *
-     * <p>If either of the values are not finite then the test asserts that their non-finite
-     * status matches. This method is used when a non-finite result is unspecified (i.e.
-     * +/- infinity or NaN are all considered the same).
-     *
-     * @param expected expected value.
-     * @param actual actual value.
-     * @param ulps {@code (ulps - 1)} is the number of floating point
-     * values between {@code actual} and {@code expected}.
-     * @param msg additional debug message to log when the assertion fails.
-     * @see #assertEquals(double, double, int, Supplier)
-     */
-    static void assertEqualsOrNonFinite(double expected, double actual, int ulps, Supplier<String> msg) {
-        // Require strict equivalence of non-finite values
-        final boolean fe = Double.isFinite(expected);
-        final boolean fa = Double.isFinite(actual);
-        if (fe && fa) {
-            if (!Precision.equals(expected, actual, ulps)) {
-                Assertions.fail(() -> msg.get() + ": " + expected + " != " + actual +
-                    " within " + ulps + " ulp(s); difference = " + formatUlpDifference(expected, actual));
-            }
-        } else {
-            Assertions.assertEquals(fe, fa, () -> msg.get() + ": non-finite mismatch");
-        }
-    }
-
-    /**
-     * Format the difference in ULP between two arguments. This will return "0" for values
-     * that are binary equal, or for the difference between zeros of opposite signs.
-     *
-     * @param expected first argument
-     * @param actual second argument
-     * @return Signed ULP difference between the arguments as a string
-     */
-    private static String formatUlpDifference(double expected, double actual) {
-        final long e = Double.doubleToLongBits(expected);
-        final long a = Double.doubleToLongBits(actual);
-
-        // Code adapted from Precision#equals(double, double, int).
-        // Compute the absolute delta; the sign is maintained separately
-        // to allow reporting errors above Long.MAX_VALUE.
-
-        if (e == a) {
-            // Binary equal
-            return "0";
-        }
-        int sign;
-        long delta;
-        if ((a ^ e) < 0L) {
-            // The difference is the count of numbers between each and zero.
-            // This makes -0.0 and 0.0 equal.
-            long d1;
-            long d2;
-            if (a < e) {
-                sign = -1;
-                d1 = e - POSITIVE_ZERO_DOUBLE_BITS;
-                d2 = a - NEGATIVE_ZERO_DOUBLE_BITS;
-            } else {
-                sign = 1;
-                d1 = a - POSITIVE_ZERO_DOUBLE_BITS;
-                d2 = e - NEGATIVE_ZERO_DOUBLE_BITS;
-            }
-            // This may overflow but we report it using an unsigned formatter.
-            delta = d1 + d2;
-        } else {
-            if (a < e) {
-                sign = -1;
-                delta = e - a;
-            } else {
-                sign = 1;
-                delta = a - e;
-            }
-        }
-        return sign < 0 ?
-            "-" + Long.toUnsignedString(delta) :
-            Long.toUnsignedString(delta);
-    }
-
-    /**
      * Create a tolerance using the provided tolerance for finite values; all non-finite
      * values are considered equal.
      *
@@ -274,15 +158,6 @@ final class TestHelper {
         // 2. Different tests of the same statistic use the same shuffle data.
         // This allows settings test tolerances appropriately across the test suite.
         return SEED.clone();
-    }
-
-    /**
-     * Creates a RNG instance.
-     *
-     * @return A new RNG instance.
-     */
-    static UniformRandomProvider createRNG() {
-        return RandomSource.SPLIT_MIX_64.create();
     }
 
     /**
