@@ -40,4 +40,4 @@ jobs:
         cache: 'maven'
     - name: Build with Maven including examples
       # Use the default goal
-      run: mvn -V --no-transfer-progress -P examples
+      run: mvn --show-version --batch-mode --no-transfer-progress -P examples
