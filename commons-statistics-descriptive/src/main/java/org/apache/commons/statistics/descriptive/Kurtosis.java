@@ -81,10 +81,10 @@ public final class Kurtosis implements DoubleStatistic, DoubleStatisticAccumulat
     /**
      * Creates an instance with the sum of fourth deviations from the mean.
      *
-     * @param ss Sum of fourth deviations.
+     * @param sq Sum of fourth deviations.
      */
-    private Kurtosis(SumOfFourthDeviations ss) {
-        this.sq = ss;
+    private Kurtosis(SumOfFourthDeviations sq) {
+        this.sq = sq;
     }
 
     /**
