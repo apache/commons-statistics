@@ -64,19 +64,26 @@ final class SumTest extends BaseDoubleStatisticTest<Sum> {
 
     @Override
     protected Stream<StatisticTestData> streamTestData() {
-        return Stream.of(
-            // Large numbers
-            addCase(10E-50, 5E-100, 25E-200, 35.345E-50),
-            // Small numbers
-            addCase(0.001, 0.0002, 0.00003, 10000.11, 0.000004),
-            // Overflow
-            addCase(Double.MAX_VALUE, Double.MAX_VALUE),
-            addCase(-Double.MAX_VALUE, -Double.MAX_VALUE),
-            // Large cancellation (failed by a standard precision sum)
-            addCase(1, Double.MAX_VALUE, -7, -Double.MAX_VALUE, 2, 3),
-            addCase(1, 10E100, -10E100, 1),
-            // Extreme range
-            addCase(-Double.MAX_VALUE, 1, 1)
-        );
+        final Stream.Builder<StatisticTestData> builder = Stream.builder();
+        // Large numbers
+        builder.accept(addCase(10E-50, 5E-100, 25E-200, 35.345E-50));
+        // Small numbers
+        builder.accept(addCase(0.001, 0.0002, 0.00003, 10000.11, 0.000004));
+        // Overflow
+        builder.accept(addCase(Double.MAX_VALUE, Double.MAX_VALUE));
+        builder.accept(addCase(-Double.MAX_VALUE, -Double.MAX_VALUE));
+        // Large cancellation (failed by a standard precision sum)
+        builder.accept(addCase(1, Double.MAX_VALUE, -7, -Double.MAX_VALUE, 2, 3));
+        builder.accept(addCase(1, 10E100, -10E100, 1));
+        // Extreme range
+        builder.accept(addCase(-Double.MAX_VALUE, 1, 1));
+        // Python Numpy v1.25.1: numpy.sum
+        builder.accept(addReference(10.0, DoubleTolerances.ulps(1), 1, 2, 3, 4));
+        builder.accept(addReference(108.0, DoubleTolerances.ulps(1), 5, 9, 13, 14, 10, 12, 11, 15, 19));
+        final double[] a = new double[2 * 512 * 512];
+        Arrays.fill(a, 0, a.length / 2, 1.0);
+        Arrays.fill(a, a.length / 2, a.length, 0.1);
+        builder.accept(addReference(288358.4000000004, DoubleTolerances.ulps(10), a));
+        return builder.build();
     }
 }

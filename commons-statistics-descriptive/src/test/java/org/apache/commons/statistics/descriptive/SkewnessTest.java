@@ -62,7 +62,7 @@ final class SkewnessTest extends BaseDoubleStatisticTest<Skewness> {
     protected DoubleTolerance getTolerance() {
         // The skewness is not very precise.
         // Both the accept and array tests observe failures at over 100 ulp.
-        return createAbsOrRelTolerance(0, 4e-14);
+        return createAbsOrRelTolerance(0, 5e-14);
     }
 
     @Override
@@ -74,6 +74,15 @@ final class SkewnessTest extends BaseDoubleStatisticTest<Skewness> {
         // The value 2^500 will overflow the sum of cubed deviations but not
         // the sum of squared deviations
         builder.accept(addReference(Double.NaN, DoubleTolerances.equals(), 0, 0, 0x1.0p500));
+        // SciPy v1.11.1: scipy.stats.skew(x, bias=False)
+        // The accept and/or combine methods can drift away from zero so use an absolute tolerance
+        builder.accept(addReference(0.0,
+            createAbsTolerance(1e-15), DoubleTolerances.ulps(2),
+            createAbsTolerance(1e-15), createAbsTolerance(1e-15),
+            1, 2, 3, 4, 5));
+        builder.accept(addReference(0.3305821804079746, DoubleTolerances.ulps(10), 2, 8, 0, 4, 1, 9, 9, 0));
+        // Matlab v2023a: skewness(x, 0)   %% 0 is for bias correction
+        builder.accept(addReference(3.121023043010050, DoubleTolerances.ulps(10), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
     }
 

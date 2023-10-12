@@ -18,6 +18,7 @@ package org.apache.commons.statistics.descriptive;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
@@ -82,6 +83,18 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
         TestData.momentTestData().forEach(x -> builder.accept(addCase(x)));
         // Non-finite sum-of-squared deviations
         builder.accept(addReference(Double.NaN, DoubleTolerances.equals(), 0, 0x1.0p1023));
+        // Python Numpy v1.25.1: numpy.var(x, ddof=1)
+        builder.accept(addReference(1.6666666666666667, DoubleTolerances.ulps(2), 1, 2, 3, 4));
+        builder.accept(addReference(7.454545454545454, DoubleTolerances.ulps(4),
+            14, 8, 11, 10, 7, 9, 10, 11, 10, 15, 5, 10));
+        final double[] a = new double[2 * 512 * 512];
+        Arrays.fill(a, 0, a.length / 2, 1.0);
+        Arrays.fill(a, a.length / 2, a.length, 0.1);
+        // Note: if ddof=0 the variance is ((1-0.55)**2 + (0.1-0.55)**2)/2 = 0.2025
+        builder.accept(addReference(0.20250038623883485, createRelTolerance(1e-11), a));
+        // R v4.3.1: var(x)
+        builder.accept(addReference(9.166666666666666, DoubleTolerances.ulps(1), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        builder.accept(addReference(178.75, DoubleTolerances.ulps(1), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
     }
 

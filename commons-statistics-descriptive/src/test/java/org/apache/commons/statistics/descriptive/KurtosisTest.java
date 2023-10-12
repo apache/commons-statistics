@@ -77,6 +77,14 @@ final class KurtosisTest extends BaseDoubleStatisticTest<Kurtosis> {
         // The value 2^300 will overflow the sum of fourth deviations
         // but not the sum of cubed deviations
         builder.accept(addReference(Double.NaN, DoubleTolerances.equals(), 0, 0, 0, 0x1.0p300));
+        // Note: Many versions of bias-corrected kurtosis exist.
+        // This uses libraries with the same "standard unbiased estimator".
+        // SciPy v1.11.1: scipy.stats.kurtosis(x, bias=False, fisher=True)
+        builder.accept(addReference(-1.2000000000000004, DoubleTolerances.ulps(30),
+            1, 2, 3, 4, 5));
+        builder.accept(addReference(-2.098602258096087, DoubleTolerances.ulps(10), 2, 8, 0, 4, 1, 9, 9, 0));
+        // Excel v16.78 23100802: KURT(x)
+        builder.accept(addReference(10.3116694214876, DoubleTolerances.ulps(10), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
     }
 

@@ -77,6 +77,19 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
 
     @Override
     protected Stream<StatisticTestData> streamTestData() {
-        return TestData.momentTestData().map(this::addCase);
+        final Stream.Builder<StatisticTestData> builder = Stream.builder();
+        TestData.momentTestData().forEach(x -> builder.accept(addCase(x)));
+        // Python Numpy v1.25.1: numpy.mean
+        builder.accept(addReference(2.5, DoubleTolerances.ulps(1), 1, 2, 3, 4));
+        builder.accept(addReference(12.0, DoubleTolerances.ulps(1), 5, 9, 13, 14, 10, 12, 11, 15, 19));
+        final double[] a = new double[2 * 512 * 512];
+        Arrays.fill(a, 0, a.length / 2, 1.0);
+        Arrays.fill(a, a.length / 2, a.length, 0.1);
+        // Actual mean is 1.1 / 2 = 0.55
+        builder.accept(addReference(0.5500000000000007, createRelTolerance(1e-13), a));
+        // R v4.3.1: mean(x)
+        builder.accept(addReference(5.5, DoubleTolerances.ulps(1), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        builder.accept(addReference(8.75, DoubleTolerances.ulps(1), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
+        return builder.build();
     }
 }
