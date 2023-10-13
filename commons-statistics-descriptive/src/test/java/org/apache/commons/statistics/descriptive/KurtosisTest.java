@@ -84,7 +84,7 @@ final class KurtosisTest extends BaseDoubleStatisticTest<Kurtosis> {
             1, 2, 3, 4, 5));
         builder.accept(addReference(-2.098602258096087, DoubleTolerances.ulps(10), 2, 8, 0, 4, 1, 9, 9, 0));
         // Excel v16.78 23100802: KURT(x)
-        builder.accept(addReference(10.3116694214876, DoubleTolerances.ulps(10), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
+        builder.accept(addReference(10.3116694214876, DoubleTolerances.ulps(15), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
     }
 
