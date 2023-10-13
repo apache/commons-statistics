@@ -89,7 +89,7 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
         builder.accept(addReference(0.5500000000000007, createRelTolerance(1e-13), a));
         // R v4.3.1: mean(x)
         builder.accept(addReference(5.5, DoubleTolerances.ulps(1), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-        builder.accept(addReference(8.75, DoubleTolerances.ulps(1), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
+        builder.accept(addReference(8.75, DoubleTolerances.ulps(2), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
     }
 }

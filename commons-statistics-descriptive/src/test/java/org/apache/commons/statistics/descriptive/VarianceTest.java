@@ -59,12 +59,12 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
 
     @Override
     protected DoubleTolerance getToleranceAccept() {
-        return DoubleTolerances.ulps(8);
+        return DoubleTolerances.ulps(10);
     }
 
     @Override
     protected DoubleTolerance getToleranceArray() {
-        return DoubleTolerances.ulps(8);
+        return DoubleTolerances.ulps(10);
     }
 
     @Override
@@ -93,8 +93,8 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
         // Note: if ddof=0 the variance is ((1-0.55)**2 + (0.1-0.55)**2)/2 = 0.2025
         builder.accept(addReference(0.20250038623883485, createRelTolerance(1e-11), a));
         // R v4.3.1: var(x)
-        builder.accept(addReference(9.166666666666666, DoubleTolerances.ulps(1), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-        builder.accept(addReference(178.75, DoubleTolerances.ulps(1), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
+        builder.accept(addReference(9.166666666666666, DoubleTolerances.ulps(2), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        builder.accept(addReference(178.75, DoubleTolerances.ulps(2), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
     }
 

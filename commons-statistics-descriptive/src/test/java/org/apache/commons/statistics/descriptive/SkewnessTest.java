@@ -82,7 +82,7 @@ final class SkewnessTest extends BaseDoubleStatisticTest<Skewness> {
             1, 2, 3, 4, 5));
         builder.accept(addReference(0.3305821804079746, DoubleTolerances.ulps(10), 2, 8, 0, 4, 1, 9, 9, 0));
         // Matlab v2023a: skewness(x, 0)   %% 0 is for bias correction
-        builder.accept(addReference(3.121023043010050, DoubleTolerances.ulps(10), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
+        builder.accept(addReference(3.1210230430100503, DoubleTolerances.ulps(5), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
     }
 
