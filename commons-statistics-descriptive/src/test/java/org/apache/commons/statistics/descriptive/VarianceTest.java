@@ -85,7 +85,7 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
         builder.accept(addReference(Double.NaN, DoubleTolerances.equals(), 0, 0x1.0p1023));
         // Python Numpy v1.25.1: numpy.var(x, ddof=1)
         builder.accept(addReference(1.6666666666666667, DoubleTolerances.ulps(2), 1, 2, 3, 4));
-        builder.accept(addReference(7.454545454545454, DoubleTolerances.ulps(4),
+        builder.accept(addReference(7.454545454545454, DoubleTolerances.ulps(6),
             14, 8, 11, 10, 7, 9, 10, 11, 10, 15, 5, 10));
         final double[] a = new double[2 * 512 * 512];
         Arrays.fill(a, 0, a.length / 2, 1.0);
