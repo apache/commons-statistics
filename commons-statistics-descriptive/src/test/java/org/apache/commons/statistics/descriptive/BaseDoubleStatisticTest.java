@@ -365,7 +365,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
                 sample[i] = mapValue(sample[i]);
             }
             final double expected = getExpectedNonFiniteValue(sample);
-            dataNonFinite.add(new TestData(values, expected));
+            dataNonFinite.add(new TestData(sample, expected));
         });
         // Cache the custom test data so any computed expected values are calculated only once
         streamTestData().forEach(dataCustom::add);
