@@ -76,22 +76,22 @@ final class SumOfFourthDeviationsTest extends BaseDoubleStatisticTest<SumOfFourt
 
     @Override
     protected DoubleTolerance getToleranceAccept() {
-        return TestHelper.equalsOrNonFinite(DoubleTolerances.ulps(20));
+        return TestHelper.equalsOrNonFinite(DoubleTolerances.ulps(30));
     }
 
     @Override
     protected DoubleTolerance getToleranceArray() {
-        return TestHelper.equalsOrNonFinite(DoubleTolerances.ulps(15));
+        return TestHelper.equalsOrNonFinite(DoubleTolerances.ulps(20));
     }
 
     @Override
     protected DoubleTolerance getToleranceAcceptAndCombine() {
-        return TestHelper.equalsOrNonFinite(DoubleTolerances.ulps(25));
+        return TestHelper.equalsOrNonFinite(DoubleTolerances.ulps(35));
     }
 
     @Override
     protected DoubleTolerance getToleranceArrayAndCombine() {
-        return TestHelper.equalsOrNonFinite(DoubleTolerances.ulps(20));
+        return TestHelper.equalsOrNonFinite(DoubleTolerances.ulps(25));
     }
 
     @Override

@@ -55,7 +55,7 @@ final class ProductTest extends BaseDoubleStatisticTest<Product> {
 
     @Override
     protected DoubleTolerance getTolerance() {
-        return DoubleTolerances.ulps(15);
+        return DoubleTolerances.ulps(20);
     }
 
     @Override

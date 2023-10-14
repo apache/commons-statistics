@@ -1127,12 +1127,13 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
         // Obtain a seed so that it can be logged to allow repeats
         final long[] seed = TestHelper.createRNGSeed();
         final UniformRandomProvider rng = TestHelper.createRNG(seed);
+        int repeat = 0;
         try {
-            for (int i = 1; i <= RANDOM_PERMUTATIONS; i++) {
+            while (repeat++ < RANDOM_PERMUTATIONS) {
                 testAccept(TestHelper.shuffle(rng, values), expected, tol);
             }
         } catch (AssertionError e) {
-            rethrowWithSeed(e, seed);
+            rethrowWithSeedAndRepeat(e, seed, repeat);
         }
     }
 
@@ -1146,12 +1147,13 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
         // Obtain a seed so that it can be logged to allow repeats
         final long[] seed = TestHelper.createRNGSeed();
         final UniformRandomProvider rng = TestHelper.createRNG(seed);
+        int repeat = 0;
         try {
-            for (int i = 1; i <= RANDOM_PERMUTATIONS; i++) {
+            while (repeat++ < RANDOM_PERMUTATIONS) {
                 testArray(TestHelper.shuffle(rng, values), expected, tol);
             }
         } catch (AssertionError e) {
-            rethrowWithSeed(e, seed);
+            rethrowWithSeedAndRepeat(e, seed, repeat);
         }
     }
 
@@ -1166,14 +1168,15 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
         final long[] seed = TestHelper.createRNGSeed();
         final UniformRandomProvider rng = TestHelper.createRNG(seed);
         final double[] allValues = TestHelper.concatenate(values);
+        int repeat = 0;
         try {
-            for (int i = 1; i <= RANDOM_PERMUTATIONS; i++) {
+            while (repeat++ < RANDOM_PERMUTATIONS) {
                 TestHelper.shuffle(rng, allValues);
                 TestHelper.unconcatenate(allValues, values);
                 testAcceptAndCombine(TestHelper.shuffle(rng, values), expected, tol);
             }
         } catch (AssertionError e) {
-            rethrowWithSeed(e, seed);
+            rethrowWithSeedAndRepeat(e, seed, repeat);
         }
     }
 
@@ -1188,14 +1191,15 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
         final long[] seed = TestHelper.createRNGSeed();
         final UniformRandomProvider rng = TestHelper.createRNG(seed);
         final double[] allValues = TestHelper.concatenate(values);
+        int repeat = 0;
         try {
-            for (int i = 1; i <= RANDOM_PERMUTATIONS; i++) {
+            while (repeat++ < RANDOM_PERMUTATIONS) {
                 TestHelper.shuffle(rng, allValues);
                 TestHelper.unconcatenate(allValues, values);
                 testArrayAndCombine(TestHelper.shuffle(rng, values), expected, tol);
             }
         } catch (AssertionError e) {
-            rethrowWithSeed(e, seed);
+            rethrowWithSeedAndRepeat(e, seed, repeat);
         }
     }
 
@@ -1362,12 +1366,15 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     }
 
     /**
-     * Re-throw the error wrapped in an AssertionError with a message that appends the seed.
+     * Re-throw the error wrapped in an AssertionError with a message that appends the seed
+     * and repeat for the random order test.
      *
      * @param e Error.
      * @param seed Seed.
+     * @param repeat Repeat of the total random permutations.
      */
-    private void rethrowWithSeed(AssertionError e, long[] seed) {
-        throw new AssertionError(e.getMessage() + "; Seed=" + Arrays.toString(seed), e);
+    private void rethrowWithSeedAndRepeat(AssertionError e, long[] seed, int repeat) {
+        throw new AssertionError(String.format("%s; Seed=%s; Repeat=%d/%d",
+            e.getMessage(), Arrays.toString(seed), repeat, RANDOM_PERMUTATIONS), e);
     }
 }
