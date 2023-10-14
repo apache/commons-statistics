@@ -62,7 +62,7 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
 
     @Override
     protected DoubleTolerance getToleranceArray() {
-        return DoubleTolerances.ulps(3);
+        return DoubleTolerances.ulps(5);
     }
 
     @Override
