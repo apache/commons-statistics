@@ -61,6 +61,9 @@ final class ProductTest extends BaseDoubleStatisticTest<Product> {
     @Override
     protected Stream<StatisticTestData> streamTestData() {
         final Stream.Builder<StatisticTestData> builder = Stream.builder();
+        // inf * 0 = NaN
+        builder.accept(addCase(Double.POSITIVE_INFINITY, 0));
+        builder.accept(addCase(Double.NEGATIVE_INFINITY, 0));
         // Python Numpy v1.25.1: numpy.product
         builder.accept(addReference(24.0, DoubleTolerances.ulps(1), 1, 2, 3, 4));
         builder.accept(addReference(3081078000.0, DoubleTolerances.ulps(1), 5, 9, 13, 14, 10, 12, 11, 15, 19));

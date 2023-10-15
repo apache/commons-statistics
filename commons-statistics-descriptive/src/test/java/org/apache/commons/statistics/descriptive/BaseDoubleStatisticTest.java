@@ -345,16 +345,16 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
         final double b = Double.POSITIVE_INFINITY;
         final double c = Double.NEGATIVE_INFINITY;
         final double[][] nonFinite = {
-            {a, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {b, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {c, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-            {a, a, 0, 0, 0, 0, 0, 0, 0, 0},
-            {b, b, 0, 0, 0, 0, 0, 0, 0, 0},
-            {c, c, 0, 0, 0, 0, 0, 0, 0, 0},
-            {a, b, 0, 0, 0, 0, 0, 0, 0, 0},
-            {a, c, 0, 0, 0, 0, 0, 0, 0, 0},
-            {b, c, 0, 0, 0, 0, 0, 0, 0, 0},
-            {a, b, c, 0, 0, 0, 0, 0, 0, 0},
+            {a, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {b, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {c, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+            {a, a, 1, 1, 1, 1, 1, 1, 1, 1},
+            {b, b, 1, 1, 1, 1, 1, 1, 1, 1},
+            {c, c, 1, 1, 1, 1, 1, 1, 1, 1},
+            {a, b, 1, 1, 1, 1, 1, 1, 1, 1},
+            {a, c, 1, 1, 1, 1, 1, 1, 1, 1},
+            {b, c, 1, 1, 1, 1, 1, 1, 1, 1},
+            {a, b, c, 1, 1, 1, 1, 1, 1, 1},
         };
         Stream.of(nonFinite).forEach(values -> {
             final double[] sample = values.clone();
