@@ -17,10 +17,10 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Computes the variance of the available values. Uses the following definition
- * of the <em>sample variance</em>:
+ * Computes the stndard deviation of the available values. Uses the following definition
+ * of the <em>sample standard deviation</em>:
  *
- * <p>\[ \tfrac{1}{n-1} \sum_{i=1}^n (x_i-\overline{x})^2 \]
+ * <p>\[ \sqrt{ \tfrac{1}{n-1} \sum_{i=1}^n (x_i-\overline{x})^2 } \]
  *
  * <p>where \( \overline{x} \) is the sample mean, and \( n \) is the number of samples.
  *
@@ -71,22 +71,22 @@ package org.apache.commons.statistics.descriptive;
  *       <a href="https://doi.org/10.2307/2683386">doi: 10.2307/2683386</a>
  * </ul>
  *
- * @see <a href="https://en.wikipedia.org/wiki/Variance">Variance (Wikipedia)</a>
- * @see StandardDeviation
+ * @see <a href="https://en.wikipedia.org/wiki/Standard_deviation">Standard deviation (Wikipedia)</a>
+ * @see Variance
  * @since 1.1
  */
-public final class Variance implements DoubleStatistic, DoubleStatisticAccumulator<Variance> {
+public final class StandardDeviation implements DoubleStatistic, DoubleStatisticAccumulator<StandardDeviation> {
 
     /**
      * An instance of {@link SumOfSquaredDeviations}, which is used to
-     * compute the variance.
+     * compute the standard deviation.
      */
     private final SumOfSquaredDeviations ss;
 
     /**
      * Create an instance.
      */
-    private Variance() {
+    private StandardDeviation() {
         this(new SumOfSquaredDeviations());
     }
 
@@ -95,7 +95,7 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
      *
      * @param ss Sum of squared deviations.
      */
-    private Variance(SumOfSquaredDeviations ss) {
+    private StandardDeviation(SumOfSquaredDeviations ss) {
         this.ss = ss;
     }
 
@@ -104,25 +104,25 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
      *
      * <p>The initial result is {@code NaN}.
      *
-     * @return {@code Variance} instance.
+     * @return {@code StandardDeviation} instance.
      */
-    public static Variance create() {
-        return new Variance();
+    public static StandardDeviation create() {
+        return new StandardDeviation();
     }
 
     /**
      * Returns an instance populated using the input {@code values}.
      *
-     * <p>Note: {@code Variance} computed using {@link #accept(double) accept} may be
-     * different from this variance.
+     * <p>Note: {@code StandardDeviation} computed using {@link #accept(double) accept} may be
+     * different from this standard deviation.
      *
-     * <p>See {@link Variance} for details on the computing algorithm.
+     * <p>See {@link StandardDeviation} for details on the computing algorithm.
      *
      * @param values Values.
-     * @return {@code Variance} instance.
+     * @return {@code StandardDeviation} instance.
      */
-    public static Variance of(double... values) {
-        return new Variance(SumOfSquaredDeviations.of(values));
+    public static StandardDeviation of(double... values) {
+        return new StandardDeviation(SumOfSquaredDeviations.of(values));
     }
 
     /**
@@ -136,11 +136,11 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
     }
 
     /**
-     * Gets the variance of all input values.
+     * Gets the standard deviation of all input values.
      *
      * <p>When no values have been added, the result is {@code NaN}.
      *
-     * @return variance of all values.
+     * @return standard deviation of all values.
      */
     @Override
     public double getAsDouble() {
@@ -153,11 +153,11 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
         }
         final long n = ss.n;
         // Avoid a divide by zero
-        return n == 1 ? 0 : m2 / (n - 1.0);
+        return n == 1 ? 0 : Math.sqrt(m2 / (n - 1.0));
     }
 
     @Override
-    public Variance combine(Variance other) {
+    public StandardDeviation combine(StandardDeviation other) {
         ss.combine(other.ss);
         return this;
     }
