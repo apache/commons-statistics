@@ -159,7 +159,8 @@
         value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='NaturalRanking'
           or @SimpleName='KolmogorovSmirnovTest' or @SimpleName='DD' or @SimpleName='Arguments'
           or @SimpleName='MannWhitneyUTest' or @SimpleName='WilcoxonSignedRankTest'
-          or @SimpleName='HypergeometricDistribution' or @SimpleName='UnconditionedExactTest']"/>
+          or @SimpleName='HypergeometricDistribution' or @SimpleName='UnconditionedExactTest'
+           or @SimpleName='DoubleStatistics']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/LogicInversion">
@@ -182,7 +183,7 @@
       <!-- Add 1 as a magic number. -->
       <property name="ignoreMagicNumbers" value="-1,0,1" />
       <property name="violationSuppressXPath"
-        value="./ancestor-or-self::MethodDeclaration[@Name='ldexp']"/>
+        value="./ancestor-or-self::MethodDeclaration[@Name='ldexp' or @Name='createMoment']"/>
     </properties>
   </rule>
   <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName">

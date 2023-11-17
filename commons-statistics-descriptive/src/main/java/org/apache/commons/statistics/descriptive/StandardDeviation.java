@@ -95,7 +95,7 @@ public final class StandardDeviation implements DoubleStatistic, DoubleStatistic
      *
      * @param ss Sum of squared deviations.
      */
-    private StandardDeviation(SumOfSquaredDeviations ss) {
+    StandardDeviation(SumOfSquaredDeviations ss) {
         this.ss = ss;
     }
 

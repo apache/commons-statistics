@@ -84,7 +84,7 @@ public final class Skewness implements DoubleStatistic, DoubleStatisticAccumulat
      *
      * @param sc Sum of cubed deviations.
      */
-    private Skewness(SumOfCubedDeviations sc) {
+    Skewness(SumOfCubedDeviations sc) {
         this.sc = sc;
     }
 

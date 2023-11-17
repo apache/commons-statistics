@@ -23,6 +23,7 @@
   <suppress checks="LocalFinalVariableName" files=".*[/\\]ZipfDistribution.java" />
   <suppress checks="LocalFinalVariableName" files=".*[/\\]HypergeometricDistribution.java" />
   <suppress checks="ParameterNumber" files=".*[/\\]TTest.java" />
+  <suppress checks="ParameterNumber" files=".*[/\\]DoubleStatistics.java" />
   <!-- Be more lenient on tests. -->
   <suppress checks="Javadoc" files=".*[/\\]test[/\\].*" />
   <suppress checks="MultipleStringLiterals" files=".*[/\\]test[/\\].*" />

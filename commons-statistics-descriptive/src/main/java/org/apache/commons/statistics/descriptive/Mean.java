@@ -90,7 +90,7 @@ public final class Mean implements DoubleStatistic, DoubleStatisticAccumulator<M
      *
      * @param m1 First moment.
      */
-    private Mean(FirstMoment m1) {
+    Mean(FirstMoment m1) {
         firstMoment = m1;
     }
 

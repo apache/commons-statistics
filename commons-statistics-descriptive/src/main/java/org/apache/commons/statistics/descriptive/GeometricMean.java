@@ -117,9 +117,7 @@ public final class GeometricMean implements DoubleStatistic, DoubleStatisticAccu
      */
     @Override
     public double getAsDouble() {
-        return n == 0 ?
-            Double.NaN :
-            Math.exp(sumOfLogs.getAsDouble() / n);
+        return computeGeometricMean(n, sumOfLogs);
     }
 
     @Override
@@ -127,5 +125,18 @@ public final class GeometricMean implements DoubleStatistic, DoubleStatisticAccu
         n += other.n;
         sumOfLogs.combine(other.sumOfLogs);
         return this;
+    }
+
+    /**
+     * Compute the geometric mean.
+     *
+     * @param n Count of values.
+     * @param sumOfLogs Sum of logs.
+     * @return the geometric mean
+     */
+    static double computeGeometricMean(long n, SumOfLogs sumOfLogs) {
+        return n == 0 ?
+            Double.NaN :
+            Math.exp(sumOfLogs.getAsDouble() / n);
     }
 }

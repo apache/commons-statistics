@@ -17,6 +17,11 @@
 
 package org.apache.commons.statistics.descriptive;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.function.DoubleSupplier;
+import java.util.stream.Collector;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -42,5 +47,93 @@ class UserGuideTest {
 
         // np.var([3, 3, 5, 4], ddof=1)
         Assertions.assertEquals(0.9166666666666666, v2);
+    }
+
+    @Test
+    void testDoubleStatistics1() {
+        double[] data = {1, 2, 3, 4, 5, 6, 7, 8};
+        DoubleStatistics stats = DoubleStatistics.builder(
+            Statistic.MIN, Statistic.MAX, Statistic.VARIANCE)
+            .build(data);
+        Assertions.assertEquals(1, stats.get(Statistic.MIN));
+        Assertions.assertEquals(8, stats.get(Statistic.MAX));
+        // Python numpy 1.24.4
+        // np.var(np.arange(1, 9), ddof=1)
+        // np.std(np.arange(1, 9), ddof=1)
+        Assertions.assertEquals(6.0, stats.get(Statistic.VARIANCE), 1e-10);
+        // Get other statistics supported by the underlying computations
+        Assertions.assertEquals(2.449489742783178, stats.get(Statistic.STANDARD_DEVIATION), 1e-10);
+        Assertions.assertEquals(4.5, stats.get(Statistic.MEAN), 1e-10);
+    }
+
+    @Test
+    void testDoubleStatistics2() {
+        double[][] data = {
+            {1, 2, 3, 4},
+            {5, 6, 7, 8},
+        };
+        DoubleStatistics.Builder builder = DoubleStatistics.builder(
+            Statistic.MIN, Statistic.MAX, Statistic.VARIANCE);
+        DoubleStatistics stats = Arrays.stream(data)
+            .map(builder::build)
+            .reduce(DoubleStatistics::combine)
+            .get();
+        Assertions.assertEquals(1, stats.get(Statistic.MIN));
+        Assertions.assertEquals(8, stats.get(Statistic.MAX));
+        Assertions.assertEquals(6.0, stats.get(Statistic.VARIANCE), 1e-10);
+        // Get other statistics supported by the underlying computations
+        Assertions.assertEquals(2.449489742783178, stats.get(Statistic.STANDARD_DEVIATION), 1e-10);
+        Assertions.assertEquals(4.5, stats.get(Statistic.MEAN), 1e-10);
+    }
+
+    @Test
+    void testDoubleStatistics3() {
+        double[][] data = {
+            {1, 2, 3, 4},
+            {5, 6, 7, 8},
+        };
+        DoubleStatistics.Builder builder = DoubleStatistics.builder(
+            Statistic.MIN, Statistic.MAX, Statistic.VARIANCE);
+        Collector<double[], DoubleStatistics, DoubleStatistics> collector =
+            Collector.of(builder::build, (s, d) -> s.combine(builder.build(d)), DoubleStatistics::combine);
+        DoubleStatistics stats = Arrays.stream(data).collect(collector);
+        Assertions.assertEquals(1, stats.get(Statistic.MIN));
+        Assertions.assertEquals(8, stats.get(Statistic.MAX));
+        Assertions.assertEquals(6.0, stats.get(Statistic.VARIANCE), 1e-10);
+        // Get other statistics supported by the underlying computations
+        Assertions.assertEquals(2.449489742783178, stats.get(Statistic.STANDARD_DEVIATION), 1e-10);
+        Assertions.assertEquals(4.5, stats.get(Statistic.MEAN), 1e-10);
+    }
+
+    @Test
+    void testDoubleStatistics4() {
+        double[] data = {1, 2, 3, 4, 5, 6, 7, 8};
+        DoubleStatistics varStats = DoubleStatistics.builder(Statistic.VARIANCE).build(data);
+        DoubleStatistics meanStats = DoubleStatistics.builder(Statistic.MEAN).build(data);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> varStats.combine(meanStats));
+        Assertions.assertDoesNotThrow(() -> meanStats.combine(varStats));
+    }
+
+    @Test
+    void testDoubleStatistics5() {
+        DoubleStatistics stats = DoubleStatistics.of(
+            EnumSet.of(Statistic.MIN, Statistic.MAX),
+            1, 1, 2, 3, 5, 8, 13);
+        Assertions.assertEquals(1, stats.get(Statistic.MIN));
+        Assertions.assertEquals(13, stats.get(Statistic.MAX));
+    }
+
+    @Test
+    void testDoubleStatistics6() {
+        DoubleStatistics stats = DoubleStatistics.of(Statistic.MEAN, Statistic.MAX);
+        DoubleSupplier mean = stats.getSupplier(Statistic.MEAN);
+        DoubleSupplier max = stats.getSupplier(Statistic.MAX);
+        IntStream.rangeClosed(1, 5).forEach(x -> {
+            stats.accept(x);
+            Assertions.assertEquals((x + 1.0) / 2, mean.getAsDouble(), "mean");
+            Assertions.assertEquals(x, max.getAsDouble(), "max");
+            // Example print
+            // printf("[1 .. %d] mean=%.1f, max=%s%n", x, mean.getAsDouble(), max.getAsDouble());
+        });
     }
 }

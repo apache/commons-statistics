@@ -95,7 +95,7 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
      *
      * @param ss Sum of squared deviations.
      */
-    private Variance(SumOfSquaredDeviations ss) {
+    Variance(SumOfSquaredDeviations ss) {
         this.ss = ss;
     }
 
