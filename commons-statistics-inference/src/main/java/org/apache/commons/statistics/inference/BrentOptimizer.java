@@ -43,7 +43,7 @@ import org.apache.commons.numbers.core.Precision;
  *
  * @since 1.1
  */
-class BrentOptimizer {
+final class BrentOptimizer {
     /** Golden section. (3 - sqrt(5)) / 2. */
     private static final double GOLDEN_SECTION = 0.3819660112501051;
     /** Minimum relative tolerance. 2 * eps = 2^-51. */
