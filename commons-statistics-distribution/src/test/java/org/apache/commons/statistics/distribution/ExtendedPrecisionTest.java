@@ -53,7 +53,7 @@ class ExtendedPrecisionTest {
      * Class to compute the root mean squared error (RMS).
      * @see <a href="https://en.wikipedia.org/wiki/Root_mean_square">Wikipedia: RMS</a>
      */
-    private static class RMS {
+    private static final class RMS {
         private double ss;
         private double max;
         private int n;

@@ -39,7 +39,7 @@ final class TestHelper {
      * A {@link DoubleTolerance} that considers finite values equal using the {@code ==} operator,
      * and all non-finite values equal.
      */
-    private static class EqualsNonFinite implements DoubleTolerance, Supplier<String> {
+    private static final class EqualsNonFinite implements DoubleTolerance, Supplier<String> {
         /** An instance. */
         static final EqualsNonFinite INSTANCE = new EqualsNonFinite();
 
