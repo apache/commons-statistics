@@ -224,7 +224,7 @@ public class NaturalRankingPerformance {
          * Class to create a ranking using a sort of the data. This ranking does not
          * resolve ties and is a baseline for the speed of {@link Arrays#sort(Object[])}.
          */
-        private static class SortRanking implements UnaryOperator<double[]> {
+        private static final class SortRanking implements UnaryOperator<double[]> {
             @Override
             public double[] apply(double[] in) {
                 final DataPosition[] data = new DataPosition[in.length];
