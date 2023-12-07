@@ -21,8 +21,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.BiConsumer;
 import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
@@ -177,7 +180,7 @@ class DoubleStatisticsTest {
     }
 
     /**
-     * Adds the expected expected result for the specified {@code statistic}.
+     * Adds the expected result for the specified {@code statistic}.
      *
      * @param <T> {@link DoubleStatistic} being computed.
      * @param statistic Statistic.
@@ -491,5 +494,99 @@ class DoubleStatisticsTest {
 
     private static void assertFinite(double value, Statistic s) {
         Assertions.assertTrue(Double.isFinite(value), () -> s.toString() + " isFinite");
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testBiased(Statistic stat, double[] values, boolean[] options, double[] results) {
+        final DoubleStatistics statistics1 = DoubleStatistics.builder(stat).build(values);
+
+        StatisticsConfiguration c = StatisticsConfiguration.withDefaults();
+        DoubleSupplier s = null;
+        // Note the circular loop to check setting back to the start option
+        for (int index = 0; index <= options.length; index++) {
+            final int i = index % options.length;
+            final boolean value = options[i];
+            c = c.withBiased(value);
+            Assertions.assertSame(statistics1, statistics1.setConfiguration(c));
+
+            Assertions.assertEquals(results[i], statistics1.get(stat),
+                () -> options[i] + " get: " + BaseDoubleStatisticTest.format(values));
+            final DoubleSupplier s1 = statistics1.getSupplier(stat);
+            Assertions.assertEquals(results[i], s1.getAsDouble(),
+                () -> options[i] + " supplier: " + BaseDoubleStatisticTest.format(values));
+
+            // Config change does not propagate to previous supplier
+            if (s != null) {
+                final int j = (i - 1 + options.length) % options.length;
+                Assertions.assertEquals(results[j], s.getAsDouble(),
+                    () -> options[j] + " previous supplier: " + BaseDoubleStatisticTest.format(values));
+            }
+            s = s1;
+
+            // Set through the builder
+            final DoubleStatistics statistics2 = DoubleStatistics.builder(stat)
+                .setConfiguration(c).build(values);
+            Assertions.assertEquals(results[i], statistics2.get(stat),
+                () -> options[i] + " get via builder: " + BaseDoubleStatisticTest.format(values));
+        }
+    }
+
+    static Stream<Arguments> testBiased() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        // Data must generate different results for different options
+        final double[][] data = {
+            {1},
+            {1, 2},
+            {1, 2, 4},
+            {1, 2, 4, 8},
+            {1, 3, 6, 7, 19},
+        };
+        final Statistic[] stats = {Statistic.STANDARD_DEVIATION, Statistic.VARIANCE,
+            Statistic.SKEWNESS, Statistic.KURTOSIS};
+        final int[] diff = new int[stats.length];
+        for (final double[] d : data) {
+            diff[0] += addBooleanOptionCase(builder, d, stats[0], StandardDeviation::of, StandardDeviation::setBiased);
+            diff[1] += addBooleanOptionCase(builder, d, stats[1], Variance::of, Variance::setBiased);
+            diff[2] += addBooleanOptionCase(builder, d, stats[2], Skewness::of, Skewness::setBiased);
+            diff[3] += addBooleanOptionCase(builder, d, stats[3], Kurtosis::of, Kurtosis::setBiased);
+        }
+        // Check the option generated some different results for each statistic
+        for (int i = 0; i < stats.length; i++) {
+            final Statistic s = stats[i];
+            Assertions.assertTrue(diff[i] > data.length, () -> "Option never changes the result: " + s);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Adds the expected results for the boolean option of the specified {@code statistic}
+     * computed using the provided {@code values}.
+     *
+     * <p>This method returns the number of unique results. It does not enforce that the
+     * results are different.
+     *
+     * @param <T> {@link DoubleStatistic} being computed.
+     * @param builder Argument builder.
+     * @param values Values.
+     * @param statistic Statistic.
+     * @param arrayConstructor Constructor using an array of values.
+     * @param setter Option setter.
+     * @return the number of unique results
+     */
+    private static <T extends DoubleStatistic & DoubleStatisticAccumulator<T>> int addBooleanOptionCase(
+            Stream.Builder<Arguments> builder, double[] values, Statistic statistic,
+            Function<double[], T> arrayConstructor, BiConsumer<T, Boolean> setter) {
+        final T stat = arrayConstructor.apply(values);
+        final boolean[] options = {true, false};
+        final double[] results = new double[2];
+        final Set<Double> all = new HashSet<>();
+        for (int i = 0; i < options.length; i++) {
+            setter.accept(stat, options[i]);
+            results[i] = stat.getAsDouble();
+            all.add(results[i]);
+        }
+        builder.accept(Arguments.of(statistic, values, options, results));
+        return all.size();
     }
 }

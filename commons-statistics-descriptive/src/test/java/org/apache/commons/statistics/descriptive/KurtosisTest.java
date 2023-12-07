@@ -21,6 +21,11 @@ import java.math.MathContext;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
+import org.apache.commons.statistics.distribution.TestUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test for {@link Kurtosis}.
@@ -106,7 +111,8 @@ final class KurtosisTest extends BaseDoubleStatisticTest<Kurtosis> {
         final BigDecimal s2 = TestHelper.computeExpectedSumOfSquaredDeviations(values, mean);
         // Check for a zero denominator.
         if (s2.compareTo(BigDecimal.ZERO) == 0) {
-            return 0;
+            // Return 0 / 0
+            return Double.NaN;
         }
         if (!Double.isFinite(s2.doubleValue())) {
             return Double.NaN;
@@ -128,5 +134,42 @@ final class KurtosisTest extends BaseDoubleStatisticTest<Kurtosis> {
         final BigDecimal d = nm2.multiply(nm3);
         return a.divide(b, MathContext.DECIMAL128).subtract(
             c.divide(d, MathContext.DECIMAL128)).doubleValue();
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testBiased(double[] values, double biased, double unbiased, DoubleTolerance tol) {
+        final Kurtosis stat = Kurtosis.of(values);
+        // Default is unbiased
+        final double actualUnbiased = stat.getAsDouble();
+        TestUtils.assertEquals(unbiased, actualUnbiased, tol, () -> "Unbiased: " + format(values));
+        Assertions.assertSame(stat, stat.setBiased(true));
+        final double acutalBiased = stat.getAsDouble();
+        TestUtils.assertEquals(biased, acutalBiased, tol, () -> "Biased: " + format(values));
+        // The mutable state can be switched back and forth
+        Assertions.assertSame(stat, stat.setBiased(false));
+        Assertions.assertEquals(actualUnbiased, stat.getAsDouble(), () -> "Unbiased: " + format(values));
+        Assertions.assertSame(stat, stat.setBiased(true));
+        Assertions.assertEquals(acutalBiased, stat.getAsDouble(), () -> "Biased: " + format(values));
+    }
+
+    static Stream<Arguments> testBiased() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        final DoubleTolerance tol = DoubleTolerances.ulps(1);
+        final double nan = Double.NaN;
+        // Python scipy v1.11.1: scipy.stats.kurtosis(x, bias=True/False)
+        builder.accept(Arguments.of(new double[] {1, 2, 4, 8}, -1.0989792060491494, 0.7576559546313799, tol));
+        builder.accept(Arguments.of(new double[] {1}, nan, nan, tol));
+        builder.accept(Arguments.of(new double[] {1, 3, 9, 13, 15}, -1.625216788067985, -2.5008671522719403,
+            DoubleTolerances.ulps(5)));
+        // Matlab R2023s: kurtosis(x, 1/0) - 3
+        // Note: the -3 is required to convert the Pearson kurtosis to the Fisher-Pearson kurtosis.
+        // Scipy only allows bias correction when n>3. When n<=3 it returns the biased value.
+        // Matlab will return NaN for bias correction when n<=3.
+        // This implementation matches the behaviour of Matlab.
+        builder.accept(Arguments.of(new double[] {1, 2}, -2, nan, tol));
+        builder.accept(Arguments.of(new double[] {1, 2, 3}, -1.5, nan, tol));
+        builder.accept(Arguments.of(new double[] {1, 3, 7, 9, 11}, -1.4908058409951321, -1.9632233639805285, tol));
+        return builder.build();
     }
 }

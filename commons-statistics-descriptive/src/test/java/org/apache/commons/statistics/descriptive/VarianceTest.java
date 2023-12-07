@@ -22,8 +22,12 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
+import org.apache.commons.statistics.distribution.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test for {@link Variance}.
@@ -121,6 +125,39 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
             return Double.NaN;
         }
         return s2.divide(BigDecimal.valueOf(n - 1), MathContext.DECIMAL128).doubleValue();
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testBiased(double[] values, double biased, double unbiased, DoubleTolerance tol) {
+        final Variance stat = Variance.of(values);
+        // Default is unbiased
+        final double actualUnbiased = stat.getAsDouble();
+        TestUtils.assertEquals(unbiased, actualUnbiased, tol, () -> "Unbiased: " + format(values));
+        Assertions.assertSame(stat, stat.setBiased(true));
+        final double acutalBiased = stat.getAsDouble();
+        TestUtils.assertEquals(biased, acutalBiased, tol, () -> "Biased: " + format(values));
+        // The mutable state can be switched back and forth
+        Assertions.assertSame(stat, stat.setBiased(false));
+        Assertions.assertEquals(actualUnbiased, stat.getAsDouble(), () -> "Unbiased: " + format(values));
+        Assertions.assertSame(stat, stat.setBiased(true));
+        Assertions.assertEquals(acutalBiased, stat.getAsDouble(), () -> "Biased: " + format(values));
+    }
+
+    static Stream<Arguments> testBiased() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        final DoubleTolerance tol = DoubleTolerances.ulps(1);
+        // Python Numpy v1.25.1: numpy.var(x, ddof=0/1)
+        // Note: Numpy allows other degrees of freedom adjustment than 0 or 1.
+        builder.accept(Arguments.of(new double[] {1, 2, 3}, 0.6666666666666666, 1, tol));
+        builder.accept(Arguments.of(new double[] {1, 2}, 0.25, 0.5, tol));
+        // Matlab R2023s: var(x, 1/0)
+        // Matlab only allows turning the biased option on (1) or off (0).
+        // Note: Numpy will return NaN for ddof=1 when the array length is 1 (since 0 / 0 = NaN).
+        // This implementation matches the behaviour of Matlab which returns zero.
+        builder.accept(Arguments.of(new double[] {1}, 0, 0, tol));
+        builder.accept(Arguments.of(new double[] {1, 2, 4, 8}, 7.1875, 9.583333333333334, tol));
+        return builder.build();
     }
 
     /**

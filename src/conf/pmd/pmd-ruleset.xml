@@ -101,6 +101,13 @@
         value="./ancestor-or-self::MethodDeclaration[@Name='twoSampleTwoSidedPStabilizedInner']"/>
     </properties>
   </rule>
+  <rule ref="category/java/codestyle.xml/LinguisticNaming">
+    <properties>
+      <!-- Allow builder pattern for configuring statistics for fluent chaining -->
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::MethodDeclaration[@Name='setBiased' or @Name='setConfiguration']"/>
+    </properties>
+  </rule>
 
   <rule ref="category/java/documentation.xml/CommentSize">
     <properties>

@@ -40,4 +40,25 @@ final class Statistics {
         }
         return statistic;
     }
+
+    /**
+     * Returns {@code true} if the second central moment {@code m2} is effectively
+     * zero given the magnitude of the first raw moment {@code m1}.
+     *
+     * <p>This method shares the logic for detecting a zero variance among implmentations
+     * that divide by the variance (e.g. skewness, kurtosis).
+     *
+     * @param m1 First raw moment (mean).
+     * @param m2 Second central moment (biased variance).
+     * @return true if the variance is zero
+     */
+    static boolean zeroVariance(double m1, double m2) {
+        // Note: Commons Math checks the variance is < 1e-19.
+        // The absolute threshold does not account for the magnitude of the sample.
+        // This checks the average squared deviation from the mean (m2)
+        // is smaller than the squared precision of the mean (m1).
+        // Precision is set to 15 decimal digits
+        // (1e-15 ~ 4.5 eps where eps = 2^-52).
+        return m2 <= Math.pow(1e-15 * m1, 2);
+    }
 }

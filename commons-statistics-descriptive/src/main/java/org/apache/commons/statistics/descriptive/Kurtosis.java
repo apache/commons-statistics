@@ -17,19 +17,45 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Computes the kurtosis of the available values. Uses the following definition
- * of the <em>sample kurtosis</em>:
+ * Computes the kurtosis of the available values. The kurtosis is defined as:
  *
- * <p>\[ \frac{(n+1)\,n\,(n-1)}{(n-2)\,(n-3)} \;
- *       \frac{\sum_{i=1}^n (x_i - \bar{x})^4}{\left(\sum_{i=1}^n (x_i - \bar{x})^2\right)^2} - 3\,\frac{(n-1)^2}{(n-2)\,(n-3)} \]
+ * <p>\[ \operatorname{Kurt} = \operatorname{E}\left[ \left(\frac{X-\mu}{\sigma}\right)^4 \right] = \frac{\mu_4}{\sigma^4} \]
  *
- * <p>where \( \overline{x} \) is the sample mean, and \( n \) is the number of samples.
+ * <p>where \( \mu \) is the mean of \( X \), \( \sigma \) is the standard deviation of \( X \),
+ * \( \operatorname{E} \) represents the expectation operator, and \( \mu_4 \) is the fourth
+ * central moment.
+ *
+ * <p>The default implementation uses the following definition of the <em>sample kurtosis</em>:
+ *
+ * <p>\[ G_2 = \frac{k_4}{k_2^2} = \;
+ *       \frac{n-1}{(n-2)\,(n-3)} \left[(n+1)\,\frac{m_4}{m_{2}^2} - 3\,(n-1) \right] \]
+ *
+ * <p>where \( k_4 \) is the unique symmetric unbiased estimator of the fourth cumulant,
+ * \( k_2 \) is the symmetric unbiased estimator of the second cumulant (i.e. the <em>sample variance</em>),
+ * \( m_4 \) is the fourth sample moment about the mean,
+ * \( m_2 \) is the second sample moment about the mean,
+ * \( \overline{x} \) is the sample mean,
+ * and \( n \) is the number of samples.
  *
  * <ul>
  *   <li>The result is {@code NaN} if less than 4 values are added.
  *   <li>The result is {@code NaN} if any of the values is {@code NaN} or infinite.
  *   <li>The result is {@code NaN} if the sum of the fourth deviations from the mean is infinite.
  * </ul>
+ *
+ * <p>The default computation is for the adjusted Fisher–Pearson standardized moment coefficient
+ * \( G_2 \). If the {@link #setBiased(boolean) biased} option is enabled the following equation
+ * applies:
+ *
+ * <p>\[ g_2 = \frac{m_4}{m_2^2} - 3 = \frac{\tfrac{1}{n} \sum_{i=1}^n (x_i-\overline{x})^4}
+ *            {\left[\tfrac{1}{n} \sum_{i=1}^n (x_i-\overline{x})^2 \right]^2} - 3 \]
+ *
+ * <p>In this case the computation only requires 2 values are added (i.e. the result is
+ * {@code NaN} if less than 2 values are added).
+ *
+ * <p>Note that the computation requires division by the second central moment \( m_2 \).
+ * If this is effectively zero then the result is {@code NaN}. This occurs when the value
+ * \( m_2 \) approaches the machine precision of the mean: \( m_2 \le (m_1 \times 10^{-15})^2 \).
  *
  * <p>The {@link #accept(double)} method uses a recursive updating algorithm.
  *
@@ -62,6 +88,11 @@ package org.apache.commons.statistics.descriptive;
  * @since 1.1
  */
 public final class Kurtosis implements DoubleStatistic, DoubleStatisticAccumulator<Kurtosis> {
+    /** 2, the length limit where the biased skewness is undefined.
+     * This limit effectively imposes the result m4 / m2^2 = 0 / 0 = NaN when 1 value
+     * has been added. However note that when more samples are added and the variance
+     * approaches zero the result is returned as zero. */
+    private static final int LENGTH_TWO = 2;
     /** 4, the length limit where the kurtosis is undefined. */
     private static final int LENGTH_FOUR = 4;
 
@@ -70,6 +101,9 @@ public final class Kurtosis implements DoubleStatistic, DoubleStatisticAccumulat
      * compute the kurtosis.
      */
     private final SumOfFourthDeviations sq;
+
+    /** Flag to control if the statistic is biased, or should use a bias correction. */
+    private boolean biased;
 
     /**
      * Create an instance.
@@ -133,32 +167,50 @@ public final class Kurtosis implements DoubleStatistic, DoubleStatisticAccumulat
         // This method checks the sum of squared or fourth deviations is finite
         // to provide a consistent NaN when the computation is not possible.
 
-        if (sq.n < LENGTH_FOUR) {
+        if (sq.n < (biased ? LENGTH_TWO : LENGTH_FOUR)) {
             return Double.NaN;
         }
-        final double m2 = sq.getSumOfSquaredDeviations();
-        if (!Double.isFinite(m2)) {
+        final double x2 = sq.getSumOfSquaredDeviations();
+        if (!Double.isFinite(x2)) {
             return Double.NaN;
         }
-        final double m4 = sq.getSumOfFourthDeviations();
-        if (!Double.isFinite(m4)) {
+        final double x4 = sq.getSumOfFourthDeviations();
+        if (!Double.isFinite(x4)) {
             return Double.NaN;
         }
-        // Avoid a divide by zero; for a negligible variance return 0.
+        // Avoid a divide by zero; for a negligible variance return NaN.
         // Note: Commons Math returns zero if variance is < 1e-19.
-        final double variance = m2 / (sq.n - 1);
-        final double n = sq.n;
-        final double denom = (n - 1) * (n - 2) * (n - 3) * variance * variance;
-        if (denom == 0) {
-            return 0;
+        final double m2 = x2 / sq.n;
+        if (Statistics.zeroVariance(sq.getFirstMoment(), m2)) {
+            return Double.NaN;
         }
-        // This adjust the final term to a common denominator by multiplying by variance^2 / (n-1)
-        return (n * (n + 1) * m4 - 3 * m2 * m2 * (n - 1)) / denom;
+        final double m4 = x4 / sq.n;
+        if (biased) {
+            return m4 / (m2 * m2) - 3;
+        }
+        final double n = sq.n;
+        return ((n * n - 1) * m4 / (m2 * m2) - 3 * (n - 1) * (n - 1)) / ((n - 2) * (n - 3));
     }
 
     @Override
     public Kurtosis combine(Kurtosis other) {
         sq.combine(other.sq);
+        return this;
+    }
+
+    /**
+     * Sets the value of the biased flag. The default value is {@code false}.
+     * See {@link Kurtosis} for details on the computing algorithm.
+     *
+     * <p>This flag only controls the final computation of the statistic. The value of this flag
+     * will not affect compatibility between instances during a {@link #combine(Kurtosis) combine}
+     * operation.
+     *
+     * @param v Value.
+     * @return {@code this} instance
+     */
+    public Kurtosis setBiased(boolean v) {
+        biased = v;
         return this;
     }
 }

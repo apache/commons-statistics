@@ -69,6 +69,8 @@ public final class DoubleStatistics implements DoubleConsumer {
     private final SumOfSquares sumOfSquares;
     /** The {@link SumOfLogs} implementation. */
     private final SumOfLogs sumOfLogs;
+    /** Configuration options for computation of statistics. */
+    private StatisticsConfiguration config;
 
     /**
      * A builder for {@link DoubleStatistics}.
@@ -95,6 +97,8 @@ public final class DoubleStatistics implements DoubleConsumer {
          * instance constructed by {@link #moment}. This should only be increased from the default
          * of zero (corresponding to no moment computation). */
         private int momentOrder;
+        /** Configuration options for computation of statistics. */
+        private StatisticsConfiguration config = StatisticsConfiguration.withDefaults();
 
         /**
          * Create an instance.
@@ -172,6 +176,18 @@ public final class DoubleStatistics implements DoubleConsumer {
         }
 
         /**
+         * Sets the statistics configuration options for computation of statistics.
+         *
+         * @param v Value.
+         * @return the builder
+         * @throws NullPointerException if the value is null
+         */
+        public Builder setConfiguration(StatisticsConfiguration v) {
+            config = Objects.requireNonNull(v);
+            return this;
+        }
+
+        /**
          * Builds a {@code DoubleStatistics} instance.
          *
          * @return {@code DoubleStatistics} instance.
@@ -200,7 +216,8 @@ public final class DoubleStatistics implements DoubleConsumer {
                 create(sum, values),
                 create(product, values),
                 create(sumOfSquares, values),
-                create(sumOfLogs, values));
+                create(sumOfLogs, values),
+                config);
         }
 
         /**
@@ -230,9 +247,11 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @param product Product implementation.
      * @param sumOfSquares Sum of squares implementation.
      * @param sumOfLogs Sum of logs implementation.
+     * @param config Statistics configuration.
      */
     DoubleStatistics(long count, Min min, Max max, FirstMoment moment, Sum sum,
-                     Product product, SumOfSquares sumOfSquares, SumOfLogs sumOfLogs) {
+                     Product product, SumOfSquares sumOfSquares, SumOfLogs sumOfLogs,
+                     StatisticsConfiguration config) {
         this.count = count;
         this.min = min;
         this.max = max;
@@ -241,6 +260,7 @@ public final class DoubleStatistics implements DoubleConsumer {
         this.product = product;
         this.sumOfSquares = sumOfSquares;
         this.sumOfLogs = sumOfLogs;
+        this.config = config;
         consumer = compose(min, max, moment, sum, product, sumOfSquares, sumOfLogs);
     }
 
@@ -531,7 +551,8 @@ public final class DoubleStatistics implements DoubleConsumer {
      */
     private DoubleSupplier getKurtosis() {
         if (moment instanceof SumOfFourthDeviations) {
-            return new Kurtosis((SumOfFourthDeviations) moment)::getAsDouble;
+            return new Kurtosis((SumOfFourthDeviations) moment)
+                .setBiased(config.isBiased())::getAsDouble;
         }
         return null;
     }
@@ -556,7 +577,8 @@ public final class DoubleStatistics implements DoubleConsumer {
      */
     private DoubleSupplier getSkewness() {
         if (moment instanceof SumOfCubedDeviations) {
-            return new Skewness((SumOfCubedDeviations) moment)::getAsDouble;
+            return new Skewness((SumOfCubedDeviations) moment)
+                .setBiased(config.isBiased())::getAsDouble;
         }
         return null;
     }
@@ -568,7 +590,8 @@ public final class DoubleStatistics implements DoubleConsumer {
      */
     private DoubleSupplier getStandardDeviation() {
         if (moment instanceof SumOfSquaredDeviations) {
-            return new StandardDeviation((SumOfSquaredDeviations) moment)::getAsDouble;
+            return new StandardDeviation((SumOfSquaredDeviations) moment)
+                .setBiased(config.isBiased())::getAsDouble;
         }
         return null;
     }
@@ -580,7 +603,8 @@ public final class DoubleStatistics implements DoubleConsumer {
      */
     private DoubleSupplier getVariance() {
         if (moment instanceof SumOfSquaredDeviations) {
-            return new Variance((SumOfSquaredDeviations) moment)::getAsDouble;
+            return new Variance((SumOfSquaredDeviations) moment)
+                .setBiased(config.isBiased())::getAsDouble;
         }
         return null;
     }
@@ -682,5 +706,25 @@ public final class DoubleStatistics implements DoubleConsumer {
         } else if (a != null) {
             a.combine(b);
         }
+    }
+
+    /**
+     * Sets the statistics configuration.
+     *
+     * <p>These options only control the final computation of statistics. The configuration
+     * will not affect compatibility between instances during a
+     * {@link #combine(DoubleStatistics) combine} operation.
+     *
+     * <p>Note: These options will affect any future computation of statistics. Supplier functions
+     * that have been previously created will not be updated with the new configuration.
+     *
+     * @param v Value.
+     * @return {@code this} instance
+     * @throws NullPointerException if the value is null
+     * @see #getSupplier(Statistic)
+     */
+    public DoubleStatistics setConfiguration(StatisticsConfiguration v) {
+        config = Objects.requireNonNull(v);
+        return this;
     }
 }

@@ -20,8 +20,10 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
+import org.apache.commons.statistics.distribution.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
@@ -103,17 +105,15 @@ final class StandardDeviationTest extends BaseDoubleStatisticTest<StandardDeviat
     @ParameterizedTest
     @MethodSource("testAccept")
     void testConsistentWithVarianceAccept(double[] values) {
-        final double variance = Statistics.add(Variance.create(), values).getAsDouble();
-        final double std = Statistics.add(StandardDeviation.create(), values).getAsDouble();
-        Assertions.assertEquals(Math.sqrt(variance), std);
+        assertConsistentWithVariance(Statistics.add(Variance.create(), values),
+                                     Statistics.add(StandardDeviation.create(), values));
     }
 
     @ParameterizedTest
     @MethodSource("testArray")
     void testConsistentWithVarianceArray(double[] values) {
-        final double variance = Variance.of(values).getAsDouble();
-        final double std = StandardDeviation.of(values).getAsDouble();
-        Assertions.assertEquals(Math.sqrt(variance), std);
+        assertConsistentWithVariance(Variance.of(values),
+                                     StandardDeviation.of(values));
     }
 
     @ParameterizedTest
@@ -121,17 +121,22 @@ final class StandardDeviationTest extends BaseDoubleStatisticTest<StandardDeviat
     void testConsistentWithVarianceCombine(double[][] values) {
         // Assume the sequential stream will combine in the same order.
         // Do not use a parallel stream which may be stochastic.
-        final double variance = Arrays.stream(values)
+        final Variance variance = Arrays.stream(values)
             .map(Variance::of)
             .reduce(Variance::combine)
-            .orElseGet(Variance::create)
-            .getAsDouble();
-        final double std = Arrays.stream(values)
+            .orElseGet(Variance::create);
+        final StandardDeviation std = Arrays.stream(values)
             .map(StandardDeviation::of)
             .reduce(StandardDeviation::combine)
-            .orElseGet(StandardDeviation::create)
-            .getAsDouble();
-        Assertions.assertEquals(Math.sqrt(variance), std);
+            .orElseGet(StandardDeviation::create);
+        assertConsistentWithVariance(variance, std);
+    }
+
+    private static void assertConsistentWithVariance(Variance variance, StandardDeviation std) {
+        Assertions.assertEquals(Math.sqrt(variance.getAsDouble()), std.getAsDouble(), "Unbiased");
+        variance.setBiased(true);
+        std.setBiased(true);
+        Assertions.assertEquals(Math.sqrt(variance.getAsDouble()), std.getAsDouble(), "Biased");
     }
 
     /**
@@ -149,5 +154,38 @@ final class StandardDeviationTest extends BaseDoubleStatisticTest<StandardDeviat
             return 0;
         }
         return Math.sqrt(VarianceTest.computeExpectedVariance(values, null));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testBiased(double[] values, double biased, double unbiased, DoubleTolerance tol) {
+        final StandardDeviation stat = StandardDeviation.of(values);
+        // Default is unbiased
+        final double actualUnbiased = stat.getAsDouble();
+        TestUtils.assertEquals(unbiased, actualUnbiased, tol, () -> "Unbiased: " + format(values));
+        Assertions.assertSame(stat, stat.setBiased(true));
+        final double acutalBiased = stat.getAsDouble();
+        TestUtils.assertEquals(biased, acutalBiased, tol, () -> "Biased: " + format(values));
+        // The mutable state can be switched back and forth
+        Assertions.assertSame(stat, stat.setBiased(false));
+        Assertions.assertEquals(actualUnbiased, stat.getAsDouble(), () -> "Unbiased: " + format(values));
+        Assertions.assertSame(stat, stat.setBiased(true));
+        Assertions.assertEquals(acutalBiased, stat.getAsDouble(), () -> "Biased: " + format(values));
+    }
+
+    static Stream<Arguments> testBiased() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        final DoubleTolerance tol = DoubleTolerances.ulps(1);
+        // Python Numpy v1.25.1: numpy.std(x, ddof=0/1)
+        // Note: Numpy allows other degrees of freedom adjustment than 0 or 1.
+        builder.accept(Arguments.of(new double[] {1, 2, 3}, 0.816496580927726, 1, tol));
+        builder.accept(Arguments.of(new double[] {1, 2}, 0.5, 0.7071067811865476, tol));
+        // Matlab R2023s: std(x, 1/0)
+        // Matlab only allows turning the biased option on (1) or off (0).
+        // Note: Numpy will return NaN for ddof=1 when the array length is 1 (since 0 / 0 = NaN).
+        // This implementation matches the behaviour of Matlab which returns zero.
+        builder.accept(Arguments.of(new double[] {1}, 0, 0, tol));
+        builder.accept(Arguments.of(new double[] {1, 2, 4, 8}, 2.680951323690902, 3.095695936834452, tol));
+        return builder.build();
     }
 }

@@ -21,6 +21,11 @@ import java.math.MathContext;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
+import org.apache.commons.statistics.distribution.TestUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test for {@link Skewness}.
@@ -111,7 +116,10 @@ final class SkewnessTest extends BaseDoubleStatisticTest<Skewness> {
         // Here we add a check for a zero denominator.
         final double denom = variance * Math.sqrt(variance);
         if (denom == 0) {
-            return 0;
+            // Return 0 / 0 = NaN
+            // This matches the behaviour of SciPy and Matlab.
+            // Note: Commons Math would return 0 when the variance was < 1e-19.
+            return Double.NaN;
         }
         final double m3 = SumOfCubedDeviationsTest.computeExpectedSC(values, mean[0]);
         if (!Double.isFinite(m3)) {
@@ -125,5 +133,40 @@ final class SkewnessTest extends BaseDoubleStatisticTest<Skewness> {
         final BigDecimal a = n0.multiply(new BigDecimal(m3));
         final BigDecimal b = nm1.multiply(nm2).multiply(new BigDecimal(denom));
         return a.divide(b, MathContext.DECIMAL128).doubleValue();
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testBiased(double[] values, double biased, double unbiased, DoubleTolerance tol) {
+        final Skewness stat = Skewness.of(values);
+        // Default is unbiased
+        final double actualUnbiased = stat.getAsDouble();
+        TestUtils.assertEquals(unbiased, actualUnbiased, tol, () -> "Unbiased: " + format(values));
+        Assertions.assertSame(stat, stat.setBiased(true));
+        final double acutalBiased = stat.getAsDouble();
+        TestUtils.assertEquals(biased, acutalBiased, tol, () -> "Biased: " + format(values));
+        // The mutable state can be switched back and forth
+        Assertions.assertSame(stat, stat.setBiased(false));
+        Assertions.assertEquals(actualUnbiased, stat.getAsDouble(), () -> "Unbiased: " + format(values));
+        Assertions.assertSame(stat, stat.setBiased(true));
+        Assertions.assertEquals(acutalBiased, stat.getAsDouble(), () -> "Biased: " + format(values));
+    }
+
+    static Stream<Arguments> testBiased() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        final DoubleTolerance tol = DoubleTolerances.ulps(1);
+        final double nan = Double.NaN;
+        // Python scipy v1.11.1: scipy.stats.skew(x, bias=True/False)
+        builder.accept(Arguments.of(new double[] {1, 2, 4}, 0.3818017741606059, 0.9352195295828235, tol));
+        builder.accept(Arguments.of(new double[] {1}, nan, nan, tol));
+        builder.accept(Arguments.of(new double[] {1, 3, 9, 13, 15}, -0.10880269824164872, -0.16219348626914892,
+            DoubleTolerances.ulps(5)));
+        // Matlab R2023s: skewness(x, 1/0)
+        // Scipy only allows bias correction when n>2. When n<=2 it returns the biased value.
+        // Matlab will return NaN for bias correction when n<=2.
+        // This implementation matches the behaviour of Matlab.
+        builder.accept(Arguments.of(new double[] {1, 2}, 0, nan, tol));
+        builder.accept(Arguments.of(new double[] {1, 3, 7, 9, 11}, -0.15798755143759588, -0.23551393640880602, tol));
+        return builder.build();
     }
 }

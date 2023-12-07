@@ -17,8 +17,8 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Computes the stndard deviation of the available values. Uses the following definition
- * of the <em>sample standard deviation</em>:
+ * Computes the standard deviation of the available values. The default implementations uses
+ * the following definition of the <em>sample standard deviation</em>:
  *
  * <p>\[ \sqrt{ \tfrac{1}{n-1} \sum_{i=1}^n (x_i-\overline{x})^2 } \]
  *
@@ -30,6 +30,14 @@ package org.apache.commons.statistics.descriptive;
  *   <li>The result is {@code NaN} if the sum of the squared deviations from the mean is infinite.
  *   <li>The result is zero if there is one finite value in the data set.
  * </ul>
+ *
+ * <p>The use of the term \( n − 1 \) is called Bessel's correction. Omitting the square root,
+ * this provides an unbiased estimator of the variance of a hypothetical infinite population. If the
+ * {@link #setBiased(boolean) biased} option is enabled the normalisation factor is
+ * changed to \( \frac{1}{n} \) for a biased estimator of the <em>sample variance</em>.
+ * Note however that square root is a concave function and thus introduces negative bias
+ * (by Jensen's inequality), which depends on the distribution, and thus the corrected sample
+ * standard deviation (using Bessel's correction) is less biased, but still biased.
  *
  * <p>The {@link #accept(double)} method uses a recursive updating algorithm based on West's
  * algorithm (see Chan and Lewis (1979)).
@@ -72,6 +80,8 @@ package org.apache.commons.statistics.descriptive;
  * </ul>
  *
  * @see <a href="https://en.wikipedia.org/wiki/Standard_deviation">Standard deviation (Wikipedia)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Bessel%27s_correction">Bessel&#39;s correction</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Jensen%27s_inequality">Jensen&#39;s inequality</a>
  * @see Variance
  * @since 1.1
  */
@@ -82,6 +92,9 @@ public final class StandardDeviation implements DoubleStatistic, DoubleStatistic
      * compute the standard deviation.
      */
     private final SumOfSquaredDeviations ss;
+
+    /** Flag to control if the statistic is biased, or should use a bias correction. */
+    private boolean biased;
 
     /**
      * Create an instance.
@@ -153,12 +166,34 @@ public final class StandardDeviation implements DoubleStatistic, DoubleStatistic
         }
         final long n = ss.n;
         // Avoid a divide by zero
-        return n == 1 ? 0 : Math.sqrt(m2 / (n - 1.0));
+        if (n == 1) {
+            return 0;
+        }
+        return biased ? Math.sqrt(m2 / n) : Math.sqrt(m2 / (n - 1));
     }
 
     @Override
     public StandardDeviation combine(StandardDeviation other) {
         ss.combine(other.ss);
+        return this;
+    }
+
+    /**
+     * Sets the value of the biased flag. The default value is {@code false}. The bias
+     * term refers to the computation of the variance; the standard deviation is returned
+     * as the square root of the biased or unbiased <em>sample variance</em>. For further
+     * details see {@link Variance#setBiased(boolean) Variance.setBiased}.
+     *
+     * <p>This flag only controls the final computation of the statistic. The value of
+     * this flag will not affect compatibility between instances during a
+     * {@link #combine(StandardDeviation) combine} operation.
+     *
+     * @param v Value.
+     * @return {@code this} instance
+     * @see Variance#setBiased(boolean)
+     */
+    public StandardDeviation setBiased(boolean v) {
+        biased = v;
         return this;
     }
 }

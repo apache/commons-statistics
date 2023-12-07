@@ -1343,7 +1343,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
      * @param values Values.
      * @return the string
      */
-    private static String format(double[] values) {
+    static String format(double[] values) {
         if (values.length > MAX_FORMAT_VALUES) {
             return Arrays.stream(values)
                          .limit(MAX_FORMAT_VALUES)

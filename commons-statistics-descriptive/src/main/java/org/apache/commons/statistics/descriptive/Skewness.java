@@ -17,20 +17,47 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Computes the skewness of the available values. Uses the following definition
- * of the <em>sample skewness</em>:
+ * Computes the skewness of the available values. The skewness is defined as:
  *
- * <p>\[ \frac{n^2}{(n-1)(n-2)}\;
+ * <p>\[ \gamma_1 = \operatorname{E}\left[ \left(\frac{X-\mu}{\sigma}\right)^3 \right] = \frac{\mu_3}{\sigma^3} \]
+ *
+ * <p>where \( \mu \) is the mean of \( X \), \( \sigma \) is the standard deviation of \( X \),
+ * \( \operatorname{E} \) represents the expectation operator, and \( \mu_3 \) is the third
+ * central moment.
+ *
+ * <p>The default implementation uses the following definition of the <em>sample skewness</em>:
+ *
+ * <p>\[ G_1 = \frac{k_3}{k_2^{3/2}} = \frac{\sqrt{n(n-1)}}{n-2}\; g_1 = \frac{n^2}{(n-1)(n-2)}\;
  *       \frac{\tfrac{1}{n} \sum_{i=1}^n (x_i-\overline{x})^3}
  *            {\left[\tfrac{1}{n-1} \sum_{i=1}^n (x_i-\overline{x})^2 \right]^{3/2}} \]
  *
- * <p>where \( \overline{x} \) is the sample mean, and \( n \) is the number of samples.
+ * <p>where \( k_3 \) is the unique symmetric unbiased estimator of the third cumulant,
+ * \( k_2 \) is the symmetric unbiased estimator of the second cumulant (i.e. the <em>sample variance</em>),
+ * \( g_1 \) is a method of moments estimator (see below), \( \overline{x} \) is the sample mean,
+ * and \( n \) is the number of samples.
  *
  * <ul>
  *   <li>The result is {@code NaN} if less than 3 values are added.
  *   <li>The result is {@code NaN} if any of the values is {@code NaN} or infinite.
  *   <li>The result is {@code NaN} if the sum of the cubed deviations from the mean is infinite.
  * </ul>
+ *
+ * <p>The default computation is for the adjusted Fisher–Pearson standardized moment coefficient
+ * \( G_1 \). If the {@link #setBiased(boolean) biased} option is enabled the following equation
+ * applies:
+ *
+ * <p>\[ g_1 = \frac{m_3}{m_2^{3/2}} = \frac{\tfrac{1}{n} \sum_{i=1}^n (x_i-\overline{x})^3}
+ *            {\left[\tfrac{1}{n} \sum_{i=1}^n (x_i-\overline{x})^2 \right]^{3/2}} \]
+ *
+ * <p>where \( g_2 \) is a method of moments estimator,
+ * \( m_3 \) is the (biased) sample third central moment and \( m_2^{3/2} \) is the
+ * (biased) sample second central moment.
+ * <p>In this case the computation only requires 2 values are added (i.e. the result is
+ * {@code NaN} if less than 2 values are added).
+ *
+ * <p>Note that the computation requires division by the second central moment \( m_2 \).
+ * If this is effectively zero then the result is {@code NaN}. This occurs when the value
+ * \( m_2 \) approaches the machine precision of the mean: \( m_2 \le (m_1 \times 10^{-15})^2 \).
  *
  * <p>The {@link #accept(double)} method uses a recursive updating algorithm.
  *
@@ -63,7 +90,12 @@ package org.apache.commons.statistics.descriptive;
  * @since 1.1
  */
 public final class Skewness implements DoubleStatistic, DoubleStatisticAccumulator<Skewness> {
-    /** 3, the length limit where the skewness is undefined. */
+    /** 2, the length limit where the biased skewness is undefined.
+     * This limit effectively imposes the result m3 / m2^1.5 = 0 / 0 = NaN when 1 value
+     * has been added. However note that when more samples are added and the variance
+     * approaches zero the result is returned as zero. */
+    private static final int LENGTH_TWO = 2;
+    /** 3, the length limit where the unbiased skewness is undefined. */
     private static final int LENGTH_THREE = 3;
 
     /**
@@ -71,6 +103,9 @@ public final class Skewness implements DoubleStatistic, DoubleStatisticAccumulat
      * compute the skewness.
      */
     private final SumOfCubedDeviations sc;
+
+    /** Flag to control if the statistic is biased, or should use a bias correction. */
+    private boolean biased;
 
     /**
      * Create an instance.
@@ -132,33 +167,56 @@ public final class Skewness implements DoubleStatistic, DoubleStatisticAccumulat
     @Override
     public double getAsDouble() {
         // This method checks the sum of squared or cubed deviations is finite
-        // to provide a consistent NaN when the computation is not possible.
+        // and the value of the biased variance
+        // to provide a consistent result when the computation is not possible.
 
-        if (sc.n < LENGTH_THREE) {
+        if (sc.n < (biased ? LENGTH_TWO : LENGTH_THREE)) {
             return Double.NaN;
         }
-        final double m2 = sc.getSumOfSquaredDeviations();
-        if (!Double.isFinite(m2)) {
+        final double x2 = sc.getSumOfSquaredDeviations();
+        if (!Double.isFinite(x2)) {
             return Double.NaN;
         }
-        final double m3 = sc.getSumOfCubedDeviations();
-        if (!Double.isFinite(m3)) {
+        final double x3 = sc.getSumOfCubedDeviations();
+        if (!Double.isFinite(x3)) {
             return Double.NaN;
         }
-        // Avoid a divide by zero; for a negligible variance return 0.
+        // Avoid a divide by zero; for a negligible variance return NaN.
         // Note: Commons Math returns zero if variance is < 1e-19.
-        final double variance = m2 / (sc.n - 1);
-        final double n = sc.n;
-        final double denom = (n - 1) * (n - 2) * Math.sqrt(variance) * variance;
-        if (denom == 0) {
-            return 0;
+        final double m2 = x2 / sc.n;
+        if (Statistics.zeroVariance(sc.getFirstMoment(), m2)) {
+            return Double.NaN;
         }
-        return n * m3 / denom;
+        // denom = pow(m2, 1.5)
+        final double denom = Math.sqrt(m2) * m2;
+        final double m3 = x3 / sc.n;
+        double g1 = m3 / denom;
+        if (!biased) {
+            final double n = sc.n;
+            g1 *= Math.sqrt(n * (n - 1)) / (n - 2);
+        }
+        return g1;
     }
 
     @Override
     public Skewness combine(Skewness other) {
         sc.combine(other.sc);
+        return this;
+    }
+
+    /**
+     * Sets the value of the biased flag. The default value is {@code false}.
+     * See {@link Skewness} for details on the computing algorithm.
+     *
+     * <p>This flag only controls the final computation of the statistic. The value of this flag
+     * will not affect compatibility between instances during a {@link #combine(Skewness) combine}
+     * operation.
+     *
+     * @param v Value.
+     * @return {@code this} instance
+     */
+    public Skewness setBiased(boolean v) {
+        biased = v;
         return this;
     }
 }

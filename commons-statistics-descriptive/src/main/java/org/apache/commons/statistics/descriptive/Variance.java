@@ -17,8 +17,8 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Computes the variance of the available values. Uses the following definition
- * of the <em>sample variance</em>:
+ * Computes the variance of the available values. The default implementation uses the
+ * following definition of the <em>sample variance</em>:
  *
  * <p>\[ \tfrac{1}{n-1} \sum_{i=1}^n (x_i-\overline{x})^2 \]
  *
@@ -30,6 +30,11 @@ package org.apache.commons.statistics.descriptive;
  *   <li>The result is {@code NaN} if the sum of the squared deviations from the mean is infinite.
  *   <li>The result is zero if there is one finite value in the data set.
  * </ul>
+ *
+ * <p>The use of the term \( n − 1 \) is called Bessel's correction. This is an unbiased
+ * estimator of the variance of a hypothetical infinite population. If the
+ * {@link #setBiased(boolean) biased} option is enabled the normalisation factor is
+ * changed to \( \frac{1}{n} \) for a biased estimator of the <em>sample variance</em>.
  *
  * <p>The {@link #accept(double)} method uses a recursive updating algorithm based on West's
  * algorithm (see Chan and Lewis (1979)).
@@ -72,6 +77,7 @@ package org.apache.commons.statistics.descriptive;
  * </ul>
  *
  * @see <a href="https://en.wikipedia.org/wiki/Variance">Variance (Wikipedia)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Bessel%27s_correction">Bessel&#39;s correction</a>
  * @see StandardDeviation
  * @since 1.1
  */
@@ -82,6 +88,9 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
      * compute the variance.
      */
     private final SumOfSquaredDeviations ss;
+
+    /** Flag to control if the statistic is biased, or should use a bias correction. */
+    private boolean biased;
 
     /**
      * Create an instance.
@@ -153,12 +162,40 @@ public final class Variance implements DoubleStatistic, DoubleStatisticAccumulat
         }
         final long n = ss.n;
         // Avoid a divide by zero
-        return n == 1 ? 0 : m2 / (n - 1.0);
+        if (n == 1) {
+            return 0;
+        }
+        return biased ? m2 / n : m2 / (n - 1);
     }
 
     @Override
     public Variance combine(Variance other) {
         ss.combine(other.ss);
+        return this;
+    }
+
+    /**
+     * Sets the value of the biased flag. The default value is {@code false}.
+     *
+     * <p>If {@code false} the sum of squared deviations from the sample mean is normalised by
+     * {@code n - 1} where {@code n} is the number of samples. This is Bessel's correction
+     * for an unbiased estimator of the variance of a hypothetical infinite population.
+     *
+     * <p>If {@code true} the sum of squared deviations is normalised by the number of samples
+     * {@code n}.
+     *
+     * <p>Note: This option only applies when {@code n > 1}. The variance of {@code n = 1} is
+     * always 0.
+     *
+     * <p>This flag only controls the final computation of the statistic. The value of this flag
+     * will not affect compatibility between instances during a {@link #combine(Variance) combine}
+     * operation.
+     *
+     * @param v Value.
+     * @return {@code this} instance
+     */
+    public Variance setBiased(boolean v) {
+        biased = v;
         return this;
     }
 }
