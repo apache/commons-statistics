@@ -108,6 +108,8 @@ final class TestHelper {
      * Uses the mean from {@link #computeExpectedMean(double[])}.
      * This is optionally returned.
      *
+     * <p>Note: The values and result are limited to {@link MathContext#DECIMAL128} precision.
+     *
      * @param values Values.
      * @param mean Mean (result). Only computed if {@code length > 1}.
      * @return sum-of-square deviations
@@ -121,12 +123,15 @@ final class TestHelper {
         if (mean != null) {
             mean[0] = m;
         }
-        // Round mean to nearest double
-        final BigDecimal mu = new BigDecimal(m.doubleValue());
         BigDecimal ss = BigDecimal.ZERO;
         for (double value : values) {
-            BigDecimal bdDiff = new BigDecimal(value);
-            bdDiff = bdDiff.subtract(mu);
+            // Note: The mean is returned in DECIMAL128 precision.
+            // Truncate the double value to the same precision.
+            // This avoids round-off issues with extreme values such as Double.MAX_VALUE
+            // that have a very large BigInteger representation,
+            // i.e. the entire computation must use the same precision.
+            BigDecimal bdDiff = new BigDecimal(value, MathContext.DECIMAL128);
+            bdDiff = bdDiff.subtract(m);
             bdDiff = bdDiff.pow(2);
             // Note: This is a sum of positive terms so summation with rounding is OK.
             ss = ss.add(bdDiff, MathContext.DECIMAL128);
