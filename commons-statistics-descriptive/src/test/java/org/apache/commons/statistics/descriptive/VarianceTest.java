@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link Variance}.
@@ -119,5 +121,52 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
             return Double.NaN;
         }
         return s2.divide(BigDecimal.valueOf(n - 1), MathContext.DECIMAL128).doubleValue();
+    }
+
+    /**
+     * Test the variance of data with an extreme condition number.
+     * The condition number is defined in Chan, Golub and Levesque (1983)
+     * (American Statistician, 37, 242-247) as:
+     * <pre>
+     * k = sqrt(1 + mean^2 * N/S) = sqrt(1 + mean^2 / var)   (Eq 2.1)
+     * </pre>
+     * <p>where N is the number of samples, S is the sum-of-squared deviations from
+     * the mean and var is the biased variance.
+     *
+     * <p>This test exists to demonstrate that the dual-pass with correction is more
+     * accurate that the dual-pass algorithm. This can generate a different variance
+     * for extreme data to other libraries that do not use the algorithm.
+     */
+    @Test
+    void testBadlyConditionedData() {
+        // This data has a variance of 1.4273452003842682e-29 in: Python numpy; Matlab; R.
+        // The 'unlimited' precision result is 1.4262886902433472E-29.
+        // This is different by a relative error of ~7.4e-4.
+        // Condition number k ~ 3e14. This is very badly conditioned data.
+        // 1.00000000000001 is 45 ULP above 1.0.
+        final double[] values = {1, 1, 1, 1, 1, 1, 1.00000000000001};
+        final double dualpassResult = 1.4273452003842682e-29;
+        final double correctedDualpassResult = 1.4262886902433472E-29;
+        final double v = Variance.of(values).getAsDouble();
+
+        Assertions.assertNotEquals(dualpassResult, v, "Dual-pass result");
+        Assertions.assertEquals(correctedDualpassResult, v, "Corrected dual-pass result");
+
+        // Check using the helper function
+        Assertions.assertEquals(computeExpectedVariance(values, null), v, "Reference expected result");
+
+        // Using 256 decimal digits of precision
+        final MathContext mc = new MathContext(256);
+        final BigDecimal mean = Arrays.stream(values)
+            .mapToObj(BigDecimal::new)
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .divide(BigDecimal.valueOf(values.length), mc);
+        final double var = Arrays.stream(values)
+            .mapToObj(BigDecimal::new)
+            .map(x -> x.subtract(mean))
+            .map(x -> x.pow(2))
+            .reduce(BigDecimal.ZERO, BigDecimal::add)
+            .divide(BigDecimal.valueOf(values.length - 1), mc).doubleValue();
+        Assertions.assertEquals(var, v, "256-digit precision result");
     }
 }
