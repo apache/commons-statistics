@@ -112,7 +112,6 @@ class SumOfSquaredDeviations extends FirstMoment {
             s += dx;
             ss += dx * dx;
         }
-        final long n = values.length;
         // The sum of squared deviations is ss - (s * s / n).
         // The second term ideally should be zero; in practice it is a good approximation
         // of the error in the first term.
@@ -120,7 +119,7 @@ class SumOfSquaredDeviations extends FirstMoment {
         // when ss is infinite, assign it an infinite value which is its intended value.
         final double sumSquaredDev = ss == Double.POSITIVE_INFINITY ?
             Double.POSITIVE_INFINITY :
-            ss - (s * s / n);
+            ss - (s * s / values.length);
         return new SumOfSquaredDeviations(sumSquaredDev, m1);
     }
 
