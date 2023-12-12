@@ -21,7 +21,7 @@ import java.util.function.DoubleConsumer;
 /**
  * Computes the first moment (arithmetic mean) using the definitional formula:
  *
- * <p> mean = sum(x_i) / n
+ * <pre>mean = sum(x_i) / n</pre>
  *
  * <p> To limit numeric errors, the value of the statistic is computed using the
  * following recursive updating algorithm:
@@ -59,11 +59,13 @@ import java.util.function.DoubleConsumer;
  * </ul>
  */
 class FirstMoment implements DoubleConsumer {
+    /** The downscale constant. Used to avoid overflow for all finite input. */
+    private static final double DOWNSCALE = 0.5;
+    /** The rescale constant. */
+    private static final double RESCALE = 2;
+
     /** Count of values that have been added. */
     protected long n;
-
-    /** First moment of values that have been added. */
-    protected double m1;
 
     /**
      * Half the deviation of most recently added value from the previous first moment.
@@ -74,15 +76,24 @@ class FirstMoment implements DoubleConsumer {
      *
      * <p>This value is not used in the {@link #combine(FirstMoment)} method.
      */
-    protected double halfDev;
+    protected double dev;
 
     /**
-     * Deviation of most recently added value from the previous first moment,
+     * Half the deviation of most recently added value from the previous first moment,
      * normalized by current sample size. Retained to prevent repeated
      * computation in higher order moments.
+     *
+     * <p>Note: This is (x - m1) / 2n. It is computed as a half value to prevent overflow
+     * when computing for any finite value x and m.
+     *
      * Note: This value is not used in the {@link #combine(FirstMoment)} method.
      */
     protected double nDev;
+
+    /** First moment of values that have been added.
+     * This is stored as a half value to prevent overflow for any finite input.
+     * Benchmarks show this has negligible performance impact. */
+    private double m1;
 
     /**
      * Running sum of values seen so far.
@@ -122,7 +133,7 @@ class FirstMoment implements DoubleConsumer {
         // "Corrected two-pass algorithm"
 
         // First pass
-        final FirstMoment m1 = Statistics.add(new FirstMoment(), values);
+        final FirstMoment m1 = create(values);
         final double xbar = m1.getFirstMoment();
         if (!Double.isFinite(xbar)) {
             // Note: Also occurs when the input is empty
@@ -135,9 +146,54 @@ class FirstMoment implements DoubleConsumer {
         }
         // Note: Correction may be infinite
         if (Double.isFinite(correction)) {
-            m1.m1 += correction / values.length;
+            // Down scale the correction to the half representation
+            m1.m1 += DOWNSCALE * correction / values.length;
         }
         return m1;
+    }
+
+    /**
+     * Creates the first moment using a rolling algorithm.
+     *
+     * <p>This duplicates the algorithm in the {@link #accept(double)} method
+     * with optimisations due to the processing of an entire array:
+     * <ul>
+     *  <li>Avoid updating (unused) class level working variables.
+     *  <li>Only computing the non-finite value if required.
+     * </ul>
+     *
+     * @param values Values.
+     * @return the first moment
+     */
+    private static FirstMoment create(double[] values) {
+        double m1 = 0;
+        int n = 0;
+        for (final double x : values) {
+            // Downscale to avoid overflow for all finite input
+            m1 += (x * DOWNSCALE - m1) / ++n;
+        }
+        final FirstMoment m = new FirstMoment();
+        m.n = n;
+        m.m1 = m1;
+        // The non-finite value is only relevant if the data contains inf/nan
+        if (!Double.isFinite(m1 * RESCALE)) {
+            m.nonFiniteValue = sum(values);
+        }
+        return m;
+    }
+
+    /**
+     * Compute the sum of the values.
+     *
+     * @param values Values.
+     * @return the sum
+     */
+    private static double sum(double[] values) {
+        double sum = 0;
+        for (final double x : values) {
+            sum += x;
+        }
+        return sum;
     }
 
     /**
@@ -151,14 +207,13 @@ class FirstMoment implements DoubleConsumer {
         // See: Chan et al (1983) Equation 1.3a
         // m_{i+1} = m_i + (x - m_i) / (i + 1)
         // This is modified with scaling to avoid overflow for all finite input.
+        // Scaling the input down by a factor of two ensures that the scaling is lossless.
+        // Sub-classes must alter their scaling factors when using the computed deviations.
 
-        n++;
         nonFiniteValue += value;
-        // To prevent overflow, dev is computed by scaling down and then scaling up.
-        // We choose to scale down by a factor of two to ensure that the scaling is lossless.
-        halfDev = value * 0.5 - m1 * 0.5;
-        // nDev cannot overflow as halfDev is <= MAX_VALUE when n > 1; or <= MAX_VALUE / 2 when n = 1
-        nDev = (halfDev / n) * 2;
+        // Scale down the input
+        dev = value * DOWNSCALE - m1;
+        nDev = dev / ++n;
         m1 += nDev;
     }
 
@@ -172,8 +227,10 @@ class FirstMoment implements DoubleConsumer {
      *         {@code NaN} otherwise.
      */
     double getFirstMoment() {
-        if (Double.isFinite(m1)) {
-            return n == 0 ? Double.NaN : m1;
+        // Scale back to the original magnitude
+        final double m = m1 * RESCALE;
+        if (Double.isFinite(m)) {
+            return n == 0 ? Double.NaN : m;
         }
         // A non-finite value must have been encountered, return nonFiniteValue which represents m1.
         return nonFiniteValue;
@@ -194,22 +251,13 @@ class FirstMoment implements DoubleConsumer {
         n = n1 + n2;
         // Adjust the mean with the weighted difference:
         // m1 = m1 + (m2 - m1) * n2 / (n1 + n2)
-        // The difference between means can be 2 * MAX_VALUE so the computation optionally
-        // scales by a factor of 2. Avoiding scaling if possible preserves sub-normals.
+        // The half-representation ensures the difference of means is at most MAX_VALUE
+        // so the combine can avoid scaling.
         if (n1 == n2) {
             // Optimisation for equal sizes: m1 = (m1 + m2) / 2
-            // Use scaling for a large sum
-            final double sum = mu1 + mu2;
-            m1 = Double.isFinite(sum) ?
-                sum * 0.5 :
-                mu1 * 0.5 + mu2 * 0.5;
+            m1 = (mu1 + mu2) * 0.5;
         } else {
-            // Use scaling for a large difference
-            if (Double.isFinite(mu2 - mu1)) {
-                m1 = combine(mu1, mu2, n1, n2);
-            } else {
-                m1 = 2 * combine(mu1 * 0.5, mu2 * 0.5, n1, n2);
-            }
+            m1 = combine(mu1, mu2, n1, n2);
         }
         return this;
     }
@@ -230,5 +278,28 @@ class FirstMoment implements DoubleConsumer {
         return n2 < n1 ?
             m1 + (m2 - m1) * ((double) n2 / (n1 + n2)) :
             m2 + (m1 - m2) * ((double) n1 / (n1 + n2));
+    }
+
+    /**
+     * Gets the difference of the first moment between {@code this} moment and the
+     * {@code other} moment. This is provided for sub-classes.
+     *
+     * @param other Other moment.
+     * @return the difference
+     */
+    double getFirstMomentDifference(FirstMoment other) {
+        // Scale back to the original magnitude
+        return (m1 - other.m1) * RESCALE;
+    }
+
+    /**
+     * Gets the half the difference of the first moment between {@code this} moment and
+     * the {@code other} moment. This is provided for sub-classes.
+     *
+     * @param other Other moment.
+     * @return the difference
+     */
+    double getFirstMomentHalfDifference(FirstMoment other) {
+        return m1 - other.m1;
     }
 }

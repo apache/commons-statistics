@@ -141,11 +141,12 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
         // This handles initialisation when np in {0, 1) to zero
         // for any deviation (e.g. series MAX_VALUE, -MAX_VALUE).
         // Note: (np1 * np1 - 3 * np) = (np+1)^2 - 3np = np^2 - np + 1
+        // Note: account for the half-deviation representation by scaling by 8=4*2; 24=6*2^2; 16=2^4
         final double np1 = n;
         sumFourthDev = sumFourthDev -
-            sc * nDev * 4 +
-            ss * nDev * nDev * 6 +
-            np * (np1 * np1 - 3 * np) * nDev * nDev * nDev * nDev * n;
+            sc * nDev * 8 +
+            ss * nDev * nDev * 24 +
+            np * (np1 * np1 - 3 * np) * nDev * nDev * nDev * nDev * n * 16;
     }
 
     /**
@@ -180,7 +181,7 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
             sumFourthDev = other.sumFourthDev;
         } else if (other.n != 0) {
             // Avoid overflow to compute the difference.
-            final double halfDiffOfMean = m1 * 0.5 - other.m1 * 0.5;
+            final double halfDiffOfMean = getFirstMomentHalfDifference(other);
             sumFourthDev += other.sumFourthDev;
             // Add additional terms that do not cancel to zero
             if (halfDiffOfMean != 0) {

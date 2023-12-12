@@ -156,10 +156,10 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
         // multiplication of later terms (nDev * 3 and nDev^2).
         // This handles initialisation when np in {0, 1) to zero
         // for any deviation (e.g. series MAX_VALUE, -MAX_VALUE).
-        // Note: account for the half-deviation representation.
+        // Note: account for the half-deviation representation by scaling by 6=3*2; 8=2^3
         sumCubedDev = sumCubedDev -
-            ss * nDev * 3 +
-            (np - 1.0) * np * nDev * nDev * halfDev * 2;
+            ss * nDev * 6 +
+            (np - 1.0) * np * nDev * nDev * dev * 8;
     }
 
     /**
@@ -197,7 +197,7 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
             // Avoid overflow to compute the difference.
             // This allows any samples of size n=1 to be combined as their SS=0.
             // The result is a SC=0 for the combined n=2.
-            final double halfDiffOfMean = m1 * 0.5 - other.m1 * 0.5;
+            final double halfDiffOfMean = getFirstMomentHalfDifference(other);
             sumCubedDev += other.sumCubedDev;
             // Add additional terms that do not cancel to zero
             if (halfDiffOfMean != 0) {

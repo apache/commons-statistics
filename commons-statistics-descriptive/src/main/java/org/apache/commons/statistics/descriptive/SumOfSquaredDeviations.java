@@ -133,8 +133,8 @@ class SumOfSquaredDeviations extends FirstMoment {
         // "Updating one-pass algorithm"
         // See: Chan et al (1983) Equation 1.3b
         super.accept(value);
-        // Note: account for the half-deviation representation
-        sumSquaredDev += (n - 1) * halfDev * nDev * 2;
+        // Note: account for the half-deviation representation by scaling by 4=2^2
+        sumSquaredDev += (n - 1) * dev * nDev * 4;
     }
 
     /**
@@ -159,7 +159,7 @@ class SumOfSquaredDeviations extends FirstMoment {
         } else if (m != 0) {
             // "Updating one-pass algorithm"
             // See: Chan et al (1983) Equation 1.5b (modified for the mean)
-            final double diffOfMean = other.m1 - m1;
+            final double diffOfMean = getFirstMomentDifference(other);
             final double sqDiffOfMean = diffOfMean * diffOfMean;
             // Enforce symmetry
             sumSquaredDev = (sumSquaredDev + other.sumSquaredDev) +
