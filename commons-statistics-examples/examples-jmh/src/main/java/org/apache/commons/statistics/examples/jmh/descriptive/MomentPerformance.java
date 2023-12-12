@@ -58,8 +58,14 @@ public class MomentPerformance {
     private static final String ROLLING_MEAN = "RollingMean";
     /** Safe rolling mean implementation. */
     private static final String SAFE_ROLLING_MEAN = "SafeRollingMean";
+    /** Safe rolling mean implementation. */
+    private static final String SCALED_ROLLING_MEAN = "ScaledRollingMean";
     /** Inline rolling mean implementation for array-based creation. */
     private static final String INLINE_ROLLING_MEAN = "InlineRollingMean";
+    /** Inline safe rolling mean implementation for array-based creation. */
+    private static final String INLINE_SAFE_ROLLING_MEAN = "InlineSafeRollingMean";
+    /** Inline safe rolling mean implementation with extended precision for array-based creation. */
+    private static final String INLINE_SAFE_ROLLING_MEAN_EXT = "InlineSafeRollingMeanExt";
 
     /**
      * Source of {@code double} array data.
@@ -96,7 +102,7 @@ public class MomentPerformance {
     @State(Scope.Benchmark)
     public static class ActionSource {
         /** Name of the source. */
-        @Param({MEAN, ROLLING_MEAN, SAFE_ROLLING_MEAN, SUM_MEAN, EXTENDED_SUM_MEAN})
+        @Param({MEAN, ROLLING_MEAN, SAFE_ROLLING_MEAN, SCALED_ROLLING_MEAN, SUM_MEAN, EXTENDED_SUM_MEAN})
         private String name;
 
         /** The action. */
@@ -120,6 +126,8 @@ public class MomentPerformance {
                 action = RollingFirstMoment::new;
             } else if (SAFE_ROLLING_MEAN.equals(name)) {
                 action = SafeRollingFirstMoment::new;
+            } else if (SCALED_ROLLING_MEAN.equals(name)) {
+                action = ScaledRollingFirstMoment::new;
             } else if (SUM_MEAN.equals(name)) {
                 action = SumFirstMoment::new;
             } else if (EXTENDED_SUM_MEAN.equals(name)) {
@@ -136,7 +144,8 @@ public class MomentPerformance {
     @State(Scope.Benchmark)
     public static class FunctionSource {
         /** Name of the source. */
-        @Param({MEAN, ROLLING_MEAN, SAFE_ROLLING_MEAN,
+        @Param({MEAN, ROLLING_MEAN, SAFE_ROLLING_MEAN, SCALED_ROLLING_MEAN,
+            INLINE_SAFE_ROLLING_MEAN, INLINE_SAFE_ROLLING_MEAN_EXT
             // Same speed as the ROLLING_MEAN, i.e. the DoubleConsumer is not an overhead
             //INLINE_ROLLING_MEAN
         })
@@ -163,8 +172,14 @@ public class MomentPerformance {
                 function = MomentPerformance::arrayRollingFirstMoment;
             } else if (SAFE_ROLLING_MEAN.equals(name)) {
                 function = MomentPerformance::arraySafeRollingFirstMoment;
+            } else if (SCALED_ROLLING_MEAN.equals(name)) {
+                function = MomentPerformance::arrayScaledRollingFirstMoment;
             } else if (INLINE_ROLLING_MEAN.equals(name)) {
                 function = MomentPerformance::arrayInlineRollingFirstMoment;
+            } else if (INLINE_SAFE_ROLLING_MEAN.equals(name)) {
+                function = MomentPerformance::arrayInlineSafeRollingFirstMoment;
+            } else if (INLINE_SAFE_ROLLING_MEAN_EXT.equals(name)) {
+                function = MomentPerformance::arrayInlineSafeRollingFirstMomentExt;
             } else {
                 throw new IllegalStateException("Unknown function: " + name);
             }
@@ -213,6 +228,29 @@ public class MomentPerformance {
         public double getAsDouble() {
             // NaN for all non-finite results
             return Double.isFinite(m1) && n != 0 ? m1 : Double.NaN;
+        }
+    }
+
+    /**
+     * A rolling first raw moment of {@code double} data safe to overflow of any finite
+     * values (e.g. [MAX_VALUE, -MAX_VALUE]).
+     */
+    static class ScaledRollingFirstMoment implements DoubleConsumer, DoubleSupplier {
+        /** Count of values that have been added. */
+        private long n;
+
+        /** First moment of values that have been added. */
+        private double m1;
+
+        @Override
+        public void accept(double value) {
+            m1 += (value * 0.5 - m1) / ++n;
+        }
+
+        @Override
+        public double getAsDouble() {
+            // NaN for all non-finite results
+            return n != 0 && Double.isFinite(m1 * 2) ? m1 * 2 : Double.NaN;
         }
     }
 
@@ -307,6 +345,31 @@ public class MomentPerformance {
     }
 
     /**
+     * Correct the mean using a second pass over the data.
+     *
+     * @param data Data.
+     * @param xbar Current mean.
+     * @return the mean
+     */
+    private static double correctMeanKahan(double[] data, double xbar) {
+        // Second pass (Kahan summation)
+        double correction = 0;
+        double c = 0;
+        for (final double x : data) {
+            final double dx = x - xbar;
+            final double y = dx - c;
+            final double t = correction + y;
+            c = (t - correction) - y;
+            correction = t;
+        }
+        // Note: Correction may be infinite
+        if (Double.isFinite(correction)) {
+            return xbar + correction / data.length;
+        }
+        return xbar;
+    }
+
+    /**
      * Create the two-pass mean using a rolling first moment.
      *
      * @param data Data.
@@ -346,6 +409,26 @@ public class MomentPerformance {
     }
 
     /**
+     * Create the two-pass mean using a rolling first moment
+     * safe to overflow.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arrayScaledRollingFirstMoment(double[] data) {
+        final ScaledRollingFirstMoment m1 = new ScaledRollingFirstMoment();
+        for (final double x : data) {
+            m1.accept(x);
+        }
+        final double xbar = m1.getAsDouble();
+        if (!Double.isFinite(xbar)) {
+            // Note: Also occurs when the input is empty
+            return xbar;
+        }
+        return correctMean(data, xbar);
+    }
+
+    /**
      * Create the two-pass mean using a rolling first moment inline.
      *
      * <p>Note: This method is effectively the same as {@link #arrayRollingFirstMoment(double[])}
@@ -365,6 +448,48 @@ public class MomentPerformance {
             return Double.NaN;
         }
         return correctMean(data, m1);
+    }
+
+    /**
+     * Create the two-pass mean using a rolling first moment inline.
+     * The result is safe for all finite input by using downscaling.
+     * Upscaling is applied to the end result.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arrayInlineSafeRollingFirstMoment(double[] data) {
+        double m1 = 0;
+        int n = 0;
+        for (final double x : data) {
+            m1 += (x * 0.5 - m1) / ++n;
+        }
+        m1 *= 2;
+        if (!Double.isFinite(m1) || n == 0) {
+            return Double.NaN;
+        }
+        return correctMean(data, m1);
+    }
+
+    /**
+     * Create the two-pass mean using a rolling first moment inline.
+     * The result is safe for all finite input by using downscaling.
+     * Upscaling is applied to the end result.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arrayInlineSafeRollingFirstMomentExt(double[] data) {
+        double m1 = 0;
+        int n = 0;
+        for (final double x : data) {
+            m1 += (x * 0.5 - m1) / ++n;
+        }
+        m1 *= 2;
+        if (!Double.isFinite(m1) || n == 0) {
+            return Double.NaN;
+        }
+        return correctMeanKahan(data, m1);
     }
 
     /**
