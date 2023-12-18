@@ -208,6 +208,13 @@
         value=".*'BinomialTest'.*|.*'ChiSquareTest'.*|.*'FisherExactTest'.*|.*'GTest'.*|.*'KolmogorovSmirnovTest'.*|.*'MannWhitneyUTest'.*|.*'TTest'.*|.*'WilcoxonSignedRankTest'.*|.*'UnconditionedExactTest'.*"/>
     </properties>
   </rule>
+  <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor">
+    <properties>
+      <!-- Exact conversion from double to BigInteger is required. -->
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::MethodDeclaration[@Name='getAsBigInteger']"/>
+    </properties>
+  </rule>
 
   <rule ref="category/java/performance.xml/AvoidArrayLoops">
     <properties>

@@ -17,15 +17,12 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 
 /**
- * Represents a state object for computing a single {@code Statistic} over {@code double} valued input(s).
- *
- * <p>Base interface implemented by all statistics.
+ * Represents a state object for computing a statistic over {@code double} valued input(s).
  *
  * @since 1.1
  */
-public interface DoubleStatistic extends DoubleConsumer, DoubleSupplier {
+public interface DoubleStatistic extends DoubleConsumer, StatisticResult {
     // Composite interface
 }
