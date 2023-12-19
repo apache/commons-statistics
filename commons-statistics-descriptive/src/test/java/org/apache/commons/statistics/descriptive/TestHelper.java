@@ -17,12 +17,15 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
+import org.apache.commons.statistics.distribution.TestUtils;
+import org.junit.jupiter.api.Assertions;
 
 /**
  * Helper class for tests in {@code o.a.c.s.descriptive} module.
@@ -73,6 +76,30 @@ final class TestHelper {
     }
 
     /**
+     * Helper function to concatenate arrays.
+     *
+     * @param arrays Arrays to be concatenated.
+     * @return A new array containing elements from all input arrays in the order they appear.
+     */
+    static int[] concatenate(int[]... arrays) {
+        return Arrays.stream(arrays)
+                .flatMapToInt(Arrays::stream)
+                .toArray();
+    }
+
+    /**
+     * Helper function to concatenate arrays.
+     *
+     * @param arrays Arrays to be concatenated.
+     * @return A new array containing elements from all input arrays in the order they appear.
+     */
+    static long[] concatenate(long[]... arrays) {
+        return Arrays.stream(arrays)
+                .flatMapToLong(Arrays::stream)
+                .toArray();
+    }
+
+    /**
      * Helper function to reverse the concatenation of arrays. The array is copied
      * sequentially into the destination arrays.
      *
@@ -85,6 +112,42 @@ final class TestHelper {
     static void unconcatenate(double[] data, double[]... arrays) {
         int from = 0;
         for (final double[] a : arrays) {
+            System.arraycopy(data, from, a, 0, a.length);
+            from += a.length;
+        }
+    }
+
+    /**
+     * Helper function to reverse the concatenation of arrays. The array is copied
+     * sequentially into the destination arrays.
+     *
+     * <p>Warning: No lengths checks are performed. It is assume the combine length
+     * of the destination arrays is equal to the length of the data.
+     *
+     * @param data Array to be unconcatenated.
+     * @param arrays Destination arrays.
+     */
+    static void unconcatenate(int[] data, int[]... arrays) {
+        int from = 0;
+        for (final int[] a : arrays) {
+            System.arraycopy(data, from, a, 0, a.length);
+            from += a.length;
+        }
+    }
+
+    /**
+     * Helper function to reverse the concatenation of arrays. The array is copied
+     * sequentially into the destination arrays.
+     *
+     * <p>Warning: No lengths checks are performed. It is assume the combine length
+     * of the destination arrays is equal to the length of the data.
+     *
+     * @param data Array to be unconcatenated.
+     * @param arrays Destination arrays.
+     */
+    static void unconcatenate(long[] data, long[]... arrays) {
+        int from = 0;
+        for (final long[] a : arrays) {
             System.arraycopy(data, from, a, 0, a.length);
             from += a.length;
         }
@@ -209,6 +272,46 @@ final class TestHelper {
      * @param array Array whose entries will be shuffled (in-place).
      * @return Shuffled input array.
      */
+    static int[] shuffle(UniformRandomProvider rng, int[] array) {
+        for (int i = array.length; i > 1; i--) {
+            swap(array, i - 1, rng.nextInt(i));
+        }
+        return array;
+    }
+
+    /**
+     * Shuffles the entries of the given array.
+     *
+     * <p>Uses Fisher-Yates shuffle copied from
+     * <a href="https://github.com/apache/commons-rng/blob/master/commons-rng-sampling/src/main/java/org/apache/commons/rng/sampling/ArraySampler.java">
+     *     RNG ArraySampler.</a>
+     *
+     * <p>TODO: This can be removed when {@code commons-rng-sampling 1.6} is released.
+     *
+     * @param rng Source of randomness.
+     * @param array Array whose entries will be shuffled (in-place).
+     * @return Shuffled input array.
+     */
+    static long[] shuffle(UniformRandomProvider rng, long[] array) {
+        for (int i = array.length; i > 1; i--) {
+            swap(array, i - 1, rng.nextInt(i));
+        }
+        return array;
+    }
+
+    /**
+     * Shuffles the entries of the given array.
+     *
+     * <p>Uses Fisher-Yates shuffle copied from
+     * <a href="https://github.com/apache/commons-rng/blob/master/commons-rng-sampling/src/main/java/org/apache/commons/rng/sampling/ArraySampler.java">
+     *     RNG ArraySampler.</a>
+     *
+     * <p>TODO: This can be removed when {@code commons-rng-sampling 1.6} is released.
+     *
+     * @param rng Source of randomness.
+     * @param array Array whose entries will be shuffled (in-place).
+     * @return Shuffled input array.
+     */
     static <T> T[] shuffle(UniformRandomProvider rng, T[] array) {
         for (int i = array.length; i > 1; i--) {
             swap(array, i - 1, rng.nextInt(i));
@@ -236,9 +339,112 @@ final class TestHelper {
      * @param i First index.
      * @param j Second index.
      */
+    private static void swap(int[] array, int i, int j) {
+        final int tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+
+    /**
+     * Swaps the two specified elements in the array.
+     *
+     * @param array Array.
+     * @param i First index.
+     * @param j Second index.
+     */
+    private static void swap(long[] array, int i, int j) {
+        final long tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+    /**
+     * Swaps the two specified elements in the array.
+     *
+     * @param array Array.
+     * @param i First index.
+     * @param j Second index.
+     */
     private static <T> void swap(T[] array, int i, int j) {
         final T tmp = array[i];
         array[i] = array[j];
         array[j] = tmp;
+    }
+
+    /**
+     * Assert the results are equal. All result types are compared.
+     *
+     * <p>If the tolerance is null then it is assumed the result is an exact integer type;
+     * the double value is compared using binary equality.
+     *
+     * <p>If the tolerance is not null then it is assumed the result is a {@code double} type;
+     * the BigInteger value is compared using its {@code double} representation if the
+     * actual BigInteger result is not equal.
+     *
+     * <p>If the {@code expected} throws an exception, then the {@code actual} is asserted
+     * to throw an exception of the same class.
+     *
+     * @param expected Expected.
+     * @param actual Actual.
+     * @param tol Tolerance for double equality.
+     * @param msg Message used for failure.
+     */
+    static void assertEquals(StatisticResult expected, StatisticResult actual, DoubleTolerance tol,
+            Supplier<String> msg) {
+        final Supplier<String> intMsg = () -> prefix(msg) + " int value";
+        Integer i = null;
+        try {
+            i = expected.getAsInt();
+        } catch (Throwable t) {
+            Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsInt(), intMsg);
+        }
+        if (i != null) {
+            Assertions.assertEquals(i.intValue(), actual.getAsInt(), intMsg);
+        }
+
+        final Supplier<String> longMsg = () -> prefix(msg) + " long value";
+        Long l = null;
+        try {
+            l = expected.getAsLong();
+        } catch (Throwable t) {
+            Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsLong(), longMsg);
+        }
+        if (l != null) {
+            Assertions.assertEquals(l.longValue(), actual.getAsLong(), longMsg);
+        }
+
+        final Supplier<String> doubleMsg = () -> prefix(msg) + " double value";
+        Double d = null;
+        try {
+            d = expected.getAsDouble();
+        } catch (Throwable t) {
+            Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsDouble(), doubleMsg);
+        }
+        if (d != null) {
+            if (tol == null) {
+                Assertions.assertEquals(d, actual.getAsDouble(), doubleMsg);
+            } else {
+                TestUtils.assertEquals(d, actual.getAsDouble(), tol, doubleMsg);
+            }
+        }
+
+        final Supplier<String> bigMsg = () -> prefix(msg) + " BigInteger value";
+        BigInteger b = null;
+        try {
+            b = expected.getAsBigInteger();
+        } catch (Throwable t) {
+            Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsBigInteger(), bigMsg);
+        }
+        if (b != null) {
+            if (tol == null) {
+                // Assume exact
+                Assertions.assertEquals(b, actual.getAsBigInteger(), bigMsg);
+            } else {
+                // Double computation may not be exact so check within tolerance
+                final BigInteger bb = actual.getAsBigInteger();
+                if (!b.equals(bb)) {
+                    TestUtils.assertEquals(b.doubleValue(), bb.doubleValue(), tol, bigMsg);
+                }
+            }
+        }
     }
 }

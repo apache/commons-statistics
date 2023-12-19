@@ -16,14 +16,14 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.math.BigInteger;
+
 /**
- * Returns the maximum of the available values. Uses {@link Math#max(double, double) Math.max} as an
- * underlying function to compute the {@code maximum}.
+ * Returns the minimum of the available values. Uses {@link Math#min(long, long) Math.min} as an
+ * underlying function to compute the {@code minimum}.
  *
  * <ul>
- *   <li>The result is {@link Double#NEGATIVE_INFINITY negative infinity} if no values are added.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
- *   <li>The value {@code -0.0} is considered strictly smaller than {@code 0.0}.
+ *   <li>The result is {@link Long#MAX_VALUE} if no values are added.
  * </ul>
  *
  * <p>This class is designed to work with (though does not require)
@@ -31,11 +31,11 @@ package org.apache.commons.statistics.descriptive;
  *
  * <p><strong>This implementation is not thread safe.</strong>
  * If multiple threads access an instance of this class concurrently,
- * and at least one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
- * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
+ * and at least one of the threads invokes the {@link java.util.function.LongConsumer#accept(long) accept} or
+ * {@link StatisticAccumulator#combine(StatisticResult) combine} method, it must be synchronized externally.
  *
- * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept}
- * and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ * <p>However, it is safe to use {@link java.util.function.LongConsumer#accept(long) accept}
+ * and {@link StatisticAccumulator#combine(StatisticResult) combine}
  * as {@code accumulator} and {@code combiner} functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
@@ -43,44 +43,42 @@ package org.apache.commons.statistics.descriptive;
  * safe and efficient parallel execution.
  *
  * @since 1.1
- * @see Math#max(double, double)
+ * @see Math#min(long, long)
  */
-public final class Max implements DoubleStatistic, DoubleStatisticAccumulator<Max> {
+public final class LongMin implements LongStatistic, StatisticAccumulator<LongMin> {
 
-    /** Current maximum. */
-    private double maximum = Double.NEGATIVE_INFINITY;
+    /** Current minimum. */
+    private long minimum = Long.MAX_VALUE;
 
     /**
      * Create an instance.
      */
-    private Max() {
+    private LongMin() {
         // No-op
     }
 
     /**
      * Creates an instance.
      *
-     * <p>The initial result is {@link Double#NEGATIVE_INFINITY negative infinity}.
+     * <p>The initial result is {@link Long#MAX_VALUE}.
      *
-     * @return {@code Max} instance.
+     * @return {@code Min} instance.
      */
-    public static Max create() {
-        return new Max();
+    public static LongMin create() {
+        return new LongMin();
     }
 
     /**
      * Returns an instance populated using the input {@code values}.
      *
-     * <p>The result is {@code NaN} if any of the values is {@code NaN}.
-     *
      * <p>When the input is an empty array, the result is
-     * {@link Double#NEGATIVE_INFINITY negative infinity}.
+     * {@link Long#MAX_VALUE}.
      *
      * @param values Values.
-     * @return {@code Max} instance.
+     * @return {@code Min} instance.
      */
-    public static Max of(double... values) {
-        return Statistics.add(new Max(), values);
+    public static LongMin of(long... values) {
+        return Statistics.add(new LongMin(), values);
     }
 
     /**
@@ -89,26 +87,50 @@ public final class Max implements DoubleStatistic, DoubleStatisticAccumulator<Ma
      * @param value Value.
      */
     @Override
-    public void accept(double value) {
-        maximum = Math.max(maximum, value);
+    public void accept(long value) {
+        minimum = Math.min(minimum, value);
     }
 
     /**
-     * Gets the maximum of all input values.
+     * Gets the minimum of all input values.
      *
      * <p>When no values have been added, the result is
-     * {@link Double#NEGATIVE_INFINITY negative infinity}.
+     * {@link Long#MAX_VALUE}.
      *
-     * @return maximum of all values.
+     * @return minimum of all values.
      */
     @Override
-    public double getAsDouble() {
-        return maximum;
+    public long getAsLong() {
+        return minimum;
+    }
+
+    /**
+     * Gets the minimum of all input values.
+     *
+     * <p>This method will throw an {@link ArithmeticException} if the {@code long}
+     * minimum overflows an {@code int}; or no values have been added.
+     *
+     * @return minimum of all values.
+     * @see Math#toIntExact(long)
+     */
+    @Override
+    public int getAsInt() {
+        return Math.toIntExact(minimum);
     }
 
     @Override
-    public Max combine(Max other) {
-        accept(other.getAsDouble());
+    public double getAsDouble() {
+        return minimum;
+    }
+
+    @Override
+    public BigInteger getAsBigInteger() {
+        return BigInteger.valueOf(minimum);
+    }
+
+    @Override
+    public LongMin combine(LongMin other) {
+        accept(other.getAsLong());
         return this;
     }
 }

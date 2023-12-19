@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Returns the minimum of the available values. Uses {@link Math#min Math.min} as an
+ * Returns the minimum of the available values. Uses {@link Math#min(double, double) Math.min} as an
  * underlying function to compute the {@code minimum}.
  *
  * <ul>
