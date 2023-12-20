@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
 import org.junit.jupiter.api.Assertions;
@@ -81,7 +82,7 @@ abstract class BaseStatisticTest {
     protected abstract StatisticResult getEmptyValue();
 
     /**
-     * Creates the statistic result using an {@code double} value.
+     * Creates the statistic result using a {@code double} value.
      *
      * @param value Value.
      * @return the statistic result
@@ -148,7 +149,7 @@ abstract class BaseStatisticTest {
 
     /**
      * Gets the tolerance for equality of the statistic and the expected value
-     * for the {@link #testAccept(int[], StatisticResult, DoubleTolerance)} test.
+     * for a test using the primitive consumer {@code accept} method.
      *
      * <p>The default implementation uses {@link #getTolerance()}.
      *
@@ -160,7 +161,7 @@ abstract class BaseStatisticTest {
 
     /**
      * Gets the tolerance for equality of the statistic and the expected value
-     * for the {@link #testArray(int[], StatisticResult, DoubleTolerance)} test.
+     * for a test using creation from a primitive array.
      *
      * <p>The default implementation uses {@link #getTolerance()}.
      *
@@ -172,7 +173,8 @@ abstract class BaseStatisticTest {
 
     /**
      * Gets the tolerance for equality of the statistic and the expected value
-     * for the {@link #testAcceptAndCombine(int[][], StatisticResult, DoubleTolerance)} test.
+     * for a test using the primitive consumer {@code accept} method to create instances
+     * that are combined using {@link StatisticAccumulator#combine(StatisticResult)}.
      *
      * <p>The default implementation uses {@link #getTolerance()}.
      *
@@ -184,7 +186,8 @@ abstract class BaseStatisticTest {
 
     /**
      * Gets the tolerance for equality of the statistic and the expected value
-     * for the {@link #testArrayAndCombine(int[][], StatisticResult, DoubleTolerance)} test.
+     * for a test using creation from a primitive array to create instances
+     * that are combined using {@link StatisticAccumulator#combine(StatisticResult)}.
      *
      * <p>The default implementation uses {@link #getTolerance()}.
      *
@@ -199,8 +202,8 @@ abstract class BaseStatisticTest {
      * This method is used to cross-validate the statistic computation against the reference
      * {@code double} implementation.
      *
-     * <p>The default implementation return {@link #getTolerance()}.
-     * 
+     * <p>The default implementation uses {@link #getTolerance()}.
+     *
      * <p>Note: Computation using {@code double} values may not be as accurate as integer
      * specialisations. This tolerance can be set appropriately to detect errors, for example
      * using a relative tolerance of 1e-12.
@@ -307,7 +310,7 @@ abstract class BaseStatisticTest {
      *
      * @param s Statistic.
      * @return the native result
-     * @see #getNativeResult(IntStatistic)
+     * @see #getResultType()
      */
     private Object getNativeResult(StatisticResult s) {
         try {
@@ -327,5 +330,18 @@ abstract class BaseStatisticTest {
             return MARKER_OBJECT;
         }
         throw new IllegalStateException("Unrecognised result type: " + getResultType());
+    }
+
+    /**
+     * Re-throw the error wrapped in an AssertionError with a message that appends the seed
+     * and repeat for the random order test.
+     *
+     * @param e Error.
+     * @param seed Seed.
+     * @param repeat Repeat of the total random permutations.
+     */
+    static void rethrowWithSeedAndRepeat(AssertionError e, long[] seed, int repeat) {
+        throw new AssertionError(String.format("%s; Seed=%s; Repeat=%d/%d",
+            e.getMessage(), Arrays.toString(seed), repeat, RANDOM_PERMUTATIONS), e);
     }
 }

@@ -29,6 +29,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.TestUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -394,6 +395,8 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
     /**
      * Creates the equivalent {@link DoubleStatistic} from the {@code values}.
      * This is used to cross-validate the {@link IntStatistic} result.
+     *
+     * <p>The test will be skipped if this method returns {@code null}.
      *
      * @param values Values.
      * @return the statistic
@@ -876,7 +879,9 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
     @ParameterizedTest
     @MethodSource(value = {"testAccept"})
     final void testVsDoubleStatistic(int[] values) {
-        final double expected = createAsDoubleStatistic(values).getAsDouble();
+        final DoubleStatistic stat = createAsDoubleStatistic(values);
+        Assumptions.assumeTrue(stat != null);
+        final double expected = stat.getAsDouble();
         final DoubleTolerance tol = getToleranceAsDouble();
         TestUtils.assertEquals(expected, Statistics.add(create(), values).getAsDouble(), tol,
             () -> statisticName + " accept: " + format(values));
@@ -1211,18 +1216,5 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
         return Arrays.stream(values)
             .map(BaseIntStatisticTest::format)
             .collect(Collectors.joining(", "));
-    }
-
-    /**
-     * Re-throw the error wrapped in an AssertionError with a message that appends the seed
-     * and repeat for the random order test.
-     *
-     * @param e Error.
-     * @param seed Seed.
-     * @param repeat Repeat of the total random permutations.
-     */
-    private static void rethrowWithSeedAndRepeat(AssertionError e, long[] seed, int repeat) {
-        throw new AssertionError(String.format("%s; Seed=%s; Repeat=%d/%d",
-            e.getMessage(), Arrays.toString(seed), repeat, RANDOM_PERMUTATIONS), e);
     }
 }

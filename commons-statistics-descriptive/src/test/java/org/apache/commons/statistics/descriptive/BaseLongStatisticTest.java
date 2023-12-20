@@ -29,6 +29,7 @@ import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.TestUtils;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -67,7 +68,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *      This is used to verify that test cases are added using the correct type and
  *      test tolerances are configured for {@code double} result types.
  *  <li>{@link #create()}: Create an empty statistic.
- *  <li>{@link #create(int...)}: Create a statistic from a set of values.
+ *  <li>{@link #create(long...)}: Create a statistic from a set of values.
  *  <li>{@link #getEmptyValue()}: The expected value of a statistic when not enough values have
  *      been observed. The minimum number of values can be provided in {@link #getEmptySize()}.
  *  <li>{@link #getExpectedValue(long[])}: A method to compute an expected value for the
@@ -97,7 +98,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  *      The default uses the class name without the "Test" suffix.
  *  <li>{@link #isCombineSymmetric()}: Specify whether to test {@code a.combine(b)} is exactly
  *      equal to {@code b.combine(a)}. The default is {@code true}.
- *  <li>{@link #mapValue(int)}: A method to update the sample data to the valid domain
+ *  <li>{@link #mapValue(long)}: A method to update the sample data to the valid domain
  *      for the statistic. This can be used to alter the default test data, for example
  *      by mapping any negative values to positive.
  * </ul>
@@ -395,6 +396,8 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
      * Creates the equivalent {@link DoubleStatistic} from the {@code values}.
      * This is used to cross-validate the {@link LongStatistic} result.
      *
+     * <p>The test will be skipped if this method returns {@code null}.
+     *
      * @param values Values.
      * @return the statistic
      */
@@ -606,8 +609,8 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
      *  <li>{@link java.util.function.LongConsumer#accept accept}
      *  <li>{@link java.util.function.LongConsumer#accept accept} and
      *      {@link StatisticAccumulator#combine(StatisticResult) combine}
-     *  <li>{@link #create(int...)}
-     *  <li>{@link #create(int...)} and
+     *  <li>{@link #create(long...)}
+     *  <li>{@link #create(long...)} and
      *      {@link StatisticAccumulator#combine(StatisticResult) combine}
      * </ol>
      *
@@ -649,7 +652,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
 
     /**
      * Stream the arguments to test the computation of the statistic using the
-     * {@link #create(int...)} method. The expected value and tolerance are supplied
+     * {@link #create(long...)} method. The expected value and tolerance are supplied
      * by the implementing class.
      *
      * @return the stream
@@ -666,7 +669,9 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
     @ParameterizedTest
     @MethodSource(value = {"testAccept"})
     final void testVsDoubleStatistic(long[] values) {
-        final double expected = createAsDoubleStatistic(values).getAsDouble();
+        final DoubleStatistic stat = createAsDoubleStatistic(values);
+        Assumptions.assumeTrue(stat != null);
+        final double expected = stat.getAsDouble();
         final DoubleTolerance tol = getToleranceAsDouble();
         TestUtils.assertEquals(expected, Statistics.add(create(), values).getAsDouble(), tol,
             () -> statisticName + " accept: " + format(values));
@@ -693,7 +698,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
 
     /**
      * Stream the arguments to test the computation of the statistic using the
-     * {@link java.util.function.LongConsumer#accept(int) accept} method for each
+     * {@link java.util.function.LongConsumer#accept(long) accept} method for each
      * array, then the {@link StatisticAccumulator#combine(StatisticResult) combine}
      * method. The expected value and tolerance are supplied by the implementing class.
      *
@@ -705,7 +710,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
 
     /**
      * Stream the arguments to test the computation of the statistic using the
-     * {@link #create(int...)} method for each array, then the
+     * {@link #create(long...)} method for each array, then the
      * {@link StatisticAccumulator#combine(StatisticResult) combine} method. The
      * expected value and tolerance are supplied by the implementing class.
      *
@@ -717,7 +722,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
 
     /**
      * Stream the arguments to test the computation of the statistic using the
-     * {@link java.util.function.LongConsumer#accept(int) accept} method for each
+     * {@link java.util.function.LongConsumer#accept(long) accept} method for each
      * element of a parallel stream, then the
      * {@link StatisticAccumulator#combine(StatisticResult) combine} method.
      * The expected value and tolerance are supplied by the implementing class.
@@ -863,9 +868,9 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
 
     /**
      * Test the computation of the statistic using the
-     * {@link java.util.function.LongConsumer#accept(int) accept} method. The
+     * {@link java.util.function.LongConsumer#accept(long) accept} method. The
      * statistic is created using both the {@link #create()} and the
-     * {@link #create(int...)} methods; the two instances must compute the same result.
+     * {@link #create(long...)} methods; the two instances must compute the same result.
      */
     @ParameterizedTest
     @MethodSource
@@ -876,7 +881,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
     }
 
     /**
-     * Test the computation of the statistic using the {@link #create(int...)} method.
+     * Test the computation of the statistic using the {@link #create(long...)} method.
      */
     @ParameterizedTest
     @MethodSource
@@ -886,7 +891,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
 
     /**
      * Test the computation of the statistic using the
-     * {@link java.util.function.LongConsumer#accept(int) accept} method for each
+     * {@link java.util.function.LongConsumer#accept(long) accept} method for each
      * array, then the {@link StatisticAccumulator#combine(StatisticResult) combine}
      * method.
      */
@@ -898,7 +903,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
 
     /**
      * Test the computation of the statistic using the
-     * {@link java.util.function.LongConsumer#accept(int) accept} method for each
+     * {@link java.util.function.LongConsumer#accept(long) accept} method for each
      * array, then the {@link StatisticAccumulator#combine(StatisticResult) combine}
      * method.
      */
@@ -941,7 +946,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
     /**
      * Test the computation of the statistic using a parallel stream of {@code double}
      * values. The accumulator is the
-     * {@link java.util.function.LongConsumer#accept(int) accept} method; the
+     * {@link java.util.function.LongConsumer#accept(long) accept} method; the
      * combiner is the {@link StatisticAccumulator#combine(StatisticResult) combine}
      * method.
      *
@@ -964,7 +969,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
 
     /**
      * Test the computation of the statistic using a parallel stream of {@code long[]}
-     * arrays. The arrays are mapped to a statistic using the {@link #create(int...)}
+     * arrays. The arrays are mapped to a statistic using the {@link #create(long...)}
      * method, and the stream reduced using the
      * {@link StatisticAccumulator#combine(StatisticResult) combine} method.
      *
@@ -1211,18 +1216,5 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
         return Arrays.stream(values)
             .map(BaseLongStatisticTest::format)
             .collect(Collectors.joining(", "));
-    }
-
-    /**
-     * Re-throw the error wrapped in an AssertionError with a message that appends the seed
-     * and repeat for the random order test.
-     *
-     * @param e Error.
-     * @param seed Seed.
-     * @param repeat Repeat of the total random permutations.
-     */
-    private static void rethrowWithSeedAndRepeat(AssertionError e, long[] seed, int repeat) {
-        throw new AssertionError(String.format("%s; Seed=%s; Repeat=%d/%d",
-            e.getMessage(), Arrays.toString(seed), repeat, RANDOM_PERMUTATIONS), e);
     }
 }

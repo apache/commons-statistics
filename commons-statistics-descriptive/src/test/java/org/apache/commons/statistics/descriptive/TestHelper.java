@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Arrays;
 import java.util.function.Supplier;
+import org.apache.commons.numbers.core.DD;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
@@ -446,5 +447,132 @@ final class TestHelper {
                 }
             }
         }
+    }
+
+    // DD equality checks adapted from o.a.c.numbers.core.TestUtils
+
+    /**
+     * Assert the two numbers are equal within the provided relative error.
+     *
+     * <p>The provided error is relative to the exact result in expected: (e - a) / e.
+     * If expected is zero this division is undefined. In this case the actual must be zero
+     * (no absolute tolerance is supported). The reporting of the error uses the absolute
+     * error and the return value of the relative error is 0. Cases of complete cancellation
+     * should be avoided for benchmarking relative accuracy.
+     *
+     * <p>Note that the actual double-double result is not validated using the high and low
+     * parts individually. These are summed and compared to the expected.
+     *
+     * <p>Set {@code eps} to negative to report the relative error to the stdout and
+     * ignore failures.
+     *
+     * <p>The relative error is signed. The sign of the error
+     * is the same as that returned from Double.compare(actual, expected); it is
+     * computed using {@code actual - expected}.
+     *
+     * @param expected expected value
+     * @param actual actual value
+     * @param eps maximum relative error between the two values
+     * @param msg failure message
+     * @return relative error difference between the values (signed)
+     * @throws NumberFormatException if {@code actual} contains non-finite values
+     */
+    static double assertEquals(BigDecimal expected, DD actual, double eps, String msg) {
+        return assertEquals(expected, actual, eps, () -> msg);
+    }
+
+    /**
+     * Assert the two numbers are equal within the provided relative error.
+     *
+     * <p>The provided error is relative to the exact result in expected: (e - a) / e.
+     * If expected is zero this division is undefined. In this case the actual must be zero
+     * (no absolute tolerance is supported). The reporting of the error uses the absolute
+     * error and the return value of the relative error is 0. Cases of complete cancellation
+     * should be avoided for benchmarking relative accuracy.
+     *
+     * <p>Note that the actual double-double result is not validated using the high and low
+     * parts individually. These are summed and compared to the expected.
+     *
+     * <p>Set {@code eps} to negative to report the relative error to the stdout and
+     * ignore failures.
+     *
+     * <p>The relative error is signed. The sign of the error
+     * is the same as that returned from Double.compare(actual, expected); it is
+     * computed using {@code actual - expected}.
+     *
+     * @param expected expected value
+     * @param actual actual value
+     * @param eps maximum relative error between the two values
+     * @param msg failure message
+     * @return relative error difference between the values (signed)
+     * @throws NumberFormatException if {@code actual} contains non-finite values
+     */
+    static double assertEquals(BigDecimal expected, DD actual, double eps, Supplier<String> msg) {
+        // actual - expected
+        final BigDecimal delta = new BigDecimal(actual.hi())
+            .add(new BigDecimal(actual.lo()))
+            .subtract(expected);
+        boolean equal;
+        if (expected.compareTo(BigDecimal.ZERO) == 0) {
+            // Edge case. Currently an absolute tolerance is not supported as summation
+            // to zero cases generated in testing all pass.
+            equal = actual.doubleValue() == 0;
+
+            // DEBUG:
+            if (eps < 0) {
+                if (!equal) {
+                    printf("%sexpected 0 != actual <%s + %s> (abs.error=%s)%n",
+                        prefix(msg), actual.hi(), actual.lo(), delta.doubleValue());
+                }
+            } else if (!equal) {
+                Assertions.fail(String.format("%sexpected 0 != actual <%s + %s> (abs.error=%s)",
+                    prefix(msg), actual.hi(), actual.lo(), delta.doubleValue()));
+            }
+
+            return 0;
+        }
+
+        final double rel = delta.divide(expected, MathContext.DECIMAL128).doubleValue();
+        // Allow input of a negative maximum ULPs
+        equal = Math.abs(rel) <= Math.abs(eps);
+
+        // DEBUG:
+        if (eps < 0) {
+            if (!equal) {
+                printf("%sexpected <%s> != actual <%s + %s> (rel.error=%s (%.3f x tol))%n",
+                    prefix(msg), expected.round(MathContext.DECIMAL128), actual.hi(), actual.lo(),
+                    rel, Math.abs(rel) / eps);
+            }
+        } else if (!equal) {
+            Assertions.fail(String.format("%sexpected <%s> != actual <%s + %s> (rel.error=%s (%.3f x tol))",
+                prefix(msg), expected.round(MathContext.DECIMAL128), actual.hi(), actual.lo(),
+                rel, Math.abs(rel) / eps));
+        }
+
+        return rel;
+    }
+
+    /**
+     * Print a formatted message to stdout.
+     * Provides a single point to disable checkstyle warnings on print statements and
+     * enable/disable all print debugging.
+     *
+     * @param format Format string.
+     * @param args Arguments.
+     */
+    static void printf(String format, Object... args) {
+        // CHECKSTYLE: stop regex
+        System.out.printf(format, args);
+        // CHECKSTYLE: resume regex
+    }
+
+    /**
+     * Get the prefix for the message.
+     *
+     * @param msg Message supplier
+     * @return the prefix
+     */
+    static String prefix(Supplier<String> msg) {
+        return msg == null ? "" : msg.get() + ": ";
     }
 }
