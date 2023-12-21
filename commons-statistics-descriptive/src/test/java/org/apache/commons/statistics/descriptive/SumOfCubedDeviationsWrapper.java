@@ -20,7 +20,7 @@ package org.apache.commons.statistics.descriptive;
  * Wrapper for {@link SumOfCubedDeviations} to allow testing as a statistic.
  */
 final class SumOfCubedDeviationsWrapper implements
-        DoubleStatistic, DoubleStatisticAccumulator<SumOfCubedDeviationsWrapper> {
+        DoubleStatistic, StatisticAccumulator<SumOfCubedDeviationsWrapper> {
 
     private final SumOfCubedDeviations delegate;
 

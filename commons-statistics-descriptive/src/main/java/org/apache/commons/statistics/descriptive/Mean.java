@@ -50,10 +50,10 @@ package org.apache.commons.statistics.descriptive;
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
  * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or
- * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method, it must be synchronized externally.
+ * {@link StatisticAccumulator#combine(StatisticResult) combine} method, it must be synchronized externally.
  *
  * <p>However, it is safe to use {@link java.util.function.DoubleConsumer#accept(double) accept}
- * and {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ * and {@link StatisticAccumulator#combine(StatisticResult) combine}
  * as {@code accumulator} and {@code combiner} functions of
  * {@link java.util.stream.Collector Collector} on a parallel stream,
  * because the parallel implementation of {@link java.util.stream.Stream#collect Stream.collect()}
@@ -71,7 +71,7 @@ package org.apache.commons.statistics.descriptive;
  * @see <a href="https://en.wikipedia.org/wiki/Mean">Mean (Wikipedia)</a>
  * @since 1.1
  */
-public final class Mean implements DoubleStatistic, DoubleStatisticAccumulator<Mean> {
+public final class Mean implements DoubleStatistic, StatisticAccumulator<Mean> {
 
     /**
      * First moment used to compute the mean.

@@ -681,7 +681,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @param a LHS.
      * @param b RHS.
      */
-    private static <T extends DoubleStatistic & DoubleStatisticAccumulator<T>> void combine(T a, T b) {
+    private static <T extends DoubleStatistic & StatisticAccumulator<T>> void combine(T a, T b) {
         if (a != null) {
             a.combine(b);
         }

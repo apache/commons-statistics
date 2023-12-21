@@ -187,20 +187,20 @@ class DoubleStatisticsTest {
      * @param constructor Constructor for an empty object.
      * @param arrayConstructor Constructor using an array of values.
      */
-    private static <T extends DoubleStatistic & DoubleStatisticAccumulator<T>> void addExpected(Statistic statistic,
+    private static <T extends DoubleStatistic & StatisticAccumulator<T>> void addExpected(Statistic statistic,
             Supplier<T> constructor, Function<double[], T> arrayConstructor) {
         final List<ExpectedResult> results = new ArrayList<>();
         for (final TestData d : testData) {
             // Stream values
             final double e1 = d.stream()
                 .map(values -> Statistics.add(constructor.get(), values))
-                .reduce(DoubleStatisticAccumulator::combine)
+                .reduce(StatisticAccumulator::combine)
                 .orElseThrow(IllegalStateException::new)
                 .getAsDouble();
             // Create from array
             final double e2 = d.stream()
                 .map(arrayConstructor)
-                .reduce(DoubleStatisticAccumulator::combine)
+                .reduce(StatisticAccumulator::combine)
                 .orElseThrow(IllegalStateException::new)
                 .getAsDouble();
             // Check that there is a finite value to compute during testing
@@ -574,7 +574,7 @@ class DoubleStatisticsTest {
      * @param setter Option setter.
      * @return the number of unique results
      */
-    private static <T extends DoubleStatistic & DoubleStatisticAccumulator<T>> int addBooleanOptionCase(
+    private static <T extends DoubleStatistic & StatisticAccumulator<T>> int addBooleanOptionCase(
             Stream.Builder<Arguments> builder, double[] values, Statistic statistic,
             Function<double[], T> arrayConstructor, BiConsumer<T, Boolean> setter) {
         final T stat = arrayConstructor.apply(values);

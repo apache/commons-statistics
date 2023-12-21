@@ -40,7 +40,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 /**
  * Abstract base class for statistic tests.
  * This supports testing statistics that implement {@link DoubleStatistic} and
- * {@link DoubleStatisticAccumulator}.
+ * {@link StatisticAccumulator}.
  *
  * <p>This class uses parameterized tests that are repeated for instances of a
  * statistic. The statistic is tested using standard finite and non-finite data.
@@ -51,10 +51,10 @@ import org.junit.jupiter.params.provider.MethodSource;
  * <ol>
  *  <li>{@link java.util.function.DoubleConsumer#accept accept}
  *  <li>{@link java.util.function.DoubleConsumer#accept accept} and
- *      {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ *      {@link StatisticAccumulator#combine(DoubleStatistic) combine}
  *  <li>{@link #create(double...)}
  *  <li>{@link #create(double...)} and
- *      {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+ *      {@link StatisticAccumulator#combine(DoubleStatistic) combine}
  * </ol>
  *
  * <p>A test implementation has to provide these method implementations:
@@ -107,7 +107,7 @@ import org.junit.jupiter.params.provider.MethodSource;
  * @param <S> Statistic type
  */
 @TestInstance(Lifecycle.PER_CLASS)
-abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatisticAccumulator<S>> {
+abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccumulator<S>> {
     /** An empty {@code double[]}. */
     private static final double[] EMPTY = {};
     /** The number of random permutations to perform. */
@@ -547,7 +547,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
 
     /**
      * Returns {@code true} if the
-     * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+     * {@link StatisticAccumulator#combine(DoubleStatistic) combine}
      * method is symmetric. If {@code true} then the combine will be tested with
      * duplicate instances of the statistic, combined in left-to-right and right-to-left;
      * the result must have the same statistic value.
@@ -740,10 +740,10 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
      * <ol>
      *  <li>{@link java.util.function.DoubleConsumer#accept accept}
      *  <li>{@link java.util.function.DoubleConsumer#accept accept} and
-     *      {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+     *      {@link StatisticAccumulator#combine(DoubleStatistic) combine}
      *  <li>{@link #create(double...)}
      *  <li>{@link #create(double...)} and
-     *      {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+     *      {@link StatisticAccumulator#combine(DoubleStatistic) combine}
      * </ol>
      *
      * <p>To test the {@code combine} method the data is split into approximately even groups
@@ -822,7 +822,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     /**
      * Stream the arguments to test the computation of the statistic using the
      * {@link java.util.function.DoubleConsumer#accept(double) accept} method for each
-     * array, then the {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+     * array, then the {@link StatisticAccumulator#combine(DoubleStatistic) combine}
      * method. The expected value and tolerance are supplied by the implementing class.
      *
      * @return the stream
@@ -834,7 +834,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     /**
      * Stream the arguments to test the computation of the statistic using the
      * {@link #create(double...)} method for each array, then the
-     * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method. The
+     * {@link StatisticAccumulator#combine(DoubleStatistic) combine} method. The
      * expected value and tolerance are supplied by the implementing class.
      *
      * @return the stream
@@ -847,7 +847,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
      * Stream the arguments to test the computation of the statistic using the
      * {@link java.util.function.DoubleConsumer#accept(double) accept} method for each
      * element of a parallel stream, then the
-     * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method.
+     * {@link StatisticAccumulator#combine(DoubleStatistic) combine} method.
      * The expected value and tolerance are supplied by the implementing class.
      *
      * <p>Note that this method uses the tolerance from {@link #getToleranceAcceptAndCombine()}.
@@ -861,7 +861,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     /**
      * Stream the arguments to test the computation of the statistic using the multiple
      * {@code double[]} arrays and the
-     * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method.
+     * {@link StatisticAccumulator#combine(DoubleStatistic) combine} method.
      *
      * @param tol Test tolerance.
      * @param tolCustom Tolerance for any custom test data.
@@ -1015,7 +1015,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     /**
      * Test the computation of the statistic using the
      * {@link java.util.function.DoubleConsumer#accept(double) accept} method for each
-     * array, then the {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+     * array, then the {@link StatisticAccumulator#combine(DoubleStatistic) combine}
      * method.
      */
     @ParameterizedTest
@@ -1027,7 +1027,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     /**
      * Test the computation of the statistic using the
      * {@link java.util.function.DoubleConsumer#accept(double) accept} method for each
-     * array, then the {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+     * array, then the {@link StatisticAccumulator#combine(DoubleStatistic) combine}
      * method.
      */
     @ParameterizedTest
@@ -1037,7 +1037,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     }
 
     /**
-     * Test the {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method
+     * Test the {@link StatisticAccumulator#combine(DoubleStatistic) combine} method
      * with an empty instance combined with a non-empty instance.
      */
     @ParameterizedTest
@@ -1052,7 +1052,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     }
 
     /**
-     * Test the {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method
+     * Test the {@link StatisticAccumulator#combine(DoubleStatistic) combine} method
      * with a non-empty instance combined with an empty instance.
      */
     @ParameterizedTest
@@ -1070,7 +1070,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
      * Test the computation of the statistic using a parallel stream of {@code double}
      * values. The accumulator is the
      * {@link java.util.function.DoubleConsumer#accept(double) accept} method; the
-     * combiner is the {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine}
+     * combiner is the {@link StatisticAccumulator#combine(DoubleStatistic) combine}
      * method.
      *
      * <p>Note: This method is similar to the
@@ -1086,7 +1086,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
     final void testAcceptParallelStream(double[] values, double expected, DoubleTolerance tol) {
         final double actual = Arrays.stream(values)
             .parallel()
-            .collect(this::create, DoubleStatistic::accept, DoubleStatisticAccumulator::combine)
+            .collect(this::create, DoubleStatistic::accept, StatisticAccumulator::combine)
             .getAsDouble();
         TestUtils.assertEquals(expected, actual, tol, () -> statisticName + ": " + format(values));
     }
@@ -1095,7 +1095,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
      * Test the computation of the statistic using a parallel stream of {@code double[]}
      * arrays. The arrays are mapped to a statistic using the {@link #create(double...)}
      * method, and the stream reduced using the
-     * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method.
+     * {@link StatisticAccumulator#combine(DoubleStatistic) combine} method.
      *
      * <p>Note: This method is similar to the
      * {@link #testArrayAndCombine(double[][], double, DoubleTolerance)} method and uses
@@ -1110,7 +1110,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
         final double actual = Arrays.stream(values)
             .parallel()
             .map(this::create)
-            .reduce(DoubleStatisticAccumulator::combine)
+            .reduce(StatisticAccumulator::combine)
             // Return an empty instance if there is no data
             .orElseGet(this::create)
             .getAsDouble();
@@ -1205,7 +1205,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
 
     /**
      * Test the computation of the statistic using an empty instance and the
-     * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method with
+     * {@link StatisticAccumulator#combine(DoubleStatistic) combine} method with
      * instances containing single values. Adding statistic instances containing 1 value
      * should be the same precision as adding a {@code double} value, although the two
      * results are not required to be exactly equal.
@@ -1240,7 +1240,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
 
     /**
      * Assert the computation of the statistic using the
-     * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method.
+     * {@link StatisticAccumulator#combine(DoubleStatistic) combine} method.
      *
      * @param constructor Function to create the statistic.
      * @param values Values.
@@ -1319,7 +1319,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & DoubleStatist
 
     /**
      * Combine the two statistics. This method asserts the contract of the
-     * {@link DoubleStatisticAccumulator#combine(DoubleStatistic) combine} method.
+     * {@link StatisticAccumulator#combine(DoubleStatistic) combine} method.
      * The left-hand side (LHS) argument must be returned. The right-hand side (RHS) must
      * be unchanged by the operation.
      *
