@@ -212,7 +212,7 @@
     <properties>
       <!-- Exact conversion from double to BigInteger is required. -->
       <property name="violationSuppressXPath"
-        value="./ancestor-or-self::MethodDeclaration[@Name='getAsBigInteger']"/>
+        value="./ancestor-or-self::MethodDeclaration[@Name='toBigIntegerExact']"/>
     </properties>
   </rule>
 

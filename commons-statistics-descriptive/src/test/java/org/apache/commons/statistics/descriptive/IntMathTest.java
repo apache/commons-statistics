@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -73,7 +74,7 @@ class IntMathTest {
             () -> String.format("%s * %s", bi1, bi2));
         final double x = expected.doubleValue();
         Assertions.assertEquals(x, IntMath.unsignedMultiplyToDouble(a, b),
-            () -> String.format("double2 %s * %s", bi1, bi2));
+            () -> String.format("double %s * %s", bi1, bi2));
     }
 
     static Stream<Arguments> testUnsignedMultiplyHigh() {

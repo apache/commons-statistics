@@ -16,7 +16,6 @@
  */
 package org.apache.commons.statistics.descriptive;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -35,67 +34,46 @@ public interface StatisticResult extends DoubleSupplier, IntSupplier, LongSuppli
      * {@inheritDoc}
      *
      * <p>The default implementation uses the closest representable {@code int} value of
-     * the {@link #getAsDouble()} result. In the event of ties the result is towards
-     * positive infinity. This will raise an {@link ArithmeticException} if the closest
-     * integer result is not within the range {@code [-2^31, 2^31)}.
+     * the {@link #getAsDouble()} {@code result}. In the event of ties the result is
+     * rounded towards positive infinity. This will raise an {@link ArithmeticException}
+     * if the closest integer result is not within the range {@code [-2^31, 2^31)}.
      *
-     * @throws ArithmeticException if the {@code result} overflows an int, or is not
+     * @throws ArithmeticException if the {@code result} overflows an {@code int} or is not
      * finite
      */
     @Override
     default int getAsInt() {
-        // Note: Do not use (int) getAsLong() to avoid a narrowing primitive conversion.
-        final double x = getAsDouble();
-        final double r = Statistics.roundToInteger(x);
-        if (r >= -0x1.0p31 && r < 0x1.0p31) {
-            return (int) r;
-        }
-        throw new ArithmeticException("integer overflow: " + x);
+        return IntMath.toIntExact(getAsDouble());
     }
 
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation uses the closest representable {@code long} value of
-     * the {@link #getAsDouble()} result. In the event of ties the result is rounded
-     * positive infinity. This will raise an {@link ArithmeticException} if the closest
-     * long integer result is not within the range {@code [-2^63, 2^63)}.
+     * the {@link #getAsDouble()} {@code result}. In the event of ties the result is
+     * rounded towards positive infinity. This will raise an {@link ArithmeticException}
+     * if the closest integer result is not within the range {@code [-2^63, 2^63)}.
      *
-     * @throws ArithmeticException if the {@code result} overflows a long, or is not
+     * @throws ArithmeticException if the {@code result} overflows a {@code long} or is not
      * finite
      */
     @Override
     default long getAsLong() {
-        final double x = getAsDouble();
-        final double r = Statistics.roundToInteger(x);
-        if (r >= -0x1.0p63 && r < 0x1.0p63) {
-            return (long) r;
-        }
-        throw new ArithmeticException("long integer overflow: " + x);
+        return IntMath.toLongExact(getAsDouble());
     }
 
     /**
      * Gets a result as a {@link BigInteger}.
      *
      * <p>The default implementation uses the closest representable {@code BigInteger}
-     * value of the {@link #getAsDouble()} result. In the event of ties the result is
-     * rounded positive infinity. This will raise an {@link ArithmeticException} if the
-     * result is not finite.
+     * value of the {@link #getAsDouble()} {@code result}. In the event of ties the result
+     * is rounded towards positive infinity. This will raise an
+     * {@link ArithmeticException} if the {@code result} is not finite.
      *
      * @return a result
      * @throws ArithmeticException if the {@code result} is not finite
      */
     default BigInteger getAsBigInteger() {
-        final double x = getAsDouble();
-        if (!Double.isFinite(x)) {
-            throw new ArithmeticException("BigInteger overflow: " + x);
-        }
-        final double r = Statistics.roundToInteger(x);
-        if (r >= -0x1.0p63 && r < 0x1.0p63) {
-            // Representable as a long
-            return BigInteger.valueOf((long) r);
-        }
-        // Large result
-        return new BigDecimal(r).toBigInteger();
+        return IntMath.toBigIntegerExact(getAsDouble());
     }
 }
