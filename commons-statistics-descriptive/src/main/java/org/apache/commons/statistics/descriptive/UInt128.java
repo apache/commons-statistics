@@ -201,6 +201,31 @@ final class UInt128 {
     }
 
     /**
+     * Convert to an {@code int}; throwing an exception if the value overflows an {@code int}.
+     *
+     * @return the value
+     * @throws ArithmeticException if the value overflows an {@code int}.
+     * @see Math#toIntExact(long)
+     */
+    int toIntExact() {
+        return Math.toIntExact(toLongExact());
+    }
+
+    /**
+     * Convert to a {@code long}; throwing an exception if the value overflows a {@code long}.
+     *
+     * @return the value
+     * @throws ArithmeticException if the value overflows a {@code long}.
+     */
+    long toLongExact() {
+        // Test if we have more than 63-bits
+        if (ab != 0 || c < 0) {
+            throw new ArithmeticException("long integer overflow");
+        }
+        return lo64();
+    }
+
+    /**
      * Return the lower 64-bits as a {@code long} value.
      *
      * @return bits 64-1
