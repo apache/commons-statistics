@@ -19,6 +19,7 @@ package org.apache.commons.statistics.descriptive;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.stream.Stream;
+import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
 import org.junit.jupiter.api.Assertions;
@@ -53,7 +54,8 @@ final class IntSumTest extends BaseIntStatisticTest<IntSum> {
     @Override
     protected DoubleTolerance getToleranceAsDouble() {
         // Floating-point sum may be inexact.
-        // Currently the double sum matches on the standard test data.
+        // Currently the double sum matches on the standard test data
+        // and larger random data added in streamTestData().
         return DoubleTolerances.equals();
     }
 
@@ -73,9 +75,15 @@ final class IntSumTest extends BaseIntStatisticTest<IntSum> {
 
     @Override
     protected Stream<StatisticTestData> streamTestData() {
+        // A null seed will create a different RNG each time
+        final UniformRandomProvider rng = TestHelper.createRNG(null);
         return Stream.of(
-            addCase(Integer.MAX_VALUE, 1, 2, 3, 4, Integer.MAX_VALUE),
-            addCase(Integer.MIN_VALUE, -1, -2, -3, -4, Integer.MIN_VALUE)
+            addCase(Integer.MAX_VALUE, 1, 2, 3, 4, -20, Integer.MAX_VALUE),
+            addCase(Integer.MIN_VALUE, -1, -2, -3, -4, 20, Integer.MIN_VALUE),
+            addCase(rng.ints(5).toArray()),
+            addCase(rng.ints(10).toArray()),
+            addCase(rng.ints(20).toArray()),
+            addCase(rng.ints(40).toArray())
         );
     }
 

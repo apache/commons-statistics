@@ -231,8 +231,9 @@ final class TestHelper {
 
     /**
      * Creates a RNG instance.
+     * A null seed will create a different RNG each time.
      *
-     * @param seed Seed.
+     * @param seed Seed (can be null).
      * @return A new RNG instance.
      * @see #createRNGSeed()
      */
