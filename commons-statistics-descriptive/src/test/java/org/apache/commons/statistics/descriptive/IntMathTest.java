@@ -113,15 +113,15 @@ class IntMathTest {
 
     @ParameterizedTest
     @MethodSource
-    void testUin128ToDouble(long a, long b) {
+    void testUint128ToDouble(long a, long b) {
         final BigInteger bi1 = toUnsignedBigInteger(a).shiftLeft(Long.SIZE);
         final BigInteger bi2 = toUnsignedBigInteger(b);
         final double x = bi1.add(bi2).doubleValue();
-        Assertions.assertEquals(x, IntMath.uin128ToDouble(a, b),
+        Assertions.assertEquals(x, IntMath.uint128ToDouble(a, b),
             () -> String.format("%s + %s", a, b));
     }
 
-    static Stream<Arguments> testUin128ToDouble() {
+    static Stream<Arguments> testUint128ToDouble() {
         final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
         final Stream.Builder<Arguments> builder = Stream.builder();
         for (int i = 0; i < 100; i++) {

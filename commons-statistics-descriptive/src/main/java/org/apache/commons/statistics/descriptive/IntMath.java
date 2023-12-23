@@ -212,7 +212,7 @@ final class IntMath {
             // Implicit conversion to a double.
             return lo;
         }
-        return uin128ToDouble(unsignedMultiplyHigh(x, y), lo);
+        return uint128ToDouble(unsignedMultiplyHigh(x, y), lo);
     }
 
     /**
@@ -222,7 +222,7 @@ final class IntMath {
      * @param lo Low 64-bits.
      * @return the double
      */
-    static double uin128ToDouble(long hi, long lo) {
+    static double uint128ToDouble(long hi, long lo) {
         // Require the representation:
         // 2^exp * mantissa / 2^53
         // The mantissa has an implied leading 1-bit.

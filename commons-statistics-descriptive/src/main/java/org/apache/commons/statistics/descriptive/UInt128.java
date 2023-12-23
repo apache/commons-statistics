@@ -197,7 +197,7 @@ final class UInt128 {
      * @return the value
      */
     double toDouble() {
-        return IntMath.uin128ToDouble(hi64(), lo64());
+        return IntMath.uint128ToDouble(hi64(), lo64());
     }
 
     /**

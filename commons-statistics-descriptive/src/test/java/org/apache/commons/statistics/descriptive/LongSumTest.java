@@ -16,9 +16,7 @@
  */
 package org.apache.commons.statistics.descriptive;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
@@ -28,72 +26,58 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test for {@link LongMean}.
+ * Test for {@link LongSum}.
  */
-final class LongMeanTest extends BaseLongStatisticTest<LongMean> {
+final class LongSumTest extends BaseLongStatisticTest<LongSum> {
 
     @Override
-    protected LongMean create() {
-        return LongMean.create();
+    protected ResultType getResultType() {
+        return ResultType.BIG_INTEGER;
     }
 
     @Override
-    protected LongMean create(long... values) {
-        return LongMean.of(values);
+    protected LongSum create() {
+        return LongSum.create();
     }
 
     @Override
-    protected StatisticResult getEmptyValue() {
-        return createStatisticResult(Double.NaN);
+    protected LongSum create(long... values) {
+        return LongSum.of(values);
     }
 
     @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
-        return Mean.of(Arrays.stream(values).asDoubleStream().toArray());
+        return Sum.of(Arrays.stream(values).asDoubleStream().toArray());
     }
 
     @Override
     protected DoubleTolerance getToleranceAsDouble() {
-        // Data with large shifts in the rolling mean is not computed very accurately
-        return DoubleTolerances.relative(5e-8);
-    }
-
-    @Override
-    protected StatisticResult getExpectedValue(long[] values) {
-        final BigInteger sum = Arrays.stream(values)
-            .mapToObj(BigInteger::valueOf)
-            .reduce(BigInteger.ZERO, BigInteger::add);
-        final double x = new BigDecimal(sum)
-            .divide(BigDecimal.valueOf(values.length), MathContext.DECIMAL128)
-            .doubleValue();
-        return createStatisticResult(x);
-    }
-
-    @Override
-    protected DoubleTolerance getTolerance() {
+        // Floating-point sum may be inexact.
+        // Currently the double sum matches on the standard test data.
         return DoubleTolerances.equals();
     }
 
     @Override
+    protected StatisticResult getEmptyValue() {
+        // It does not matter that this returns a IntStatisticResult
+        // rather than a BigIntegerStatisticResult
+        return createStatisticResult(0);
+    }
+
+    @Override
+    protected StatisticResult getExpectedValue(long[] values) {
+        final BigInteger x = Arrays.stream(values)
+            .mapToObj(BigInteger::valueOf)
+            .reduce(BigInteger.ZERO, BigInteger::add);
+        return createStatisticResult(x);
+    }
+
+    @Override
     protected Stream<StatisticTestData> streamTestData() {
-        final Stream.Builder<StatisticTestData> builder = Stream.builder();
-        builder.accept(addCase(Long.MAX_VALUE - 1, Long.MAX_VALUE));
-        builder.accept(addCase(Long.MIN_VALUE + 1, Long.MIN_VALUE));
-        final long[] a = new long[2 * 512 * 512];
-        Arrays.fill(a, 0, a.length / 2, 10);
-        Arrays.fill(a, a.length / 2, a.length, 1);
-        builder.accept(addReference(5.5, a));
-
-        // Same cases as for the DoubleStatistic Variance but the tolerance is exact
-        final DoubleTolerance tol = DoubleTolerances.equals();
-
-        // Python Numpy v1.25.1: numpy.mean
-        builder.accept(addReference(2.5, tol, 1, 2, 3, 4));
-        builder.accept(addReference(12.0, tol, 5, 9, 13, 14, 10, 12, 11, 15, 19));
-        // R v4.3.1: mean(x)
-        builder.accept(addReference(5.5, tol, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-        builder.accept(addReference(8.75, tol, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
-        return builder.build();
+        return Stream.of(
+            addCase(Long.MAX_VALUE, 1, 2, 3, 4, Long.MAX_VALUE),
+            addCase(Long.MIN_VALUE, -1, -2, -3, -4, Long.MIN_VALUE)
+        );
     }
 
     /**
@@ -112,13 +96,13 @@ final class LongMeanTest extends BaseLongStatisticTest<LongMean> {
         "-9223372036854775808, -9223372036854775807, 61",
     })
     void testLongOverflow(long x, long y, int exp) {
-        final LongMean s = LongMean.of(x, y);
-        final double mean = BigInteger.valueOf(x)
-            .add(BigInteger.valueOf(y)).doubleValue() * 0.5;
+        final LongSum s = LongSum.of(x, y);
+        BigInteger sum = BigInteger.valueOf(x).add(BigInteger.valueOf(y));
         for (int i = 0; i < exp; i++) {
             // Assumes the sum as a long will overflow
             s.combine(s);
-            Assertions.assertEquals(mean, s.getAsDouble());
+            sum = sum.shiftLeft(1);
+            Assertions.assertEquals(sum, s.getAsBigInteger());
         }
     }
 }

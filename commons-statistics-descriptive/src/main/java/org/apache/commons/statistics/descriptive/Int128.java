@@ -196,6 +196,44 @@ final class Int128 {
     }
 
     /**
+     * Convert to a {@code double}.
+     *
+     * @return the value
+     */
+    double toDouble() {
+        long h = hi;
+        long l = lo;
+        // Special cases
+        if (h == 0) {
+            return l;
+        }
+        if (l == 0) {
+            return h * 0x1.0p64;
+        }
+        // Both h and l are non-zero and can be negated to a positive magnitude.
+        // Use the same logic as toBigInteger to create magnitude (h, l) and a sign.
+        int sign = 1;
+        if ((h ^ l) < 0) {
+            // Here we rearrange to [2^64 * (hi64-1)] + [2^64 - lo64].
+            if (h >= 0) {
+                h = h - 1;
+            } else {
+                // As above with negation
+                h = ~h; // -h - 1
+                l = -l;
+                sign = -1;
+            }
+        } else if (h < 0) {
+            // Invert negative values to create the equivalent positive magnitude.
+            h = -h;
+            l = -l;
+            sign = -1;
+        }
+        final double x = IntMath.uint128ToDouble(h, l);
+        return sign < 0 ? -x : x;
+    }
+
+    /**
      * Convert to a double-double.
      *
      * @return the value
@@ -209,6 +247,30 @@ final class Int128 {
         // to add to a larger negative number:
         // e.g. x = (x & 0xff) + ((x >> 8) << 8)
         return DD.of(lo).add((hi & MASK32) * 0x1.0p64).add((hi >> Integer.SIZE) * 0x1.0p96);
+    }
+
+    /**
+     * Convert to an {@code int}; throwing an exception if the value overflows an {@code int}.
+     *
+     * @return the value
+     * @throws ArithmeticException if the value overflows an {@code int}.
+     * @see Math#toIntExact(long)
+     */
+    int toIntExact() {
+        return Math.toIntExact(toLongExact());
+    }
+
+    /**
+     * Convert to a {@code long}; throwing an exception if the value overflows a {@code long}.
+     *
+     * @return the value
+     * @throws ArithmeticException if the value overflows a {@code long}.
+     */
+    long toLongExact() {
+        if (hi != 0) {
+            throw new ArithmeticException("long integer overflow");
+        }
+        return lo;
     }
 
     /**

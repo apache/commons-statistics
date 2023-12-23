@@ -211,11 +211,11 @@ final class UInt192 {
         final long m = mid64();
         final long l = lo64();
         if (h == 0) {
-            return IntMath.uin128ToDouble(m, l);
+            return IntMath.uint128ToDouble(m, l);
         }
         // For correct rounding we use a sticky bit to represent magnitude
         // lost from the low 64-bits. The result is scaled by 2^64.
-        return IntMath.uin128ToDouble(h, m | ((l == 0) ? 0 : 1)) * 0x1.0p64;
+        return IntMath.uint128ToDouble(h, m | ((l == 0) ? 0 : 1)) * 0x1.0p64;
     }
 
     /**

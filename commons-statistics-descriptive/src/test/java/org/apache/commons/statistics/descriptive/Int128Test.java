@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Test for {@link Int128}.
@@ -86,6 +87,7 @@ class Int128Test {
         }
         Assertions.assertEquals(expected, v.toBigInteger());
         // Check floating-point representation
+        Assertions.assertEquals(expected.doubleValue(), v.toDouble(), "double");
         TestHelper.assertEquals(new BigDecimal(expected), v.toDD(), 0x1.0p-106, "DD");
     }
 
@@ -124,6 +126,7 @@ class Int128Test {
         Assertions.assertEquals(expected, x.toBigInteger(),
             () -> String.format("(%d, %d) + (%d, %d)", a, b, c, d));
         // Check floating-point representation
+        Assertions.assertEquals(expected.doubleValue(), x.toDouble(), "double");
         TestHelper.assertEquals(new BigDecimal(expected), x.toDD(), 0x1.0p-106, "DD");
         // Check self-addition
         expected = y.toBigInteger();
@@ -169,5 +172,29 @@ class Int128Test {
         }
         RandomSource.XO_RO_SHI_RO_128_PP.create().longs(20).forEach(builder);
         return builder.build();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {Integer.MAX_VALUE, Integer.MIN_VALUE})
+    void testToIntExact(int x) {
+        final Int128 v = Int128.of(x);
+        Assertions.assertEquals(x, v.toIntExact());
+        final int y = x < 0 ? -1 : 1;
+        v.add(y);
+        Assertions.assertThrows(ArithmeticException.class, () -> v.toIntExact());
+        v.add(-y);
+        Assertions.assertEquals(x, v.toIntExact());
+    }
+
+    @ParameterizedTest
+    @ValueSource(longs = {Long.MAX_VALUE, Long.MIN_VALUE})
+    void testToLongExact(long x) {
+        final Int128 v = Int128.of(x);
+        Assertions.assertEquals(x, v.toLongExact());
+        final int y = x < 0 ? -1 : 1;
+        v.add(y);
+        Assertions.assertThrows(ArithmeticException.class, () -> v.toLongExact());
+        v.add(-y);
+        Assertions.assertEquals(x, v.toLongExact());
     }
 }

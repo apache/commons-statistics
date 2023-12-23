@@ -16,6 +16,7 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
@@ -25,68 +26,57 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 /**
- * Test for {@link IntMean}.
+ * Test for {@link IntSum}.
  */
-final class IntMeanTest extends BaseIntStatisticTest<IntMean> {
+final class IntSumTest extends BaseIntStatisticTest<IntSum> {
 
     @Override
-    protected IntMean create() {
-        return IntMean.create();
+    protected ResultType getResultType() {
+        return ResultType.BIG_INTEGER;
     }
 
     @Override
-    protected IntMean create(int... values) {
-        return IntMean.of(values);
+    protected IntSum create() {
+        return IntSum.create();
+    }
+
+    @Override
+    protected IntSum create(int... values) {
+        return IntSum.of(values);
     }
 
     @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
-        return Mean.of(Arrays.stream(values).asDoubleStream().toArray());
+        return Sum.of(Arrays.stream(values).asDoubleStream().toArray());
     }
 
     @Override
     protected DoubleTolerance getToleranceAsDouble() {
-        // Large shifts in the rolling mean are not computed very accurately
-        return DoubleTolerances.relative(5e-8);
+        // Floating-point sum may be inexact.
+        // Currently the double sum matches on the standard test data.
+        return DoubleTolerances.equals();
     }
 
     @Override
     protected StatisticResult getEmptyValue() {
-        return createStatisticResult(Double.NaN);
+        // It does not matter that this returns a IntStatisticResult
+        // rather than a BigIntegerStatisticResult
+        return createStatisticResult(0);
     }
 
     @Override
     protected StatisticResult getExpectedValue(int[] values) {
         // Use the JDK as a reference implementation
-        final double x = Arrays.stream(values).average().orElse(Double.NaN);
+        final long x = Arrays.stream(values).asLongStream().sum();
         return createStatisticResult(x);
     }
 
     @Override
-    protected DoubleTolerance getTolerance() {
-        return DoubleTolerances.equals();
-    }
-
-    @Override
     protected Stream<StatisticTestData> streamTestData() {
-        final Stream.Builder<StatisticTestData> builder = Stream.builder();
-        builder.accept(addCase(Integer.MAX_VALUE - 1, Integer.MAX_VALUE));
-        builder.accept(addCase(Integer.MIN_VALUE + 1, Integer.MIN_VALUE));
-        final int[] a = new int[2 * 512 * 512];
-        Arrays.fill(a, 0, a.length / 2, 10);
-        Arrays.fill(a, a.length / 2, a.length, 1);
-        builder.accept(addReference(5.5, a));
-
-        // Same cases as for the DoubleStatistic Variance but the tolerance is exact
-        final DoubleTolerance tol = DoubleTolerances.equals();
-
-        // Python Numpy v1.25.1: numpy.mean
-        builder.accept(addReference(2.5, tol, 1, 2, 3, 4));
-        builder.accept(addReference(12.0, tol, 5, 9, 13, 14, 10, 12, 11, 15, 19));
-        // R v4.3.1: mean(x)
-        builder.accept(addReference(5.5, tol, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-        builder.accept(addReference(8.75, tol, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
-        return builder.build();
+        return Stream.of(
+            addCase(Integer.MAX_VALUE, 1, 2, 3, 4, Integer.MAX_VALUE),
+            addCase(Integer.MIN_VALUE, -1, -2, -3, -4, Integer.MIN_VALUE)
+        );
     }
 
     /**
@@ -105,12 +95,13 @@ final class IntMeanTest extends BaseIntStatisticTest<IntMean> {
         "-2147483648, -2147483647, 61",
     })
     void testLongOverflow(int x, int y, int exp) {
-        final IntMean s = IntMean.of(x, y);
-        final double mean = ((long) x + y) * 0.5;
+        final IntSum s = IntSum.of(x, y);
+        BigInteger sum = BigInteger.valueOf((long) x + y);
         for (int i = 0; i < exp; i++) {
             // Assumes the sum as a long will overflow
             s.combine(s);
-            Assertions.assertEquals(mean, s.getAsDouble());
+            sum = sum.shiftLeft(1);
+            Assertions.assertEquals(sum, s.getAsBigInteger());
         }
     }
 }
