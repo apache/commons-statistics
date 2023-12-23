@@ -29,8 +29,6 @@ import java.math.BigInteger;
  * values as the count \( n \) is maintained as a {@code long}. The exact sum is
  * returned using {@link #getAsBigInteger()}. Methods that return {@code int} or
  * {@code long} primitives will raise an exception if the result overflows.
- * The {@code long} value is safe up to the maximum array length for any input
- * {@code int[]} data. The {@code long} value can overflow when instances are combined.
  *
  * <p>Note that the implementation does not use {@code BigInteger} arithmetic; for
  * performance the sum is computed using primitives to create a signed 128-bit integer.
@@ -78,7 +76,7 @@ public final class LongSum implements LongStatistic, StatisticAccumulator<LongSu
      *
      * <p>The initial result is zero.
      *
-     * @return {@code IntSum} instance.
+     * @return {@code LongSum} instance.
      */
     public static LongSum create() {
         return new LongSum();
@@ -90,7 +88,7 @@ public final class LongSum implements LongStatistic, StatisticAccumulator<LongSu
      * <p>When the input is an empty array, the result is zero.
      *
      * @param values Values.
-     * @return {@code IntSum} instance.
+     * @return {@code LongSum} instance.
      */
     public static LongSum of(long... values) {
         final Int128 s = Int128.create();
