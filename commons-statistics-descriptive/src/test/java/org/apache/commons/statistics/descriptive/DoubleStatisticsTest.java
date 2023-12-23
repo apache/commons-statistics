@@ -68,7 +68,7 @@ class DoubleStatisticsTest {
         private final int id;
         /** The sample values. */
         private final double[][] values;
-        /* The number of values. */
+        /** The number of values. */
         private final long size;
 
         /**
