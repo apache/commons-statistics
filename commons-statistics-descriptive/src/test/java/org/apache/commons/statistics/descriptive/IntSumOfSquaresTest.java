@@ -76,8 +76,7 @@ final class IntSumOfSquaresTest extends BaseIntStatisticTest<IntSumOfSquares> {
 
     @Override
     protected Stream<StatisticTestData> streamTestData() {
-        // A null seed will create a different RNG each time
-        final UniformRandomProvider rng = TestHelper.createRNG(null);
+        final UniformRandomProvider rng = TestHelper.createRNG();
         return Stream.of(
             addCase(Integer.MAX_VALUE, 1, 2, 3, 4, Integer.MAX_VALUE),
             addCase(Integer.MIN_VALUE, -1, -2, -3, -4, Integer.MIN_VALUE),

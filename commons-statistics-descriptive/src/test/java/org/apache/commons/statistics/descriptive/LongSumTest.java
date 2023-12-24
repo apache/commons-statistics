@@ -76,8 +76,7 @@ final class LongSumTest extends BaseLongStatisticTest<LongSum> {
 
     @Override
     protected Stream<StatisticTestData> streamTestData() {
-        // A null seed will create a different RNG each time
-        final UniformRandomProvider rng = TestHelper.createRNG(null);
+        final UniformRandomProvider rng = TestHelper.createRNG();
         return Stream.of(
             addCase(Long.MAX_VALUE, 1, 2, 3, 4, -20, Long.MAX_VALUE),
             addCase(Long.MIN_VALUE, -1, -2, -3, -4, 20, Long.MIN_VALUE),

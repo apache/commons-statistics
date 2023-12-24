@@ -21,7 +21,6 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -93,7 +92,7 @@ class UInt128Test {
 
     static Stream<Arguments> testAddLongs() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         for (final int n : new int[] {50, 100}) {
             builder.accept(Arguments.of(rng.longs(n).map(x -> x >>> 1).toArray()));
             builder.accept(Arguments.of(rng.longs(n).map(x -> x >>> 2).toArray()));
@@ -136,7 +135,7 @@ class UInt128Test {
 
     static Stream<Arguments> testAddInt128() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 0; i < 50; i++) {
             builder.accept(Arguments.of(rng.nextLong() >>> 2, rng.nextLong(), rng.nextLong() >>> 2, rng.nextLong()));
             builder.accept(Arguments.of(rng.nextLong() >>> 2, rng.nextLong(), rng.nextLong() >>> 1, rng.nextLong()));
@@ -156,7 +155,7 @@ class UInt128Test {
 
     static Stream<Arguments> testOfInt96() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 0; i < 50; i++) {
             final long a = rng.nextLong();
             final int b = rng.nextInt();
@@ -188,7 +187,7 @@ class UInt128Test {
 
     static Stream<Arguments> testMultiplyInt() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         final int[] x = {0, 1, -1, Integer.MAX_VALUE, Integer.MIN_VALUE};
         for (int i = 0; i < 50; i++) {
             final long a = rng.nextLong();
@@ -223,7 +222,7 @@ class UInt128Test {
 
     static Stream<Arguments> testSubtract() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 0; i < 50; i++) {
             final long a = rng.nextLong();
             final long b = rng.nextLong();

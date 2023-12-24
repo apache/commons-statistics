@@ -24,7 +24,6 @@ import java.util.stream.LongStream;
 import java.util.stream.LongStream.Builder;
 import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,7 +47,7 @@ class IntMathTest {
     }
 
     static LongStream testSquareHigh() {
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         final Builder builder = LongStream.builder();
         builder.accept(0);
         builder.accept(Long.MAX_VALUE);
@@ -78,7 +77,7 @@ class IntMathTest {
     }
 
     static Stream<Arguments> testUnsignedMultiplyHigh() {
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         final Stream.Builder<Arguments> builder = Stream.builder();
         final long[] values = {
             -1, 0, 1, Long.MAX_VALUE, Long.MIN_VALUE,
@@ -122,7 +121,7 @@ class IntMathTest {
     }
 
     static Stream<Arguments> testUint128ToDouble() {
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         final Stream.Builder<Arguments> builder = Stream.builder();
         for (int i = 0; i < 100; i++) {
             long a = rng.nextLong();

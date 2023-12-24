@@ -32,6 +32,8 @@ import org.junit.jupiter.api.Assertions;
  * Helper class for tests in {@code o.a.c.s.descriptive} module.
  */
 final class TestHelper {
+    /** Source of randomness. */
+    private static final RandomSource RANDOM_SOURCE = RandomSource.XO_RO_SHI_RO_128_PP;
     /**
      * Cached seed. Using the same seed ensures all statistics use the same shuffled
      * data for tests executed in the same JVM.
@@ -231,6 +233,16 @@ final class TestHelper {
 
     /**
      * Creates a RNG instance.
+     * This method will create a different RNG each time.
+     *
+     * @return A new RNG instance.
+     */
+    static UniformRandomProvider createRNG() {
+        return RANDOM_SOURCE.create();
+    }
+
+    /**
+     * Creates a RNG instance.
      * A null seed will create a different RNG each time.
      *
      * @param seed Seed (can be null).
@@ -238,7 +250,7 @@ final class TestHelper {
      * @see #createRNGSeed()
      */
     static UniformRandomProvider createRNG(long[] seed) {
-        return RandomSource.XO_RO_SHI_RO_128_PP.create(seed);
+        return RANDOM_SOURCE.create(seed);
     }
 
     /**

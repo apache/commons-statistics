@@ -93,7 +93,7 @@ class Int128Test {
 
     static Stream<Arguments> testAddLongs() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         for (final int n : new int[] {50, 100}) {
             builder.accept(Arguments.of(rng.longs(n).toArray()));
             builder.accept(Arguments.of(rng.longs(n).map(x -> x >>> 2).toArray()));
@@ -145,7 +145,7 @@ class Int128Test {
 
     static Stream<Arguments> testAddInt128() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
+        final UniformRandomProvider rng = TestHelper.createRNG();
         for (int i = 0; i < 50; i++) {
             builder.accept(Arguments.of(rng.nextLong() >>> 2, rng.nextLong(), rng.nextLong() >>> 2, rng.nextLong()));
             builder.accept(Arguments.of(rng.nextLong() >>> 2, rng.nextLong(), rng.nextLong() >>> 1, rng.nextLong()));
