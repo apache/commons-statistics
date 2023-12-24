@@ -117,9 +117,6 @@ class SumOfSquaredDeviations extends FirstMoment {
         // of the error in the first term.
         // To prevent sumSquaredDev from spuriously attaining a NaN value
         // when ss is infinite, assign it an infinite value which is its intended value.
-        // TODO: The correction should not be applied when too large.
-        // This occurs when the variance approaches zero,
-        // e.g. values 1, 1, 1, 1, 1, 1, 1.00000000000001
         final double sumSquaredDev = ss == Double.POSITIVE_INFINITY ?
             Double.POSITIVE_INFINITY :
             ss - (s * s / values.length);
