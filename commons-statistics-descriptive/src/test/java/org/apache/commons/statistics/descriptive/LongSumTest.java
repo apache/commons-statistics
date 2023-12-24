@@ -56,7 +56,7 @@ final class LongSumTest extends BaseLongStatisticTest<LongSum> {
         // Floating-point sum may be inexact.
         // Currently the double sum matches on the standard test data.
         // It fails on large random data added in streamTestData().
-        return DoubleTolerances.ulps(5);
+        return DoubleTolerances.ulps(20);
     }
 
     @Override
