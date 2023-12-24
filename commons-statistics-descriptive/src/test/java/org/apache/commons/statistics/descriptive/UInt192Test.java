@@ -255,4 +255,41 @@ class UInt192Test {
         Assertions.assertThrows(ArithmeticException.class, () -> v5.toLongExact());
         Assertions.assertEquals(0x1.0p128, v5.toDouble());
     }
+
+    /**
+     * Additional cases for conversion to a double.
+     * Conversion of uint128 is done in {@link IntMathTest#testUint128ToDouble()}.
+     * This test ensures any bits in the extra 64-bits of the 192-bit value are used.
+     */
+    @ParameterizedTest
+    @MethodSource
+    void testToDouble(long a, long b, long c) {
+        final UInt192 x = new UInt192(a, b, c);
+        final double expected = IntMathTest.toUnsignedBigInteger(a).shiftLeft(128)
+            .add(IntMathTest.toUnsignedBigInteger(b).shiftLeft(64))
+            .add(IntMathTest.toUnsignedBigInteger(c)).doubleValue();
+        Assertions.assertEquals(expected, x.toDouble());
+    }
+
+    static Stream<Arguments> testToDouble() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        final UniformRandomProvider rng = TestHelper.createRNG();
+        for (int i = 0; i < 50; i++) {
+            long a = rng.nextLong();
+            final long b = rng.nextLong();
+            final long c = rng.nextLong();
+            builder.accept(Arguments.of(a, b, c));
+            // Edge cases where trailing bits are required for rounding.
+            // Create a 55-bit number. Ensure the highest bit is set.
+            a = (a << 9) | Long.MIN_VALUE;
+            // Shift right and carry bits down.
+            final int shift = rng.nextInt(1, 64);
+            final long x = a >>> shift;
+            final long y = a << -shift;
+            builder.accept(Arguments.of(x, y, 0));
+            builder.accept(Arguments.of(x, y | 1, 0));
+            builder.accept(Arguments.of(x, y, 1));
+        }
+        return builder.build();
+    }
 }

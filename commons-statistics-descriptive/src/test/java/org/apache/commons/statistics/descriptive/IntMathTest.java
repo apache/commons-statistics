@@ -99,14 +99,14 @@ class IntMathTest {
     }
 
     /**
-     * Create a big integer treating the value as unsigned.
+     * Create a BigInteger treating the value as unsigned.
      *
      * @param v Value
-     * @return the big integer
+     * @return the BigInteger
      */
-    private static BigInteger toUnsignedBigInteger(long v) {
+    static BigInteger toUnsignedBigInteger(long v) {
         return v < 0 ?
-            TWO_POW_63.add(BigInteger.valueOf(v & Long.MAX_VALUE)) :
+            TWO_POW_63.or(BigInteger.valueOf(v & Long.MAX_VALUE)) :
             BigInteger.valueOf(v);
     }
 
