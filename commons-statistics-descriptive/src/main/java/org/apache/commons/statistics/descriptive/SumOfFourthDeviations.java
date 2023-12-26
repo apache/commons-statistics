@@ -71,7 +71,7 @@ package org.apache.commons.statistics.descriptive;
  */
 class SumOfFourthDeviations extends SumOfCubedDeviations {
     /** Sum of forth deviations of the values that have been added. */
-    protected double sumFourthDev;
+    private double sumFourthDev;
 
     /**
      * Create an instance.
