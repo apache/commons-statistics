@@ -145,9 +145,12 @@ public class MomentPerformance {
     public static class FunctionSource {
         /** Name of the source. */
         @Param({MEAN, ROLLING_MEAN, SAFE_ROLLING_MEAN, SCALED_ROLLING_MEAN,
-            INLINE_SAFE_ROLLING_MEAN, INLINE_SAFE_ROLLING_MEAN_EXT
+            INLINE_SAFE_ROLLING_MEAN, INLINE_SAFE_ROLLING_MEAN_EXT,
             // Same speed as the ROLLING_MEAN, i.e. the DoubleConsumer is not an overhead
             //INLINE_ROLLING_MEAN
+            // Higher moments
+            "SumOfCubed", "SumOfCubedPow",
+            "SumOfFourth", "SumOfFourthPow",
         })
         private String name;
 
@@ -180,6 +183,14 @@ public class MomentPerformance {
                 function = MomentPerformance::arrayInlineSafeRollingFirstMoment;
             } else if (INLINE_SAFE_ROLLING_MEAN_EXT.equals(name)) {
                 function = MomentPerformance::arrayInlineSafeRollingFirstMomentExt;
+            } else if ("SumOfCubed".equals(name)) {
+                function = MomentPerformance::arraySumOfCubed;
+            } else if ("SumOfCubedPow".equals(name)) {
+                function = MomentPerformance::arraySumOfCubedPow;
+            } else if ("SumOfFourth".equals(name)) {
+                function = MomentPerformance::arraySumOfFourth;
+            } else if ("SumOfFourthPow".equals(name)) {
+                function = MomentPerformance::arraySumOfFourthPow;
             } else {
                 throw new IllegalStateException("Unknown function: " + name);
             }
@@ -490,6 +501,71 @@ public class MomentPerformance {
             return Double.NaN;
         }
         return correctMeanKahan(data, m1);
+    }
+
+    /**
+     * Create the sum-of-cubed deviations from the mean.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arraySumOfCubed(double[] data) {
+        final double m = arrayInlineSafeRollingFirstMoment(data);
+        double s = 0;
+        for (final double x : data) {
+            final double dx = x - m;
+            s += dx * dx * dx;
+        }
+        return s;
+    }
+
+    /**
+     * Create the sum-of-cubed deviations from the mean using the
+     * {@link Math#pow(double, double)} function.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arraySumOfCubedPow(double[] data) {
+        final double m = arrayInlineSafeRollingFirstMoment(data);
+        double s = 0;
+        for (final double x : data) {
+            s += Math.pow(x - m, 3);
+        }
+        return s;
+    }
+
+    /**
+     * Create the sum-of-fourth deviations from the mean.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arraySumOfFourth(double[] data) {
+        final double m = arrayInlineSafeRollingFirstMoment(data);
+        double s = 0;
+        for (final double x : data) {
+            double dx = x - m;
+            dx *= dx;
+            s += dx * dx;
+        }
+        return s;
+    }
+
+    /**
+     * Create the sum-of-fourth deviations from the mean using the
+     * {@link Math#pow(double, double)} function.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arraySumOfFourthPow(double[] data) {
+        final double m = arrayInlineSafeRollingFirstMoment(data);
+        double s = 0;
+        for (final double x : data) {
+            s += Math.pow(x - m, 4);
+        }
+        return s;
     }
 
     /**

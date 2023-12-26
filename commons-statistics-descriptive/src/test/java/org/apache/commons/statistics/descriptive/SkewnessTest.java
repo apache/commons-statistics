@@ -166,7 +166,8 @@ final class SkewnessTest extends BaseDoubleStatisticTest<Skewness> {
         // Matlab will return NaN for bias correction when n<=2.
         // This implementation matches the behaviour of Matlab.
         builder.accept(Arguments.of(new double[] {1, 2}, 0, nan, tol));
-        builder.accept(Arguments.of(new double[] {1, 3, 7, 9, 11}, -0.15798755143759588, -0.23551393640880602, tol));
+        builder.accept(Arguments.of(new double[] {1, 3, 7, 9, 11}, -0.15798755143759588, -0.23551393640880602,
+            DoubleTolerances.ulps(4)));
         return builder.build();
     }
 }

@@ -134,10 +134,21 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
         // and opposite sign. So the sum-of-cubed deviations is zero.
         if (values.length > LENGTH_TWO) {
             for (final double x : values) {
-                s += Math.pow(x - xbar, 3);
+                s += pow3(x - xbar);
             }
         }
         return new SumOfCubedDeviations(s, ss);
+    }
+
+    /**
+     * Compute {@code x^3}.
+     * Uses compound multiplication.
+     *
+     * @param x Value.
+     * @return x^3
+     */
+    private static double pow3(double x) {
+        return x * x * x;
     }
 
     /**
@@ -212,7 +223,7 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
                     final double n1n2 = n1 + n2;
                     final double dm = 2 * (halfDiffOfMean / n1n2);
                     sumCubedDev += (sumSquaredDev * n2 - other.sumSquaredDev * n1) * dm * 3 +
-                                   (n2 - n1) * (n1 * n2) * Math.pow(dm, 3) * n1n2;
+                                   (n2 - n1) * (n1 * n2) * pow3(dm) * n1n2;
                 }
             }
         }

@@ -90,6 +90,7 @@ final class Statistics {
         // is smaller than the squared precision of the mean (m1).
         // Precision is set to 15 decimal digits
         // (1e-15 ~ 4.5 eps where eps = 2^-52).
-        return m2 <= Math.pow(1e-15 * m1, 2);
+        final double meanPrecision = 1e-15 * m1;
+        return m2 <= meanPrecision * meanPrecision;
     }
 }

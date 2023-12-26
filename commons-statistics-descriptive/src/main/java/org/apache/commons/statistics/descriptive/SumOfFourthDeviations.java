@@ -117,9 +117,21 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
         // Note: This handles n=1.
         double s = 0;
         for (final double x : values) {
-            s += Math.pow(x - xbar, 4);
+            s += pow4(x - xbar);
         }
         return new SumOfFourthDeviations(s, sc);
+    }
+
+    /**
+     * Compute {@code x^4}.
+     * Uses compound multiplication.
+     *
+     * @param x Value.
+     * @return x^4
+     */
+    private static double pow4(double x) {
+        final double x2 = x * x;
+        return x2 * x2;
     }
 
     /**
@@ -195,7 +207,7 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
                     sumFourthDev +=
                         (sumCubedDev - other.sumCubedDev) * halfDiffOfMean * 4 +
                         (sumSquaredDev + other.sumSquaredDev) * (halfDiffOfMean * halfDiffOfMean) * 6 +
-                        Math.pow(halfDiffOfMean, 4) * n1 * 2;
+                        pow4(halfDiffOfMean) * n1 * 2;
                 } else {
                     final double n1n2 = n1 + n2;
                     final double dm = 2 * (halfDiffOfMean / n1n2);
@@ -204,7 +216,7 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
                     sumFourthDev +=
                         (sumCubedDev * n2 - other.sumCubedDev * n1) * dm * 4 +
                         (n2 * n2 * sumSquaredDev + n1 * n1 * other.sumSquaredDev) * (dm * dm) * 6 +
-                        (n1 * n2) * (n1n2 * n1n2 - 3 * (n1 * n2)) * Math.pow(dm, 4) * n1n2;
+                        (n1 * n2) * (n1n2 * n1n2 - 3 * (n1 * n2)) * pow4(dm) * n1n2;
                 }
             }
         }
