@@ -39,10 +39,12 @@ import org.apache.commons.statistics.descriptive.DoubleStatistic;
 import org.apache.commons.statistics.descriptive.IntMean;
 import org.apache.commons.statistics.descriptive.IntStatistic;
 import org.apache.commons.statistics.descriptive.IntVariance;
+import org.apache.commons.statistics.descriptive.Kurtosis;
 import org.apache.commons.statistics.descriptive.LongMean;
 import org.apache.commons.statistics.descriptive.LongStatistic;
 import org.apache.commons.statistics.descriptive.LongVariance;
 import org.apache.commons.statistics.descriptive.Mean;
+import org.apache.commons.statistics.descriptive.Skewness;
 import org.apache.commons.statistics.descriptive.Variance;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.BenchmarkMode;
@@ -89,6 +91,10 @@ public class IntMomentPerformance {
     private static final String LONG_VAR = "LongVariance";
     /** Long variance implementation using Math.multiplyHigh. */
     private static final String LONG_VAR2 = "LongVariance2";
+    /** Commons Statistics Skewness implementation. */
+    private static final String DOUBLE_SKEWNESS = "DoubleSkewness";
+    /** Commons Statistics Kurtosis implementation. */
+    private static final String DOUBLE_KURTOSIS = "DoubleKurtosis";
 
     /**
      * Source of array data.
@@ -150,7 +156,8 @@ public class IntMomentPerformance {
         @Param({DOUBLE_MEAN, INT_MEAN,
                 // Disabled: Run-time ~ IntMean
                 // LONG_SUM_MEAN
-                DOUBLE_VAR, INT_VAR})
+                DOUBLE_VAR, INT_VAR,
+                DOUBLE_SKEWNESS, DOUBLE_KURTOSIS})
         private String name;
 
         /** The action. */
@@ -191,6 +198,16 @@ public class IntMomentPerformance {
             } else if (INT_VAR.equals(name)) {
                 action = () -> {
                     final IntVariance m = IntVariance.create();
+                    return createIntStatistic(m, m);
+                };
+            } else if (DOUBLE_SKEWNESS.equals(name)) {
+                action = () -> {
+                    final Skewness m = Skewness.create();
+                    return createIntStatistic(m, m);
+                };
+            } else if (DOUBLE_KURTOSIS.equals(name)) {
+                action = () -> {
+                    final Kurtosis m = Kurtosis.create();
                     return createIntStatistic(m, m);
                 };
             } else {
@@ -245,7 +262,8 @@ public class IntMomentPerformance {
     @State(Scope.Benchmark)
     public static class DoubleActionSource {
         /** Name of the source. */
-        @Param({DOUBLE_MEAN, DOUBLE_VAR})
+        @Param({DOUBLE_MEAN, DOUBLE_VAR,
+                DOUBLE_SKEWNESS, DOUBLE_KURTOSIS})
         private String name;
 
         /** The action. */
@@ -271,6 +289,16 @@ public class IntMomentPerformance {
             } else if (DOUBLE_VAR.equals(name)) {
                 action = () -> {
                     final Variance m = Variance.create();
+                    return createDoubleStatistic(m, m);
+                };
+            } else if (DOUBLE_SKEWNESS.equals(name)) {
+                action = () -> {
+                    final Skewness m = Skewness.create();
+                    return createDoubleStatistic(m, m);
+                };
+            } else if (DOUBLE_KURTOSIS.equals(name)) {
+                action = () -> {
+                    final Kurtosis m = Kurtosis.create();
                     return createDoubleStatistic(m, m);
                 };
             } else {
@@ -310,7 +338,8 @@ public class IntMomentPerformance {
     public static class LongActionSource {
         /** Name of the source. */
         @Param({DOUBLE_MEAN, LONG_MEAN, BIG_INTEGER_SUM_MEAN,
-                DOUBLE_VAR, LONG_VAR, LONG_VAR2})
+                DOUBLE_VAR, LONG_VAR, LONG_VAR2,
+                DOUBLE_SKEWNESS, DOUBLE_KURTOSIS})
         private String name;
 
         /** The action. */
@@ -356,6 +385,16 @@ public class IntMomentPerformance {
             } else if (LONG_VAR2.equals(name)) {
                 action = () -> {
                     final LongVariance2 m = LongVariance2.create();
+                    return createLongStatistic(m, m);
+                };
+            } else if (DOUBLE_SKEWNESS.equals(name)) {
+                action = () -> {
+                    final Skewness m = Skewness.create();
+                    return createLongStatistic(m, m);
+                };
+            } else if (DOUBLE_KURTOSIS.equals(name)) {
+                action = () -> {
+                    final Kurtosis m = Kurtosis.create();
                     return createLongStatistic(m, m);
                 };
             } else {
@@ -451,7 +490,8 @@ public class IntMomentPerformance {
     @State(Scope.Benchmark)
     public static class DoubleFunctionSource {
         /** Name of the source. */
-        @Param({DOUBLE_MEAN, DOUBLE_VAR})
+        @Param({DOUBLE_MEAN, DOUBLE_VAR,
+                DOUBLE_SKEWNESS, DOUBLE_KURTOSIS})
         private String name;
 
         /** The action. */
@@ -473,6 +513,10 @@ public class IntMomentPerformance {
                 function = x -> Mean.of(x).getAsDouble();
             } else if (DOUBLE_VAR.equals(name)) {
                 function = x -> Variance.of(x).getAsDouble();
+            } else if (DOUBLE_SKEWNESS.equals(name)) {
+                function = x -> Skewness.of(x).getAsDouble();
+            } else if (DOUBLE_KURTOSIS.equals(name)) {
+                function = x -> Kurtosis.of(x).getAsDouble();
             } else {
                 throw new IllegalStateException("Unknown double function: " + name);
             }
