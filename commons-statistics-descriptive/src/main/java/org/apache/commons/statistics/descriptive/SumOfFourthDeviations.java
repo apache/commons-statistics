@@ -158,7 +158,7 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
         sumFourthDev = sumFourthDev -
             sc * nDev * 8 +
             ss * nDev * nDev * 24 +
-            np * (np1 * np1 - 3 * np) * nDev * nDev * nDev * nDev * np1 * 16;
+            np * (np1 * np1 - 3 * np) * nDev * nDev * nDev * dev * 16;
     }
 
     /**
