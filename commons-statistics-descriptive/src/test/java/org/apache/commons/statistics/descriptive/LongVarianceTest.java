@@ -27,7 +27,6 @@ import org.apache.commons.statistics.distribution.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
@@ -74,24 +73,7 @@ final class LongVarianceTest extends BaseLongStatisticTest<LongVariance> {
 
     @Override
     protected StatisticResult getExpectedValue(long[] values) {
-        if (values.length == 1) {
-            return createStatisticResult(0.0);
-        }
-        final BigInteger s = Arrays.stream(values).mapToObj(BigInteger::valueOf)
-            .reduce(BigInteger.ZERO, BigInteger::add);
-        final BigInteger ss = Arrays.stream(values)
-            .mapToObj(i -> BigInteger.valueOf(i).pow(2))
-            .reduce(BigInteger.ZERO, BigInteger::add);
-        final MathContext mc = MathContext.DECIMAL128;
-        final int n = values.length;
-        // var = (n * sum(x^2) - sum(x)^2) / (n * (n-1))
-        // Exact numerator
-        final BigInteger num = ss.multiply(BigInteger.valueOf(n)).subtract(s.pow(2));
-        // Exact divide
-        final double x = new BigDecimal(num)
-            .divide(BigDecimal.valueOf(n * (n - 1L)), mc)
-            .doubleValue();
-        return createStatisticResult(x);
+        return createStatisticResult(computeExpectedVariance(values));
     }
 
     @Override
@@ -116,6 +98,32 @@ final class LongVarianceTest extends BaseLongStatisticTest<LongVariance> {
         builder.accept(addReference(9.166666666666666, tol, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         builder.accept(addReference(178.75, tol, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
+    }
+
+    /**
+     * Helper function to compute the expected variance using BigDecimal.
+     *
+     * @param values Values.
+     * @return Variance of values
+     */
+    static double computeExpectedVariance(long[] values) {
+        if (values.length == 1) {
+            return 0;
+        }
+        final BigInteger s = Arrays.stream(values).mapToObj(BigInteger::valueOf)
+            .reduce(BigInteger.ZERO, BigInteger::add);
+        final BigInteger ss = Arrays.stream(values)
+            .mapToObj(i -> BigInteger.valueOf(i).pow(2))
+            .reduce(BigInteger.ZERO, BigInteger::add);
+        final MathContext mc = MathContext.DECIMAL128;
+        final int n = values.length;
+        // var = (n * sum(x^2) - sum(x)^2) / (n * (n-1))
+        // Exact numerator
+        final BigInteger num = ss.multiply(BigInteger.valueOf(n)).subtract(s.pow(2));
+        // Exact divide
+        return new BigDecimal(num)
+            .divide(BigDecimal.valueOf(n * (n - 1L)), mc)
+            .doubleValue();
     }
 
     @ParameterizedTest
@@ -171,12 +179,7 @@ final class LongVarianceTest extends BaseLongStatisticTest<LongVariance> {
      * will be incorrect so the test is limited to {@code n < 2^63}.
      */
     @ParameterizedTest
-    @CsvSource({
-        "-1628367672438123811, -97927322516725738, 60",
-        "3279208082627834682, 4234564566706285432, 61",
-        "9223372036854775807, 9223372036854775806, 61",
-        "-9223372036854775808, -9223372036854775807, 61",
-    })
+    @MethodSource(value = "org.apache.commons.statistics.descriptive.IntSumTest#testLongOverflow")
     void testLongOverflow(long x, long y, int exp) {
         final LongVariance s = LongVariance.of(x, y);
         // var = sum((x - mean)^2) / (n-1)

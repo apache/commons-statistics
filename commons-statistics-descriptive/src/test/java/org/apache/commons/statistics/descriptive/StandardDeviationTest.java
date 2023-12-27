@@ -175,17 +175,15 @@ final class StandardDeviationTest extends BaseDoubleStatisticTest<StandardDeviat
 
     static Stream<Arguments> testBiased() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final DoubleTolerance tol = DoubleTolerances.ulps(1);
-        // Python Numpy v1.25.1: numpy.std(x, ddof=0/1)
-        // Note: Numpy allows other degrees of freedom adjustment than 0 or 1.
-        builder.accept(Arguments.of(new double[] {1, 2, 3}, 0.816496580927726, 1, tol));
-        builder.accept(Arguments.of(new double[] {1, 2}, 0.5, 0.7071067811865476, tol));
-        // Matlab R2023s: std(x, 1/0)
-        // Matlab only allows turning the biased option on (1) or off (0).
-        // Note: Numpy will return NaN for ddof=1 when the array length is 1 (since 0 / 0 = NaN).
-        // This implementation matches the behaviour of Matlab which returns zero.
-        builder.accept(Arguments.of(new double[] {1}, 0, 0, tol));
-        builder.accept(Arguments.of(new double[] {1, 2, 4, 8}, 2.680951323690902, 3.095695936834452, tol));
+        // Repack the same cases from variance
+        VarianceTest.testBiased().forEach(arg -> {
+            final Object[] args = arg.get();
+            final Object a = args[0];
+            final double biased = ((Number) args[1]).doubleValue();
+            final double unbiased = ((Number) args[2]).doubleValue();
+            final Object d = args[3];
+            builder.accept(Arguments.of(a, Math.sqrt(biased), Math.sqrt(unbiased), d));
+        });
         return builder.build();
     }
 }

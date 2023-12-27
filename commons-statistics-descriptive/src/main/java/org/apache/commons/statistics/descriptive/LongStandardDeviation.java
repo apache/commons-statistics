@@ -16,13 +16,11 @@
  */
 package org.apache.commons.statistics.descriptive;
 
-import java.math.BigInteger;
-
 /**
- * Computes the variance of the available values. The default implementation uses the
- * following definition of the <em>sample variance</em>:
+ * Computes the standard deviation of the available values. The default implementation uses the
+ * following definition of the <em>sample standard deviation</em>:
  *
- * <p>\[ \tfrac{1}{n-1} \sum_{i=1}^n (x_i-\overline{x})^2 \]
+ * <p>\[ \sqrt{ \tfrac{1}{n-1} \sum_{i=1}^n (x_i-\overline{x})^2 } \]
  *
  * <p>where \( \overline{x} \) is the sample mean, and \( n \) is the number of samples.
  *
@@ -31,10 +29,13 @@ import java.math.BigInteger;
  *   <li>The result is zero if there is one value in the data set.
  * </ul>
  *
- * <p>The use of the term \( n − 1 \) is called Bessel's correction. This is an unbiased
- * estimator of the variance of a hypothetical infinite population. If the
+ * <p>The use of the term \( n − 1 \) is called Bessel's correction. Omitting the square root,
+ * this provides an unbiased estimator of the variance of a hypothetical infinite population. If the
  * {@link #setBiased(boolean) biased} option is enabled the normalisation factor is
  * changed to \( \frac{1}{n} \) for a biased estimator of the <em>sample variance</em>.
+ * Note however that square root is a concave function and thus introduces negative bias
+ * (by Jensen's inequality), which depends on the distribution, and thus the corrected sample
+ * standard deviation (using Bessel's correction) is less biased, but still biased.
  *
  * <p>The implementation uses an exact integer sum to compute the scaled (by \( n \))
  * sum of squared deviations from the mean; this is normalised by the scaled correction factor.
@@ -60,13 +61,13 @@ import java.math.BigInteger;
  * provides the necessary partitioning, isolation, and merging of results for
  * safe and efficient parallel execution.
  *
- * @see <a href="https://en.wikipedia.org/wiki/variance">variance (Wikipedia)</a>
- * @see <a href="https://en.wikipedia.org/wiki/Algorithms_for_calculating_variance">
- *   Algorithms for computing the variance (Wikipedia)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Standard_deviation">Standard deviation (Wikipedia)</a>
  * @see <a href="https://en.wikipedia.org/wiki/Bessel%27s_correction">Bessel&#39;s correction</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Jensen%27s_inequality">Jensen&#39;s inequality</a>
+ * @see LongVariance
  * @since 1.1
  */
-public final class LongVariance implements LongStatistic, StatisticAccumulator<LongVariance> {
+public final class LongStandardDeviation implements LongStatistic, StatisticAccumulator<LongStandardDeviation> {
 
     /** Sum of the squared values. */
     private final UInt192 sumSq;
@@ -81,7 +82,7 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
     /**
      * Create an instance.
      */
-    private LongVariance() {
+    private LongStandardDeviation() {
         this(UInt192.create(), Int128.create(), 0);
     }
 
@@ -92,7 +93,7 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
      * @param sum Sum of the values.
      * @param n Count of values that have been added.
      */
-    private LongVariance(UInt192 sumSq, Int128 sum, int n) {
+    private LongStandardDeviation(UInt192 sumSq, Int128 sum, int n) {
         this.sumSq = sumSq;
         this.sum = sum;
         this.n = n;
@@ -103,19 +104,19 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
      *
      * <p>The initial result is {@code NaN}.
      *
-     * @return {@code LongVariance} instance.
+     * @return {@code LongStandardDeviation} instance.
      */
-    public static LongVariance create() {
-        return new LongVariance();
+    public static LongStandardDeviation create() {
+        return new LongStandardDeviation();
     }
 
     /**
      * Returns an instance populated using the input {@code values}.
      *
      * @param values Values.
-     * @return {@code LongVariance} instance.
+     * @return {@code LongStandardDeviation} instance.
      */
-    public static LongVariance of(long... values) {
+    public static LongStandardDeviation of(long... values) {
         // Note: Arrays could be processed using specialised counts knowing the maximum limit
         // for an array is 2^31 values. Requires a UInt160.
 
@@ -125,7 +126,7 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
             s.add(x);
             ss.addSquare(x);
         }
-        return new LongVariance(ss, s, values.length);
+        return new LongStandardDeviation(ss, s, values.length);
     }
 
     /**
@@ -156,57 +157,12 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
         if (n == 1) {
             return 0;
         }
-        return computeVariance(sumSq, sum, n, biased);
-    }
+        return Math.sqrt(LongVariance.computeVariance(sumSq, sum, n, biased));
 
-    /**
-     * Compute the variance.
-     *
-     * <p>It is assumes the count {@code n} is greater than 1.
-     *
-     * @param sumSq Sum of the squared values.
-     * @param sum Sum of the values.
-     * @param n Count of values that have been added.
-     * @param biased Flag to control if the statistic is biased, or should use a bias correction.
-     * @return the variance
-     */
-    static double computeVariance(UInt192 sumSq, Int128 sum, long n, boolean biased) {
-        // Sum-of-squared deviations: sum(x^2) - sum(x)^2 / n
-        // Sum-of-squared deviations precursor: n * sum(x^2) - sum(x)^2
-        // The precursor is computed in integer precision.
-        // The divide uses double precision.
-        // This ensures we avoid cancellation in the difference and use a fast divide.
-        // The result is limited to max 4 ulp by the rounding in the double computation
-        // When n0*n is < 2^53 the max error is reduced to two roundings.
-
-        // Compute the term if possible using fast integer arithmetic.
-        // 192-bit sum(x^2) * n will be OK when the upper 32-bits are zero.
-        // 128-bit sum(x)^2 will be OK when the upper 64-bits are zero.
-        // The first is safe when n < 2^32 but we must check the sum high bits.
-        double diff;
-        if (((n >>> Integer.SIZE) | sum.hi64()) == 0) {
-            diff = sumSq.unsignedMultiply((int) n).subtract(sum.squareLow()).toDouble();
-        } else {
-            diff = sumSq.toBigInteger().multiply(BigInteger.valueOf(n))
-                .subtract(square(sum.toBigInteger())).doubleValue();
-        }
-        final long n0 = biased ? n : n - 1;
-        // Compute the divide in double precision
-        return diff / IntMath.unsignedMultiplyToDouble(n, n0);
-    }
-
-    /**
-     * Convenience method to square a BigInteger.
-     *
-     * @param x Value
-     * @return x^2
-     */
-    private static BigInteger square(BigInteger x) {
-        return x.multiply(x);
     }
 
     @Override
-    public LongVariance combine(LongVariance other) {
+    public LongStandardDeviation combine(LongStandardDeviation other) {
         sumSq.add(other.sumSq);
         sum.add(other.sum);
         n += other.n;
@@ -214,26 +170,21 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
     }
 
     /**
-     * Sets the value of the biased flag. The default value is {@code false}.
+     * Sets the value of the biased flag. The default value is {@code false}. The bias
+     * term refers to the computation of the variance; the standard deviation is returned
+     * as the square root of the biased or unbiased <em>sample variance</em>. For further
+     * details see {@link LongVariance#setBiased(boolean) LongStandardDeviationVariance.setBiased}.
      *
-     * <p>If {@code false} the sum of squared deviations from the sample mean is normalised by
-     * {@code n - 1} where {@code n} is the number of samples. This is Bessel's correction
-     * for an unbiased estimator of the variance of a hypothetical infinite population.
-     *
-     * <p>If {@code true} the sum of squared deviations is normalised by the number of samples
-     * {@code n}.
-     *
-     * <p>Note: This option only applies when {@code n > 1}. The variance of {@code n = 1} is
-     * always 0.
-     *
-     * <p>This flag only controls the final computation of the statistic. The value of this flag
-     * will not affect compatibility between instances during a {@link #combine(LongVariance) combine}
-     * operation.
+     * <p>This flag only controls the final computation of the statistic. The value of
+     * this flag will not affect compatibility between instances during a
+     * {@link #combine(LongStandardDeviation) combine} operation.
      *
      * @param v Value.
      * @return {@code this} instance
+     * @see LongStandardDeviation#setBiased(boolean)
      */
-    public LongVariance setBiased(boolean v) {
+
+    public LongStandardDeviation setBiased(boolean v) {
         biased = v;
         return this;
     }

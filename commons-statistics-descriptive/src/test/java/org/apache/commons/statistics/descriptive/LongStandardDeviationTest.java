@@ -30,23 +30,23 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test for {@link IntVariance}.
+ * Test for {@link LongStandardDeviation}.
  */
-final class IntVarianceTest extends BaseIntStatisticTest<IntVariance> {
+final class LongStandardDeviationTest extends BaseLongStatisticTest<LongStandardDeviation> {
 
     @Override
-    protected IntVariance create() {
-        return IntVariance.create();
+    protected LongStandardDeviation create() {
+        return LongStandardDeviation.create();
     }
 
     @Override
-    protected IntVariance create(int... values) {
-        return IntVariance.of(values);
+    protected LongStandardDeviation create(long... values) {
+        return LongStandardDeviation.of(values);
     }
 
     @Override
-    protected DoubleStatistic createAsDoubleStatistic(int... values) {
-        return Variance.of(Arrays.stream(values).asDoubleStream().toArray());
+    protected DoubleStatistic createAsDoubleStatistic(long... values) {
+        return StandardDeviation.of(Arrays.stream(values).asDoubleStream().toArray());
     }
 
     @Override
@@ -60,8 +60,8 @@ final class IntVarianceTest extends BaseIntStatisticTest<IntVariance> {
     }
 
     @Override
-    protected StatisticResult getExpectedValue(int[] values) {
-        return createStatisticResult(computeExpectedVariance(values));
+    protected StatisticResult getExpectedValue(long[] values) {
+        return createStatisticResult(Math.sqrt(LongVarianceTest.computeExpectedVariance(values)));
     }
 
     @Override
@@ -75,49 +75,60 @@ final class IntVarianceTest extends BaseIntStatisticTest<IntVariance> {
         builder.accept(addCase(Integer.MAX_VALUE - 1, Integer.MAX_VALUE));
         builder.accept(addCase(Integer.MIN_VALUE + 1, Integer.MIN_VALUE));
 
-        // Same cases as for the DoubleStatistic Variance but the tolerance is exact
+        // Same cases as for the DoubleStatistic StandardDeviation but the tolerance is exact
         final DoubleTolerance tol = DoubleTolerances.equals();
 
-        // Python Numpy v1.25.1: numpy.var(x, ddof=1)
-        builder.accept(addReference(1.6666666666666667, tol, 1, 2, 3, 4));
-        builder.accept(addReference(7.454545454545454, tol,
+        // Python Numpy v1.25.1: numpy.std(x, ddof=1)
+        builder.accept(addReference(1.2909944487358056, tol, 1, 2, 3, 4));
+        builder.accept(addReference(2.73030134866931, tol,
             14, 8, 11, 10, 7, 9, 10, 11, 10, 15, 5, 10));
-        // R v4.3.1: var(x)
-        builder.accept(addReference(9.166666666666666, tol, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-        builder.accept(addReference(178.75, tol, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
+        // R v4.3.1: sd(x)
+        builder.accept(addReference(3.0276503540974917, tol, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        builder.accept(addReference(13.369741957120938, tol, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
         return builder.build();
     }
 
-    /**
-     * Helper function to compute the expected variance using BigDecimal.
-     *
-     * @param values Values.
-     * @return Variance of values
-     */
-    static double computeExpectedVariance(int[] values) {
-        if (values.length == 1) {
-            return 0;
-        }
-        final long s = Arrays.stream(values).asLongStream().sum();
-        final BigInteger ss = Arrays.stream(values)
-            .mapToObj(i -> BigInteger.valueOf((long) i * i))
-            .reduce(BigInteger.ZERO, BigInteger::add);
-        final MathContext mc = MathContext.DECIMAL128;
-        final int n = values.length;
-        // var = (n * sum(x^2) - sum(x)^2) / (n * (n-1))
-        // Exact numerator
-        final BigInteger num = ss.multiply(BigInteger.valueOf(n)).subtract(
-            BigInteger.valueOf(s).pow(2));
-        // Exact divide
-        return new BigDecimal(num)
-            .divide(BigDecimal.valueOf(n * (n - 1L)), mc)
-            .doubleValue();
+    @ParameterizedTest
+    @MethodSource("testAccept")
+    void testConsistentWithVarianceAccept(long[] values) {
+        assertConsistentWithVariance(Statistics.add(LongVariance.create(), values),
+                                     Statistics.add(LongStandardDeviation.create(), values));
+    }
+
+    @ParameterizedTest
+    @MethodSource("testArray")
+    void testConsistentWithVarianceArray(long[] values) {
+        assertConsistentWithVariance(LongVariance.of(values),
+                                     LongStandardDeviation.of(values));
+    }
+
+    @ParameterizedTest
+    @MethodSource("testAcceptAndCombine")
+    void testConsistentWithVarianceCombine(long[][] values) {
+        // Assume the sequential stream will combine in the same order.
+        // Do not use a parallel stream which may be stochastic.
+        final LongVariance variance = Arrays.stream(values)
+            .map(LongVariance::of)
+            .reduce(LongVariance::combine)
+            .orElseGet(LongVariance::create);
+        final LongStandardDeviation std = Arrays.stream(values)
+            .map(LongStandardDeviation::of)
+            .reduce(LongStandardDeviation::combine)
+            .orElseGet(LongStandardDeviation::create);
+        assertConsistentWithVariance(variance, std);
+    }
+
+    private static void assertConsistentWithVariance(LongVariance variance, LongStandardDeviation std) {
+        Assertions.assertEquals(Math.sqrt(variance.getAsDouble()), std.getAsDouble(), "Unbiased");
+        variance.setBiased(true);
+        std.setBiased(true);
+        Assertions.assertEquals(Math.sqrt(variance.getAsDouble()), std.getAsDouble(), "Biased");
     }
 
     @ParameterizedTest
     @MethodSource
-    void testBiased(int[] values, double biased, double unbiased, DoubleTolerance tol) {
-        final IntVariance stat = IntVariance.of(values);
+    void testBiased(long[] values, double biased, double unbiased, DoubleTolerance tol) {
+        final LongStandardDeviation stat = LongStandardDeviation.of(values);
         // Default is unbiased
         final double actualUnbiased = stat.getAsDouble();
         TestUtils.assertEquals(unbiased, actualUnbiased, tol, () -> "Unbiased: " + format(values));
@@ -133,28 +144,15 @@ final class IntVarianceTest extends BaseIntStatisticTest<IntVariance> {
 
     static Stream<Arguments> testBiased() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        // Same cases as for the DoubleStatistic Variance but the tolerance is exact
-        final DoubleTolerance tol = DoubleTolerances.equals();
-
-        // Note: Biased variance is ((10-5.5)**2 + (1-5.5)**2)/2 = 20.25
-        // Scale by (2 * 512 * 512) / (2 * 512 * 512 - 1)
-        // The variance is invariant to shift
-        final int shift = 253674678;
-        final int[] a = new int[2 * 512 * 512];
-        Arrays.fill(a, 0, a.length / 2, 10 + shift);
-        Arrays.fill(a, a.length / 2, a.length, 1 + shift);
-        builder.accept(Arguments.of(a, 20.25, 20.250038623883484, tol));
-
-        // Python Numpy v1.25.1: numpy.var(x, ddof=0/1)
-        // Note: Numpy allows other degrees of freedom adjustment than 0 or 1.
-        builder.accept(Arguments.of(new int[] {1, 2, 3}, 0.6666666666666666, 1, tol));
-        builder.accept(Arguments.of(new int[] {1, 2}, 0.25, 0.5, tol));
-        // Matlab R2023s: var(x, 1/0)
-        // Matlab only allows turning the biased option on (1) or off (0).
-        // Note: Numpy will return NaN for ddof=1 when the array length is 1 (since 0 / 0 = NaN).
-        // This implementation matches the behaviour of Matlab which returns zero.
-        builder.accept(Arguments.of(new int[] {1}, 0, 0, tol));
-        builder.accept(Arguments.of(new int[] {1, 2, 4, 8}, 7.1875, 9.583333333333334, tol));
+        // Repack the same cases from variance
+        LongVarianceTest.testBiased().forEach(arg -> {
+            final Object[] args = arg.get();
+            final Object a = args[0];
+            final double biased = ((Number) args[1]).doubleValue();
+            final double unbiased = ((Number) args[2]).doubleValue();
+            final Object d = args[3];
+            builder.accept(Arguments.of(a, Math.sqrt(biased), Math.sqrt(unbiased), d));
+        });
         return builder.build();
     }
 
@@ -169,7 +167,7 @@ final class IntVarianceTest extends BaseIntStatisticTest<IntVariance> {
     @ParameterizedTest
     @MethodSource(value = "org.apache.commons.statistics.descriptive.IntSumTest#testLongOverflow")
     void testLongOverflow(int x, int y, int exp) {
-        final IntVariance s = IntVariance.of(x, y);
+        final LongStandardDeviation s = LongStandardDeviation.of(x, y);
         // var = sum((x - mean)^2) / (n-1)
         //     = (n * sum(x^2) - sum(x)^2) / (n * (n-1))
         long n = 2;
@@ -182,12 +180,12 @@ final class IntVarianceTest extends BaseIntStatisticTest<IntVariance> {
             n <<= 1;
             term1 = term1.add(term1);
             term2 = term2.add(term2);
-            final double expected = new BigDecimal(
+            final double expected = Math.sqrt(new BigDecimal(
                     term1.multiply(BigInteger.valueOf(n)).subtract(term2.pow(2)))
                 .divide(
                     new BigDecimal(BigInteger.valueOf(n).multiply(BigInteger.valueOf(n - 1))),
                     MathContext.DECIMAL128)
-                .doubleValue();
+                .doubleValue());
             TestUtils.assertEquals(expected, s.getAsDouble(), tol);
         }
     }
