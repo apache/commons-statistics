@@ -127,9 +127,8 @@ public final class LongMean implements LongStatistic, StatisticAccumulator<LongM
         if (sum.hi64() == 0 && Math.abs(sum.lo64()) < SMALL_SUM) {
             return (double) sum.lo64() / n;
         }
-        // Extended precision.
-        // Could divide by DD.of(n) when |n| > 2^53.
-        return sum.toDD().divide(n).doubleValue();
+        // Extended precision
+        return IntMath.divide(sum, n);
     }
 
     @Override

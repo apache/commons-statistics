@@ -130,9 +130,8 @@ public final class IntMean implements IntStatistic, StatisticAccumulator<IntMean
         if (n < SMALL_N) {
             return (double) sum.lo64() / n;
         }
-        // Extended precision.
-        // Could divide by DD.of(n) when |n| > 2^53.
-        return sum.toDD().divide(n).doubleValue();
+        // Extended precision
+        return IntMath.divide(sum, n);
     }
 
     @Override

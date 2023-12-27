@@ -218,6 +218,8 @@ final class TestHelper {
 
     /**
      * Creates a seed for the RNG.
+     * This is the same seed within an invocation of the JVM; seeds will be different
+     * across JVM instances.
      *
      * @return the seed
      * @see #createRNG(long[])

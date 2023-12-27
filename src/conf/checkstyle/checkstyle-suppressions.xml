@@ -41,5 +41,5 @@
   <suppress checks="MethodLength" files=".*[/\\]WilcoxonSignedRankTestTest.java" />
   <suppress checks="IllegalCatch" files=".*[/\\]TestHelper.java" lines="390-450" />
   <suppress checks="IllegalCatch" files=".*[/\\]BaseStatisticTest.java" lines="280-400" />
-  <suppress checks="IllegalCatch" files=".*[/\\]IntMathTest.java" lines="165-175" />
+  <suppress checks="IllegalCatch" files=".*[/\\]IntMathTest.java" lines="170-185" />
 </suppressions>
