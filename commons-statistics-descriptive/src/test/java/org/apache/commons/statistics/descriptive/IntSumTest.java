@@ -24,7 +24,8 @@ import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test for {@link IntSum}.
@@ -95,12 +96,7 @@ final class IntSumTest extends BaseIntStatisticTest<IntSum> {
      * will be incorrect so the test is limited to {@code n < 2^63}.
      */
     @ParameterizedTest
-    @CsvSource({
-        "-1628367811, -516725738, 60",
-        "627834682, 456456670, 61",
-        "2147483647, 2147483646, 61",
-        "-2147483648, -2147483647, 61",
-    })
+    @MethodSource
     void testLongOverflow(int x, int y, int exp) {
         final IntSum s = IntSum.of(x, y);
         BigInteger sum = BigInteger.valueOf((long) x + y);
@@ -110,5 +106,13 @@ final class IntSumTest extends BaseIntStatisticTest<IntSum> {
             sum = sum.shiftLeft(1);
             Assertions.assertEquals(sum, s.getAsBigInteger());
         }
+    }
+
+    static Stream<Arguments> testLongOverflow() {
+        return Stream.of(
+            Arguments.of(-1628367811, -516725738, 60),
+            Arguments.of(627834682, 456456670, 61),
+            Arguments.of(2147483647, 2147483646, 61),
+            Arguments.of(-2147483648, -2147483647, 61));
     }
 }

@@ -25,7 +25,7 @@ import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test for {@link LongMean}.
@@ -105,12 +105,7 @@ final class LongMeanTest extends BaseLongStatisticTest<LongMean> {
      * will be incorrect so the test is limited to {@code n < 2^63}.
      */
     @ParameterizedTest
-    @CsvSource({
-        "-1628367672438123811, -97927322516725738, 60",
-        "3279208082627834682, 4234564566706285432, 61",
-        "9223372036854775807, 9223372036854775806, 61",
-        "-9223372036854775808, -9223372036854775807, 61",
-    })
+    @MethodSource(value = "org.apache.commons.statistics.descriptive.IntSumTest#testLongOverflow")
     void testLongOverflow(long x, long y, int exp) {
         final LongMean s = LongMean.of(x, y);
         final double mean = BigInteger.valueOf(x)
