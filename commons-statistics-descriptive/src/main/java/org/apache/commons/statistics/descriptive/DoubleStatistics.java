@@ -28,6 +28,9 @@ import java.util.function.Function;
  * <p>This class provides combinations of individual statistic implementations in the
  * {@code org.apache.commons.statistics.descriptive} package.
  *
+ * <p>Supports up to 2<sup>63</sup> (exclusive) observations.
+ * This implementation does not check for overflow of the count.
+ *
  * @since 1.1
  */
 public final class DoubleStatistics implements DoubleConsumer {

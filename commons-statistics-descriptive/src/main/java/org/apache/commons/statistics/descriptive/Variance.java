@@ -48,6 +48,9 @@ package org.apache.commons.statistics.descriptive;
  * {@link #of(double...) of} with the full array of values. The former approach
  * should only be used when the full array of values is not available.
  *
+ * <p>Supports up to 2<sup>63</sup> (exclusive) observations.
+ * This implementation does not check for overflow of the count.
+ *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
  *

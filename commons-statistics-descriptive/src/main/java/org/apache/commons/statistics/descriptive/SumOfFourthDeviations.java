@@ -45,6 +45,9 @@ package org.apache.commons.statistics.descriptive;
  * {@code org.apache.commons.math3.stat.descriptive.moment.FourthMoment}. The final term
  * uses a rearrangement \( (1 - N + N^2) = (N+1)^2 - 3N \).
  *
+ * <p>Supports up to 2<sup>63</sup> (exclusive) observations.
+ * This implementation does not check for overflow of the count.
+ *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
  * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or

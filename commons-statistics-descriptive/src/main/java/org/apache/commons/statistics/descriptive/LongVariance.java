@@ -41,8 +41,8 @@ import java.math.BigInteger;
  *
  * <p>\[ \frac {n \times \sum_{i=1}^n x_i^2 - (\sum_{i=1}^n x_i)^2}{n \times (n - 1)} \]
  *
- * <p>It supports up to 2<sup>63</sup> values as the count \( n \) is maintained
- * as a {@code long}.
+ * <p>Supports up to 2<sup>63</sup> (exclusive) observations.
+ * This implementation does not check for overflow of the count.
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.

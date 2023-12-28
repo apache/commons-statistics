@@ -25,8 +25,7 @@ import java.math.BigInteger;
  *   <li>The result is zero if no values are added.
  * </ul>
  *
- * <p>This class uses an exact integer sum. It supports up to 2<sup>63</sup>
- * values as the count \( n \) is maintained as a {@code long}. The exact sum is
+ * <p>This class uses an exact integer sum. The exact sum is
  * returned using {@link #getAsBigInteger()}. Methods that return {@code int} or
  * {@code long} primitives will raise an exception if the result overflows.
  * The {@code long} value is safe up to the maximum array length for any input
@@ -34,6 +33,7 @@ import java.math.BigInteger;
  *
  * <p>Note that the implementation does not use {@code BigInteger} arithmetic; for
  * performance the sum is computed using primitives to create a signed 128-bit integer.
+ * Support is provided for at least 2<sup>63</sup> observations.
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.

@@ -30,6 +30,9 @@ package org.apache.commons.statistics.descriptive;
  * <p>new value = old value + dev^2 * (n - 1) / n
  * <p>returns the sum of squared deviations of all values seen so far.
  *
+ * <p>Supports up to 2<sup>63</sup> (exclusive) observations.
+ * This implementation does not check for overflow of the count.
+ *
  * <p><strong>Note that this implementation is not synchronized.</strong> If
  * multiple threads access an instance of this class concurrently, and at least
  * one of the threads invokes the {@link java.util.function.DoubleConsumer#accept(double) accept} or

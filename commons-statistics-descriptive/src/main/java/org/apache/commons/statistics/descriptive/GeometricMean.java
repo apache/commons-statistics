@@ -38,6 +38,9 @@ package org.apache.commons.statistics.descriptive;
  *       and at least one value is zero, and one value is {@code +infinity}.
  * </ul>
  *
+ * <p>Supports up to 2<sup>63</sup> (exclusive) observations.
+ * This implementation does not check for overflow of the count.
+ *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
  *

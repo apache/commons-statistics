@@ -30,12 +30,12 @@ import java.math.BigInteger;
  * </ul>
  *
  * <p>The implementation uses an exact integer sum to compute the sum of squared values.
- * It supports up to 2<sup>63</sup> values. The exact sum is
- * returned using {@link #getAsBigInteger()}. Methods that return {@code int} or
+ * The exact sum is returned using {@link #getAsBigInteger()}. Methods that return {@code int} or
  * {@code long} primitives will raise an exception if the result overflows.
  *
  * <p>Note that the implementation does not use {@code BigInteger} arithmetic; for
  * performance the sum is computed using primitives to create an unsigned 192-bit integer.
+ * Support is provided for at least 2<sup>63</sup> observations.
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.

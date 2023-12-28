@@ -44,6 +44,9 @@ package org.apache.commons.statistics.descriptive;
  * the recursive updating algorithm mentioned above, and then correcting this by adding the
  * mean deviation of the data values from the one-pass mean (see Ling (1974)).
  *
+ * <p>Supports up to 2<sup>63</sup> (exclusive) observations.
+ * This implementation does not check for overflow of the count.
+ *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
  *

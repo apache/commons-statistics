@@ -28,8 +28,9 @@ package org.apache.commons.statistics.descriptive;
  *   <li>The result is {@code NaN} if no values are added.
  * </ul>
  *
- * <p>This class uses an exact integer sum to compute the mean. It supports up to 2<sup>63</sup>
- * values as the count \( n \) is maintained as a {@code long}.
+ * <p>This class uses an exact integer sum to compute the mean.
+ * Supports up to 2<sup>63</sup> (exclusive) observations.
+ * This implementation does not check for overflow of the count.
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.
