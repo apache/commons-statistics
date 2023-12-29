@@ -98,7 +98,7 @@ final class SkewnessTest extends BaseDoubleStatisticTest<Skewness> {
      * @param values Values.
      * @return Skewness of values
      */
-    private static double computeExpectedSkewness(double[] values) {
+    static double computeExpectedSkewness(double[] values) {
         final long n = values.length;
         if (n < 3) {
             return Double.NaN;

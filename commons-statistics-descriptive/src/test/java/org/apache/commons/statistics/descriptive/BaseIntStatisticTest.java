@@ -323,30 +323,32 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
             for (int i = 0; i < sample.length; i++) {
                 sample[i] = mapValue(values[i]);
             }
-            data.add(new TestData(values, getExpectedValue(values)));
+            data.add(new TestData(sample, getExpectedValue(sample)));
         });
-        // Data with extreme values.
-        // Note: The order does not matter as this is shuffled
-        // in the random order tests.
-        final int a = Integer.MAX_VALUE;
-        final int b = Integer.MIN_VALUE;
-        final int[][] extreme = {
-            {a, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {b, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-            {a, a, 1, 1, 1, 1, 1, 1, 1, 1},
-            {b, b, 1, 1, 1, 1, 1, 1, 1, 1},
-            {a, b, 1, 1, 1, 1, 1, 1, 1, 1},
-        };
-        Stream.of(extreme).forEach(values -> {
-            final int[] sample = values.clone();
-            for (int i = sample.length; i-- > 0;) {
-                if (values[i] == 1) {
-                    break;
+        if (!skipExtremeData()) {
+            // Data with extreme values.
+            // Note: The order does not matter as this is shuffled
+            // in the random order tests.
+            final int a = Integer.MAX_VALUE;
+            final int b = Integer.MIN_VALUE;
+            final int[][] extreme = {
+                {a, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                {b, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                {a, a, 1, 1, 1, 1, 1, 1, 1, 1},
+                {b, b, 1, 1, 1, 1, 1, 1, 1, 1},
+                {a, b, 1, 1, 1, 1, 1, 1, 1, 1},
+            };
+            Stream.of(extreme).forEach(values -> {
+                final int[] sample = values.clone();
+                for (int i = 0; i < sample.length; i++) {
+                    if (values[i] == 1) {
+                        break;
+                    }
+                    sample[i] = mapValue(sample[i]);
                 }
-                sample[i] = mapValue(sample[i]);
-            }
-            dataExtremeValue.add(new TestData(values, getExpectedValue(values)));
-        });
+                dataExtremeValue.add(new TestData(sample, getExpectedValue(sample)));
+            });
+        }
         // Cache the custom test data so any computed expected values are calculated only once
         streamTestData().forEach(dataCustom::add);
     }
@@ -402,6 +404,19 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
      * @return the statistic
      */
     protected abstract DoubleStatistic createAsDoubleStatistic(int... values);
+
+    /**
+     * Return true to skip the extreme data. This data has samples containing the {@code int}
+     * max and/or min value mixed with a less extreme value. This may be difficult to compute
+     * for some statistics, e.g. skewness.
+     *
+     * <p>The default value is false.
+     *
+     * @return true to skip extreme data
+     */
+    protected boolean skipExtremeData() {
+        return false;
+    }
 
     //------------------------ Helper Methods to create test data ---------------------------
 

@@ -96,6 +96,34 @@ public final class SumOfLogs implements DoubleStatistic, StatisticAccumulator<Su
     }
 
     /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>The result is {@code NaN} if any of the values is negative.
+     *
+     * <p>When the input is an empty array, the result is zero.
+     *
+     * @param values Values.
+     * @return {@code SumOfLogs} instance.
+     */
+    public static SumOfLogs of(int... values) {
+        return Statistics.add(new SumOfLogs(), values);
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>The result is {@code NaN} if any of the values is negative.
+     *
+     * <p>When the input is an empty array, the result is zero.
+     *
+     * @param values Values.
+     * @return {@code SumOfLogs} instance.
+     */
+    public static SumOfLogs of(long... values) {
+        return Statistics.add(new SumOfLogs(), values);
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

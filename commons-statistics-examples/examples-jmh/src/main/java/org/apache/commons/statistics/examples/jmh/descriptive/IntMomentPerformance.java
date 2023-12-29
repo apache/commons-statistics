@@ -95,6 +95,8 @@ public class IntMomentPerformance {
     private static final String DOUBLE_SKEWNESS = "DoubleSkewness";
     /** Commons Statistics Kurtosis implementation. */
     private static final String DOUBLE_KURTOSIS = "DoubleKurtosis";
+    /** Int specialization for skewness. */
+    private static final String INT_SKEWNESS = "IntSkewness";
 
     /**
      * Source of array data.
@@ -157,7 +159,8 @@ public class IntMomentPerformance {
                 // Disabled: Run-time ~ IntMean
                 // LONG_SUM_MEAN
                 DOUBLE_VAR, INT_VAR,
-                DOUBLE_SKEWNESS, DOUBLE_KURTOSIS})
+                DOUBLE_SKEWNESS, DOUBLE_KURTOSIS,
+                INT_SKEWNESS})
         private String name;
 
         /** The action. */
@@ -203,11 +206,16 @@ public class IntMomentPerformance {
             } else if (DOUBLE_SKEWNESS.equals(name)) {
                 action = () -> {
                     final Skewness m = Skewness.create();
-                    return createIntStatistic(m, m);
+                    return createIntStatistic((DoubleConsumer) m, m);
                 };
             } else if (DOUBLE_KURTOSIS.equals(name)) {
                 action = () -> {
                     final Kurtosis m = Kurtosis.create();
+                    return createIntStatistic(m, m);
+                };
+            } else if (INT_SKEWNESS.equals(name)) {
+                action = () -> {
+                    final IntegerSumOfCubedDeviations m = new IntegerSumOfCubedDeviations();
                     return createIntStatistic(m, m);
                 };
             } else {
@@ -390,7 +398,7 @@ public class IntMomentPerformance {
             } else if (DOUBLE_SKEWNESS.equals(name)) {
                 action = () -> {
                     final Skewness m = Skewness.create();
-                    return createLongStatistic(m, m);
+                    return createLongStatistic((DoubleConsumer) m, m);
                 };
             } else if (DOUBLE_KURTOSIS.equals(name)) {
                 action = () -> {
@@ -452,7 +460,8 @@ public class IntMomentPerformance {
         @Param({INT_MEAN,
             // Disabled: Run-time ~ IntMean
             //LONG_SUM_MEAN,
-            STREAM_MEAN, INT_VAR})
+            STREAM_MEAN, INT_VAR,
+            INT_SKEWNESS})
         private String name;
 
         /** The action. */
@@ -478,6 +487,8 @@ public class IntMomentPerformance {
                 function = x -> Arrays.stream(x).average().orElse(Double.NaN);
             } else if (INT_VAR.equals(name)) {
                 function = x -> IntVariance.of(x).getAsDouble();
+            } else if (INT_SKEWNESS.equals(name)) {
+                function = x -> Skewness.of(x).getAsDouble();
             } else {
                 throw new IllegalStateException("Unknown int function: " + name);
             }

@@ -176,23 +176,54 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
         // The precursor is computed in integer precision.
         // The divide uses double precision.
         // This ensures we avoid cancellation in the difference and use a fast divide.
-        // The result is limited to max 4 ulp by the rounding in the double computation
-        // When n0*n is < 2^53 the max error is reduced to two roundings.
+        // The result is limited to by the rounding in the double computation.
+        final double diff = computeSSDevN(sumSq, sum, n);
+        final long n0 = biased ? n : n - 1;
+        return diff / IntMath.unsignedMultiplyToDouble(n, n0);
+    }
 
+    /**
+     * Compute the sum-of-squared deviations multiplied by the count of values:
+     * {@code n * sum(x^2) - sum(x)^2}.
+     *
+     * @param sumSq Sum of the squared values.
+     * @param sum Sum of the values.
+     * @param n Count of values that have been added.
+     * @return the sum-of-squared deviations precursor
+     */
+    private static double computeSSDevN(UInt192 sumSq, Int128 sum, long n) {
         // Compute the term if possible using fast integer arithmetic.
         // 192-bit sum(x^2) * n will be OK when the upper 32-bits are zero.
         // 128-bit sum(x)^2 will be OK when the upper 64-bits are zero.
         // The first is safe when n < 2^32 but we must check the sum high bits.
-        double diff;
         if (((n >>> Integer.SIZE) | sum.hi64()) == 0) {
-            diff = sumSq.unsignedMultiply((int) n).subtract(sum.squareLow()).toDouble();
+            return sumSq.unsignedMultiply((int) n).subtract(sum.squareLow()).toDouble();
         } else {
-            diff = sumSq.toBigInteger().multiply(BigInteger.valueOf(n))
+            return sumSq.toBigInteger().multiply(BigInteger.valueOf(n))
                 .subtract(square(sum.toBigInteger())).doubleValue();
         }
-        final long n0 = biased ? n : n - 1;
-        // Compute the divide in double precision
-        return diff / IntMath.unsignedMultiplyToDouble(n, n0);
+    }
+
+    /**
+     * Compute the sum of the squared deviations from the mean.
+     *
+     * <p>This is a helper method used in higher order moments.
+     *
+     * @return the sum of the squared deviations
+     */
+    double computeSumOfSquaredDeviations() {
+        return computeSSDevN(sumSq, sum, n) / n;
+    }
+
+    /**
+     * Compute the mean.
+     *
+     * <p>This is a helper method used in higher order moments.
+     *
+     * @return the mean
+     */
+    double computeMean() {
+        return LongMean.computeMean(sum, n);
     }
 
     /**

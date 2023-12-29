@@ -100,7 +100,7 @@ final class KurtosisTest extends BaseDoubleStatisticTest<Kurtosis> {
      * @param values Values.
      * @return Kurtosis of values
      */
-    private static double computeExpectedKurtosis(double[] values) {
+    static double computeExpectedKurtosis(double[] values) {
         final long n = values.length;
         if (n < 4) {
             return Double.NaN;

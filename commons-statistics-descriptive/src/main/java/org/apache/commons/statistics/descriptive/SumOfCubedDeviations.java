@@ -70,7 +70,7 @@ package org.apache.commons.statistics.descriptive;
  */
 class SumOfCubedDeviations extends SumOfSquaredDeviations {
     /** 2, the length limit where the sum-of-cubed deviations is zero. */
-    private static final int LENGTH_TWO = 2;
+    static final int LENGTH_TWO = 2;
 
     /** Sum of cubed deviations of the values that have been added. */
     protected double sumCubedDev;
@@ -104,9 +104,23 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
     }
 
     /**
+     * Create an instance with the given sum of cubed and squared deviations,
+     * and first moment.
+     *
+     * @param sc Sum of cubed deviations.
+     * @param ss Sum of squared deviations.
+     * @param m1 First moment.
+     * @param n Count of values.
+     */
+    SumOfCubedDeviations(double sc, double ss, double m1, long n) {
+        super(ss, m1, n);
+        this.sumCubedDev = sc;
+    }
+
+    /**
      * Returns an instance populated using the input {@code values}.
      *
-     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept accept} may be
+     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept(double) accept} may be
      * different from this instance.
      *
      * @param values Values.
@@ -141,6 +155,60 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
             }
         }
         return new SumOfCubedDeviations(s, ss);
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @return {@code SumOfCubedDeviations} instance.
+     */
+    static SumOfCubedDeviations of(int... values) {
+        // Logic shared with the double[] version with int[] lower order moments
+        if (values.length == 0) {
+            return new SumOfCubedDeviations();
+        }
+        final IntVariance variance = IntVariance.of(values);
+        final double xbar = variance.computeMean();
+        final double ss = variance.computeSumOfSquaredDeviations();
+
+        double sc = 0;
+        if (values.length > LENGTH_TWO) {
+            for (final double x : values) {
+                sc += pow3(x - xbar);
+            }
+        }
+        return new SumOfCubedDeviations(sc, ss, xbar, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @return {@code SumOfCubedDeviations} instance.
+     */
+    static SumOfCubedDeviations of(long... values) {
+        // Logic shared with the double[] version with long[] lower order moments
+        if (values.length == 0) {
+            return new SumOfCubedDeviations();
+        }
+        final LongVariance variance = LongVariance.of(values);
+        final double xbar = variance.computeMean();
+        final double ss = variance.computeSumOfSquaredDeviations();
+
+        double sc = 0;
+        if (values.length > LENGTH_TWO) {
+            for (final double x : values) {
+                sc += pow3(x - xbar);
+            }
+        }
+        return new SumOfCubedDeviations(sc, ss, xbar, values.length);
     }
 
     /**

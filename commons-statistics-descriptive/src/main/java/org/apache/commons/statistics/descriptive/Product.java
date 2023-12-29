@@ -81,6 +81,30 @@ public final class Product implements DoubleStatistic, StatisticAccumulator<Prod
     }
 
     /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>When the input is an empty array, the result is one.
+     *
+     * @param values Values.
+     * @return {@code Product} instance.
+     */
+    public static Product of(int... values) {
+        return Statistics.add(new Product(), values);
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>When the input is an empty array, the result is one.
+     *
+     * @param values Values.
+     * @return {@code Product} instance.
+     */
+    public static Product of(long... values) {
+        return Statistics.add(new Product(), values);
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

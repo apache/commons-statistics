@@ -93,8 +93,8 @@ package org.apache.commons.statistics.descriptive;
 public final class Kurtosis implements DoubleStatistic, StatisticAccumulator<Kurtosis> {
     /** 2, the length limit where the biased skewness is undefined.
      * This limit effectively imposes the result m4 / m2^2 = 0 / 0 = NaN when 1 value
-     * has been added. However note that when more samples are added and the variance
-     * approaches zero the result is returned as zero. */
+     * has been added. Note that when more samples are added and the variance
+     * approaches zero the result is also returned as NaN. */
     private static final int LENGTH_TWO = 2;
     /** 4, the length limit where the kurtosis is undefined. */
     private static final int LENGTH_FOUR = 4;
@@ -145,6 +145,32 @@ public final class Kurtosis implements DoubleStatistic, StatisticAccumulator<Kur
      * @return {@code Kurtosis} instance.
      */
     public static Kurtosis of(double... values) {
+        return new Kurtosis(SumOfFourthDeviations.of(values));
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>Note: {@code Kurtosis} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @return {@code Kurtosis} instance.
+     */
+    public static Kurtosis of(int... values) {
+        return new Kurtosis(SumOfFourthDeviations.of(values));
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>Note: {@code Kurtosis} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @return {@code Kurtosis} instance.
+     */
+    public static Kurtosis of(long... values) {
         return new Kurtosis(SumOfFourthDeviations.of(values));
     }
 

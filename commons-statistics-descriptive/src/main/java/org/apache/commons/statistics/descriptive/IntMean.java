@@ -125,6 +125,19 @@ public final class IntMean implements IntStatistic, StatisticAccumulator<IntMean
      */
     @Override
     public double getAsDouble() {
+        return computeMean(sum, n);
+    }
+
+    /**
+     * Compute the mean.
+     *
+     * <p>This is a helper method used in higher order moments.
+     *
+     * @param sum Sum of the values.
+     * @param n Count of the values.
+     * @return the mean
+     */
+    static double computeMean(Int128 sum, long n) {
         // Fast option when the sum fits within
         // the mantissa of a double.
         // Handles n=0 as NaN

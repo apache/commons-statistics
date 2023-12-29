@@ -68,13 +68,24 @@ public final class GeometricMean implements DoubleStatistic, StatisticAccumulato
     /**
      * Sum of logs used to compute the geometric mean.
      */
-    private final SumOfLogs sumOfLogs = SumOfLogs.create();
+    private final SumOfLogs sumOfLogs;
 
     /**
      * Create an instance.
      */
     private GeometricMean() {
-        // No-op
+        this(SumOfLogs.create(), 0);
+    }
+
+    /**
+     * Create an instance.
+     *
+     * @param sumOfLogs Sum of logs.
+     * @param n Count of values.
+     */
+    private GeometricMean(SumOfLogs sumOfLogs, long n) {
+        this.sumOfLogs = sumOfLogs;
+        this.n = n;
     }
 
     /**
@@ -97,7 +108,31 @@ public final class GeometricMean implements DoubleStatistic, StatisticAccumulato
      * @return {@code GeometricMean} instance.
      */
     public static GeometricMean of(double... values) {
-        return Statistics.add(new GeometricMean(), values);
+        return new GeometricMean(SumOfLogs.of(values), values.length);
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>When the input is an empty array, the result is {@code NaN}.
+     *
+     * @param values Values.
+     * @return {@code GeometricMean} instance.
+     */
+    public static GeometricMean of(int... values) {
+        return new GeometricMean(SumOfLogs.of(values), values.length);
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>When the input is an empty array, the result is {@code NaN}.
+     *
+     * @param values Values.
+     * @return {@code GeometricMean} instance.
+     */
+    public static GeometricMean of(long... values) {
+        return new GeometricMean(SumOfLogs.of(values), values.length);
     }
 
     /**

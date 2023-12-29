@@ -95,8 +95,8 @@ package org.apache.commons.statistics.descriptive;
 public final class Skewness implements DoubleStatistic, StatisticAccumulator<Skewness> {
     /** 2, the length limit where the biased skewness is undefined.
      * This limit effectively imposes the result m3 / m2^1.5 = 0 / 0 = NaN when 1 value
-     * has been added. However note that when more samples are added and the variance
-     * approaches zero the result is returned as zero. */
+     * has been added. Note that when more samples are added and the variance
+     * approaches zero the result is also returned as NaN. */
     private static final int LENGTH_TWO = 2;
     /** 3, the length limit where the unbiased skewness is undefined. */
     private static final int LENGTH_THREE = 3;
@@ -147,6 +147,32 @@ public final class Skewness implements DoubleStatistic, StatisticAccumulator<Ske
      * @return {@code Skewness} instance.
      */
     public static Skewness of(double... values) {
+        return new Skewness(SumOfCubedDeviations.of(values));
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>Note: {@code Skewness} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @return {@code Skewness} instance.
+     */
+    public static Skewness of(int... values) {
+        return new Skewness(SumOfCubedDeviations.of(values));
+    }
+
+    /**
+     * Returns an instance populated using the input {@code values}.
+     *
+     * <p>Note: {@code Skewness} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @return {@code Skewness} instance.
+     */
+    public static Skewness of(long... values) {
         return new Skewness(SumOfCubedDeviations.of(values));
     }
 

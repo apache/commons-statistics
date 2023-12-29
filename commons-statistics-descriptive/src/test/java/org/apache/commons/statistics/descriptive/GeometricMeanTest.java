@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
@@ -55,6 +56,16 @@ final class GeometricMeanTest extends BaseDoubleStatisticTest<GeometricMean> {
 
     @Override
     protected double getExpectedValue(double[] values) {
+        return computeExpectedGeometricMean(values);
+    }
+
+    /**
+     * Compute the expected geometric mean.
+     *
+     * @param values Values.
+     * @return the result
+     */
+    static double computeExpectedGeometricMean(double[] values) {
         final int n = values.length;
         if (n == 0) {
             Assertions.fail();
@@ -64,7 +75,7 @@ final class GeometricMeanTest extends BaseDoubleStatisticTest<GeometricMean> {
             .map(Math::log)
             .mapToObj(BigDecimal::new)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return Math.exp(sumOfLogs.divide(BigDecimal.valueOf(n)).doubleValue());
+        return Math.exp(sumOfLogs.divide(BigDecimal.valueOf(n), MathContext.DECIMAL128).doubleValue());
     }
 
     @Override

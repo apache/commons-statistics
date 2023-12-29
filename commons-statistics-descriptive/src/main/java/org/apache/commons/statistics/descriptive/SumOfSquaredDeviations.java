@@ -87,6 +87,20 @@ class SumOfSquaredDeviations extends FirstMoment {
     }
 
     /**
+     * Create an instance with the given sum of squared deviations and first moment.
+     *
+     * <p>This constructor is used when creating the moment from integer values.
+     *
+     * @param sumSquaredDev Sum of squared deviations.
+     * @param m1 First moment.
+     * @param n Count of values.
+     */
+    SumOfSquaredDeviations(double sumSquaredDev, double m1, long n) {
+        super(m1, n);
+        this.sumSquaredDev = sumSquaredDev;
+    }
+
+    /**
      * Returns an instance populated using the input {@code values}.
      *
      * <p>Note: {@code SumOfSquaredDeviations} computed using {@link #accept accept} may be

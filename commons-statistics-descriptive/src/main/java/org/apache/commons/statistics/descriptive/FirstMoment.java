@@ -124,6 +124,20 @@ class FirstMoment implements DoubleConsumer {
     }
 
     /**
+     * Create an instance with the given first moment.
+     *
+     * <p>This constructor is used when creating the moment from integer values. The
+     * non-finite value is not required.
+     *
+     * @param m1 First moment.
+     * @param n Count of values.
+     */
+    FirstMoment(double m1, long n) {
+        this.m1 = m1 * DOWNSCALE;
+        this.n = n;
+    }
+
+    /**
      * Returns an instance populated using the input {@code values}.
      *
      * <p>Note: {@code FirstMoment} computed using {@link #accept} may be different from
@@ -177,6 +191,7 @@ class FirstMoment implements DoubleConsumer {
         }
         final FirstMoment m = new FirstMoment();
         m.n = n;
+        // Note: m1 is already downscaled here
         m.m1 = m1;
         // The non-finite value is only relevant if the data contains inf/nan
         if (!Double.isFinite(m1 * RESCALE)) {
