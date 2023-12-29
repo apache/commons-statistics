@@ -56,12 +56,20 @@ public class MomentPerformance {
     private static final String SUM_MEAN = "SumMean";
     /** Extended precision summation mean implementation. */
     private static final String EXTENDED_SUM_MEAN = "ExtendedSumMean";
+    /** Extended precision summation (using Numbers Sum). */
+    private static final String NUMBERS_SUM = "NumbersSum";
+    /** Extended precision summation (using Numbers Sum) with computation of non-finite value. */
+    private static final String NUMBERS_SUM2 = "NumbersSum2";
     /** Rolling mean implementation. */
     private static final String ROLLING_MEAN = "RollingMean";
     /** Safe rolling mean implementation. */
     private static final String SAFE_ROLLING_MEAN = "SafeRollingMean";
     /** Safe rolling mean implementation. */
     private static final String SCALED_ROLLING_MEAN = "ScaledRollingMean";
+    /** Safe rolling mean implementation with computation of non-finite value. */
+    private static final String SCALED_ROLLING_MEAN2 = "ScaledRollingMean2";
+    /** Safe rolling mean implementation with computation of non-finite value. */
+    private static final String SCALED_ROLLING_MEAN3 = "ScaledRollingMean3";
     /** Inline rolling mean implementation for array-based creation. */
     private static final String INLINE_ROLLING_MEAN = "InlineRollingMean";
     /** Inline safe rolling mean implementation for array-based creation. */
@@ -104,7 +112,8 @@ public class MomentPerformance {
     @State(Scope.Benchmark)
     public static class ActionSource {
         /** Name of the source. */
-        @Param({MEAN, ROLLING_MEAN, SAFE_ROLLING_MEAN, SCALED_ROLLING_MEAN, SUM_MEAN, EXTENDED_SUM_MEAN})
+        @Param({MEAN, ROLLING_MEAN, SAFE_ROLLING_MEAN, SCALED_ROLLING_MEAN, SUM_MEAN, EXTENDED_SUM_MEAN,
+            SCALED_ROLLING_MEAN2, SCALED_ROLLING_MEAN3, NUMBERS_SUM, NUMBERS_SUM2})
         private String name;
 
         /** The action. */
@@ -130,10 +139,18 @@ public class MomentPerformance {
                 action = SafeRollingFirstMoment::new;
             } else if (SCALED_ROLLING_MEAN.equals(name)) {
                 action = ScaledRollingFirstMoment::new;
+            } else if (SCALED_ROLLING_MEAN2.equals(name)) {
+                action = ScaledRollingFirstMoment2::new;
+            } else if (SCALED_ROLLING_MEAN3.equals(name)) {
+                action = ScaledRollingFirstMoment3::new;
             } else if (SUM_MEAN.equals(name)) {
                 action = SumFirstMoment::new;
             } else if (EXTENDED_SUM_MEAN.equals(name)) {
                 action = ExtendedSumFirstMoment::new;
+            } else if (NUMBERS_SUM.equals(name)) {
+                action = NumbersSum::new;
+            } else if (NUMBERS_SUM2.equals(name)) {
+                action = NumbersSum2::new;
             } else {
                 throw new IllegalStateException("Unknown action: " + name);
             }
@@ -276,6 +293,72 @@ public class MomentPerformance {
     }
 
     /**
+     * A rolling first raw moment of {@code double} data safe to overflow of any finite
+     * values (e.g. [MAX_VALUE, -MAX_VALUE]). This includes computation of the correct
+     * non-finite value.
+     */
+    static class ScaledRollingFirstMoment2 implements DoubleConsumer, DoubleSupplier {
+        /** Count of values that have been added. */
+        private long n;
+
+        /** First moment of values that have been added. */
+        private double m1;
+
+        /** Non-finite result. This is the sum of non-finite values. */
+        private double nonFiniteValue;
+
+        @Override
+        public void accept(double value) {
+            if (!Double.isFinite(value)) {
+                nonFiniteValue += value;
+            }
+            m1 += (value * 0.5 - m1) / ++n;
+        }
+
+        @Override
+        public double getAsDouble() {
+            final double m = m1 * 2;
+            if (Double.isFinite(m)) {
+                return n == 0 ? Double.NaN : m;
+            }
+            // Non-finite value encountered
+            return nonFiniteValue;
+        }
+    }
+
+    /**
+     * A rolling first raw moment of {@code double} data safe to overflow of any finite
+     * values (e.g. [MAX_VALUE, -MAX_VALUE]). This includes computation of the correct
+     * non-finite value.
+     */
+    static class ScaledRollingFirstMoment3 implements DoubleConsumer, DoubleSupplier {
+        /** Count of values that have been added. */
+        private long n;
+
+        /** First moment of values that have been added. */
+        private double m1;
+
+        /** Non-finite result. This is the sum of non-finite values. */
+        private double nonFiniteValue;
+
+        @Override
+        public void accept(double value) {
+            nonFiniteValue += value * Double.MIN_NORMAL;
+            m1 += (value * 0.5 - m1) / ++n;
+        }
+
+        @Override
+        public double getAsDouble() {
+            final double m = m1 * 2;
+            if (Double.isFinite(m)) {
+                return n == 0 ? Double.NaN : m;
+            }
+            // Non-finite value encountered
+            return nonFiniteValue;
+        }
+    }
+
+    /**
      * A mean using a sum.
      */
     static class SumFirstMoment implements DoubleConsumer, DoubleSupplier {
@@ -328,6 +411,54 @@ public class MomentPerformance {
         @Override
         public double getAsDouble() {
             return sum / n;
+        }
+    }
+
+    /**
+     * A sum using an Commons Numbers {@link Sum}.
+     */
+    static class NumbersSum implements DoubleConsumer, DoubleSupplier {
+        /** Sum of values that have been added. */
+        private Sum sum = Sum.create();
+
+        @Override
+        public void accept(double value) {
+            sum.add(value);
+        }
+
+        @Override
+        public double getAsDouble() {
+            return sum.getAsDouble();
+        }
+    }
+
+    /**
+     * A sum using an Commons Numbers {@link Sum} with computation of the correct
+     * non-finite value.
+     */
+    static class NumbersSum2 implements DoubleConsumer, DoubleSupplier {
+        /** Sum of values that have been added. */
+        private Sum sum = Sum.create();
+
+        /** Non-finite result. This is the sum of non-finite values. */
+        private double nonFiniteValue;
+
+        @Override
+        public void accept(double value) {
+            if (!Double.isFinite(value)) {
+                nonFiniteValue += value;
+            }
+            sum.add(value);
+        }
+
+        @Override
+        public double getAsDouble() {
+            final double s = sum.getAsDouble();
+            if (Double.isFinite(s)) {
+                return s;
+            }
+            // Non-finite value encountered
+            return nonFiniteValue;
         }
     }
 
