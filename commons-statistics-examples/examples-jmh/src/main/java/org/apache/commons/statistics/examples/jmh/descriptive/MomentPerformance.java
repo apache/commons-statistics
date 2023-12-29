@@ -23,6 +23,8 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.apache.commons.numbers.core.DD;
+import org.apache.commons.numbers.core.Sum;
 import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.statistics.descriptive.Mean;
 import org.openjdk.jmh.annotations.Benchmark;
@@ -146,6 +148,7 @@ public class MomentPerformance {
         /** Name of the source. */
         @Param({MEAN, ROLLING_MEAN, SAFE_ROLLING_MEAN, SCALED_ROLLING_MEAN,
             INLINE_SAFE_ROLLING_MEAN, INLINE_SAFE_ROLLING_MEAN_EXT,
+            SUM_MEAN, EXTENDED_SUM_MEAN, "DDMean",
             // Same speed as the ROLLING_MEAN, i.e. the DoubleConsumer is not an overhead
             //INLINE_ROLLING_MEAN
             // Higher moments
@@ -183,6 +186,13 @@ public class MomentPerformance {
                 function = MomentPerformance::arrayInlineSafeRollingFirstMoment;
             } else if (INLINE_SAFE_ROLLING_MEAN_EXT.equals(name)) {
                 function = MomentPerformance::arrayInlineSafeRollingFirstMomentExt;
+            } else if (SUM_MEAN.equals(name)) {
+                function = MomentPerformance::arraySumMean;
+            } else if (EXTENDED_SUM_MEAN.equals(name)) {
+                // This returns the IEEE result for non-finite input, or overflow
+                function = x -> Sum.of(x).getAsDouble() / x.length;
+            } else if ("DDMean".equals(name)) {
+                function = MomentPerformance::arrayDDSumMean;
             } else if ("SumOfCubed".equals(name)) {
                 function = MomentPerformance::arraySumOfCubed;
             } else if ("SumOfCubedPow".equals(name)) {
@@ -501,6 +511,36 @@ public class MomentPerformance {
             return Double.NaN;
         }
         return correctMeanKahan(data, m1);
+    }
+
+    /**
+     * Create the mean using a single pass sum.
+     * The mean is not safe against overflow.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arraySumMean(double[] data) {
+        double s = 0;
+        for (final double x : data) {
+            s += x;
+        }
+        return s / data.length;
+    }
+
+    /**
+     * Create themean using a single pass sum using double-double precision.
+     * The mean is not safe against overflow or non-finite input.
+     *
+     * @param data Data.
+     * @return the statistic
+     */
+    static double arrayDDSumMean(double[] data) {
+        DD s = DD.ZERO;
+        for (final double x : data) {
+            s = s.add(x);
+        }
+        return s.doubleValue() / data.length;
     }
 
     /**

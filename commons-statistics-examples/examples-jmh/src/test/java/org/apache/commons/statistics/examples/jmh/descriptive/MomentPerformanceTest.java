@@ -47,5 +47,7 @@ class MomentPerformanceTest {
         Assertions.assertEquals(expected, MomentPerformance.arrayInlineRollingFirstMoment(values), tolerance);
         Assertions.assertEquals(expected, MomentPerformance.arrayInlineSafeRollingFirstMoment(values), tolerance);
         Assertions.assertEquals(expected, MomentPerformance.arrayInlineSafeRollingFirstMomentExt(values), tolerance);
+        Assertions.assertEquals(expected, MomentPerformance.arraySumMean(values), tolerance);
+        Assertions.assertEquals(expected, MomentPerformance.arrayDDSumMean(values), tolerance);
     }
 }
