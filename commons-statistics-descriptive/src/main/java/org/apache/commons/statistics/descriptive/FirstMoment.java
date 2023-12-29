@@ -147,13 +147,16 @@ class FirstMoment implements DoubleConsumer {
      * @return {@code FirstMoment} instance.
      */
     static FirstMoment of(double... values) {
+        if (values.length == 0) {
+            return new FirstMoment();
+        }
+
         // "Corrected two-pass algorithm"
 
         // First pass
         final FirstMoment m1 = create(values);
         final double xbar = m1.getFirstMoment();
         if (!Double.isFinite(xbar)) {
-            // Note: Also occurs when the input is empty
             return m1;
         }
         // Second pass
