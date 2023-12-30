@@ -22,7 +22,13 @@ package org.apache.commons.statistics.descriptive;
  * <ul>
  *   <li>The result is zero if no values are added.
  *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
+ *   <li>The result is {@code NaN} if the values contain positive and negative infinity.
+ *   <li>The result is non-finite if the values contain infinities of the same sign.
  * </ul>
+ *
+ * <p>Note: In the event of infinite values of the same sign the result will be non-finite.
+ * In this case the returned results may differ (either the same infinity or {@code NaN}) based on
+ * input order if the sum of the finite-only values can overflow to an opposite signed infinity.
  *
  * <p>This class is designed to work with (though does not require)
  * {@linkplain java.util.stream streams}.

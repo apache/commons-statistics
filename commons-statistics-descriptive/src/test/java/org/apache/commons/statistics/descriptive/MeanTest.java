@@ -20,6 +20,10 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test for {@link Mean}.
@@ -50,7 +54,10 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
     @Override
     protected double getExpectedNonFiniteValue(double[] values) {
         // Use the JDK as a reference implementation for non-finite values
-        return Arrays.stream(values).average().orElse(getEmptyValue());
+        // Process only non-finite values to detect +/-inf or NaN.
+        return Arrays.stream(values)
+            .filter(x -> !Double.isFinite(x))
+            .average().orElse(getEmptyValue());
     }
 
     // The full-array method should be more accurate on average;
@@ -93,6 +100,38 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
         // R v4.3.1: mean(x)
         builder.accept(addReference(5.5, DoubleTolerances.ulps(1), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         builder.accept(addReference(8.75, DoubleTolerances.ulps(2), 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 50));
+        return builder.build();
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testNonFiniteValue(double[] values) {
+        final double expected = getExpectedNonFiniteValue(values);
+        Assertions.assertEquals(expected, Mean.of(values).getAsDouble());
+    }
+
+    static Stream<Arguments> testNonFiniteValue() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        // STATISTICS-83: Combinations of finite and non-finite values.
+        // These can:
+        // 1. Create sums that overflow to an opposite infinity
+        //    than the infinity in the values.
+        // 2. Create a difference from the current (infinite) mean that
+        //    is the opposite infinity.
+        final double max = Double.MAX_VALUE;
+        final double inf = Double.POSITIVE_INFINITY;
+        builder.accept(Arguments.of(new double[] {max, max, inf}));
+        builder.accept(Arguments.of(new double[] {-max, -max, inf}));
+        builder.accept(Arguments.of(new double[] {max, max, -inf}));
+        builder.accept(Arguments.of(new double[] {-max, -max, -inf}));
+        builder.accept(Arguments.of(new double[] {-max, -max, inf, -inf}));
+        builder.accept(Arguments.of(new double[] {max, max, inf, -inf}));
+        builder.accept(Arguments.of(new double[] {-inf, max}));
+        builder.accept(Arguments.of(new double[] {inf, -max}));
+        builder.accept(Arguments.of(new double[] {-inf, 0}));
+        builder.accept(Arguments.of(new double[] {inf, 0}));
+        builder.accept(Arguments.of(new double[] {0, -inf}));
+        builder.accept(Arguments.of(new double[] {0, inf}));
         return builder.build();
     }
 }

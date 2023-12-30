@@ -198,21 +198,22 @@ class FirstMoment implements DoubleConsumer {
         m.m1 = m1;
         // The non-finite value is only relevant if the data contains inf/nan
         if (!Double.isFinite(m1 * RESCALE)) {
-            m.nonFiniteValue = sum(values);
+            m.nonFiniteValue = computeNonFiniteValue(values);
         }
         return m;
     }
 
     /**
-     * Compute the sum of the values.
+     * Compute the result in the event of non-finite values.
      *
      * @param values Values.
-     * @return the sum
+     * @return the non-finite result
      */
-    private static double sum(double[] values) {
+    private static double computeNonFiniteValue(double[] values) {
         double sum = 0;
         for (final double x : values) {
-            sum += x;
+            // Scaling down values prevents overflow of finites.
+            sum += x * Double.MIN_NORMAL;
         }
         return sum;
     }
@@ -231,7 +232,9 @@ class FirstMoment implements DoubleConsumer {
         // Scaling the input down by a factor of two ensures that the scaling is lossless.
         // Sub-classes must alter their scaling factors when using the computed deviations.
 
-        nonFiniteValue += value;
+        // Note: Maintain the correct non-finite result.
+        // Scaling down values prevents overflow of finites.
+        nonFiniteValue += value * Double.MIN_NORMAL;
         // Scale down the input
         dev = value * DOWNSCALE - m1;
         nDev = dev / ++n;
