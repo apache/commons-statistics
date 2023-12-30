@@ -142,23 +142,15 @@ public final class LongStandardDeviation implements LongStatistic, StatisticAccu
     }
 
     /**
-     * Gets the variance of all input values.
+     * Gets the standard deviation of all input values.
      *
      * <p>When no values have been added, the result is {@code NaN}.
      *
-     * @return variance of all values.
+     * @return standard deviation of all values.
      */
     @Override
     public double getAsDouble() {
-        if (n == 0) {
-            return Double.NaN;
-        }
-        // Avoid a divide by zero
-        if (n == 1) {
-            return 0;
-        }
-        return Math.sqrt(LongVariance.computeVariance(sumSq, sum, n, biased));
-
+        return LongVariance.computeVarianceOrStd(sumSq, sum, n, biased, true);
     }
 
     @Override

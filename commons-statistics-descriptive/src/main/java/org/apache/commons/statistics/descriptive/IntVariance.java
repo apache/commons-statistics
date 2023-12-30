@@ -172,6 +172,23 @@ public final class IntVariance implements IntStatistic, StatisticAccumulator<Int
      */
     @Override
     public double getAsDouble() {
+        return computeVarianceOrStd(sumSq, sum, n, biased, false);
+    }
+
+    /**
+     * Compute the variance (or standard deviation).
+     *
+     * <p>The {@code std} flag controls if the result is returned as the standard deviation
+     * using the {@link Math#sqrt(double) square root} function.
+     *
+     * @param sumSq Sum of the squared values.
+     * @param sum Sum of the values.
+     * @param n Count of values that have been added.
+     * @param biased Flag to control if the statistic is biased, or should use a bias correction.
+     * @param std Flag to control if the statistic is the standard deviation.
+     * @return the variance (or standard deviation)
+     */
+    static double computeVarianceOrStd(UInt128 sumSq, Int128 sum, long n, boolean biased, boolean std) {
         if (n == 0) {
             return Double.NaN;
         }
@@ -179,21 +196,6 @@ public final class IntVariance implements IntStatistic, StatisticAccumulator<Int
         if (n == 1) {
             return 0;
         }
-        return computeVariance(sumSq, sum, n, biased);
-    }
-
-    /**
-     * Compute the variance.
-     *
-     * <p>It is assumes the count {@code n} is greater than 1.
-     *
-     * @param sumSq Sum of the squared values.
-     * @param sum Sum of the values.
-     * @param n Count of values that have been added.
-     * @param biased Flag to control if the statistic is biased, or should use a bias correction.
-     * @return the variance
-     */
-    static double computeVariance(UInt128 sumSq, Int128 sum, long n, boolean biased) {
         // Sum-of-squared deviations: sum(x^2) - sum(x)^2 / n
         // Sum-of-squared deviations precursor: n * sum(x^2) - sum(x)^2
         // The precursor is computed in integer precision.
@@ -202,7 +204,11 @@ public final class IntVariance implements IntStatistic, StatisticAccumulator<Int
         // The result is limited to by the rounding in the double computation.
         final double diff = computeSSDevN(sumSq, sum, n);
         final long n0 = biased ? n : n - 1;
-        return diff / IntMath.unsignedMultiplyToDouble(n, n0);
+        final double v = diff / IntMath.unsignedMultiplyToDouble(n, n0);
+        if (std) {
+            return Math.sqrt(v);
+        }
+        return v;
     }
 
     /**

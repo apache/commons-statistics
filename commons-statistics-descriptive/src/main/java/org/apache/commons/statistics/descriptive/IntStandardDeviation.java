@@ -170,14 +170,7 @@ public final class IntStandardDeviation implements IntStatistic, StatisticAccumu
      */
     @Override
     public double getAsDouble() {
-        if (n == 0) {
-            return Double.NaN;
-        }
-        // Avoid a divide by zero
-        if (n == 1) {
-            return 0;
-        }
-        return Math.sqrt(IntVariance.computeVariance(sumSq, sum, n, biased));
+        return IntVariance.computeVarianceOrStd(sumSq, sum, n, biased, true);
     }
 
     @Override
