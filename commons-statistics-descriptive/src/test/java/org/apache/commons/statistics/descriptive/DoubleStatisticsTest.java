@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
-import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -364,20 +363,6 @@ class DoubleStatisticsTest {
     }
 
     @Test
-    void testNoOpConsumer() {
-        final DoubleConsumer c = DoubleStatistics.NOOP;
-        // Hit coverage
-        c.accept(0);
-        final double[] value = {0};
-        final DoubleConsumer other = x -> value[0] = x;
-        final DoubleConsumer combined = c.andThen(other);
-        Assertions.assertSame(combined, other);
-        final double y = 42;
-        combined.accept(y);
-        Assertions.assertEquals(y, value[0]);
-    }
-
-    @Test
     void testOfThrows() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> DoubleStatistics.of());
         Assertions.assertThrows(IllegalArgumentException.class, () -> DoubleStatistics.of(EMPTY_STATISTIC_ARRAY));
@@ -574,7 +559,7 @@ class DoubleStatisticsTest {
      * @param setter Option setter.
      * @return the number of unique results
      */
-    private static <T extends DoubleStatistic & StatisticAccumulator<T>> int addBooleanOptionCase(
+    static <T extends DoubleStatistic & StatisticAccumulator<T>> int addBooleanOptionCase(
             Stream.Builder<Arguments> builder, double[] values, Statistic statistic,
             Function<double[], T> arrayConstructor, BiConsumer<T, Boolean> setter) {
         final T stat = arrayConstructor.apply(values);

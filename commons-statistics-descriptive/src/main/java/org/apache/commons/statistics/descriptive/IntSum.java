@@ -106,6 +106,17 @@ public final class IntSum implements IntStatistic, StatisticAccumulator<IntSum> 
     }
 
     /**
+     * Gets the sum.
+     *
+     * <p>This is package private for use in {@link IntStatistics}.
+     *
+     * @return the sum
+     */
+    Int128 getSum() {
+        return sum;
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

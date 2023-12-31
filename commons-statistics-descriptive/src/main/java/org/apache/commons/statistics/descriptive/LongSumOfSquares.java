@@ -102,6 +102,17 @@ public final class LongSumOfSquares implements LongStatistic, StatisticAccumulat
     }
 
     /**
+     * Gets the sum of squares.
+     *
+     * <p>This is package private for use in {@link IntStatistics}.
+     *
+     * @return the sum of squares
+     */
+    UInt192 getSumOfSquares() {
+        return sumSq;
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

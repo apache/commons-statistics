@@ -16,14 +16,15 @@
  */
 package org.apache.commons.statistics.descriptive;
 
+import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 import java.util.function.Function;
+import java.util.function.IntConsumer;
 
 /**
- * Statistics for {@code double} values.
+ * Statistics for {@code int} values.
  *
  * <p>This class provides combinations of individual statistic implementations in the
  * {@code org.apache.commons.statistics.descriptive} package.
@@ -33,7 +34,7 @@ import java.util.function.Function;
  *
  * @since 1.1
  */
-public final class DoubleStatistics implements DoubleConsumer {
+public final class IntStatistics implements IntConsumer {
     /** Error message for non configured statistics. */
     private static final String NO_CONFIGURED_STATISTICS = "No configured statistics";
     /** Error message for an unsupported statistic. */
@@ -42,45 +43,46 @@ public final class DoubleStatistics implements DoubleConsumer {
     /** Count of values recorded. */
     private long count;
     /** The consumer of values. */
-    private final DoubleConsumer consumer;
-    /** The {@link Min} implementation. */
-    private final Min min;
-    /** The {@link Max} implementation. */
-    private final Max max;
-    /** The moment implementation. May be any instance of {@link FirstMoment}. */
+    private final IntConsumer consumer;
+    /** The {@link IntMin} implementation. */
+    private final IntMin min;
+    /** The {@link IntMax} implementation. */
+    private final IntMax max;
+    /** The moment implementation. May be any instance of {@link FirstMoment}.
+     * This implementation uses only the third and fourth moments. */
     private final FirstMoment moment;
-    /** The {@link Sum} implementation. */
-    private final Sum sum;
+    /** The {@link IntSum} implementation. */
+    private final IntSum sum;
     /** The {@link Product} implementation. */
     private final Product product;
-    /** The {@link SumOfSquares} implementation. */
-    private final SumOfSquares sumOfSquares;
+    /** The {@link IntSumOfSquares} implementation. */
+    private final IntSumOfSquares sumOfSquares;
     /** The {@link SumOfLogs} implementation. */
     private final SumOfLogs sumOfLogs;
     /** Configuration options for computation of statistics. */
     private StatisticsConfiguration config;
 
     /**
-     * A builder for {@link DoubleStatistics}.
+     * A builder for {@link IntStatistics}.
      */
     public static final class Builder {
         /** An empty double array. */
-        private static final double[] NO_VALUES = {};
+        private static final int[] NO_VALUES = {};
 
-        /** The {@link Min} constructor. */
-        private Function<double[], Min> min;
-        /** The {@link Max} constructor. */
-        private Function<double[], Max> max;
+        /** The {@link IntMin} constructor. */
+        private Function<int[], IntMin> min;
+        /** The {@link IntMax} constructor. */
+        private Function<int[], IntMax> max;
         /** The moment constructor. May return any instance of {@link FirstMoment}. */
-        private Function<double[], FirstMoment> moment;
-        /** The {@link Sum} constructor. */
-        private Function<double[], Sum> sum;
+        private Function<int[], FirstMoment> moment;
+        /** The {@link IntSum} constructor. */
+        private Function<int[], IntSum> sum;
         /** The {@link Product} constructor. */
-        private Function<double[], Product> product;
-        /** The {@link SumOfSquares} constructor. */
-        private Function<double[], SumOfSquares> sumOfSquares;
+        private Function<int[], Product> product;
+        /** The {@link IntSumOfSquares} constructor. */
+        private Function<int[], IntSumOfSquares> sumOfSquares;
         /** The {@link SumOfLogs} constructor. */
-        private Function<double[], SumOfLogs> sumOfLogs;
+        private Function<int[], SumOfLogs> sumOfLogs;
         /** The order of the moment. It corresponds to the power computed by the {@link FirstMoment}
          * instance constructed by {@link #moment}. This should only be increased from the default
          * of zero (corresponding to no moment computation). */
@@ -111,13 +113,10 @@ public final class DoubleStatistics implements DoubleConsumer {
                 createMoment(4);
                 break;
             case MAX:
-                max = Max::of;
-                break;
-            case MEAN:
-                createMoment(1);
+                max = IntMax::of;
                 break;
             case MIN:
-                min = Min::of;
+                min = IntMin::of;
                 break;
             case PRODUCT:
                 product = Product::of;
@@ -127,13 +126,15 @@ public final class DoubleStatistics implements DoubleConsumer {
                 break;
             case STANDARD_DEVIATION:
             case VARIANCE:
-                createMoment(2);
+                sum = IntSum::of;
+                sumOfSquares = IntSumOfSquares::of;
                 break;
+            case MEAN:
             case SUM:
-                sum = Sum::of;
+                sum = IntSum::of;
                 break;
             case SUM_OF_SQUARES:
-                sumOfSquares = SumOfSquares::of;
+                sumOfSquares = IntSumOfSquares::of;
                 break;
             default:
                 throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
@@ -143,7 +144,7 @@ public final class DoubleStatistics implements DoubleConsumer {
 
         /**
          * Creates the moment constructor for the specified {@code order},
-         * e.g. order=2 is sum of squared deviations.
+         * e.g. order=3 is sum of cubed deviations.
          *
          * @param order Order.
          */
@@ -152,13 +153,9 @@ public final class DoubleStatistics implements DoubleConsumer {
                 momentOrder = order;
                 if (order == 4) {
                     moment = SumOfFourthDeviations::of;
-                } else if (order == 3) {
-                    moment = SumOfCubedDeviations::of;
-                } else if (order == 2) {
-                    moment = SumOfSquaredDeviations::of;
                 } else {
-                    // Assume order == 1
-                    moment = FirstMoment::of;
+                    // Assume order == 3
+                    moment = SumOfCubedDeviations::of;
                 }
             }
         }
@@ -176,27 +173,27 @@ public final class DoubleStatistics implements DoubleConsumer {
         }
 
         /**
-         * Builds a {@code DoubleStatistics} instance.
+         * Builds a {@code IntStatistics} instance.
          *
-         * @return {@code DoubleStatistics} instance.
+         * @return {@code IntStatistics} instance.
          */
-        public DoubleStatistics build() {
+        public IntStatistics build() {
             return build(NO_VALUES);
         }
 
         /**
-         * Builds a {@code DoubleStatistics} instance using the input {@code values}.
+         * Builds a {@code IntStatistics} instance using the input {@code values}.
          *
-         * <p>Note: {@code DoubleStatistics} computed using
-         * {@link DoubleStatistics#accept(double) accept} may be
+         * <p>Note: {@code IntStatistics} computed using
+         * {@link IntStatistics#accept(int) accept} may be
          * different from this instance.
          *
          * @param values Values.
-         * @return {@code DoubleStatistics} instance.
+         * @return {@code IntStatistics} instance.
          */
-        public DoubleStatistics build(double... values) {
+        public IntStatistics build(int... values) {
             Objects.requireNonNull(values, "values");
-            return new DoubleStatistics(
+            return new IntStatistics(
                 values.length,
                 create(min, values),
                 create(max, values),
@@ -216,7 +213,7 @@ public final class DoubleStatistics implements DoubleConsumer {
          * @param values Values
          * @return the instance
          */
-        private static <T> T create(Function<double[], T> constructor, double[] values) {
+        private static <T> T create(Function<int[], T> constructor, int[] values) {
             if (constructor != null) {
                 return constructor.apply(values);
             }
@@ -228,18 +225,18 @@ public final class DoubleStatistics implements DoubleConsumer {
      * Create an instance.
      *
      * @param count Count of values.
-     * @param min Min implementation.
-     * @param max Max implementation.
+     * @param min IntMin implementation.
+     * @param max IntMax implementation.
      * @param moment Moment implementation.
-     * @param sum Sum implementation.
+     * @param sum IntSum implementation.
      * @param product Product implementation.
      * @param sumOfSquares Sum of squares implementation.
      * @param sumOfLogs Sum of logs implementation.
      * @param config Statistics configuration.
      */
-    DoubleStatistics(long count, Min min, Max max, FirstMoment moment, Sum sum,
-                     Product product, SumOfSquares sumOfSquares, SumOfLogs sumOfLogs,
-                     StatisticsConfiguration config) {
+    IntStatistics(long count, IntMin min, IntMax max, FirstMoment moment, IntSum sum,
+                  Product product, IntSumOfSquares sumOfSquares, SumOfLogs sumOfLogs,
+                  StatisticsConfiguration config) {
         this.count = count;
         this.min = min;
         this.max = max;
@@ -249,7 +246,25 @@ public final class DoubleStatistics implements DoubleConsumer {
         this.sumOfSquares = sumOfSquares;
         this.sumOfLogs = sumOfLogs;
         this.config = config;
-        consumer = Statistics.compose(min, max, moment, sum, product, sumOfSquares, sumOfLogs);
+        // The final consumer should never be null as the builder is created
+        // with at least one statistic.
+        consumer = Statistics.compose(min, max, sum, sumOfSquares,
+                                      composeAsInt(moment, product, sumOfLogs));
+    }
+
+    /**
+     * Chain the {@code consumers} into a single composite {@code IntConsumer}.
+     * Ignore any {@code null} consumer.
+     *
+     * @param consumers Consumers.
+     * @return a composed consumer (or null)
+     */
+    private static IntConsumer composeAsInt(DoubleConsumer... consumers) {
+        final DoubleConsumer c = Statistics.compose(consumers);
+        if (c != null) {
+            return c::accept;
+        }
+        return null;
     }
 
     /**
@@ -262,7 +277,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @return the instance
      * @throws IllegalArgumentException if there are no {@code statistics} to compute.
      */
-    public static DoubleStatistics of(Statistic... statistics) {
+    public static IntStatistics of(Statistic... statistics) {
         return builder(statistics).build();
     }
 
@@ -271,10 +286,10 @@ public final class DoubleStatistics implements DoubleConsumer {
      * populated using the input {@code values}.
      *
      * <p>Use this method to create an instance populated with a (variable) array of
-     * {@code double[]} data:
+     * {@code int[]} data:
      *
      * <pre>
-     * DoubleStatistics stats = DoubleStatistics.of(
+     * IntStatistics stats = IntStatistics.of(
      *     EnumSet.of(Statistic.MIN, Statistic.MAX),
      *     1, 1, 2, 3, 5, 8, 13);
      * </pre>
@@ -284,7 +299,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @return the instance
      * @throws IllegalArgumentException if there are no {@code statistics} to compute.
      */
-    public static DoubleStatistics of(Set<Statistic> statistics, double... values) {
+    public static IntStatistics of(Set<Statistic> statistics, int... values) {
         if (statistics.isEmpty()) {
             throw new IllegalArgumentException(NO_CONFIGURED_STATISTICS);
         }
@@ -297,28 +312,28 @@ public final class DoubleStatistics implements DoubleConsumer {
      * Returns a new builder configured to create instances to compute the specified
      * {@code statistics}.
      *
-     * <p>Use this method to create an instance populated with an array of {@code double[]}
-     * data using the {@link Builder#build(double...)} method:
+     * <p>Use this method to create an instance populated with an array of {@code int[]}
+     * data using the {@link Builder#build(int...)} method:
      *
      * <pre>
-     * double[] data = ...
-     * DoubleStatistics stats = DoubleStatistics.builder(
+     * int[] data = ...
+     * IntStatistics stats = IntStatistics.builder(
      *     Statistic.MIN, Statistic.MAX, Statistic.VARIANCE)
      *     .build(data);
      * </pre>
      *
-     * <p>The builder can be used to create multiple instances of {@link DoubleStatistics}
-     * to be used in parallel, or on separate arrays of {@code double[]} data. These may
-     * be {@link #combine(DoubleStatistics) combined}. For example:
+     * <p>The builder can be used to create multiple instances of {@link IntStatistics}
+     * to be used in parallel, or on separate arrays of {@code int[]} data. These may
+     * be {@link #combine(IntStatistics) combined}. For example:
      *
      * <pre>
-     * double[][] data = ...
-     * DoubleStatistics.Builder builder = DoubleStatistics.builder(
+     * int[][] data = ...
+     * IntStatistics.Builder builder = IntStatistics.builder(
      *     Statistic.MIN, Statistic.MAX, Statistic.VARIANCE);
-     * DoubleStatistics stats = Arrays.stream(data)
+     * IntStatistics stats = Arrays.stream(data)
      *     .parallel()
      *     .map(builder::build)
-     *     .reduce(DoubleStatistics::combine)
+     *     .reduce(IntStatistics::combine)
      *     .get();
      * </pre>
      *
@@ -326,16 +341,16 @@ public final class DoubleStatistics implements DoubleConsumer {
      * use on multiple data:
      *
      * <pre>{@code
-     * DoubleStatistics.Builder builder = DoubleStatistics.builder(
+     * IntStatistics.Builder builder = IntStatistics.builder(
      *     Statistic.MIN, Statistic.MAX, Statistic.VARIANCE);
-     * Collector<double[], DoubleStatistics, DoubleStatistics> collector =
+     * Collector<int[], IntStatistics, IntStatistics> collector =
      *     Collector.of(builder::build,
      *                  (s, d) -> s.combine(builder.build(d)),
-     *                  DoubleStatistics::combine);
+     *                  IntStatistics::combine);
      *
      * // Repeated
-     * double[][] data = ...
-     * DoubleStatistics stats = Arrays.stream(data).collect(collector);
+     * int[][] data = ...
+     * IntStatistics stats = Arrays.stream(data).collect(collector);
      * }</pre>
      *
      * @param statistics Statistics to compute.
@@ -359,7 +374,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @param value Value.
      */
     @Override
-    public void accept(double value) {
+    public void accept(int value) {
         count++;
         consumer.accept(value);
     }
@@ -381,7 +396,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @param statistic Statistic.
      * @return {@code true} if supported
      * @throws NullPointerException if the {@code statistic} is {@code null}
-     * @see #get(Statistic)
+     * @see #getResult(Statistic)
      */
     public boolean isSupported(Statistic statistic) {
         // Check for the appropriate underlying implementation
@@ -393,8 +408,6 @@ public final class DoubleStatistics implements DoubleConsumer {
             return moment instanceof SumOfFourthDeviations;
         case MAX:
             return max != null;
-        case MEAN:
-            return moment != null;
         case MIN:
             return min != null;
         case PRODUCT:
@@ -403,7 +416,8 @@ public final class DoubleStatistics implements DoubleConsumer {
             return moment instanceof SumOfCubedDeviations;
         case STANDARD_DEVIATION:
         case VARIANCE:
-            return moment instanceof SumOfSquaredDeviations;
+            return sum != null && sumOfSquares != null;
+        case MEAN:
         case SUM:
             return sum != null;
         case SUM_OF_SQUARES:
@@ -414,24 +428,87 @@ public final class DoubleStatistics implements DoubleConsumer {
     }
 
     /**
-     * Gets the value of the specified {@code statistic}.
+     * Gets the value of the specified {@code statistic} as a {@code double}.
      *
      * @param statistic Statistic.
      * @return the value
      * @throws IllegalArgumentException if the {@code statistic} is not supported
      * @see #isSupported(Statistic)
-     * @see #getSupplier(Statistic)
+     * @see #getResult(Statistic)
      */
-    public double get(Statistic statistic) {
-        return getSupplier(statistic).getAsDouble();
+    public double getAsDouble(Statistic statistic) {
+        return getResult(statistic).getAsDouble();
+    }
+
+    /**
+     * Gets the value of the specified {@code statistic} as an {@code int}.
+     *
+     * <p>Use this method to access the {@code int} result for exact integer statistics,
+     * for example {@link Statistic#MIN}.
+     *
+     * <p>Note: This method may throw an {@link ArithmeticException} if the result
+     * overflows an {@code int}.
+     *
+     * @param statistic Statistic.
+     * @return the value
+     * @throws IllegalArgumentException if the {@code statistic} is not supported
+     * @throws ArithmeticException if the {@code result} overflows an {@code int} or is not
+     * finite
+     * @see #isSupported(Statistic)
+     * @see #getResult(Statistic)
+     */
+    public int getAsInt(Statistic statistic) {
+        return getResult(statistic).getAsInt();
+    }
+
+    /**
+     * Gets the value of the specified {@code statistic} as a {@code long}.
+     *
+     * <p>Use this method to access the {@code long} result for exact integer statistics,
+     * for example {@link Statistic#SUM} for a {@link #getCount() count} less than or equal to
+     *2<sup>32</sup>.
+     *
+     * <p>Note: This method may throw an {@link ArithmeticException} if the result
+     * overflows an {@code long}.
+     *
+     * @param statistic Statistic.
+     * @return the value
+     * @throws IllegalArgumentException if the {@code statistic} is not supported
+     * @throws ArithmeticException if the {@code result} overflows an {@code long} or is not
+     * finite
+     * @see #isSupported(Statistic)
+     * @see #getResult(Statistic)
+     */
+    public long getAsLong(Statistic statistic) {
+        return getResult(statistic).getAsLong();
+    }
+
+    /**
+     * Gets the value of the specified {@code statistic} as a {@code BigInteger}.
+     *
+     * <p>Use this method to access the {@code BigInteger} result for exact integer statistics,
+     * for example {@link Statistic#SUM_OF_SQUARES}.
+     *
+     * <p>Note: This method may throw an {@link ArithmeticException} if the result
+     * is not finite.
+     *
+     * @param statistic Statistic.
+     * @return the value
+     * @throws IllegalArgumentException if the {@code statistic} is not supported
+     * @throws ArithmeticException if the {@code result} is not finite
+     * @see #isSupported(Statistic)
+     * @see #getResult(Statistic)
+     */
+    public BigInteger getAsBigInteger(Statistic statistic) {
+        return getResult(statistic).getAsBigInteger();
     }
 
     /**
      * Gets a supplier for the value of the specified {@code statistic}.
      *
      * <p>The returned function will supply the correct result after
-     * calls to {@link #accept(double) accept} or
-     * {@link #combine(DoubleStatistics) combine} further values into
+     * calls to {@link #accept(int) accept} or
+     * {@link #combine(IntStatistics) combine} further values into
      * {@code this} instance.
      *
      * <p>This method can be used to perform a one-time look-up of the statistic
@@ -441,15 +518,15 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @return the supplier
      * @throws IllegalArgumentException if the {@code statistic} is not supported
      * @see #isSupported(Statistic)
-     * @see #get(Statistic)
+     * @see #getAsDouble(Statistic)
      */
-    public DoubleSupplier getSupplier(Statistic statistic) {
+    public StatisticResult getResult(Statistic statistic) {
         // Locate the implementation.
         // Statistics that wrap an underlying implementation are created in methods.
-        // The return argument should be a method reference and not an instance
-        // of DoubleStatistic. This ensures the statistic implementation cannot
-        // be updated with new values by casting the result and calling accept(double).
-        DoubleSupplier stat = null;
+        // The return argument should be an interface reference and not an instance
+        // of IntStatistic. This ensures the statistic implementation cannot
+        // be updated with new values by casting the result and calling accept(int).
+        StatisticResult stat = null;
         switch (statistic) {
         case GEOMETRIC_MEAN:
             stat = getGeometricMean();
@@ -458,16 +535,16 @@ public final class DoubleStatistics implements DoubleConsumer {
             stat = getKurtosis();
             break;
         case MAX:
-            stat = max;
+            stat = Statistics.getResultAsIntOrNull(max);
             break;
         case MEAN:
             stat = getMean();
             break;
         case MIN:
-            stat = min;
+            stat = Statistics.getResultAsIntOrNull(min);
             break;
         case PRODUCT:
-            stat = product;
+            stat = Statistics.getResultAsDoubleOrNull(product);
             break;
         case SKEWNESS:
             stat = getSkewness();
@@ -476,13 +553,13 @@ public final class DoubleStatistics implements DoubleConsumer {
             stat = getStandardDeviation();
             break;
         case SUM:
-            stat = sum;
+            stat = Statistics.getResultAsBigIntegerOrNull(sum);
             break;
         case SUM_OF_LOGS:
-            stat = sumOfLogs;
+            stat = Statistics.getResultAsDoubleOrNull(sumOfLogs);
             break;
         case SUM_OF_SQUARES:
-            stat = sumOfSquares;
+            stat = Statistics.getResultAsBigIntegerOrNull(sumOfSquares);
             break;
         case VARIANCE:
             stat = getVariance();
@@ -491,9 +568,7 @@ public final class DoubleStatistics implements DoubleConsumer {
             break;
         }
         if (stat != null) {
-            return stat instanceof DoubleStatistic ?
-                ((DoubleStatistic) stat)::getAsDouble :
-                stat;
+            return stat;
         }
         throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
     }
@@ -503,7 +578,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a geometric mean supplier (or null if unsupported)
      */
-    private DoubleSupplier getGeometricMean() {
+    private StatisticResult getGeometricMean() {
         if (sumOfLogs != null) {
             // Return a function that has access to the count and sumOfLogs
             return () -> GeometricMean.computeGeometricMean(count, sumOfLogs);
@@ -516,7 +591,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a kurtosis supplier (or null if unsupported)
      */
-    private DoubleSupplier getKurtosis() {
+    private StatisticResult getKurtosis() {
         if (moment instanceof SumOfFourthDeviations) {
             return new Kurtosis((SumOfFourthDeviations) moment)
                 .setBiased(config.isBiased())::getAsDouble;
@@ -529,10 +604,11 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a mean supplier (or null if unsupported)
      */
-    private DoubleSupplier getMean() {
-        if (moment != null) {
-            // Special case where wrapping with a Mean is not required
-            return moment::getFirstMoment;
+    private StatisticResult getMean() {
+        if (sum != null) {
+            // Return a function that has access to the count and sum
+            final Int128 s = sum.getSum();
+            return () -> IntMean.computeMean(s, count);
         }
         return null;
     }
@@ -542,7 +618,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a skewness supplier (or null if unsupported)
      */
-    private DoubleSupplier getSkewness() {
+    private StatisticResult getSkewness() {
         if (moment instanceof SumOfCubedDeviations) {
             return new Skewness((SumOfCubedDeviations) moment)
                 .setBiased(config.isBiased())::getAsDouble;
@@ -555,12 +631,8 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a standard deviation supplier (or null if unsupported)
      */
-    private DoubleSupplier getStandardDeviation() {
-        if (moment instanceof SumOfSquaredDeviations) {
-            return new StandardDeviation((SumOfSquaredDeviations) moment)
-                .setBiased(config.isBiased())::getAsDouble;
-        }
-        return null;
+    private StatisticResult getStandardDeviation() {
+        return getVarianceOrStd(true);
     }
 
     /**
@@ -568,10 +640,23 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a variance supplier (or null if unsupported)
      */
-    private DoubleSupplier getVariance() {
-        if (moment instanceof SumOfSquaredDeviations) {
-            return new Variance((SumOfSquaredDeviations) moment)
-                .setBiased(config.isBiased())::getAsDouble;
+    private StatisticResult getVariance() {
+        return getVarianceOrStd(false);
+    }
+
+    /**
+     * Gets the variance or standard deviation.
+     *
+     * @param std Flag to control if the statistic is the standard deviation.
+     * @return a variance/standard deviation supplier (or null if unsupported)
+     */
+    private StatisticResult getVarianceOrStd(boolean std) {
+        if (sum != null && sumOfSquares != null) {
+            // Return a function that has access to the count, sum and sum of squares
+            final Int128 s = sum.getSum();
+            final UInt128 ss = sumOfSquares.getSumOfSquares();
+            final boolean biased = config.isBiased();
+            return () -> IntVariance.computeVarianceOrStd(ss, s, count, biased, std);
         }
         return null;
     }
@@ -593,7 +678,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @return {@code this} instance after combining {@code other}.
      * @throws IllegalArgumentException if the {@code other} is not compatible
      */
-    public DoubleStatistics combine(DoubleStatistics other) {
+    public IntStatistics combine(IntStatistics other) {
         // Check compatibility
         Statistics.checkCombineCompatible(min, other.min);
         Statistics.checkCombineCompatible(max, other.max);
@@ -619,7 +704,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * <p>These options only control the final computation of statistics. The configuration
      * will not affect compatibility between instances during a
-     * {@link #combine(DoubleStatistics) combine} operation.
+     * {@link #combine(IntStatistics) combine} operation.
      *
      * <p>Note: These options will affect any future computation of statistics. Supplier functions
      * that have been previously created will not be updated with the new configuration.
@@ -627,9 +712,9 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @param v Value.
      * @return {@code this} instance
      * @throws NullPointerException if the value is null
-     * @see #getSupplier(Statistic)
+     * @see #getResult(Statistic)
      */
-    public DoubleStatistics setConfiguration(StatisticsConfiguration v) {
+    public IntStatistics setConfiguration(StatisticsConfiguration v) {
         config = Objects.requireNonNull(v);
         return this;
     }

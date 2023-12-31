@@ -127,6 +127,17 @@ public final class IntSumOfSquares implements IntStatistic, StatisticAccumulator
     }
 
     /**
+     * Gets the sum of squares.
+     *
+     * <p>This is package private for use in {@link IntStatistics}.
+     *
+     * @return the sum of squares
+     */
+    UInt128 getSumOfSquares() {
+        return sumSq;
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

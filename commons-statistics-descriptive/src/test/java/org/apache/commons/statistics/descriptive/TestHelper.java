@@ -20,6 +20,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Arrays;
+import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Supplier;
 import org.apache.commons.numbers.core.DD;
 import org.apache.commons.rng.UniformRandomProvider;
@@ -406,6 +409,24 @@ final class TestHelper {
      */
     static void assertEquals(StatisticResult expected, StatisticResult actual, DoubleTolerance tol,
             Supplier<String> msg) {
+        assertIntEquals(expected, actual::getAsInt, msg);
+        assertLongEquals(expected, actual::getAsLong, msg);
+        assertDoubleEquals(expected, actual::getAsDouble, tol, msg);
+        assertBigIntegerEquals(expected, actual::getAsBigInteger, tol, msg);
+    }
+
+    /**
+     * Assert the results are equal.
+     *
+     * <p>If the {@code expected} throws an exception, then the {@code actual} is asserted
+     * to throw an exception of the same class.
+     *
+     * @param expected Expected.
+     * @param actual Actual.
+     * @param msg Message used for failure.
+     */
+    static void assertIntEquals(StatisticResult expected, IntSupplier actual,
+            Supplier<String> msg) {
         final Supplier<String> intMsg = () -> prefix(msg) + " int value";
         Integer i = null;
         try {
@@ -416,7 +437,20 @@ final class TestHelper {
         if (i != null) {
             Assertions.assertEquals(i.intValue(), actual.getAsInt(), intMsg);
         }
+    }
 
+    /**
+     * Assert the results are equal.
+     *
+     * <p>If the {@code expected} throws an exception, then the {@code actual} is asserted
+     * to throw an exception of the same class.
+     *
+     * @param expected Expected.
+     * @param actual Actual.
+     * @param msg Message used for failure.
+     */
+    static void assertLongEquals(StatisticResult expected, LongSupplier actual,
+            Supplier<String> msg) {
         final Supplier<String> longMsg = () -> prefix(msg) + " long value";
         Long l = null;
         try {
@@ -427,7 +461,26 @@ final class TestHelper {
         if (l != null) {
             Assertions.assertEquals(l.longValue(), actual.getAsLong(), longMsg);
         }
+    }
 
+    /**
+     * Assert the results are equal.
+     *
+     * <p>If the tolerance is null then it is assumed the result is an exact integer type;
+     * the double value is compared using binary equality.
+     *
+     * <p>If the tolerance is not null then it is assumed the result is a {@code double} type.
+     *
+     * <p>If the {@code expected} throws an exception, then the {@code actual} is asserted
+     * to throw an exception of the same class.
+     *
+     * @param expected Expected.
+     * @param actual Actual.
+     * @param tol Tolerance for double equality.
+     * @param msg Message used for failure.
+     */
+    static void assertDoubleEquals(StatisticResult expected, DoubleSupplier actual, DoubleTolerance tol,
+            Supplier<String> msg) {
         final Supplier<String> doubleMsg = () -> prefix(msg) + " double value";
         Double d = null;
         try {
@@ -442,21 +495,42 @@ final class TestHelper {
                 TestUtils.assertEquals(d, actual.getAsDouble(), tol, doubleMsg);
             }
         }
+    }
 
+    /**
+     * Assert the results are equal.
+     *
+     * <p>If the tolerance is null then it is assumed the result is an exact integer type;
+     * the double value is compared using binary equality.
+     *
+     * <p>If the tolerance is not null then it is assumed the result is a {@code double} type;
+     * the BigInteger value is compared using its {@code double} representation if the
+     * actual BigInteger result is not equal.
+     *
+     * <p>If the {@code expected} throws an exception, then the {@code actual} is asserted
+     * to throw an exception of the same class.
+     *
+     * @param expected Expected.
+     * @param actual Actual.
+     * @param tol Tolerance for double equality.
+     * @param msg Message used for failure.
+     */
+    static void assertBigIntegerEquals(StatisticResult expected, Supplier<BigInteger> actual, DoubleTolerance tol,
+            Supplier<String> msg) {
         final Supplier<String> bigMsg = () -> prefix(msg) + " BigInteger value";
         BigInteger b = null;
         try {
             b = expected.getAsBigInteger();
         } catch (Throwable t) {
-            Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsBigInteger(), bigMsg);
+            Assertions.assertThrowsExactly(t.getClass(), () -> actual.get(), bigMsg);
         }
         if (b != null) {
             if (tol == null) {
                 // Assume exact
-                Assertions.assertEquals(b, actual.getAsBigInteger(), bigMsg);
+                Assertions.assertEquals(b, actual.get(), bigMsg);
             } else {
                 // Double computation may not be exact so check within tolerance
-                final BigInteger bb = actual.getAsBigInteger();
+                final BigInteger bb = actual.get();
                 if (!b.equals(bb)) {
                     TestUtils.assertEquals(b.doubleValue(), bb.doubleValue(), tol, bigMsg);
                 }

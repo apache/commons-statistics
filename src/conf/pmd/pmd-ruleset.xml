@@ -167,7 +167,8 @@
           or @SimpleName='KolmogorovSmirnovTest' or @SimpleName='DD' or @SimpleName='Arguments'
           or @SimpleName='MannWhitneyUTest' or @SimpleName='WilcoxonSignedRankTest'
           or @SimpleName='HypergeometricDistribution' or @SimpleName='UnconditionedExactTest'
-           or @SimpleName='DoubleStatistics']"/>
+          or @SimpleName='DoubleStatistics' or @SimpleName='IntStatistics'
+          or @SimpleName='LongStatistics']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/LogicInversion">
