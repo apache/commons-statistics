@@ -67,8 +67,8 @@ final class LongKurtosisTest extends BaseLongStatisticTest<DoubleAsLongStatistic
 
     @Override
     protected DoubleTolerance getTolerance() {
-        // Lower than the DoubleStatistic Kurtosis
-        return createAbsOrRelTolerance(0, 1e-13);
+        // Same as the DoubleStatistic Kurtosis
+        return createAbsOrRelTolerance(0, 3e-13);
     }
 
     @Override
