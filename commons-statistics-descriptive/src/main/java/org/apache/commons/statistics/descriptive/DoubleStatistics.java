@@ -19,7 +19,6 @@ package org.apache.commons.statistics.descriptive;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.DoubleConsumer;
-import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 
 /**
@@ -381,7 +380,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @param statistic Statistic.
      * @return {@code true} if supported
      * @throws NullPointerException if the {@code statistic} is {@code null}
-     * @see #get(Statistic)
+     * @see #getAsDouble(Statistic)
      */
     public boolean isSupported(Statistic statistic) {
         // Check for the appropriate underlying implementation
@@ -414,16 +413,16 @@ public final class DoubleStatistics implements DoubleConsumer {
     }
 
     /**
-     * Gets the value of the specified {@code statistic}.
+     * Gets the value of the specified {@code statistic} as a {@code double}.
      *
      * @param statistic Statistic.
      * @return the value
      * @throws IllegalArgumentException if the {@code statistic} is not supported
      * @see #isSupported(Statistic)
-     * @see #getSupplier(Statistic)
+     * @see #getResult(Statistic)
      */
-    public double get(Statistic statistic) {
-        return getSupplier(statistic).getAsDouble();
+    public double getAsDouble(Statistic statistic) {
+        return getResult(statistic).getAsDouble();
     }
 
     /**
@@ -441,15 +440,15 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @return the supplier
      * @throws IllegalArgumentException if the {@code statistic} is not supported
      * @see #isSupported(Statistic)
-     * @see #get(Statistic)
+     * @see #getAsDouble(Statistic)
      */
-    public DoubleSupplier getSupplier(Statistic statistic) {
+    public StatisticResult getResult(Statistic statistic) {
         // Locate the implementation.
         // Statistics that wrap an underlying implementation are created in methods.
         // The return argument should be a method reference and not an instance
         // of DoubleStatistic. This ensures the statistic implementation cannot
         // be updated with new values by casting the result and calling accept(double).
-        DoubleSupplier stat = null;
+        StatisticResult stat = null;
         switch (statistic) {
         case GEOMETRIC_MEAN:
             stat = getGeometricMean();
@@ -503,7 +502,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a geometric mean supplier (or null if unsupported)
      */
-    private DoubleSupplier getGeometricMean() {
+    private StatisticResult getGeometricMean() {
         if (sumOfLogs != null) {
             // Return a function that has access to the count and sumOfLogs
             return () -> GeometricMean.computeGeometricMean(count, sumOfLogs);
@@ -516,7 +515,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a kurtosis supplier (or null if unsupported)
      */
-    private DoubleSupplier getKurtosis() {
+    private StatisticResult getKurtosis() {
         if (moment instanceof SumOfFourthDeviations) {
             return new Kurtosis((SumOfFourthDeviations) moment)
                 .setBiased(config.isBiased())::getAsDouble;
@@ -529,7 +528,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a mean supplier (or null if unsupported)
      */
-    private DoubleSupplier getMean() {
+    private StatisticResult getMean() {
         if (moment != null) {
             // Special case where wrapping with a Mean is not required
             return moment::getFirstMoment;
@@ -542,7 +541,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a skewness supplier (or null if unsupported)
      */
-    private DoubleSupplier getSkewness() {
+    private StatisticResult getSkewness() {
         if (moment instanceof SumOfCubedDeviations) {
             return new Skewness((SumOfCubedDeviations) moment)
                 .setBiased(config.isBiased())::getAsDouble;
@@ -555,7 +554,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a standard deviation supplier (or null if unsupported)
      */
-    private DoubleSupplier getStandardDeviation() {
+    private StatisticResult getStandardDeviation() {
         if (moment instanceof SumOfSquaredDeviations) {
             return new StandardDeviation((SumOfSquaredDeviations) moment)
                 .setBiased(config.isBiased())::getAsDouble;
@@ -568,7 +567,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      *
      * @return a variance supplier (or null if unsupported)
      */
-    private DoubleSupplier getVariance() {
+    private StatisticResult getVariance() {
         if (moment instanceof SumOfSquaredDeviations) {
             return new Variance((SumOfSquaredDeviations) moment)
                 .setBiased(config.isBiased())::getAsDouble;
@@ -627,7 +626,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @param v Value.
      * @return {@code this} instance
      * @throws NullPointerException if the value is null
-     * @see #getSupplier(Statistic)
+     * @see #getResult(Statistic)
      */
     public DoubleStatistics setConfiguration(StatisticsConfiguration v) {
         config = Objects.requireNonNull(v);

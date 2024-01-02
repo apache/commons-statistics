@@ -55,15 +55,15 @@ class UserGuideTest {
         DoubleStatistics stats = DoubleStatistics.builder(
             Statistic.MIN, Statistic.MAX, Statistic.VARIANCE)
             .build(data);
-        Assertions.assertEquals(1, stats.get(Statistic.MIN));
-        Assertions.assertEquals(8, stats.get(Statistic.MAX));
+        Assertions.assertEquals(1, stats.getAsDouble(Statistic.MIN));
+        Assertions.assertEquals(8, stats.getAsDouble(Statistic.MAX));
         // Python numpy 1.24.4
         // np.var(np.arange(1, 9), ddof=1)
         // np.std(np.arange(1, 9), ddof=1)
-        Assertions.assertEquals(6.0, stats.get(Statistic.VARIANCE), 1e-10);
+        Assertions.assertEquals(6.0, stats.getAsDouble(Statistic.VARIANCE), 1e-10);
         // Get other statistics supported by the underlying computations
-        Assertions.assertEquals(2.449489742783178, stats.get(Statistic.STANDARD_DEVIATION), 1e-10);
-        Assertions.assertEquals(4.5, stats.get(Statistic.MEAN), 1e-10);
+        Assertions.assertEquals(2.449489742783178, stats.getAsDouble(Statistic.STANDARD_DEVIATION), 1e-10);
+        Assertions.assertEquals(4.5, stats.getAsDouble(Statistic.MEAN), 1e-10);
     }
 
     @Test
@@ -78,12 +78,12 @@ class UserGuideTest {
             .map(builder::build)
             .reduce(DoubleStatistics::combine)
             .get();
-        Assertions.assertEquals(1, stats.get(Statistic.MIN));
-        Assertions.assertEquals(8, stats.get(Statistic.MAX));
-        Assertions.assertEquals(6.0, stats.get(Statistic.VARIANCE), 1e-10);
+        Assertions.assertEquals(1, stats.getAsDouble(Statistic.MIN));
+        Assertions.assertEquals(8, stats.getAsDouble(Statistic.MAX));
+        Assertions.assertEquals(6.0, stats.getAsDouble(Statistic.VARIANCE), 1e-10);
         // Get other statistics supported by the underlying computations
-        Assertions.assertEquals(2.449489742783178, stats.get(Statistic.STANDARD_DEVIATION), 1e-10);
-        Assertions.assertEquals(4.5, stats.get(Statistic.MEAN), 1e-10);
+        Assertions.assertEquals(2.449489742783178, stats.getAsDouble(Statistic.STANDARD_DEVIATION), 1e-10);
+        Assertions.assertEquals(4.5, stats.getAsDouble(Statistic.MEAN), 1e-10);
     }
 
     @Test
@@ -97,12 +97,12 @@ class UserGuideTest {
         Collector<double[], DoubleStatistics, DoubleStatistics> collector =
             Collector.of(builder::build, (s, d) -> s.combine(builder.build(d)), DoubleStatistics::combine);
         DoubleStatistics stats = Arrays.stream(data).collect(collector);
-        Assertions.assertEquals(1, stats.get(Statistic.MIN));
-        Assertions.assertEquals(8, stats.get(Statistic.MAX));
-        Assertions.assertEquals(6.0, stats.get(Statistic.VARIANCE), 1e-10);
+        Assertions.assertEquals(1, stats.getAsDouble(Statistic.MIN));
+        Assertions.assertEquals(8, stats.getAsDouble(Statistic.MAX));
+        Assertions.assertEquals(6.0, stats.getAsDouble(Statistic.VARIANCE), 1e-10);
         // Get other statistics supported by the underlying computations
-        Assertions.assertEquals(2.449489742783178, stats.get(Statistic.STANDARD_DEVIATION), 1e-10);
-        Assertions.assertEquals(4.5, stats.get(Statistic.MEAN), 1e-10);
+        Assertions.assertEquals(2.449489742783178, stats.getAsDouble(Statistic.STANDARD_DEVIATION), 1e-10);
+        Assertions.assertEquals(4.5, stats.getAsDouble(Statistic.MEAN), 1e-10);
     }
 
     @Test
@@ -119,15 +119,15 @@ class UserGuideTest {
         DoubleStatistics stats = DoubleStatistics.of(
             EnumSet.of(Statistic.MIN, Statistic.MAX),
             1, 1, 2, 3, 5, 8, 13);
-        Assertions.assertEquals(1, stats.get(Statistic.MIN));
-        Assertions.assertEquals(13, stats.get(Statistic.MAX));
+        Assertions.assertEquals(1, stats.getAsDouble(Statistic.MIN));
+        Assertions.assertEquals(13, stats.getAsDouble(Statistic.MAX));
     }
 
     @Test
     void testDoubleStatistics6() {
         DoubleStatistics stats = DoubleStatistics.of(Statistic.MEAN, Statistic.MAX);
-        DoubleSupplier mean = stats.getSupplier(Statistic.MEAN);
-        DoubleSupplier max = stats.getSupplier(Statistic.MAX);
+        DoubleSupplier mean = stats.getResult(Statistic.MEAN);
+        DoubleSupplier max = stats.getResult(Statistic.MAX);
         IntStream.rangeClosed(1, 5).forEach(x -> {
             stats.accept(x);
             Assertions.assertEquals((x + 1.0) / 2, mean.getAsDouble(), "mean");

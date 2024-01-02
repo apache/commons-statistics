@@ -26,12 +26,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.BiConsumer;
-import java.util.function.DoubleSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.ToDoubleFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.apache.commons.statistics.distribution.DoubleTolerances;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -45,6 +45,10 @@ import org.junit.jupiter.params.provider.MethodSource;
  *
  * <p>This class verifies that the statistics computed using the summary
  * class are an exact match to the statistics computed individually.
+ *
+ * <p>For simplicity some tests use only the {@code double} result of the statistic.
+ * The full {@link StatisticResult} interface is asserted in the test of the array or
+ * stream of input data.
  */
 class DoubleStatisticsTest {
     /** Empty statistic array. */
@@ -271,6 +275,14 @@ class DoubleStatisticsTest {
         assertStatistics(stats, data, builder::build, ExpectedResult::getArray);
     }
 
+    /**
+     * Assert the computed statistics match the expected result.
+     *
+     * @param stats Statistics that are computed.
+     * @param data Test data.
+     * @param constructor Constructor to create the {@link IntStatistics}.
+     * @param expected Function to obtain the expected result.
+     */
     private static void assertStatistics(EnumSet<Statistic> stats, TestData data,
             Function<double[], DoubleStatistics> constructor,
             ToDoubleFunction<ExpectedResult> expected) {
@@ -285,35 +297,48 @@ class DoubleStatisticsTest {
         stats.forEach(s -> computed.addAll(coComputed.get(s)));
 
         // Test if the statistics are correctly identified as supported
-        EnumSet.allOf(Statistic.class).forEach(s ->
-            Assertions.assertEquals(computed.contains(s), statistics.isSupported(s),
-                () -> stats + " isSupported -> " + s.toString()));
-
-        // Test the values
-        computed.forEach(s ->
-            Assertions.assertEquals(expected.applyAsDouble(expectedResult.get(s).get(id)), statistics.get(s),
-                () -> stats + " value -> " + s.toString()));
+        EnumSet.allOf(Statistic.class).forEach(s -> {
+            final boolean isSupported = computed.contains(s);
+            Assertions.assertEquals(isSupported, statistics.isSupported(s),
+                () -> stats + " isSupported -> " + s.toString());
+            if (isSupported) {
+                final double doubleResult = expected.applyAsDouble(expectedResult.get(s).get(id));
+                // Test individual values
+                Assertions.assertEquals(doubleResult, statistics.getAsDouble(s),
+                    () -> stats + " getAsDouble -> " + s.toString());
+                // Test the values from the result
+                final StatisticResult result = () -> doubleResult;
+                TestHelper.assertEquals(result, statistics.getResult(s),
+                    DoubleTolerances.equals(),
+                    () -> stats + " getResult -> " + s.toString());
+            } else {
+                Assertions.assertThrows(IllegalArgumentException.class, () -> statistics.getAsDouble(s),
+                    () -> stats + " getAsDouble -> " + s.toString());
+                Assertions.assertThrows(IllegalArgumentException.class, () -> statistics.getResult(s),
+                    () -> stats + " getResult -> " + s.toString());
+            }
+        });
     }
 
     /**
      * Add all the {@code values} to an aggregator of the {@code statistics}.
      *
-     * <p>This method verifies that the {@link DoubleStatistics#get(Statistic)} and
-     * {@link DoubleStatistics#getSupplier(Statistic)} methods return the same
+     * <p>This method verifies that the {@link DoubleStatistics#getAsDouble(Statistic)} and
+     * {@link DoubleStatistics#getResult(Statistic)} methods return the same
      * result as values are added.
      *
-     * @param statistic Statistics.
+     * @param statistics Statistics.
      * @param values Values.
      * @return the statistics
      */
     private static DoubleStatistics acceptAll(Statistic[] statistics, double[] values) {
         final DoubleStatistics stats = DoubleStatistics.of(statistics);
-        final DoubleSupplier[] f = getSuppliers(statistics, stats);
+        final StatisticResult[] f = getResults(statistics, stats);
         for (final double x : values) {
             stats.accept(x);
             for (int i = 0; i < statistics.length; i++) {
                 final Statistic s = statistics[i];
-                Assertions.assertEquals(stats.get(s), f[i].getAsDouble(),
+                Assertions.assertEquals(stats.getAsDouble(s), f[i].getAsDouble(),
                     () -> "Supplier(" + s + ") after value " + x);
             }
         }
@@ -327,10 +352,10 @@ class DoubleStatisticsTest {
      * @param stats Statistic aggregator.
      * @return the suppliers
      */
-    private static DoubleSupplier[] getSuppliers(Statistic[] statistics, final DoubleStatistics stats) {
-        final DoubleSupplier[] f = new DoubleSupplier[statistics.length];
+    private static StatisticResult[] getResults(Statistic[] statistics, final DoubleStatistics stats) {
+        final StatisticResult[] f = new StatisticResult[statistics.length];
         for (int i = 0; i < statistics.length; i++) {
-            final DoubleSupplier supplier = stats.getSupplier(statistics[i]);
+            final StatisticResult supplier = stats.getResult(statistics[i]);
             Assertions.assertFalse(supplier instanceof DoubleStatistic,
                 () -> "DoubleStatistic instance: " + supplier.getClass().getSimpleName());
             f[i] = supplier;
@@ -341,8 +366,8 @@ class DoubleStatisticsTest {
     /**
      * Combine the two statistic aggregators.
      *
-     * <p>This method verifies that the {@link DoubleStatistics#get(Statistic)} and
-     * {@link DoubleStatistics#getSupplier(Statistic)} methods return the same
+     * <p>This method verifies that the {@link DoubleStatistics#getAsDouble(Statistic)} and
+     * {@link DoubleStatistics#getResult(Statistic)} methods return the same
      * result after the {@link DoubleStatistics#combine(DoubleStatistics)}.
      *
      * @param statistics Statistics to compute.
@@ -352,11 +377,11 @@ class DoubleStatisticsTest {
      */
     private static DoubleStatistics combine(Statistic[] statistics,
         DoubleStatistics s1, DoubleStatistics s2) {
-        final DoubleSupplier[] f = getSuppliers(statistics, s1);
+        final StatisticResult[] f = getResults(statistics, s1);
         s1.combine(s2);
         for (int i = 0; i < statistics.length; i++) {
             final Statistic s = statistics[i];
-            Assertions.assertEquals(s1.get(s), f[i].getAsDouble(),
+            Assertions.assertEquals(s1.getAsDouble(s), f[i].getAsDouble(),
                 () -> "Supplier(" + s + ") after combine");
         }
         return s1;
@@ -394,44 +419,19 @@ class DoubleStatisticsTest {
 
     @ParameterizedTest
     @MethodSource
-    void testNotSupported(Statistic stat) {
-        DoubleStatistics statistics = DoubleStatistics.of(stat);
-        for (final Statistic s : Statistic.values()) {
-            Assertions.assertEquals(s == stat, statistics.isSupported(s),
-                () -> stat + " isSupported -> " + s.toString());
-            if (s == stat) {
-                Assertions.assertDoesNotThrow(() -> statistics.get(s),
-                    () -> stat + " get -> " + s.toString());
-                Assertions.assertNotNull(statistics.getSupplier(s),
-                    () -> stat + " getSupplier -> " + s.toString());
-            } else {
-                Assertions.assertThrows(IllegalArgumentException.class, () -> statistics.get(s),
-                    () -> stat + " get -> " + s.toString());
-                Assertions.assertThrows(IllegalArgumentException.class, () -> statistics.getSupplier(s),
-                    () -> stat + " getSupplier -> " + s.toString());
-            }
-        }
-    }
-
-    static Statistic[] testNotSupported() {
-        return new Statistic[] {Statistic.MIN, Statistic.PRODUCT};
-    }
-
-    @ParameterizedTest
-    @MethodSource
     void testIncompatibleCombineThrows(EnumSet<Statistic> stat1, EnumSet<Statistic> stat2) {
         final double[] v1 = {1, 2, 3.5, 6};
         final double[] v2 = {3, 4, 5};
         DoubleStatistics statistics = DoubleStatistics.of(stat1, v1);
         DoubleStatistics other = DoubleStatistics.of(stat2, v2);
         // Store values
-        final double[] values = stat1.stream().mapToDouble(statistics::get).toArray();
+        final double[] values = stat1.stream().mapToDouble(statistics::getAsDouble).toArray();
         Assertions.assertThrows(IllegalArgumentException.class, () -> statistics.combine(other),
             () -> stat1 + " " + stat2);
         // Values should be unchanged
         final int[] i = {0};
         stat1.stream().forEach(
-            s -> Assertions.assertEquals(values[i[0]++], statistics.get(s), () -> s + " changed"));
+            s -> Assertions.assertEquals(values[i[0]++], statistics.getAsDouble(s), () -> s + " changed"));
     }
 
     static Stream<Arguments> testIncompatibleCombineThrows() {
@@ -459,9 +459,9 @@ class DoubleStatisticsTest {
         statistics2.combine(other2);
         // The stats should be the same
         for (final Statistic s : stat1) {
-            final double expected = statistics1.get(s);
+            final double expected = statistics1.getAsDouble(s);
             assertFinite(expected, s);
-            Assertions.assertEquals(expected, statistics2.get(s), () -> s.toString());
+            Assertions.assertEquals(expected, statistics2.getAsDouble(s), () -> s.toString());
         }
     }
 
@@ -487,7 +487,7 @@ class DoubleStatisticsTest {
         final DoubleStatistics statistics1 = DoubleStatistics.builder(stat).build(values);
 
         StatisticsConfiguration c = StatisticsConfiguration.withDefaults();
-        DoubleSupplier s = null;
+        StatisticResult s = null;
         // Note the circular loop to check setting back to the start option
         for (int index = 0; index <= options.length; index++) {
             final int i = index % options.length;
@@ -495,9 +495,9 @@ class DoubleStatisticsTest {
             c = c.withBiased(value);
             Assertions.assertSame(statistics1, statistics1.setConfiguration(c));
 
-            Assertions.assertEquals(results[i], statistics1.get(stat),
+            Assertions.assertEquals(results[i], statistics1.getAsDouble(stat),
                 () -> options[i] + " get: " + BaseDoubleStatisticTest.format(values));
-            final DoubleSupplier s1 = statistics1.getSupplier(stat);
+            final StatisticResult s1 = statistics1.getResult(stat);
             Assertions.assertEquals(results[i], s1.getAsDouble(),
                 () -> options[i] + " supplier: " + BaseDoubleStatisticTest.format(values));
 
@@ -512,7 +512,7 @@ class DoubleStatisticsTest {
             // Set through the builder
             final DoubleStatistics statistics2 = DoubleStatistics.builder(stat)
                 .setConfiguration(c).build(values);
-            Assertions.assertEquals(results[i], statistics2.get(stat),
+            Assertions.assertEquals(results[i], statistics2.getAsDouble(stat),
                 () -> options[i] + " get via builder: " + BaseDoubleStatisticTest.format(values));
         }
     }
