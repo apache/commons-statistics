@@ -16,9 +16,12 @@
  */
 package org.apache.commons.statistics.inference;
 
+import java.util.EnumSet;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+import org.apache.commons.statistics.descriptive.DoubleStatistics;
+import org.apache.commons.statistics.descriptive.Statistic;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -95,8 +98,10 @@ class TTestTest {
             final Object[] args = a.get();
             final double[] sample = (double[]) args[1];
             final Object[] args2 = new Object[args.length + 2];
-            final double m = StatisticUtils.mean(sample);
-            final double v = StatisticUtils.variance(sample, m);
+            final DoubleStatistics s = DoubleStatistics.of(
+                EnumSet.of(Statistic.MEAN, Statistic.VARIANCE), sample);
+            final double m = s.getAsDouble(Statistic.MEAN);
+            final double v = s.getAsDouble(Statistic.VARIANCE);
             args2[0] = args[0];
             args2[1] = m;
             args2[2] = v;
@@ -308,18 +313,19 @@ class TTestTest {
         // This provides data with an expected mean (mu) for the two sample dataset method.
         return testTwoSample().map(a -> {
             final Object[] args = a.get();
-            final double[] s1 = (double[]) args[1];
-            final double[] s2 = (double[]) args[2];
+            final double[] x = (double[]) args[1];
+            final double[] y = (double[]) args[2];
             final Object[] args2 = new Object[args.length + 4];
-            final double m1 = StatisticUtils.mean(s1);
-            final double m2 = StatisticUtils.mean(s2);
+            final DoubleStatistics.Builder b = DoubleStatistics.builder(Statistic.MEAN, Statistic.VARIANCE);
+            final DoubleStatistics s1 = b.build(x);
+            final DoubleStatistics s2 = b.build(y);
             args2[0] = args[0];
-            args2[1] = m1;
-            args2[2] = StatisticUtils.variance(s1, m1);
-            args2[3] = s1.length;
-            args2[4] = m2;
-            args2[5] = StatisticUtils.variance(s2, m2);
-            args2[6] = s2.length;
+            args2[1] = s1.getAsDouble(Statistic.MEAN);
+            args2[2] = s1.getAsDouble(Statistic.VARIANCE);
+            args2[3] = x.length;
+            args2[4] = s2.getAsDouble(Statistic.MEAN);
+            args2[5] = s2.getAsDouble(Statistic.VARIANCE);
+            args2[6] = y.length;
             System.arraycopy(args, 3, args2, 7, args.length - 3);
             return Arguments.of(args2);
         });

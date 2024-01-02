@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 import org.apache.commons.numbers.core.DD;
 import org.apache.commons.numbers.core.Precision;
+import org.apache.commons.statistics.descriptive.Mean;
 
 /**
  * Utility computation methods.
@@ -120,33 +121,13 @@ final class StatisticUtils {
             sum.add(DD.of(v));
     }
 
+    // Specialised statistic methods not directly supported by o.a.c.statistics.descriptive
+
     /**
-     * Returns the arithmetic mean of the entries in the input array,
-     * or {@code NaN} if the array is empty.
+     * Returns the arithmetic mean of the entries in the input arrays,
+     * or {@code NaN} if the combined length of the arrays is zero.
      *
-     * @param x Values.
-     * @return the mean of the values or NaN if length = 0
-     */
-    static double mean(long[] x) {
-        final int n = x.length;
-        if (n == 0) {
-            return Double.NaN;
-        }
-
-        // Single pass high accuracy sum. The total cannot be more than 2^63 * 2^31 bits
-        // so can be exactly represented in a double-double. Cumulative error in the sum
-        // is (n-1) * 4eps with eps = 2^-106. The sum should be exact to double precision.
-        DD dd = DD.ZERO;
-        for (final long v : x) {
-            dd = add(dd, v);
-        }
-
-        return dd.divide(n).doubleValue();
-    }
-
-    /**
-     * Returns the arithmetic mean of the entries in the input array,
-     * or {@code NaN} if the array is empty.
+     * <p>Supports a combined length above the maximum array size.
      *
      * <p>A two-pass, corrected algorithm is used, starting with the definitional formula
      * computed using the array of stored values and then correcting this by adding the
@@ -155,88 +136,22 @@ final class StatisticUtils {
      * Journal of the American Statistical Association, Vol. 69, No. 348 (Dec., 1974), pp.
      * 859-866.
      *
-     * @param x Values.
-     * @return the mean of the values or NaN if length = 0
-     */
-    static double mean(double[] x) {
-        final int n = x.length;
-        // No check for n == 0 -> return NaN.
-        // This internal method is only called with non-zero length arrays.
-        // The divide by zero creates NaN anyway.
-
-        // Adapted from org.apache.commons.math4.legacy.stat.descriptive.moment.Mean
-        // Updated to use a stream to support high-precision summation as the stream maintains
-        // a rounding-error term during the aggregation. This is important
-        // when summing differences which can create cancellation: x + -x => 0.
-
-        // Compute initial estimate using definitional formula
-        final double mean = Arrays.stream(x).sum() / n;
-
-        // Compute correction factor in second pass
-        return mean + Arrays.stream(x).map(v -> v - mean).sum() / n;
-    }
-
-    /**
-     * Returns the arithmetic mean of the entries in the input arrays,
-     * or {@code NaN} if the combined length of the arrays is zero.
-     *
-     * <p>This is the equivalent of using {@link #mean(double[])} with all the samples
-     * concatenated into a single array. Supports a combined length above the maximum array
-     * size.
-     *
      * @param samples Values.
      * @return the mean of the values or NaN if length = 0
-     * @see #mean(double[])
      */
     static double mean(Collection<double[]> samples) {
-        // See above for computation details
+        final double mean = samples.stream()
+            .map(Mean::of)
+            .reduce(Mean::combine)
+            .orElseGet(() -> Mean.create())
+            .getAsDouble();
+        // Second-pass correction.
+        // Note: The correction may not be finite in the event of extreme values.
+        // In this case the calling method computation will fail when the mean
+        // is used and we do not check for overflow here.
         final long n = samples.stream().mapToInt(x -> x.length).sum();
-        final double mean = samples.stream().flatMapToDouble(Arrays::stream).sum() / n;
-        return mean + samples.stream().flatMapToDouble(Arrays::stream).map(v -> v - mean).sum() / n;
-    }
-
-    /**
-     * Returns the variance of the entries in the input array, or {@code NaN} if the array
-     * is empty.
-     *
-     * <p>This method returns the bias-corrected sample variance (using {@code n - 1} in
-     * the denominator).
-     *
-     * <p>Uses a two-pass algorithm. Specifically, these methods use the "corrected
-     * two-pass algorithm" from Chan, Golub, Levesque, <i>Algorithms for Computing the
-     * Sample Variance</i>, American Statistician, vol. 37, no. 3 (1983) pp.
-     * 242-247.
-     *
-     * <p>Returns 0 for a single-value (i.e. length = 1) sample.
-     *
-     * @param x Values.
-     * @param mean the mean of the input array
-     * @return the variance of the values or NaN if the array is empty
-     */
-    static double variance(double[] x, double mean) {
-        final int n = x.length;
-        // No check for n == 0 -> return NaN.
-        // This internal method is only called with non-zero length arrays.
-        // The input mean of NaN for zero length creates NaN anyway.
-        if (n == 1) {
-            return 0;
-        }
-
-        // Adapted from org.apache.commons.math4.legacy.stat.descriptive.moment.Variance
-        // Use a stream to accumulate the sum of deviations in high precision.
-        // This compensation term for the sum of deviations from the mean -> 0.
-        // We sum the squares in standard precision as there is no cancellation of summands.
-        final double[] sumSq = {0};
-        final double sum2 = Arrays.stream(x).map(v -> {
-            final double dx = v - mean;
-            sumSq[0] += dx * dx;
-            return dx;
-        }).sum();
-
-        final double sum1 = sumSq[0];
-        // Bias corrected
-        // Note: variance ~ sum1 / (n-1) but with a correction term sum2
-        return (sum1 - (sum2 * sum2 / n)) / (n - 1);
+        return mean + samples.stream()
+            .flatMapToDouble(Arrays::stream).map(v -> v - mean).sum() / n;
     }
 
     /**
@@ -247,37 +162,46 @@ final class StatisticUtils {
      * sum(x[i] - y[i]) / x.length
      * </pre>
      *
-     * <p>This computes the same result as creating an array {@code z = x - y}
-     * and calling {@link #mean(double[]) mean(z)}, but without the intermediate array
-     * allocation.
+     * <p>This method avoids intermediate array allocation.
+     *
+     * <p>A two-pass, corrected algorithm is used, starting with the definitional formula
+     * computed using the array of stored values and then correcting this by adding the
+     * mean deviation of the data values from the arithmetic mean. See, e.g. "Comparison
+     * of Several Algorithms for Computing Sample Means and Variances," Robert F. Ling,
+     * Journal of the American Statistical Association, Vol. 69, No. 348 (Dec., 1974), pp.
+     * 859-866.
      *
      * @param x First array.
      * @param y Second array.
      * @return mean of paired differences
      * @throws IllegalArgumentException if the arrays do not have the same length.
-     * @see #mean(double[])
      */
     static double meanDifference(double[] x, double[] y) {
         final int n = x.length;
         if (n != y.length) {
             throw new InferenceException(InferenceException.VALUES_MISMATCH, n, y.length);
         }
-        // See mean(double[]) for details.
         final double mean = IntStream.range(0, n).mapToDouble(i -> x[i] - y[i]).sum() / n;
         return mean + IntStream.range(0, n).mapToDouble(i -> (x[i] - y[i]) - mean).sum() / n;
     }
 
     /**
      * Returns the variance of the (signed) differences between corresponding elements of
-     * the input arrays.
+     * the input arrays, or {@code NaN} if the arrays are empty.
      *
      * <pre>
      * var(x[i] - y[i])
      * </pre>
      *
-     * <p>This computes the same result as creating an array {@code z = x - y}
-     * and calling {@link #variance(double[], double) variance(z, mean(z))}, but without the
-     * intermediate array allocation.
+     * <p>Returns the bias-corrected sample variance (using {@code n - 1} in the denominator).
+     * Returns 0 for a single-value (i.e. length = 1) sample.
+     *
+     * <p>This method avoids intermediate array allocation.
+     *
+     * <p>Uses a two-pass algorithm. Specifically, these methods use the "corrected
+     * two-pass algorithm" from Chan, Golub, Levesque, <i>Algorithms for Computing the
+     * Sample Variance</i>, American Statistician, vol. 37, no. 3 (1983) pp.
+     * 242-247.
      *
      * @param x First array.
      * @param y Second array.
@@ -285,14 +209,12 @@ final class StatisticUtils {
      * @return variance of paired differences
      * @throws IllegalArgumentException if the arrays do not have the same length.
      * @see #meanDifference(double[], double[])
-     * @see #variance(double[], double)
      */
     static double varianceDifference(double[] x, double[] y, double mean) {
         final int n = x.length;
         if (n != y.length) {
             throw new InferenceException(InferenceException.VALUES_MISMATCH, n, y.length);
         }
-        // See variance(double[]) for details.
         if (n == 1) {
             return 0;
         }
@@ -302,6 +224,7 @@ final class StatisticUtils {
             sumSq[0] += dx * dx;
             return dx;
         }).sum();
+        // sum-of-squared deviations = sum(x^2) - sum(x)^2 / n
         final double sum1 = sumSq[0];
         return (sum1 - (sum2 * sum2 / n)) / (n - 1);
     }

@@ -16,7 +16,10 @@
  */
 package org.apache.commons.statistics.inference;
 
+import java.util.EnumSet;
 import java.util.Objects;
+import org.apache.commons.statistics.descriptive.DoubleStatistics;
+import org.apache.commons.statistics.descriptive.Statistic;
 import org.apache.commons.statistics.distribution.TDistribution;
 
 /**
@@ -178,8 +181,10 @@ public final class TTest {
      */
     public double statistic(double[] x) {
         final long n = checkSampleSize(x.length);
-        final double m = StatisticUtils.mean(x);
-        final double v = StatisticUtils.variance(x, m);
+        final DoubleStatistics s = DoubleStatistics.of(
+            EnumSet.of(Statistic.MEAN, Statistic.VARIANCE), x);
+        final double m = s.getAsDouble(Statistic.MEAN);
+        final double v = s.getAsDouble(Statistic.VARIANCE);
         return computeT(m - mu, v, n);
     }
 
@@ -263,10 +268,13 @@ public final class TTest {
     public double statistic(double[] x, double[] y) {
         final long n1 = checkSampleSize(x.length);
         final long n2 = checkSampleSize(y.length);
-        final double m1 = StatisticUtils.mean(x);
-        final double m2 = StatisticUtils.mean(y);
-        final double v1 = StatisticUtils.variance(x, m1);
-        final double v2 = StatisticUtils.variance(y, m2);
+        final DoubleStatistics.Builder b = DoubleStatistics.builder(Statistic.MEAN, Statistic.VARIANCE);
+        final DoubleStatistics s1 = b.build(x);
+        final double m1 = s1.getAsDouble(Statistic.MEAN);
+        final double v1 = s1.getAsDouble(Statistic.VARIANCE);
+        final DoubleStatistics s2 = b.build(y);
+        final double m2 = s2.getAsDouble(Statistic.MEAN);
+        final double v2 = s2.getAsDouble(Statistic.VARIANCE);
         return equalVariances ?
             computeHomoscedasticT(mu, m1, v1, n1, m2, v2, n2) :
             computeT(mu, m1, v1, n1, m2, v2, n2);
@@ -387,10 +395,13 @@ public final class TTest {
         // requires the variance. So repeat the computation and compute p.
         final long n1 = checkSampleSize(x.length);
         final long n2 = checkSampleSize(y.length);
-        final double m1 = StatisticUtils.mean(x);
-        final double m2 = StatisticUtils.mean(y);
-        final double v1 = StatisticUtils.variance(x, m1);
-        final double v2 = StatisticUtils.variance(y, m2);
+        final DoubleStatistics.Builder b = DoubleStatistics.builder(Statistic.MEAN, Statistic.VARIANCE);
+        final DoubleStatistics s1 = b.build(x);
+        final double m1 = s1.getAsDouble(Statistic.MEAN);
+        final double v1 = s1.getAsDouble(Statistic.VARIANCE);
+        final DoubleStatistics s2 = b.build(y);
+        final double m2 = s2.getAsDouble(Statistic.MEAN);
+        final double v2 = s2.getAsDouble(Statistic.VARIANCE);
         double t;
         double df;
         if (equalVariances) {

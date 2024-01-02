@@ -16,9 +16,7 @@
  */
 package org.apache.commons.statistics.inference;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.stream.IntStream;
@@ -90,6 +88,10 @@ class StatisticUtilsTest {
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> action.accept(new double[] {1, 1}, new long[] {1}), "values", "size");
 
+        // Observed is zero
+        TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+            () -> action.accept(new double[] {1, 1}, new long[] {0, 0}), "no", "data");
+
         // Samples not same size, i.e. cannot be paired
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> action.accept(new double[] {1, 1}, new long[] {1, 2, 3}), "values", "size", "mismatch");
@@ -118,9 +120,11 @@ class StatisticUtilsTest {
     @MethodSource
     void testComputeRatio(double[] e, long[] o) {
         final double ratio = StatisticUtils.computeRatio(e, o);
-        final long sum1 = Arrays.stream(o).sum();
+        // Sum as an exact double
+        final double sum1 = Arrays.stream(o).mapToObj(BigInteger::valueOf)
+            .reduce(BigInteger.ZERO, BigInteger::add).doubleValue();
         final double sum2 = Arrays.stream(e).map(x -> x * ratio).sum();
-        TestUtils.assertRelativelyEquals(sum1, sum2, Math.ulp(1.0), "rescaled sum(e) != sum(o)");
+        TestUtils.assertRelativelyEquals(sum1, sum2, Math.ulp(sum1), "rescaled sum(e) != sum(o)");
     }
 
     static Stream<Arguments> testComputeRatio() {
@@ -148,6 +152,8 @@ class StatisticUtilsTest {
         final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create(123);
         for (int n = 2; n < 1024; n *= 2) {
             builder.add(Arguments.of(rng.doubles(n).toArray(), rng.longs(n, 0, Integer.MAX_VALUE).toArray()));
+            // values that are not integers
+            builder.add(Arguments.of(rng.doubles(n).toArray(), rng.longs(n).map(x -> x >>> 1).toArray()));
         }
         return builder.build();
     }
@@ -155,10 +161,9 @@ class StatisticUtilsTest {
     @Test
     void testMeanAndVarianceSize0() {
         final double[] data = {};
-        Assertions.assertEquals(Double.NaN, StatisticUtils.mean(new long[0]), "mean(long[])");
-        Assertions.assertEquals(Double.NaN, StatisticUtils.mean(data), "mean");
-        Assertions.assertEquals(Double.NaN, StatisticUtils.mean(Arrays.asList(data, data, data)), "mean");
-        Assertions.assertEquals(Double.NaN, StatisticUtils.variance(data, 0), "variance");
+        Assertions.assertEquals(Double.NaN, StatisticUtils.mean(Arrays.asList()), "mean (empty)");
+        Assertions.assertEquals(Double.NaN, StatisticUtils.mean(Arrays.asList(data)), "mean (single array)");
+        Assertions.assertEquals(Double.NaN, StatisticUtils.mean(Arrays.asList(data, data, data)), "mean (multi array)");
         Assertions.assertEquals(Double.NaN, StatisticUtils.meanDifference(data, data), "meanDifference");
         Assertions.assertEquals(Double.NaN, StatisticUtils.varianceDifference(data, data, 0), "varianceDifference");
     }
@@ -176,15 +181,12 @@ class StatisticUtilsTest {
     @ParameterizedTest
     @MethodSource
     void testMeanAndVariance(double[] data, double mean, double variance) {
-        final double m1 = StatisticUtils.mean(data);
-        final double v1 = StatisticUtils.variance(data, m1);
-        Assertions.assertEquals(mean, m1, Math.abs(mean) * 1e-15, "mean");
-        Assertions.assertEquals(variance, v1, variance * 1e-15, "variance");
+        final double deltaMean = Math.abs(mean) * 1e-15;
 
         // For the multiple array mean, split the array
         final double[] x = Arrays.copyOf(data, data.length / 2);
         final double[] y = Arrays.copyOfRange(data, data.length / 2, data.length);
-        Assertions.assertEquals(m1, StatisticUtils.mean(Arrays.asList(x, y)), "mean(x, y)");
+        Assertions.assertEquals(mean, StatisticUtils.mean(Arrays.asList(x, y)), deltaMean, "mean(x, y)");
 
         // For the difference computation construct input so that data = data1 - data2.
         // This is simple if data1 = data and data2 is all zero but here
@@ -194,13 +196,8 @@ class StatisticUtilsTest {
         final double[] data2 = IntStream.range(0, data.length).mapToDouble(i -> i + c).toArray();
         final double m2 = StatisticUtils.meanDifference(data1, data2);
         final double v2 = StatisticUtils.varianceDifference(data1, data2, m2);
-        // Check absolutely equal to the single array method,
-        // i.e. the computations should be the same as generating data = data1 - data2
-        // and calling the single array methods.
-        // This works if the input values and the offset are exactly representable
-        // (no rounding) which is true as the values are integers.
-        Assertions.assertEquals(m1, m2, "meanDifference");
-        Assertions.assertEquals(v1, v2, "varianceDifference");
+        Assertions.assertEquals(mean, m2, deltaMean, "meanDifference");
+        Assertions.assertEquals(variance, v2, variance * 1e-15, "varianceDifference");
     }
 
     static Stream<Arguments> testMeanAndVariance() {
@@ -212,39 +209,5 @@ class StatisticUtilsTest {
             Arguments.of(new double[] {3214, 234, 234234, 2, 3244, 234, 234, 234, 234}, 26873.777777777777, 6048361810.444446),
             Arguments.of(new double[] {-23467824, 23648, 2368, 23749, -23424, -23492, -92397747}, -16551817.42857143, 1195057670342971.2)
         );
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    void testMeanLong(long[] data) {
-        final double m1 = StatisticUtils.mean(data);
-        final BigInteger sum = Arrays.stream(data)
-                                     .mapToObj(BigInteger::valueOf)
-                                     .reduce(BigInteger.ZERO, BigInteger::add);
-        final double expected = new BigDecimal(sum)
-                .divide(BigDecimal.valueOf(data.length), MathContext.DECIMAL128).doubleValue();
-        Assertions.assertEquals(expected, m1);
-    }
-
-    static Stream<Arguments> testMeanLong() {
-        final Stream.Builder<Arguments> builder = Stream.builder();
-        builder.add(Arguments.of(new long[1]));
-        builder.add(Arguments.of(new long[] {42}));
-        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
-        // int values
-        builder.add(Arguments.of(rng.ints(5).asLongStream().toArray()));
-        builder.add(Arguments.of(rng.ints(25).asLongStream().toArray()));
-        builder.add(Arguments.of(rng.ints(50).asLongStream().toArray()));
-
-        // Note: This data is failed by Arrays.stream(data).average().getAsDouble();
-        // long values without cancellation (all positive)
-        builder.add(Arguments.of(rng.longs(5).map(x -> x >>> 1).toArray()));
-        builder.add(Arguments.of(rng.longs(50).map(x -> x >>> 1).toArray()));
-        builder.add(Arguments.of(rng.longs(500).map(x -> x >>> 1).toArray()));
-        // long values with cancellation
-        builder.add(Arguments.of(rng.longs(5).toArray()));
-        builder.add(Arguments.of(rng.longs(50).toArray()));
-        builder.add(Arguments.of(rng.longs(500).toArray()));
-        return builder.build();
     }
 }

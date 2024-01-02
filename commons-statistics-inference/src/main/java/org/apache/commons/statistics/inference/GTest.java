@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.inference;
 
 import org.apache.commons.numbers.core.Sum;
+import org.apache.commons.statistics.descriptive.LongMean;
 import org.apache.commons.statistics.distribution.ChiSquaredDistribution;
 
 /**
@@ -107,7 +108,7 @@ public final class GTest {
     public double statistic(long[] observed) {
         Arguments.checkValuesRequiredSize(observed.length, 2);
         Arguments.checkNonNegative(observed);
-        final double e = StatisticUtils.mean(observed);
+        final double e = LongMean.of(observed).getAsDouble();
         if (e == 0) {
             throw new InferenceException(InferenceException.NO_DATA);
         }
