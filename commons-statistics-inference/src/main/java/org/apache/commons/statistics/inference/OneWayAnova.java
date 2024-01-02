@@ -303,7 +303,7 @@ public final class OneWayAnova {
             }
             // Create the negative sum so we can subtract it via 'add'
             // -sum_g { sum(x)^2/n) }
-            sg.add(-Math.pow(s.getAsDouble(), 2) / array.length);
+            sg.add(-pow2(s.getAsDouble()) / array.length);
         }
 
         // Note: SS terms should not be negative given:
@@ -311,7 +311,7 @@ public final class OneWayAnova {
         // This can happen due to floating-point error in sum(x^2) - sum(x)^2/n
         final double sswg = Math.max(0, sxx.add(sg).getAsDouble());
         // Flip the sign back
-        final double ssbg = Math.max(0, -sg.add(Math.pow(sx.getAsDouble(), 2) / n).getAsDouble());
+        final double ssbg = Math.max(0, -sg.add(pow2(sx.getAsDouble()) / n).getAsDouble());
         final int dfbg = data.size() - 1;
         // Handle edge-cases:
         // Note: 0 / 0 -> NaN : x / 0 -> inf
@@ -332,7 +332,7 @@ public final class OneWayAnova {
         // ni = size of each of the groups
         // nO=(1/(a−1))*(sum(ni)−(sum(ni^2)/sum(ni))
         final double nO = (n - data.stream()
-                .mapToDouble(x -> Math.pow(x.length, 2)).sum() / n) / dfbg;
+                .mapToDouble(x -> pow2(x.length)).sum() / n) / dfbg;
 
         return new Result(dfbg, dfwg, msbg, mswg, nO, f, p);
     }
@@ -371,5 +371,15 @@ public final class OneWayAnova {
             }
         }
         return true;
+    }
+
+    /**
+     * Compute {@code x^2}.
+     *
+     * @param x Value.
+     * @return {@code x^2}
+     */
+    private static double pow2(double x) {
+        return x * x;
     }
 }
