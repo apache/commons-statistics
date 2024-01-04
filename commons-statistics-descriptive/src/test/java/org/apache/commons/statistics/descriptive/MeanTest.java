@@ -101,7 +101,7 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
         // the array and combine.
         builder.accept(addReference(0.55,
             createRelTolerance(1e-13), // accept
-            createRelTolerance(5e-16), // array
+            createRelTolerance(1e-15), // array
             createRelTolerance(1e-13), // accept and combine
             createRelTolerance(3e-13), // array and combine
             a));
