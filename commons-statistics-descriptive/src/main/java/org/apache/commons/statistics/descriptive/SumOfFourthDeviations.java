@@ -122,7 +122,35 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
         if (values.length == 0) {
             return new SumOfFourthDeviations();
         }
-        final SumOfCubedDeviations sc = SumOfCubedDeviations.of(values);
+        return create(SumOfCubedDeviations.of(values), values);
+    }
+
+    /**
+     * Creates the sum of fourth deviations.
+     *
+     * <p>Uses the provided {@code sum} to create the first moment.
+     * This method is used by {@link DoubleStatistics} using a sum that can be reused
+     * for the {@link Sum} statistic.
+     *
+     * @param sum Sum of the values.
+     * @param values Values.
+     * @return {@code SumOfFourthDeviations} instance.
+     */
+    static SumOfFourthDeviations create(org.apache.commons.numbers.core.Sum sum, double[] values) {
+        if (values.length == 0) {
+            return new SumOfFourthDeviations();
+        }
+        return create(SumOfCubedDeviations.create(sum, values), values);
+    }
+
+    /**
+     * Creates the sum of fourth deviations.
+     *
+     * @param sc Sum of cubed deviations.
+     * @param values Values.
+     * @return {@code SumOfFourthDeviations} instance.
+     */
+    private static SumOfFourthDeviations create(SumOfCubedDeviations sc, double[] values) {
         // Edge cases
         final double xbar = sc.getFirstMoment();
         if (!Double.isFinite(xbar) ||

@@ -113,11 +113,38 @@ class SumOfSquaredDeviations extends FirstMoment {
         if (values.length == 0) {
             return new SumOfSquaredDeviations();
         }
+        return create(FirstMoment.of(values), values);
+    }
 
+    /**
+     * Creates the sum of squared deviations.
+     *
+     * <p>Uses the provided {@code sum} to create the first moment.
+     * This method is used by {@link DoubleStatistics} using a sum that can be reused
+     * for the {@link Sum} statistic.
+     *
+     * @param sum Sum of the values.
+     * @param values Values.
+     * @return {@code SumOfSquaredDeviations} instance.
+     */
+    static SumOfSquaredDeviations create(org.apache.commons.numbers.core.Sum sum, double[] values) {
+        if (values.length == 0) {
+            return new SumOfSquaredDeviations();
+        }
+        return create(FirstMoment.create(sum, values), values);
+    }
+
+    /**
+     * Creates the sum of squared deviations.
+     *
+     * @param m1 First moment.
+     * @param values Values.
+     * @return {@code SumOfSquaredDeviations} instance.
+     */
+    private static SumOfSquaredDeviations create(FirstMoment m1, double[] values) {
         // "Corrected two-pass algorithm"
         // See: Chan et al (1983) Equation 1.7
 
-        final FirstMoment m1 = FirstMoment.of(values);
         final double xbar = m1.getFirstMoment();
         if (!Double.isFinite(xbar)) {
             return new SumOfSquaredDeviations(Double.NaN, m1);

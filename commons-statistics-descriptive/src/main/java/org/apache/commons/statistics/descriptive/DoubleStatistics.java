@@ -18,6 +18,7 @@ package org.apache.commons.statistics.descriptive;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.DoubleConsumer;
 import java.util.function.Function;
 
@@ -71,9 +72,9 @@ public final class DoubleStatistics implements DoubleConsumer {
         /** The {@link Max} constructor. */
         private Function<double[], Max> max;
         /** The moment constructor. May return any instance of {@link FirstMoment}. */
-        private Function<double[], FirstMoment> moment;
+        private BiFunction<org.apache.commons.numbers.core.Sum, double[], FirstMoment> moment;
         /** The {@link Sum} constructor. */
-        private Function<double[], Sum> sum;
+        private Function<org.apache.commons.numbers.core.Sum, Sum> sum;
         /** The {@link Product} constructor. */
         private Function<double[], Product> product;
         /** The {@link SumOfSquares} constructor. */
@@ -129,7 +130,7 @@ public final class DoubleStatistics implements DoubleConsumer {
                 createMoment(2);
                 break;
             case SUM:
-                sum = Sum::of;
+                sum = Sum::new;
                 break;
             case SUM_OF_SQUARES:
                 sumOfSquares = SumOfSquares::of;
@@ -150,14 +151,14 @@ public final class DoubleStatistics implements DoubleConsumer {
             if (order > momentOrder) {
                 momentOrder = order;
                 if (order == 4) {
-                    moment = SumOfFourthDeviations::of;
+                    moment = SumOfFourthDeviations::create;
                 } else if (order == 3) {
-                    moment = SumOfCubedDeviations::of;
+                    moment = SumOfCubedDeviations::create;
                 } else if (order == 2) {
-                    moment = SumOfSquaredDeviations::of;
+                    moment = SumOfSquaredDeviations::create;
                 } else {
                     // Assume order == 1
-                    moment = FirstMoment::of;
+                    moment = FirstMoment::create;
                 }
             }
         }
@@ -195,12 +196,21 @@ public final class DoubleStatistics implements DoubleConsumer {
          */
         public DoubleStatistics build(double... values) {
             Objects.requireNonNull(values, "values");
+            // Create related statistics
+            FirstMoment m = null;
+            Sum sumStat = null;
+            if (moment != null || sum != null) {
+                final org.apache.commons.numbers.core.Sum s =
+                    org.apache.commons.numbers.core.Sum.of(values);
+                m = create(moment, s, values);
+                sumStat = create(sum, s);
+            }
             return new DoubleStatistics(
                 values.length,
                 create(min, values),
                 create(max, values),
-                create(moment, values),
-                create(sum, values),
+                m,
+                sumStat,
                 create(product, values),
                 create(sumOfSquares, values),
                 create(sumOfLogs, values),
@@ -210,14 +220,33 @@ public final class DoubleStatistics implements DoubleConsumer {
         /**
          * Creates the object from the {@code values}.
          *
+         * @param <S> value type
          * @param <T> object type
          * @param constructor Constructor.
          * @param values Values
          * @return the instance
          */
-        private static <T> T create(Function<double[], T> constructor, double[] values) {
+        private static <S, T> T create(Function<S, T> constructor, S values) {
             if (constructor != null) {
                 return constructor.apply(values);
+            }
+            return null;
+        }
+
+        /**
+         * Creates the object from the values {@code r} and {@code s}.
+         *
+         * @param <R> value type
+         * @param <S> value type
+         * @param <T> object type
+         * @param constructor Constructor.
+         * @param r Value.
+         * @param s Value.
+         * @return the instance
+         */
+        private static <R, S, T> T create(BiFunction<R, S, T> constructor, R r, S s) {
+            if (constructor != null) {
+                return constructor.apply(r, s);
             }
             return null;
         }

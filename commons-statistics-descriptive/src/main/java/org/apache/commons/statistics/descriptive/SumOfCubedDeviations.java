@@ -130,7 +130,35 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
         if (values.length == 0) {
             return new SumOfCubedDeviations();
         }
-        final SumOfSquaredDeviations ss = SumOfSquaredDeviations.of(values);
+        return create(SumOfSquaredDeviations.of(values), values);
+    }
+
+    /**
+     * Creates the sum of cubed deviations.
+     *
+     * <p>Uses the provided {@code sum} to create the first moment.
+     * This method is used by {@link DoubleStatistics} using a sum that can be reused
+     * for the {@link Sum} statistic.
+     *
+     * @param sum Sum of the values.
+     * @param values Values.
+     * @return {@code SumOfCubedDeviations} instance.
+     */
+    static SumOfCubedDeviations create(org.apache.commons.numbers.core.Sum sum, double[] values) {
+        if (values.length == 0) {
+            return new SumOfCubedDeviations();
+        }
+        return create(SumOfSquaredDeviations.create(sum, values), values);
+    }
+
+    /**
+     * Creates the sum of cubed deviations.
+     *
+     * @param ss Sum of squared deviations.
+     * @param values Values.
+     * @return {@code SumOfCubedDeviations} instance.
+     */
+    private static SumOfCubedDeviations create(SumOfSquaredDeviations ss, double[] values) {
         // Edge cases
         final double xbar = ss.getFirstMoment();
         if (!Double.isFinite(xbar)) {

@@ -160,11 +160,19 @@ class FirstMoment implements DoubleConsumer {
      * <p>Uses the provided {@code sum} if finite; otherwise reverts to using the rolling moment
      * to protect from overflow and adds a second pass correction term.
      *
+     * <p>This method is used by {@link DoubleStatistics} using a sum that can be reused
+     * for the {@link Sum} statistic.
+     *
      * @param sum Sum of the values.
      * @param values Values.
      * @return {@code FirstMoment} instance.
      */
-    private static FirstMoment create(org.apache.commons.numbers.core.Sum sum, double... values) {
+    static FirstMoment create(org.apache.commons.numbers.core.Sum sum, double[] values) {
+        // Protect against empty values
+        if (values.length == 0) {
+            return new FirstMoment();
+        }
+
         final double s = sum.getAsDouble();
         if (Double.isFinite(s)) {
             return new FirstMoment(s / values.length, values.length);

@@ -52,14 +52,22 @@ package org.apache.commons.statistics.descriptive;
 public final class Sum implements DoubleStatistic, StatisticAccumulator<Sum> {
 
     /** {@link org.apache.commons.numbers.core.Sum Sum} used to compute the sum. */
-    private final org.apache.commons.numbers.core.Sum delegate =
-            org.apache.commons.numbers.core.Sum.create();
+    private final org.apache.commons.numbers.core.Sum delegate;
 
     /**
      * Create an instance.
      */
     private Sum() {
-        // No-op
+        this(org.apache.commons.numbers.core.Sum.create());
+    }
+
+    /**
+     * Create an instance using the specified {@code sum}.
+     *
+     * @param sum Sum.
+     */
+    Sum(org.apache.commons.numbers.core.Sum sum) {
+        delegate = sum;
     }
 
     /**
@@ -85,7 +93,7 @@ public final class Sum implements DoubleStatistic, StatisticAccumulator<Sum> {
      * @return {@code Sum} instance.
      */
     public static Sum of(double... values) {
-        return Statistics.add(new Sum(), values);
+        return new Sum(org.apache.commons.numbers.core.Sum.of(values));
     }
 
     /**
