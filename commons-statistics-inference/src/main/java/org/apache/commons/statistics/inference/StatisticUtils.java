@@ -18,9 +18,9 @@ package org.apache.commons.statistics.inference;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.IntStream;
 import org.apache.commons.numbers.core.DD;
 import org.apache.commons.numbers.core.Precision;
+import org.apache.commons.numbers.core.Sum;
 import org.apache.commons.statistics.descriptive.Mean;
 
 /**
@@ -164,13 +164,6 @@ final class StatisticUtils {
      *
      * <p>This method avoids intermediate array allocation.
      *
-     * <p>A two-pass, corrected algorithm is used, starting with the definitional formula
-     * computed using the array of stored values and then correcting this by adding the
-     * mean deviation of the data values from the arithmetic mean. See, e.g. "Comparison
-     * of Several Algorithms for Computing Sample Means and Variances," Robert F. Ling,
-     * Journal of the American Statistical Association, Vol. 69, No. 348 (Dec., 1974), pp.
-     * 859-866.
-     *
      * @param x First array.
      * @param y Second array.
      * @return mean of paired differences
@@ -181,8 +174,12 @@ final class StatisticUtils {
         if (n != y.length) {
             throw new InferenceException(InferenceException.VALUES_MISMATCH, n, y.length);
         }
-        final double mean = IntStream.range(0, n).mapToDouble(i -> x[i] - y[i]).sum() / n;
-        return mean + IntStream.range(0, n).mapToDouble(i -> (x[i] - y[i]) - mean).sum() / n;
+        // STATISTICS-84: Use a single-pass extended precision sum.
+        final Sum sum = Sum.create();
+        for (int i = 0; i < n; i++) {
+            sum.add(x[i] - y[i]);
+        }
+        return sum.getAsDouble() / n;
     }
 
     /**
@@ -218,14 +215,16 @@ final class StatisticUtils {
         if (n == 1) {
             return 0;
         }
-        final double[] sumSq = {0};
-        final double sum2 = IntStream.range(0, n).mapToDouble(i -> {
+        // As per o.a.c.statistics.descriptive.Variance
+        double s = 0;
+        double ss = 0;
+        for (int i = 0; i < n; i++) {
             final double dx = (x[i] - y[i]) - mean;
-            sumSq[0] += dx * dx;
-            return dx;
-        }).sum();
+            s += dx;
+            ss += dx * dx;
+        }
         // sum-of-squared deviations = sum(x^2) - sum(x)^2 / n
-        final double sum1 = sumSq[0];
-        return (sum1 - (sum2 * sum2 / n)) / (n - 1);
+        // Divide by (n-1) for sample variance
+        return (ss - (s * s / n)) / (n - 1);
     }
 }

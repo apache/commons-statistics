@@ -23,6 +23,8 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
+import org.apache.commons.statistics.descriptive.Mean;
+import org.apache.commons.statistics.descriptive.Variance;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -198,6 +200,11 @@ class StatisticUtilsTest {
         final double v2 = StatisticUtils.varianceDifference(data1, data2, m2);
         Assertions.assertEquals(mean, m2, deltaMean, "meanDifference");
         Assertions.assertEquals(variance, v2, variance * 1e-15, "varianceDifference");
+
+        // Compare to o.a.c.statistics.descriptive
+        // This should match exactly
+        Assertions.assertEquals(Mean.of(data).getAsDouble(), m2, "meanDifference");
+        Assertions.assertEquals(Variance.of(data).getAsDouble(), v2, "varianceDifference");
     }
 
     static Stream<Arguments> testMeanAndVariance() {
@@ -209,5 +216,27 @@ class StatisticUtilsTest {
             Arguments.of(new double[] {3214, 234, 234234, 2, 3244, 234, 234, 234, 234}, 26873.777777777777, 6048361810.444446),
             Arguments.of(new double[] {-23467824, 23648, 2368, 23749, -23424, -23492, -92397747}, -16551817.42857143, 1195057670342971.2)
         );
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testMeanAndVariance2(double[] data1) {
+        // Create dummy data for the difference
+        final double[] data2 = new double[data1.length];
+        final double m2 = StatisticUtils.meanDifference(data1, data2);
+        final double v2 = StatisticUtils.varianceDifference(data1, data2, m2);
+        // Compare to o.a.c.statistics.descriptive
+        // This should match exactly
+        Assertions.assertEquals(Mean.of(data1).getAsDouble(), m2, "meanDifference");
+        Assertions.assertEquals(Variance.of(data1).getAsDouble(), v2, "varianceDifference");
+    }
+
+    static Stream<double[]> testMeanAndVariance2() {
+        Stream.Builder<double[]> builder = Stream.builder();
+        final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create(123);
+        for (int n = 2; n < 1024; n *= 2) {
+            builder.add(rng.doubles(n).toArray());
+        }
+        return builder.build();
     }
 }
