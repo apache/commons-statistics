@@ -126,8 +126,7 @@ class FirstMoment implements DoubleConsumer {
     /**
      * Create an instance with the given first moment.
      *
-     * <p>This constructor is used when creating the moment from integer values. The
-     * non-finite value is not required.
+     * <p>This constructor is used when creating the moment from a finite sum of values.
      *
      * @param m1 First moment.
      * @param n Count of values.
@@ -149,6 +148,26 @@ class FirstMoment implements DoubleConsumer {
     static FirstMoment of(double... values) {
         if (values.length == 0) {
             return new FirstMoment();
+        }
+        // In the typical use-case a sum of values will not overflow and
+        // is faster than the rolling algorithm
+        return create(org.apache.commons.numbers.core.Sum.of(values), values);
+    }
+
+    /**
+     * Creates the first moment.
+     *
+     * <p>Uses the provided {@code sum} if finite; otherwise reverts to using the rolling moment
+     * to protect from overflow and adds a second pass correction term.
+     *
+     * @param sum Sum of the values.
+     * @param values Values.
+     * @return {@code FirstMoment} instance.
+     */
+    private static FirstMoment create(org.apache.commons.numbers.core.Sum sum, double... values) {
+        final double s = sum.getAsDouble();
+        if (Double.isFinite(s)) {
+            return new FirstMoment(s / values.length, values.length);
         }
 
         // "Corrected two-pass algorithm"

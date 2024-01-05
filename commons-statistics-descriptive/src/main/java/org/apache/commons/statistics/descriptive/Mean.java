@@ -40,7 +40,8 @@ package org.apache.commons.statistics.descriptive;
  *     \( m_{i+1} = m_i + (x - m_i) / (i + 1) \)</li>
  * </ol>
  *
- * <p>The {@link #of(double...)} method uses a corrected two-pass algorithm, starting with
+ * <p>The {@link #of(double...)} method uses an extended precision sum if the sum is finite.
+ * Otherwise uses a corrected two-pass algorithm, starting with
  * the recursive updating algorithm mentioned above, and then correcting this by adding the
  * mean deviation of the data values from the one-pass mean (see Ling (1974)).
  *

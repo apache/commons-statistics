@@ -70,7 +70,7 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
 
     @Override
     protected DoubleTolerance getToleranceArray() {
-        return DoubleTolerances.ulps(8);
+        return DoubleTolerances.ulps(3);
     }
 
     @Override
@@ -80,7 +80,7 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
 
     @Override
     protected DoubleTolerance getToleranceArrayAndCombine() {
-        return DoubleTolerances.ulps(5);
+        return DoubleTolerances.ulps(3);
     }
 
     @Override
@@ -97,13 +97,12 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
         // Actual mean is 1.1 / 2 = 0.55; numpy computes 0.5500000000000007
         // Use the actual mean on this difficult case.
         // This case is difficult for the accept method or any combine when the data is
-        // not randomised. The dual-pass array method is good on a single array, but not
-        // the array and combine.
+        // not randomised.
         builder.accept(addReference(0.55,
-            createRelTolerance(1e-13), // accept
-            createRelTolerance(5e-14), // array
-            createRelTolerance(1e-13), // accept and combine
-            createRelTolerance(3e-13), // array and combine
+            createRelTolerance(2e-13), // accept
+            createRelTolerance(5e-16), // array
+            createRelTolerance(2e-13), // accept and combine
+            createRelTolerance(1e-15), // array and combine
             a));
         // R v4.3.1: mean(x)
         builder.accept(addReference(5.5, DoubleTolerances.ulps(1), 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
