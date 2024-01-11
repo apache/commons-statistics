@@ -139,6 +139,7 @@
     <statistics.commons.rng.version>1.5</statistics.commons.rng.version>
     <statistics.commons.numbers.version>1.2-SNAPSHOT</statistics.commons.numbers.version>
     <statistics.commons.math3.version>3.6.1</statistics.commons.math3.version>
+    <statistics.commons.math4.version>4.0-beta1</statistics.commons.math4.version>
 
     <!-- Workaround to avoid the SVN site checkout in all modules.
          This flag should be deactivated by child modules. -->

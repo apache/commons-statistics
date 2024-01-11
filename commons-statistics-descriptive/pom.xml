@@ -46,6 +46,16 @@
 
         <dependency>
             <groupId>org.apache.commons</groupId>
+            <artifactId>commons-numbers-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-numbers-arrays</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
             <artifactId>commons-rng-simple</artifactId>
             <scope>test</scope>
         </dependency>
@@ -58,7 +68,8 @@
 
         <dependency>
             <groupId>org.apache.commons</groupId>
-            <artifactId>commons-numbers-core</artifactId>
+            <artifactId>commons-math3</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- Required for DoubleEquivalence -->

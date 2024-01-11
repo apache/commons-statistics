@@ -168,14 +168,15 @@
           or @SimpleName='MannWhitneyUTest' or @SimpleName='WilcoxonSignedRankTest'
           or @SimpleName='HypergeometricDistribution' or @SimpleName='UnconditionedExactTest'
           or @SimpleName='DoubleStatistics' or @SimpleName='IntStatistics'
-          or @SimpleName='LongStatistics']"/>
+          or @SimpleName='LongStatistics' or @SimpleName='Quantile']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/LogicInversion">
     <properties>
       <!-- Logic inversion allows detection of NaN for parameters that are expected in a range -->
       <property name="violationSuppressXPath"
-        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='Arguments']"/>
+        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='Arguments'
+          or @Name='Quantile']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/UselessOverridingMethod">
@@ -188,10 +189,11 @@
 
   <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition">
     <properties>
-      <!-- Add 1 as a magic number. -->
+      <!-- Add 1 as a magic number. Allow use of integer literals for counts. -->
       <property name="ignoreMagicNumbers" value="-1,0,1" />
       <property name="violationSuppressXPath"
-        value="./ancestor-or-self::MethodDeclaration[@Name='ldexp' or @Name='createMoment']"/>
+        value="./ancestor-or-self::MethodDeclaration[@Name='ldexp' or @Name='createMoment']
+          or ./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='Median']"/>
     </properties>
   </rule>
   <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingMethodName">
@@ -214,6 +216,12 @@
       <!-- Exact conversion from double to BigInteger is required. -->
       <property name="violationSuppressXPath"
         value="./ancestor-or-self::MethodDeclaration[@Name='toBigIntegerExact']"/>
+    </properties>
+  </rule>
+  <rule ref="category/java/errorprone.xml/AssignmentInOperand">
+    <properties>
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::ClassOrInterfaceDeclaration[@SimpleName='NaNTransformers']"/>
     </properties>
   </rule>
 
