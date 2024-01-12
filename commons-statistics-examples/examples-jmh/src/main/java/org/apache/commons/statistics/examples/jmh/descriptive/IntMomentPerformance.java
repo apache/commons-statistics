@@ -1057,7 +1057,8 @@ public class IntMomentPerformance {
                 }
                 return diff.divide(DD.of(n).multiply(DD.of(n0))).doubleValue();
             }
-            final BigInteger diff = sumSq.toBigInteger().multiply(BigInteger.valueOf(n)).subtract(square(sum.toBigInteger()));
+            final BigInteger diff = sumSq.toBigInteger().multiply(
+                BigInteger.valueOf(n)).subtract(square(sum.toBigInteger()));
             // Compute the divide in double precision
             return diff.doubleValue() / ((double) n0 * n);
         }
@@ -1095,7 +1096,8 @@ public class IntMomentPerformance {
                 }
                 return diff.divide(DD.of(n).multiply(DD.of(n0))).doubleValue();
             }
-            final BigInteger diff = sumSq.toBigInteger().multiply(BigInteger.valueOf(n)).subtract(square(sum.toBigInteger()));
+            final BigInteger diff = sumSq.toBigInteger().multiply(
+                BigInteger.valueOf(n)).subtract(square(sum.toBigInteger()));
             // Assume n is big to overflow the sum(x)
             // Compute the divide in double-double precision
             return DD.of(diff.doubleValue()).divide(DD.of(n).multiply(DD.of(n0))).doubleValue();
