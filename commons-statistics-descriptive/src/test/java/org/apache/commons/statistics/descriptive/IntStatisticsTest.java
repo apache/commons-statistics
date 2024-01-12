@@ -466,7 +466,7 @@ class IntStatisticsTest {
 
     @Test
     void testIsSupportedWithNull() {
-        IntStatistics s = IntStatistics.of(Statistic.MIN);
+        final IntStatistics s = IntStatistics.of(Statistic.MIN);
         Assertions.assertThrows(NullPointerException.class, () -> s.isSupported(null));
     }
 
@@ -475,8 +475,8 @@ class IntStatisticsTest {
     void testIncompatibleCombineThrows(EnumSet<Statistic> stat1, EnumSet<Statistic> stat2) {
         final int[] v1 = {1, 2, 4, 6};
         final int[] v2 = {3, 4, 5};
-        IntStatistics statistics = IntStatistics.of(stat1, v1);
-        IntStatistics other = IntStatistics.of(stat2, v2);
+        final IntStatistics statistics = IntStatistics.of(stat1, v1);
+        final IntStatistics other = IntStatistics.of(stat2, v2);
         // Store values
         final double[] values = stat1.stream().mapToDouble(statistics::getAsDouble).toArray();
         Assertions.assertThrows(IllegalArgumentException.class, () -> statistics.combine(other),

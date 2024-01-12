@@ -1049,7 +1049,7 @@ public class IntMomentPerformance {
             // sum(x^2) * n will be OK when the upper 32-bits are zero.
             // Both are safe when n < 2^32.
             if ((n >>> Integer.SIZE) == 0) {
-                DD diff = sumSq.unsignedMultiply((int) n).subtract(sum.squareLow()).toDD();
+                final DD diff = sumSq.unsignedMultiply((int) n).subtract(sum.squareLow()).toDD();
                 // Divisor is an exact double
                 if (n < (1L << 26)) {
                     // n0*n is safe as a long
@@ -1057,7 +1057,7 @@ public class IntMomentPerformance {
                 }
                 return diff.divide(DD.of(n).multiply(DD.of(n0))).doubleValue();
             }
-            BigInteger diff = sumSq.toBigInteger().multiply(BigInteger.valueOf(n)).subtract(square(sum.toBigInteger()));
+            final BigInteger diff = sumSq.toBigInteger().multiply(BigInteger.valueOf(n)).subtract(square(sum.toBigInteger()));
             // Compute the divide in double precision
             return diff.doubleValue() / ((double) n0 * n);
         }
@@ -1087,7 +1087,7 @@ public class IntMomentPerformance {
             // sum(x^2) * n will be OK when the upper 32-bits are zero.
             // Both are safe when n < 2^32.
             if ((n >>> Integer.SIZE) == 0) {
-                DD diff = sumSq.unsignedMultiply((int) n).subtract(sum.squareLow()).toDD();
+                final DD diff = sumSq.unsignedMultiply((int) n).subtract(sum.squareLow()).toDD();
                 // Divisor is an exact double
                 if (n < (1L << 26)) {
                     // n0*n is safe as a long
@@ -1095,7 +1095,7 @@ public class IntMomentPerformance {
                 }
                 return diff.divide(DD.of(n).multiply(DD.of(n0))).doubleValue();
             }
-            BigInteger diff = sumSq.toBigInteger().multiply(BigInteger.valueOf(n)).subtract(square(sum.toBigInteger()));
+            final BigInteger diff = sumSq.toBigInteger().multiply(BigInteger.valueOf(n)).subtract(square(sum.toBigInteger()));
             // Assume n is big to overflow the sum(x)
             // Compute the divide in double-double precision
             return DD.of(diff.doubleValue()).divide(DD.of(n).multiply(DD.of(n0))).doubleValue();
@@ -1402,7 +1402,7 @@ public class IntMomentPerformance {
             if ("128bitAdd".equals(name)) {
                 function = x -> {
                     final Int128 s = Int128.create();
-                    for (long y : x) {
+                    for (final long y : x) {
                         s.add(y);
                     }
                     return s.hi64();
@@ -1410,7 +1410,7 @@ public class IntMomentPerformance {
             } else if ("128bitAdd2".equals(name)) {
                 function = x -> {
                     final Int128 s = Int128.create();
-                    for (long y : x) {
+                    for (final long y : x) {
                         s.add2(y);
                     }
                     return s.hi64();
@@ -1418,7 +1418,7 @@ public class IntMomentPerformance {
             } else if ("64bitSum".equals(name)) {
                 function = x -> {
                     long s = 0;
-                    for (long y : x) {
+                    for (final long y : x) {
                         s += y;
                     }
                     return s;

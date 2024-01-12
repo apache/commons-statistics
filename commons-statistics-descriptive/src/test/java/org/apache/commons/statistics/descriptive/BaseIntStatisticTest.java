@@ -780,7 +780,7 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
      * @return the set of arrays
      */
     private static int[][] cut(int[] data, int... sizes) {
-        ArrayList<int[]> set = new ArrayList<>();
+        final ArrayList<int[]> set = new ArrayList<>();
         int from = 0;
         for (final int size : sizes) {
             final int to = Math.min(data.length, from + size);
@@ -1022,7 +1022,7 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
             while (repeat++ < RANDOM_PERMUTATIONS) {
                 testAccept(TestHelper.shuffle(rng, values), expected, tol);
             }
-        } catch (AssertionError e) {
+        } catch (final AssertionError e) {
             rethrowWithSeedAndRepeat(e, seed, repeat);
         }
     }
@@ -1042,7 +1042,7 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
             while (repeat++ < RANDOM_PERMUTATIONS) {
                 testArray(TestHelper.shuffle(rng, values), expected, tol);
             }
-        } catch (AssertionError e) {
+        } catch (final AssertionError e) {
             rethrowWithSeedAndRepeat(e, seed, repeat);
         }
     }
@@ -1065,7 +1065,7 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
                 TestHelper.unconcatenate(allValues, values);
                 testAcceptAndCombine(TestHelper.shuffle(rng, values), expected, tol);
             }
-        } catch (AssertionError e) {
+        } catch (final AssertionError e) {
             rethrowWithSeedAndRepeat(e, seed, repeat);
         }
     }
@@ -1088,7 +1088,7 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
                 TestHelper.unconcatenate(allValues, values);
                 testArrayAndCombine(TestHelper.shuffle(rng, values), expected, tol);
             }
-        } catch (AssertionError e) {
+        } catch (final AssertionError e) {
             rethrowWithSeedAndRepeat(e, seed, repeat);
         }
     }

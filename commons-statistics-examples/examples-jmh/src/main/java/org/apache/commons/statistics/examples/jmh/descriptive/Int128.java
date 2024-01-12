@@ -126,7 +126,7 @@ final class Int128 {
         // (-,-) -> +
         // Branchless.
         // Extract sign bit.
-        long signMask = ((y ^ r) & (x ^ r)) >> 63;
+        final long signMask = ((y ^ r) & (x ^ r)) >> 63;
         // Carry using [0/1] * [+1/-1]
         hi += signMask & (1 - ((x >>> 62) & 0x2));
         lo = r;

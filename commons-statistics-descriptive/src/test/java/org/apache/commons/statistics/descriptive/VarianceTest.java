@@ -113,7 +113,7 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
      * @return Variance of values
      */
     static double computeExpectedVariance(double[] values, BigDecimal[] mean) {
-        long n = values.length;
+        final long n = values.length;
         if (n == 0) {
             return Double.NaN;
         }

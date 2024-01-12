@@ -207,7 +207,7 @@ final class UInt128 {
     BigInteger toBigInteger() {
         // Test if we have more than 63-bits
         if (ab != 0 || c < 0) {
-            ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES * 4)
+            final ByteBuffer bb = ByteBuffer.allocate(Integer.BYTES * 4)
                 .putLong(ab)
                 .putInt(c)
                 .putInt(d);

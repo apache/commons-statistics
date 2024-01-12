@@ -124,16 +124,16 @@ class IntMathTest {
         final Stream.Builder<Arguments> builder = Stream.builder();
         for (int i = 0; i < 100; i++) {
             long a = rng.nextLong();
-            long b = rng.nextLong();
+            final long b = rng.nextLong();
             builder.accept(Arguments.of(a, b));
             builder.accept(Arguments.of(0, b));
             // Edge cases where trailing bits are required for rounding.
             // Create a 55-bit number. Ensure the highest bit is set.
             a = (a << 9) | Long.MIN_VALUE;
             // Shift right and carry bits down.
-            int shift = rng.nextInt(1, 64);
-            long c = a >>> shift;
-            long d = a << -shift;
+            final int shift = rng.nextInt(1, 64);
+            final long c = a >>> shift;
+            final long d = a << -shift;
             // Check
             Assertions.assertEquals(Long.bitCount(a), Long.bitCount(c) + Long.bitCount(d));
             builder.accept(Arguments.of(c, d));

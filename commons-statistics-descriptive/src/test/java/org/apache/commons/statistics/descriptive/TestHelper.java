@@ -166,7 +166,7 @@ final class TestHelper {
      */
     static BigDecimal computeExpectedMean(double[] values) {
         BigDecimal bd = BigDecimal.ZERO;
-        for (double value : values) {
+        for (final double value : values) {
             bd = bd.add(new BigDecimal(value));
         }
         return bd.divide(BigDecimal.valueOf(values.length), MathContext.DECIMAL128);
@@ -184,7 +184,7 @@ final class TestHelper {
      * @return sum-of-square deviations
      */
     static BigDecimal computeExpectedSumOfSquaredDeviations(double[] values, BigDecimal[] mean) {
-        long n = values.length;
+        final long n = values.length;
         if (n <= 1) {
             return BigDecimal.ZERO;
         }
@@ -193,7 +193,7 @@ final class TestHelper {
             mean[0] = m;
         }
         BigDecimal ss = BigDecimal.ZERO;
-        for (double value : values) {
+        for (final double value : values) {
             // Note: The mean is returned in DECIMAL128 precision.
             // Truncate the double value to the same precision.
             // This avoids round-off issues with extreme values such as Double.MAX_VALUE
@@ -431,7 +431,7 @@ final class TestHelper {
         Integer i = null;
         try {
             i = expected.getAsInt();
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsInt(), intMsg);
         }
         if (i != null) {
@@ -455,7 +455,7 @@ final class TestHelper {
         Long l = null;
         try {
             l = expected.getAsLong();
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsLong(), longMsg);
         }
         if (l != null) {
@@ -485,7 +485,7 @@ final class TestHelper {
         Double d = null;
         try {
             d = expected.getAsDouble();
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsDouble(), doubleMsg);
         }
         if (d != null) {
@@ -521,7 +521,7 @@ final class TestHelper {
         BigInteger b = null;
         try {
             b = expected.getAsBigInteger();
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             Assertions.assertThrowsExactly(t.getClass(), () -> actual.get(), bigMsg);
         }
         if (b != null) {

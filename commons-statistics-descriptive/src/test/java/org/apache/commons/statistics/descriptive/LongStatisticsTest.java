@@ -466,7 +466,7 @@ class LongStatisticsTest {
 
     @Test
     void testIsSupportedWithNull() {
-        LongStatistics s = LongStatistics.of(Statistic.MIN);
+        final LongStatistics s = LongStatistics.of(Statistic.MIN);
         Assertions.assertThrows(NullPointerException.class, () -> s.isSupported(null));
     }
 
@@ -475,8 +475,8 @@ class LongStatisticsTest {
     void testIncompatibleCombineThrows(EnumSet<Statistic> stat1, EnumSet<Statistic> stat2) {
         final long[] v1 = {1, 2, 4, 6};
         final long[] v2 = {3, 4, 5};
-        LongStatistics statistics = LongStatistics.of(stat1, v1);
-        LongStatistics other = LongStatistics.of(stat2, v2);
+        final LongStatistics statistics = LongStatistics.of(stat1, v1);
+        final LongStatistics other = LongStatistics.of(stat2, v2);
         // Store values
         final double[] values = stat1.stream().mapToDouble(statistics::getAsDouble).toArray();
         Assertions.assertThrows(IllegalArgumentException.class, () -> statistics.combine(other),

@@ -146,7 +146,7 @@ final class StandardDeviationTest extends BaseDoubleStatisticTest<StandardDeviat
      * @return Standard deviation of values
      */
     private static double computeExpectedStandardDeviation(double[] values) {
-        long n = values.length;
+        final long n = values.length;
         if (n == 0) {
             return Double.NaN;
         }

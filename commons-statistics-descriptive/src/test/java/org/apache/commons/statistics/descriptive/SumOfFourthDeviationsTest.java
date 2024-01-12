@@ -128,7 +128,7 @@ final class SumOfFourthDeviationsTest extends BaseDoubleStatisticTest<SumOfFourt
         // Round mean to nearest double
         final BigDecimal mu = new BigDecimal(mean.doubleValue());
         BigDecimal bd = BigDecimal.ZERO;
-        for (double value : values) {
+        for (final double value : values) {
             BigDecimal bdDiff = new BigDecimal(value);
             bdDiff = bdDiff.subtract(mu);
             bdDiff = bdDiff.pow(4);

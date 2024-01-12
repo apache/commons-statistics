@@ -234,9 +234,9 @@ final class UInt192 {
      * @return the value
      */
     double toDouble() {
-        long h = hi64();
-        long m = mid64();
-        long l = lo64();
+        final long h = hi64();
+        final long m = mid64();
+        final long l = lo64();
         if (h == 0) {
             return IntMath.uin128ToDouble(m, l);
         }

@@ -326,7 +326,7 @@ abstract class BaseStatisticTest {
             default:
                 break;
             }
-        } catch (Throwable t) {
+        } catch (final Throwable t) {
             return MARKER_OBJECT;
         }
         throw new IllegalStateException("Unrecognised result type: " + getResultType());

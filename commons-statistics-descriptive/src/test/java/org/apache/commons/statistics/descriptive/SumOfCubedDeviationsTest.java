@@ -108,7 +108,7 @@ final class SumOfCubedDeviationsTest extends BaseDoubleStatisticTest<SumOfCubedD
         // Round mean to nearest double
         final BigDecimal mu = new BigDecimal(xbar);
         double sum = 0;
-        for (double value : values) {
+        for (final double value : values) {
             BigDecimal bdDiff = new BigDecimal(value);
             bdDiff = bdDiff.subtract(mu);
             bdDiff = bdDiff.pow(3);

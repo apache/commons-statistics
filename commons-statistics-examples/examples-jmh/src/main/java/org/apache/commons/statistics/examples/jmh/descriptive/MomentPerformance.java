@@ -419,7 +419,7 @@ public class MomentPerformance {
      */
     static class NumbersSum implements DoubleConsumer, DoubleSupplier {
         /** Sum of values that have been added. */
-        private Sum sum = Sum.create();
+        private final Sum sum = Sum.create();
 
         @Override
         public void accept(double value) {
@@ -438,7 +438,7 @@ public class MomentPerformance {
      */
     static class NumbersSum2 implements DoubleConsumer, DoubleSupplier {
         /** Sum of values that have been added. */
-        private Sum sum = Sum.create();
+        private final Sum sum = Sum.create();
 
         /** Non-finite result. This is the sum of non-finite values. */
         private double nonFiniteValue;
