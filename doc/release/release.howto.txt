@@ -659,7 +659,7 @@ RAT Report:
     https://home.apache.org/~aherbert/commons-statistics-1.0-RC1-site/rat-report.html
 
 KEYS:
-  https://www.apache.org/dist/commons/KEYS
+  https://downloads.apache.org/commons/KEYS
 
 Please review the release candidate and vote.
 This vote will close no sooner that 72 hours from now.
@@ -992,7 +992,7 @@ Distribution packages can be downloaded from
 
 When downloading, please verify signatures using the KEYS file
 available at
-  https://www.apache.org/dist/commons/KEYS
+  https://downloads.apache.org/commons/KEYS
 
 The Apache Commons Team
 ----------
