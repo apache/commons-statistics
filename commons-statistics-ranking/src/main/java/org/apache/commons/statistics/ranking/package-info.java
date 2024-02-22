@@ -17,5 +17,7 @@
 
 /**
  * Classes providing rank transformations.
+ *
+ * @since 1.1
  */
 package org.apache.commons.statistics.ranking;
