@@ -19,6 +19,7 @@ package org.apache.commons.statistics.ranking;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.IntUnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -30,6 +31,7 @@ import org.apache.commons.rng.sampling.PermutationSampler;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -56,7 +58,7 @@ class NaturalRankingTest {
     void testProperties() {
         final TiesStrategy defaultTs = TiesStrategy.AVERAGE;
         final NaNStrategy defaultNs = NaNStrategy.FAILED;
-        final IntUnaryOperator randomSource = null;
+        final IntUnaryOperator randomSource = x -> x;
         NaturalRanking ranking;
 
         ranking = new NaturalRanking();
@@ -89,12 +91,32 @@ class NaturalRankingTest {
     }
 
     @Test
-    void testNullStrategy() {
-        final double[] data = new double[5];
-        final NaturalRanking r1 = new NaturalRanking((NaNStrategy)null);
-        Assertions.assertThrows(NullPointerException.class, () -> r1.apply(data));
-        final NaturalRanking r2 = new NaturalRanking((TiesStrategy)null);
-        Assertions.assertThrows(NullPointerException.class, () -> r2.apply(data));
+    void testNullArguments() {
+        final TiesStrategy nullTiesStrategy = null;
+        final TiesStrategy tiesStrategy = TiesStrategy.AVERAGE;
+        final NaNStrategy nullNaNStrategy = null;
+        final NaNStrategy nanStrategy = NaNStrategy.FIXED;
+        final IntUnaryOperator nullRandomness = null;
+        final IntUnaryOperator randomness = x -> x;
+        assertThrowsNPEWithKeywords(() -> new NaturalRanking(nullTiesStrategy), "ties", "strategy");
+        assertThrowsNPEWithKeywords(() -> new NaturalRanking(nullNaNStrategy), "nan", "strategy");
+        assertThrowsNPEWithKeywords(
+            () -> new NaturalRanking(nullNaNStrategy, tiesStrategy), "nan", "strategy");
+        assertThrowsNPEWithKeywords(
+            () -> new NaturalRanking(nanStrategy, nullTiesStrategy), "ties", "strategy");
+        assertThrowsNPEWithKeywords(() -> new NaturalRanking(nullRandomness), "random");
+        assertThrowsNPEWithKeywords(
+            () -> new NaturalRanking(nullNaNStrategy, randomness), "nan", "strategy");
+        assertThrowsNPEWithKeywords(
+            () -> new NaturalRanking(nanStrategy, nullRandomness), "random");
+    }
+
+    private static void assertThrowsNPEWithKeywords(Executable executable, String... keywords) {
+        final NullPointerException e = Assertions.assertThrows(NullPointerException.class, executable);
+        final String msg = e.getMessage().toLowerCase(Locale.ROOT);
+        for (final String s : keywords) {
+            Assertions.assertTrue(msg.contains(s), () -> "Missing keyword: " + s);
+        }
     }
 
     /**

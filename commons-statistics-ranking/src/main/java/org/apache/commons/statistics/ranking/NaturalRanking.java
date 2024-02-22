@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.ranking;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.SplittableRandom;
 import java.util.function.DoubleUnaryOperator;
 import java.util.function.IntUnaryOperator;
@@ -31,7 +32,7 @@ import java.util.function.IntUnaryOperator;
  * {@link TiesStrategy#AVERAGE}, respectively.
  *
  * <p>When using {@link TiesStrategy#RANDOM}, a generator of random values in {@code [0, x)}
- * supplied as a {@link IntUnaryOperator} argument; otherwise a default is created
+ * can be supplied as a {@link IntUnaryOperator} argument; otherwise a default is created
  * on-demand. The source of randomness can be supplied using a method reference.
  * The following example creates a ranking with NaN values with the highest
  * ranking and ties resolved randomly:
@@ -83,6 +84,12 @@ import java.util.function.IntUnaryOperator;
  * @since 1.1
  */
 public class NaturalRanking implements RankingAlgorithm {
+    /** Message for a null user-supplied {@link NaNStrategy}. */
+    private static final String NULL_NAN_STRATEGY = "nanStrategy";
+    /** Message for a null user-supplied {@link TiesStrategy}. */
+    private static final String NULL_TIES_STRATEGY = "tiesStrategy";
+    /** Message for a null user-supplied source of randomness. */
+    private static final String NULL_RANDOM_SOURCE = "randomIntFunction";
     /** Default NaN strategy. */
     private static final NaNStrategy DEFAULT_NAN_STRATEGY = NaNStrategy.FAILED;
     /** Default ties strategy. */
@@ -121,9 +128,11 @@ public class NaturalRanking implements RankingAlgorithm {
      * source of randomness is used to resolve ties.
      *
      * @param tiesStrategy TiesStrategy to use.
+     * @throws NullPointerException if the strategy is {@code null}
      */
     public NaturalRanking(TiesStrategy tiesStrategy) {
-        this(DEFAULT_NAN_STRATEGY, tiesStrategy, null);
+        this(DEFAULT_NAN_STRATEGY,
+            Objects.requireNonNull(tiesStrategy, NULL_TIES_STRATEGY), null);
     }
 
     /**
@@ -131,9 +140,11 @@ public class NaturalRanking implements RankingAlgorithm {
      * {@link TiesStrategy#AVERAGE}.
      *
      * @param nanStrategy NaNStrategy to use.
+     * @throws NullPointerException if the strategy is {@code null}
      */
     public NaturalRanking(NaNStrategy nanStrategy) {
-        this(nanStrategy, DEFAULT_TIES_STRATEGY, null);
+        this(Objects.requireNonNull(nanStrategy, NULL_NAN_STRATEGY),
+            DEFAULT_TIES_STRATEGY, null);
     }
 
     /**
@@ -145,10 +156,12 @@ public class NaturalRanking implements RankingAlgorithm {
      *
      * @param nanStrategy NaNStrategy to use.
      * @param tiesStrategy TiesStrategy to use.
+     * @throws NullPointerException if any strategy is {@code null}
      */
     public NaturalRanking(NaNStrategy nanStrategy,
                           TiesStrategy tiesStrategy) {
-        this(nanStrategy, tiesStrategy, null);
+        this(Objects.requireNonNull(nanStrategy, NULL_NAN_STRATEGY),
+            Objects.requireNonNull(tiesStrategy, NULL_TIES_STRATEGY), null);
     }
 
     /**
@@ -157,9 +170,11 @@ public class NaturalRanking implements RankingAlgorithm {
      *
      * @param randomIntFunction Source of random index data.
      * Function maps positive {@code x} randomly to {@code [0, x)}
+     * @throws NullPointerException if the source of randomness is {@code null}
      */
     public NaturalRanking(IntUnaryOperator randomIntFunction) {
-        this(DEFAULT_NAN_STRATEGY, TiesStrategy.RANDOM, randomIntFunction);
+        this(DEFAULT_NAN_STRATEGY, TiesStrategy.RANDOM,
+            Objects.requireNonNull(randomIntFunction, NULL_RANDOM_SOURCE));
     }
 
     /**
@@ -169,10 +184,12 @@ public class NaturalRanking implements RankingAlgorithm {
      * @param nanStrategy NaNStrategy to use.
      * @param randomIntFunction Source of random index data.
      * Function maps positive {@code x} randomly to {@code [0, x)}
+     * @throws NullPointerException if the strategy or source of randomness are {@code null}
      */
     public NaturalRanking(NaNStrategy nanStrategy,
                           IntUnaryOperator randomIntFunction) {
-        this(nanStrategy, TiesStrategy.RANDOM, randomIntFunction);
+        this(Objects.requireNonNull(nanStrategy, NULL_NAN_STRATEGY), TiesStrategy.RANDOM,
+            Objects.requireNonNull(randomIntFunction, NULL_RANDOM_SOURCE));
     }
 
     /**
@@ -183,6 +200,7 @@ public class NaturalRanking implements RankingAlgorithm {
     private NaturalRanking(NaNStrategy nanStrategy,
                            TiesStrategy tiesStrategy,
                            IntUnaryOperator randomIntFunction) {
+        // User-supplied arguments are checked for non-null in the respective constructor
         this.nanStrategy = nanStrategy;
         this.tiesStrategy = tiesStrategy;
         this.randomIntFunction = randomIntFunction;
