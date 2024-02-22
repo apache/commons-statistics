@@ -530,11 +530,11 @@ class NaturalRankingTest {
      * @param expectedGroups Expected groups (if null the algorithm is expected to raise an {@link IllegalArgumentException})
      * @param msg Prefix for any assertion failure message
      */
-    private static void assertRanks(RankingAlgorithm ranking, double[] data, int[] expectedGroup, String msg) {
-        if (expectedGroup == null) {
+    private static void assertRanks(RankingAlgorithm ranking, double[] data, int[] expectedGroups, String msg) {
+        if (expectedGroups == null) {
             Assertions.assertThrows(IllegalArgumentException.class, () -> ranking.apply(data));
         } else {
-            Assertions.assertEquals(data.length, expectedGroup.length, "Groups must be assigned to all data");
+            Assertions.assertEquals(data.length, expectedGroups.length, "Groups must be assigned to all data");
 
             final double[] original = data.clone();
             final double[] ranks = ranking.apply(data);
@@ -549,14 +549,14 @@ class NaturalRankingTest {
             int numberOfElements = 0;
             int unchanged = 0;
             int removed = 0;
-            for (int i = 0; i < expectedGroup.length; i++) {
-                if (expectedGroup[i] > 0) {
-                    max = Math.max(max, expectedGroup[i]);
+            for (int i = 0; i < expectedGroups.length; i++) {
+                if (expectedGroups[i] > 0) {
+                    max = Math.max(max, expectedGroups[i]);
                     // Reduce to only the expected elements.
                     // This filters unchanged/removed elements.
-                    expectedGroup[numberOfElements] = expectedGroup[i];
+                    expectedGroups[numberOfElements] = expectedGroups[i];
                     numberOfElements++;
-                } else if (expectedGroup[i] == 0) {
+                } else if (expectedGroups[i] == 0) {
                     Assertions.assertEquals(data[i], ranks[i], "Element was changed");
                     // Flag for removal
                     ranks[i] = -1;
@@ -586,7 +586,7 @@ class NaturalRankingTest {
             // Count groups sizes
             final int[] sizes = new int[max + 1];
             for (int i = 0; i < numberOfElements; i++) {
-                sizes[expectedGroup[i]]++;
+                sizes[expectedGroups[i]]++;
             }
             // Each must be non-zero
             for (int i = 1; i <= max; i++) {
@@ -620,7 +620,7 @@ class NaturalRankingTest {
                 Assertions.assertEquals(r, (int) r, () -> "Non-integer rank: " + r);
                 final int rank = (int) r;
                 final BitSet groupSet = rankToGroup[rank];
-                final int group = expectedGroup[i];
+                final int group = expectedGroups[i];
                 Assertions.assertTrue(groupSet.get(rank),
                     () -> String.format("Unexpected rank %d in group %d", rank, group));
                 groupSet.clear(rank);
