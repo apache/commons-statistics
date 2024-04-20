@@ -143,7 +143,7 @@ final class StatisticUtils {
         final double mean = samples.stream()
             .map(Mean::of)
             .reduce(Mean::combine)
-            .orElseGet(() -> Mean.create())
+            .orElseGet(Mean::create)
             .getAsDouble();
         // Second-pass correction.
         // Note: The correction may not be finite in the event of extreme values.
