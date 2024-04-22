@@ -57,7 +57,8 @@ final class LongSumTest extends BaseLongStatisticTest<LongSum> {
         // Floating-point sum may be inexact.
         // Currently the double sum matches on the standard test data.
         // It fails on large random data added in streamTestData().
-        return DoubleTolerances.relative(1e-13);
+        // 41-bits of precision ~ 4.5e-13
+        return DoubleTolerances.relative(0x1.0p-41);
     }
 
     @Override
@@ -88,7 +89,13 @@ final class LongSumTest extends BaseLongStatisticTest<LongSum> {
             // Case with relative error of 2.75E-14 compared to a double sum
             addCase(-4487066808448153496L, 7787390584347681521L, -7858453033172463569L, 47145713150439093L,
                 3633776039196843638L, -4341282612965864270L, -1485329079196125724L, 6233716229349935702L,
-                7375800655291232789L, -6937385231548425316L)
+                7375800655291232789L, -6937385231548425316L),
+            // Case with relative error of 3.72E-14 compared to a double sum
+            addCase(1762148088465390728L, -7115931862782408920L, -5636555954314137385L, 6430559082344489638L,
+                4114490813139260252L, 8579187161455135584L, 7739722798844245340L, 2891970534844301876L,
+                -4237740878246353493L, -4070467815045385449L, -78616704962308788L, 4337904397494590309L,
+                -5978347168335833324L, 516700626540252157L, 6376613030089653543L, -987353620073772000L,
+                -860005478611364991L, -110486665566037318L, -7489804585071312763L, -6181238641752885618L)
         );
     }
 
