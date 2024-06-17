@@ -59,7 +59,12 @@ Adds ranking, inference, descriptive and bom modules. (requires Java 8).
       <action dev="aherbert" type="add" issue="STATISTICS-85">
         Add a quantile and median implementation.
       </action>
-      <action dev="aherbert" due-to="Anirudh Joshi"  type="add" issue="STATISTICS-71">
+      <action dev="aherbert" type="add" issue="STATISTICS-81">
+        Add descriptive statistics for integer types. These allow improved accuracy and performance
+        for int and long data using an array or streams over using the equivalent double
+        implementation via primitive conversion.
+      </action>
+      <action dev="aherbert" due-to="Anirudh Joshi, Alex Herbert"  type="add" issue="STATISTICS-71">
         Add commons-statistics-descriptive module for implementations of univariate statistics.
         Contains base interfaces for statistics and implementations for individual statistics
         (e.g. Min, Max, Sum, Mean, Variance) and combinations of statistics.
