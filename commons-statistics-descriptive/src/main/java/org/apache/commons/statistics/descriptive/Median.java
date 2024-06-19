@@ -36,6 +36,8 @@ import org.apache.commons.numbers.arrays.Selection;
  *
  * <p>The {@link NaNPolicy} can be used to change the behaviour on {@code NaN} values.
  *
+ * <p>Instances of this class are immutable and thread-safe.
+ *
  * @see #with(NaNPolicy)
  * @see <a href="https://en.wikipedia.org/wiki/Median">Median (Wikipedia)</a>
  * @since 1.1
@@ -141,14 +143,14 @@ public final class Median {
         if (n <= 2) {
             switch (n) {
             case 2:
-                // Sort data handling NaN and signed zeros.
-                // Matches the default behaviour of Quantile using p=0.5.
+                // Sorting the array matches the behaviour of Quantile for n==2
+                // Handle NaN and signed zeros
                 if (Double.compare(x[1], x[0]) < 0) {
                     final double t = x[0];
                     x[0] = x[1];
                     x[1] = t;
                 }
-                return DoubleMath.mean(x[0], x[1]);
+                return Interpolation.mean(x[0], x[1]);
             case 1:
                 return x[0];
             default:
@@ -164,6 +166,47 @@ public final class Median {
         }
         // Even: require (m-1, m)
         Selection.select(x, 0, n, new int[] {m - 1, m});
-        return DoubleMath.mean(x[m - 1], x[m]);
+        return Interpolation.mean(x[m - 1], x[m]);
+    }
+
+    /**
+     * Evaluate the median.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @return the median
+     */
+    public double evaluate(int[] values) {
+        final int[] x = copy ? values.clone() : values;
+        final int n = values.length;
+        // Special cases
+        if (n <= 2) {
+            switch (n) {
+            case 2:
+                // Sorting the array matches the behaviour of Quantile for n==2
+                if (x[1] < x[0]) {
+                    final int t = x[0];
+                    x[0] = x[1];
+                    x[1] = t;
+                }
+                return Interpolation.mean(x[0], x[1]);
+            case 1:
+                return x[0];
+            default:
+                return Double.NaN;
+            }
+        }
+        // Median index
+        final int m = n >>> 1;
+        // Odd
+        if ((n & 0x1) == 1) {
+            Selection.select(x, 0, n, m);
+            return x[m];
+        }
+        // Even: require (m-1, m)
+        Selection.select(x, 0, n, new int[] {m - 1, m});
+        return Interpolation.mean(x[m - 1], x[m]);
     }
 }

@@ -42,6 +42,8 @@ import org.apache.commons.numbers.arrays.Selection;
  *
  * <p>The {@link NaNPolicy} can be used to change the behaviour on {@code NaN} values.
  *
+ * <p>Instances of this class are immutable and thread-safe.
+ *
  * @see #with(NaNPolicy)
  * @see <a href="http://en.wikipedia.org/wiki/Quantile">Quantile (Wikipedia)</a>
  * @since 1.1
@@ -237,7 +239,7 @@ public final class Quantile {
         // Partition and compute
         if (pos > i) {
             Selection.select(x, 0, n, new int[] {i, i + 1});
-            return DoubleMath.interpolate(x[i], x[i + 1], pos - i);
+            return Interpolation.interpolate(x[i], x[i + 1], pos - i);
         }
         Selection.select(x, 0, n, i);
         return x[i];
@@ -269,27 +271,95 @@ public final class Quantile {
         }
 
         // Collect interpolation positions. We use the output q as storage.
-        final int[] indices = new int[p.length << 1];
-        int count = 0;
-        for (int k = 0; k < p.length; k++) {
-            final double pos = estimationType.index(p[k], n);
-            q[k] = pos;
-            final int i = (int) pos;
-            indices[count++] = i;
-            if (pos > i) {
-                // Require the next index for interpolation
-                indices[count++] = i + 1;
-            }
-        }
+        final int[] indices = computeIndices(n, p, q);
 
         // Partition
-        Selection.select(x, 0, n, truncate(indices, count));
+        Selection.select(x, 0, n, indices);
 
         // Compute
         for (int k = 0; k < p.length; k++) {
             final int i = (int) q[k];
             if (q[k] > i) {
-                q[k] = DoubleMath.interpolate(x[i], x[i + 1], q[k] - i);
+                q[k] = Interpolation.interpolate(x[i], x[i + 1], q[k] - i);
+            } else {
+                q[k] = x[i];
+            }
+        }
+        return q;
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantile of the values.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * <p><strong>Performance</strong>
+     *
+     * <p>It is not recommended to use this method for repeat calls for different quantiles
+     * within the same values. The {@link #evaluate(int[], double...)} method should be used
+     * which provides better performance.
+     *
+     * @param values Values.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]}
+     * @see #evaluate(int[], double...)
+     */
+    public double evaluate(int[] values, double p) {
+        checkProbability(p);
+        final int n = values.length;
+        // Special cases
+        if (n <= 1) {
+            return n == 0 ? Double.NaN : values[0];
+        }
+        final double pos = estimationType.index(p, n);
+        final int i = (int) pos;
+
+        // Partition and compute
+        final int[] x = copy ? values.clone() : values;
+        if (pos > i) {
+            Selection.select(x, 0, n, new int[] {i, i + 1});
+            return Interpolation.interpolate(x[i], x[i + 1], pos - i);
+        }
+        Selection.select(x, 0, n, i);
+        return x[i];
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantiles of the values.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
+     * or no probabilities are specified.
+     */
+    public double[] evaluate(int[] values, double... p) {
+        checkProbabilities(p);
+        final int n = values.length;
+        // Special cases
+        final double[] q = new double[p.length];
+        if (n <= 1) {
+            Arrays.fill(q, n == 0 ? Double.NaN : values[0]);
+            return q;
+        }
+
+        // Collect interpolation positions. We use the output q as storage.
+        final int[] indices = computeIndices(n, p, q);
+
+        // Partition
+        final int[] x = copy ? values.clone() : values;
+        Selection.select(x, 0, n, indices);
+
+        // Compute
+        for (int k = 0; k < p.length; k++) {
+            final int i = (int) q[k];
+            if (q[k] > i) {
+                q[k] = Interpolation.interpolate(x[i], x[i + 1], q[k] - i);
             } else {
                 q[k] = x[i];
             }
@@ -327,7 +397,7 @@ public final class Quantile {
         final double v1 = values.applyAsDouble(i);
         if (pos > i) {
             final double v2 = values.applyAsDouble(i + 1);
-            return DoubleMath.interpolate(v1, v2, pos - i);
+            return Interpolation.interpolate(v1, v2, pos - i);
         }
         return v1;
     }
@@ -365,7 +435,7 @@ public final class Quantile {
             final double v1 = values.applyAsDouble(i);
             if (pos > i) {
                 final double v2 = values.applyAsDouble(i + 1);
-                q[k] = DoubleMath.interpolate(v1, v2, pos - i);
+                q[k] = Interpolation.interpolate(v1, v2, pos - i);
             } else {
                 q[k] = v1;
             }
@@ -427,18 +497,33 @@ public final class Quantile {
     }
 
     /**
-     * Truncate the array {@code a} to the given {@code size}. If the array length matches
-     * the {@code size} the original array is returned.
+     * Compute the indices required for quantile interpolation.
      *
-     * @param a Array.
-     * @param size Size.
-     * @return the array of the specified size
+     * <p>The zero-based interpolation index in {@code [0, n)} is
+     * saved into the working array {@code q} for each {@code p}.
+     *
+     * @param n Size of the data.
+     * @param p Probabilities for the quantiles to compute.
+     * @param q Working array for quantiles.
+     * @return the indices
      */
-    private static int[] truncate(int[] a, int size) {
-        if (size < a.length) {
-            return Arrays.copyOf(a, size);
+    private int[] computeIndices(int n, double[] p, double[] q) {
+        final int[] indices = new int[p.length << 1];
+        int count = 0;
+        for (int k = 0; k < p.length; k++) {
+            final double pos = estimationType.index(p[k], n);
+            q[k] = pos;
+            final int i = (int) pos;
+            indices[count++] = i;
+            if (pos > i) {
+                // Require the next index for interpolation
+                indices[count++] = i + 1;
+            }
         }
-        return a;
+        if (count < indices.length) {
+            return Arrays.copyOf(indices, count);
+        }
+        return indices;
     }
 
     /**

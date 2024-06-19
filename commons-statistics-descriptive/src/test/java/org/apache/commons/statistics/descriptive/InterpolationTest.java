@@ -27,13 +27,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
- * Test for {@link DoubleMath}.
+ * Test for {@link Interpolation}.
  */
-class DoubleMathTest {
+class InterpolationTest {
     @ParameterizedTest
     @MethodSource
     void testMean(double x, double y, double expected) {
-        Assertions.assertEquals(expected, DoubleMath.mean(x, y));
+        Assertions.assertEquals(expected, Interpolation.mean(x, y));
     }
 
     static Stream<Arguments> testMean() {
@@ -41,6 +41,7 @@ class DoubleMathTest {
         builder.add(Arguments.of(2, 3, 2.5));
         builder.add(Arguments.of(-4, 3, -0.5));
         builder.add(Arguments.of(-4, 4, 0));
+        builder.add(Arguments.of(-4, 5, 0.5));
         builder.add(Arguments.of(-0.0, -0.0, -0.0));
         builder.add(Arguments.of(-Double.MAX_VALUE, Double.MAX_VALUE, 0));
         builder.add(Arguments.of(Double.MIN_VALUE, Double.MIN_VALUE, Double.MIN_VALUE));
@@ -55,8 +56,30 @@ class DoubleMathTest {
 
     @ParameterizedTest
     @MethodSource
+    void testIntMean(int x, int y, double expected) {
+        Assertions.assertEquals(expected, Interpolation.mean(x, y));
+    }
+
+    static Stream<Arguments> testIntMean() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        builder.add(Arguments.of(2, 3, 2.5));
+        builder.add(Arguments.of(-4, 3, -0.5));
+        builder.add(Arguments.of(-4, 4, 0));
+        builder.add(Arguments.of(-4, 5, 0.5));
+        builder.add(Arguments.of(0, 0, 0));
+        builder.add(Arguments.of(Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
+        builder.add(Arguments.of(-Integer.MAX_VALUE, Integer.MAX_VALUE, 0));
+        builder.add(Arguments.of(Integer.MAX_VALUE, -Integer.MAX_VALUE, 0));
+        builder.add(Arguments.of(Integer.MIN_VALUE, Integer.MIN_VALUE, Integer.MIN_VALUE));
+        builder.add(Arguments.of(Integer.MIN_VALUE, Integer.MAX_VALUE, -0.5));
+        builder.add(Arguments.of(Integer.MAX_VALUE, Integer.MIN_VALUE, -0.5));
+        return builder.build();
+    }
+
+    @ParameterizedTest
+    @MethodSource
     void testInterpolate(double a, double b, double t, double expected) {
-        Assertions.assertEquals(expected, DoubleMath.interpolate(a, b, t));
+        Assertions.assertEquals(expected, Interpolation.interpolate(a, b, t));
     }
 
     static Stream<Arguments> testInterpolate() {
@@ -120,21 +143,21 @@ class DoubleMathTest {
         // Interpolation between a==-0.0 and b>=0.0 is 0.0.
         // This is known behaviour and ignored as usage has t in (0, 1).
         if (Double.compare(a, -0.0) == 0 && Double.compare(b, 0.0) >= 0) {
-            Assertions.assertEquals(a, DoubleMath.interpolate(a, b, 0), 0.0, "exactness");
+            Assertions.assertEquals(a, Interpolation.interpolate(a, b, 0), 0.0, "exactness");
         } else {
             // result is -0.0 if a=b=-0.0
-            Assertions.assertEquals(a, DoubleMath.interpolate(a, b, 0), "exactness");
+            Assertions.assertEquals(a, Interpolation.interpolate(a, b, 0), "exactness");
         }
         // Not supported
         //Assertions.assertEquals(b, DoubleMath.interpolate(a, b, 1));
         Assertions.assertTrue(
-            Double.compare(DoubleMath.interpolate(a, b, t2), DoubleMath.interpolate(a, b, t1)) *
+            Double.compare(Interpolation.interpolate(a, b, t2), Interpolation.interpolate(a, b, t1)) *
                 Double.compare(t2, t1) * Double.compare(b, a) >= 0, "monotonicity");
         final double m = Double.MAX_VALUE;
-        Assertions.assertTrue(Double.isFinite(DoubleMath.interpolate(a * m, b * m, t1)), "boundedness");
-        Assertions.assertTrue(Double.isFinite(DoubleMath.interpolate(a * m, b * m, t2)), "boundedness");
-        Assertions.assertEquals(a, DoubleMath.interpolate(a, a, t1), "consistency");
-        Assertions.assertEquals(b, DoubleMath.interpolate(b, b, t1), "consistency");
+        Assertions.assertTrue(Double.isFinite(Interpolation.interpolate(a * m, b * m, t1)), "boundedness");
+        Assertions.assertTrue(Double.isFinite(Interpolation.interpolate(a * m, b * m, t2)), "boundedness");
+        Assertions.assertEquals(a, Interpolation.interpolate(a, a, t1), "consistency");
+        Assertions.assertEquals(b, Interpolation.interpolate(b, b, t1), "consistency");
     }
 
     static Stream<Arguments> testInterpolateProperties() {
@@ -154,26 +177,47 @@ class DoubleMathTest {
     }
 
     @ParameterizedTest
-    @MethodSource
+    @MethodSource(value = {"anyFiniteDouble"})
     void testInterpolateEdge(double a, double b) {
         if (b < a) {
             testInterpolateEdge(b, a);
             return;
         }
         // Test the extremes of t in (0, 1)
-        Assertions.assertTrue(DoubleMath.interpolate(a, b, 0.0) >= a, () -> "t=0 a=" + a + " b=" + b);
-        Assertions.assertTrue(DoubleMath.interpolate(a, b, Double.MIN_VALUE) >= a, () -> "t=min a=" + a + " b=" + b);
-        Assertions.assertTrue(DoubleMath.interpolate(a, b, Math.nextDown(1.0)) <= b, () -> "t=0.999... a=" + a + " b=" + b);
+        Assertions.assertTrue(Interpolation.interpolate(a, b, 0.0) >= a, () -> "t=0 a=" + a + " b=" + b);
+        Assertions.assertTrue(Interpolation.interpolate(a, b, Double.MIN_VALUE) >= a, () -> "t=min a=" + a + " b=" + b);
+        Assertions.assertTrue(Interpolation.interpolate(a, b, Math.nextDown(1.0)) <= b, () -> "t=0.999... a=" + a + " b=" + b);
         // This fails with the current implementation as it assumes interpolation never uses t=1
         //Assertions.assertTrue(DoubleMath.interpolate(a, b, 1.0) <= b, () -> "t=1 a=" + a + " b=" + b);
     }
 
-    static Stream<Arguments> testInterpolateEdge() {
+    @ParameterizedTest
+    @MethodSource(value = {"anyFiniteDouble"})
+    void testMeanVsInterpolate(double a, double b) {
+        if (b < a) {
+            testMeanVsInterpolate(b, a);
+            return;
+        }
+        // The mean should be the exact double
+        // but the interpolation has more float additions.
+        // The multiplication by the interpolant 0.5 is exact for normal numbers.
+        double expected = a + b;
+        if (!Double.isFinite(expected) || Math.abs(expected) < Double.MIN_NORMAL) {
+            return;
+        }
+        expected *= 0.5;
+        Assertions.assertEquals(expected, Interpolation.mean(a, b));
+        Assertions.assertEquals(expected, Interpolation.interpolate(a, b, 0.5), Math.ulp(expected),
+            () -> a + ", " + b);
+    }
+
+    static Stream<Arguments> anyFiniteDouble() {
         final Stream.Builder<Arguments> builder = Stream.builder();
         final UniformRandomProvider rng = RandomSource.XO_RO_SHI_RO_128_PP.create();
         final long infBits = Double.doubleToRawLongBits(Double.POSITIVE_INFINITY);
         final long signBit = Long.MIN_VALUE;
         for (int i = 0; i < 50; i++) {
+            // doubles in [-1, 1)
             builder.add(Arguments.of(signedDouble(rng), signedDouble(rng)));
             // Any finite double
             final long m = rng.nextLong(infBits);

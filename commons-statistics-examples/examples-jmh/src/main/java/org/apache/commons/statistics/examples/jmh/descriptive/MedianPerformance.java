@@ -103,7 +103,7 @@ public class MedianPerformance {
             // we set it anyway for completeness.
             Objects.requireNonNull(name);
             if (JDK.equals(name)) {
-                function = MedianPerformance::sortMedian;
+                function = DoubleFunctionSource::sortMedian;
             } else if (CM3.equals(name)) {
                 final org.apache.commons.math3.stat.descriptive.rank.Median m =
                     new org.apache.commons.math3.stat.descriptive.rank.Median();
@@ -118,37 +118,106 @@ public class MedianPerformance {
                 throw new IllegalStateException("Unknown double[] function: " + name);
             }
         }
+
+        /**
+         * Sort the values and compute the median.
+         *
+         * @param values Values.
+         * @return the median
+         */
+        private static double sortMedian(double[] values) {
+            // Implicit NPE
+            final int n = values.length;
+            // Special cases
+            if (n <= 2) {
+                switch (n) {
+                case 2:
+                    return (values[0] + values[1]) * 0.5;
+                case 1:
+                    return values[0];
+                default:
+                    return Double.NaN;
+                }
+            }
+            // A sort is required
+            Arrays.sort(values);
+            final int k = n >>> 1;
+            // Odd
+            if ((n & 0x1) == 0x1) {
+                return values[k];
+            }
+            // Even
+            return (values[k - 1] + values[k]) * 0.5;
+        }
     }
 
     /**
-     * Sort the values and compute the median.
-     *
-     * @param values Values.
-     * @return the median
+     * Source of a {@link ToDoubleFunction} for a {@code int[]}.
      */
-    static double sortMedian(double[] values) {
-        // Implicit NPE
-        final int n = values.length;
-        // Special cases
-        if (n <= 2) {
-            switch (n) {
-            case 2:
-                return (values[0] + values[1]) * 0.5;
-            case 1:
-                return values[0];
-            default:
-                return Double.NaN;
+    @State(Scope.Benchmark)
+    public static class IntFunctionSource {
+        /** Name of the source. */
+        @Param({JDK, STATISTICS})
+        private String name;
+
+        /** The action. */
+        private ToDoubleFunction<int[]> function;
+
+        /**
+         * @return the function
+         */
+        public ToDoubleFunction<int[]> getFunction() {
+            return function;
+        }
+
+        /**
+         * Create the function.
+         */
+        @Setup
+        public void setup() {
+            // Note: Functions defensively copy the data by default
+            // Note: KeyStratgey does not matter for single / paired keys but
+            // we set it anyway for completeness.
+            Objects.requireNonNull(name);
+            if (JDK.equals(name)) {
+                function = IntFunctionSource::sortMedian;
+            } else if (STATISTICS.equals(name)) {
+                function = Median.withDefaults()::evaluate;
+            } else {
+                throw new IllegalStateException("Unknown int[] function: " + name);
             }
         }
-        // A sort is required
-        Arrays.sort(values);
-        final int k = n >>> 1;
-        // Odd
-        if ((n & 0x1) == 0x1) {
-            return values[k];
+
+        /**
+         * Sort the values and compute the median.
+         *
+         * @param values Values.
+         * @return the median
+         */
+        private static double sortMedian(int[] values) {
+            // Implicit NPE
+            final int n = values.length;
+            // Special cases
+            if (n <= 2) {
+                switch (n) {
+                case 2:
+                    return (values[0] + values[1]) * 0.5;
+                case 1:
+                    return values[0];
+                default:
+                    return Double.NaN;
+                }
+            }
+            // A sort is required
+            Arrays.sort(values);
+            final int k = n >>> 1;
+            // Odd
+            if ((n & 0x1) == 0x1) {
+                return values[k];
+            }
+            // Even
+            return (values[k - 1] + values[k]) * 0.5;
         }
-        // Even
-        return (values[k - 1] + values[k]) * 0.5;
     }
 
     /**
@@ -159,11 +228,27 @@ public class MedianPerformance {
      * @param bh Data sink.
      */
     @Benchmark
-    public void median(DoubleFunctionSource function, DataSource source, Blackhole bh) {
+    public void doubleMedian(DoubleFunctionSource function, DataSource source, Blackhole bh) {
         final int size = source.size();
         final ToDoubleFunction<double[]> fun = function.getFunction();
         for (int j = -1; ++j < size;) {
             bh.consume(fun.applyAsDouble(source.getData(j)));
+        }
+    }
+
+    /**
+     * Create the statistic using an array.
+     *
+     * @param function Source of the function.
+     * @param source Source of the data.
+     * @param bh Data sink.
+     */
+    @Benchmark
+    public void intMedian(IntFunctionSource function, DataSource source, Blackhole bh) {
+        final int size = source.size();
+        final ToDoubleFunction<int[]> fun = function.getFunction();
+        for (int j = -1; ++j < size;) {
+            bh.consume(fun.applyAsDouble(source.getIntData(j)));
         }
     }
 }

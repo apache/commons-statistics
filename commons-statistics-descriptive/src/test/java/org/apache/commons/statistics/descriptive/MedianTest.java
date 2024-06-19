@@ -19,8 +19,6 @@ package org.apache.commons.statistics.descriptive;
 
 import java.util.Arrays;
 import java.util.stream.Stream;
-import org.apache.commons.math3.stat.descriptive.rank.Percentile;
-import org.apache.commons.math3.stat.ranking.NaNStrategy;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
@@ -41,18 +39,24 @@ class MedianTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = {"testMedian"})
-    void testMedian(double[] values, double expected) {
+    @MethodSource(value = {"testDoubleMedian"})
+    void testDoubleMedian(double[] values, double expected) {
         final double[] copy = values.clone();
         Assertions.assertEquals(expected, Median.withDefaults().evaluate(values));
-        // Test the result and data (modified in-place) match the quantile implementation
-        Assertions.assertEquals(expected, Quantile.withDefaults().evaluate(copy, 0.5));
+        // Test the result and data (modified in-place) match the quantile implementation.
+        // Interpolation may be different by a single ulp.
+        final double q = Quantile.withDefaults().evaluate(copy, 0.5);
+        if (Double.isNaN(expected)) {
+            Assertions.assertEquals(expected, q);
+        } else {
+            Assertions.assertEquals(expected, q, Math.ulp(expected));
+        }
         Assertions.assertArrayEquals(values, copy);
     }
 
     @ParameterizedTest
-    @MethodSource(value = {"testMedian"})
-    void testMedianExcludeNaN(double[] values, double expected) {
+    @MethodSource(value = {"testDoubleMedian"})
+    void testDoubleMedianExcludeNaN(double[] values, double expected) {
         // If NaN is present then the result will change from expected so ignore this
         Assumptions.assumeTrue(Arrays.stream(values).filter(Double::isNaN).count() == 0);
         // Note: Use copy here. This checks that the copy of the data
@@ -71,11 +75,8 @@ class MedianTest {
         }
     }
 
-    static Stream<Arguments> testMedian() {
+    static Stream<Arguments> testDoubleMedian() {
         final Stream.Builder<Arguments> builder = Stream.builder();
-        final Percentile p = new Percentile(50).withNaNStrategy(NaNStrategy.FIXED);
-        // Note: Cannot use CM when NaN is adjacent to the middle of an odd length
-        // as it always interpolates pairs and uses: low + 0.0 * (NaN - low)
         for (final double[] x : new double[][] {
             {1},
             {1, 2},
@@ -87,20 +88,25 @@ class MedianTest {
             {Double.NaN, Double.NaN, 1, 2, 3, 4},
             {Double.MAX_VALUE, Double.MAX_VALUE},
             {-Double.MAX_VALUE, -Double.MAX_VALUE / 2},
+            // Cases where quantile interpolation using p=0.5 is different.
+            // Fail cases taken from adaption of InterpolationTest.testMeanVsInterpolate.
+            {6.125850131710258E31, 2.11712251424532992E17},
+            {3.550291387137841E117, 7.941355536862782E127},
+            {9.026950581570208E-93, 1.5840864549779843E-77},
         }) {
-            builder.add(Arguments.of(x, p.evaluate(x)));
+            builder.add(Arguments.of(x, evaluate(x)));
         }
-        // Cases where CM Percentile returns NaN
-        builder.add(Arguments.of(new double[]{1, 2, Double.NaN}, 2));
-        builder.add(Arguments.of(new double[]{Double.NaN, 1, 2, 3, Double.NaN}, 3));
+        // Cases where Commons Math Percentile returns NaN (because it always interpolates
+        // x[i] + g * (x[i+1] - x[i]) even when g==0)
+        builder.add(Arguments.of(new double[] {1, 2, Double.NaN}, 2));
+        builder.add(Arguments.of(new double[] {Double.NaN, 1, 2, 3, Double.NaN}, 3));
 
-        // Test against the percentile can fail at 1 ULP so used a fixed seed
-        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create(26378461823L);
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
         // Sizes above and below the threshold for partitioning
         double[] x;
         for (final int size : new int[] {5, 6, 50, 51}) {
             final double[] values = rng.doubles(size, -4.5, 1.5).toArray();
-            final double expected = p.evaluate(values);
+            final double expected = evaluate(values);
             for (int i = 0; i < 20; i++) {
                 x = TestHelper.shuffle(rng, values.clone());
                 builder.add(Arguments.of(x, expected));
@@ -126,13 +132,118 @@ class MedianTest {
         return builder.build();
     }
 
+    /**
+     * Evaluate the median using a full sort on a copy of the data.
+     *
+     * @param values Value.
+     * @return the median
+     */
+    private static double evaluate(double[] values) {
+        final double[] x = values.clone();
+        Arrays.sort(x);
+        final int m = x.length >> 1;
+        if ((x.length & 0x1) == 1) {
+            // odd
+            return x[m];
+        }
+        return Interpolation.mean(x[m - 1], x[m]);
+    }
+
     @Test
-    void testMedianWithCopy() {
-        final double[] values = {3, 4, 2, 1, 0};
+    void testDoubleMedianWithCopy() {
+        assertMedianWithCopy(new double[] {2, 1}, 1.5);
+        assertMedianWithCopy(new double[] {3, 2, 1}, 2);
+        assertMedianWithCopy(new double[] {4, 3, 2, 1}, 2.5);
+        assertMedianWithCopy(new double[] {5, 4, 3, 2, 1}, 3);
+        // Special case for 2 values with signed zeros (must be unordered)
+        assertMedianWithCopy(new double[] {0.0, -0.0}, 0.0);
+    }
+
+    private static void assertMedianWithCopy(double[] values, double expected) {
         final double[] original = values.clone();
-        Assertions.assertEquals(2, Median.withDefaults().withCopy(true).evaluate(values));
+        Assertions.assertEquals(expected, Median.withDefaults().withCopy(true).evaluate(values));
         Assertions.assertArrayEquals(original, values);
-        Assertions.assertEquals(2, Median.withDefaults().withCopy(false).evaluate(values));
+        Assertions.assertEquals(expected, Median.withDefaults().withCopy(false).evaluate(values));
+        Assertions.assertFalse(Arrays.equals(original, values));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"testIntMedian"})
+    void testIntMedian(int[] values, double expected) {
+        final int[] copy = values.clone();
+        Assertions.assertEquals(expected, Median.withDefaults().evaluate(values));
+        // Test the result and data (modified in-place) match the quantile implementation.
+        // Results are either integer or half-integer so this should be exact.
+        Assertions.assertEquals(expected, Quantile.withDefaults().evaluate(copy, 0.5));
+        Assertions.assertArrayEquals(values, copy);
+    }
+
+    static Stream<Arguments> testIntMedian() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        for (final int[] x : new int[][] {
+            {1},
+            {1, 2},
+            {2, 1},
+            {1, 2, 3, 4},
+            {Integer.MAX_VALUE, Integer.MAX_VALUE / 2},
+            {Integer.MIN_VALUE, Integer.MIN_VALUE / 2},
+        }) {
+            builder.add(Arguments.of(x, evaluate(x)));
+        }
+
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        // Sizes above and below the threshold for partitioning
+        int[] x;
+        for (final int size : new int[] {5, 6, 50, 51}) {
+            final int[] values = rng.ints(size, -4500, 1500).toArray();
+            final double expected = evaluate(values);
+            for (int i = 0; i < 20; i++) {
+                x = TestHelper.shuffle(rng, values.clone());
+                builder.add(Arguments.of(x, expected));
+            }
+            // Special values
+            for (final int y : new int[] {0, 1, Integer.MAX_VALUE, Integer.MIN_VALUE}) {
+                x = new int[size];
+                Arrays.fill(x, y);
+                builder.add(Arguments.of(x, y));
+            }
+        }
+        // Special cases
+        builder.add(Arguments.of(new int[] {}, Double.NaN));
+        builder.add(Arguments.of(new int[] {-Integer.MAX_VALUE, Integer.MAX_VALUE}, 0));
+        return builder.build();
+    }
+
+    /**
+     * Evaluate the median using a full sort on a copy of the data.
+     *
+     * @param values Value.
+     * @return the median
+     */
+    private static double evaluate(int[] values) {
+        final int[] x = values.clone();
+        Arrays.sort(x);
+        final int m = x.length >> 1;
+        if ((x.length & 0x1) == 1) {
+            // odd
+            return x[m];
+        }
+        return Interpolation.mean(x[m - 1], x[m]);
+    }
+
+    @Test
+    void testIntMedianWithCopy() {
+        assertMedianWithCopy(new int[] {2, 1}, 1.5);
+        assertMedianWithCopy(new int[] {3, 2, 1}, 2);
+        assertMedianWithCopy(new int[] {4, 3, 2, 1}, 2.5);
+        assertMedianWithCopy(new int[] {5, 4, 3, 2, 1}, 3);
+    }
+
+    private static void assertMedianWithCopy(int[] values, double expected) {
+        final int[] original = values.clone();
+        Assertions.assertEquals(expected, Median.withDefaults().withCopy(true).evaluate(values));
+        Assertions.assertArrayEquals(original, values);
+        Assertions.assertEquals(expected, Median.withDefaults().withCopy(false).evaluate(values));
         Assertions.assertFalse(Arrays.equals(original, values));
     }
 }

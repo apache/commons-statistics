@@ -17,13 +17,13 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Support class for double math.
+ * Support class for interpolation.
  *
  * @since 1.1
  */
-final class DoubleMath {
+final class Interpolation {
     /** No instances. */
-    private DoubleMath() {}
+    private Interpolation() {}
 
     /**
      * Compute the arithmetic mean of the two values taking care to avoid overflow.
@@ -39,6 +39,18 @@ final class DoubleMath {
         }
         // Note: Using this by default can be incorrect on sub-normal numbers
         return x * 0.5 + y * 0.5;
+    }
+
+    /**
+     * Compute the arithmetic mean of the two values.
+     *
+     * @param x Value.
+     * @param y Value.
+     * @return the mean
+     */
+    static double mean(int x, int y) {
+        // long arithmetic handles a 32-bit signed integer
+        return ((long) x + y) * 0.5;
     }
 
     /**
