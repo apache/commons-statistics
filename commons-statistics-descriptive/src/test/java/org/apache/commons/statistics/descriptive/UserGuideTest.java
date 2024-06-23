@@ -19,7 +19,9 @@ package org.apache.commons.statistics.descriptive;
 
 import java.util.Arrays;
 import java.util.EnumSet;
+import java.util.SplittableRandom;
 import java.util.function.DoubleSupplier;
+import java.util.function.IntConsumer;
 import java.util.stream.Collector;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -31,30 +33,31 @@ import org.junit.jupiter.api.Test;
  */
 class UserGuideTest {
     @Test
-    void testVariance() {
-        double[] values = {1, 1, 2, 3, 5, 8, 13, 21};
+    void testSingleStatistic() {
+        int[] values = {1, 1, 2, 3, 5, 8, 13, 21};
 
-        double v = Variance.of(values).getAsDouble();
+        double v = IntVariance.of(values).getAsDouble();
 
-        double v2 = Stream.of("one", "two", "three", "four")
-                          .mapToDouble(String::length)
-                          .collect(Variance::create, Variance::accept, Variance::combine)
-                          .getAsDouble();
+        double m = Stream.of("one", "two", "three", "four")
+                         .mapToInt(String::length)
+                         .collect(IntMean::create, IntMean::accept, IntMean::combine)
+                         .getAsDouble();
 
         // import numpy as np
         // np.var([1, 1, 2, 3, 5, 8, 13, 21], ddof=1)
         Assertions.assertEquals(49.92857142857143, v, 1e-10);
 
-        // np.var([3, 3, 5, 4], ddof=1)
-        Assertions.assertEquals(0.9166666666666666, v2);
+        // mean = sum([3, 3, 5, 4]) / 4
+        Assertions.assertEquals(15.0 / 4.0, m);
     }
 
     @Test
-    void testDoubleStatistics1() {
+    void testMultipleStatistics() {
         double[] data = {1, 2, 3, 4, 5, 6, 7, 8};
-        DoubleStatistics stats = DoubleStatistics.builder(
-            Statistic.MIN, Statistic.MAX, Statistic.VARIANCE)
-            .build(data);
+        // EnumSet and input array data
+        DoubleStatistics stats = DoubleStatistics.of(
+            EnumSet.of(Statistic.MIN, Statistic.MAX, Statistic.VARIANCE),
+            data);
         Assertions.assertEquals(1, stats.getAsDouble(Statistic.MIN));
         Assertions.assertEquals(8, stats.getAsDouble(Statistic.MAX));
         // Python numpy 1.24.4
@@ -62,12 +65,42 @@ class UserGuideTest {
         // np.std(np.arange(1, 9), ddof=1)
         Assertions.assertEquals(6.0, stats.getAsDouble(Statistic.VARIANCE), 1e-10);
         // Get other statistics supported by the underlying computations
+        Assertions.assertTrue(stats.isSupported(Statistic.STANDARD_DEVIATION));
+        Assertions.assertTrue(stats.isSupported(Statistic.MEAN));
         Assertions.assertEquals(2.449489742783178, stats.getAsDouble(Statistic.STANDARD_DEVIATION), 1e-10);
         Assertions.assertEquals(4.5, stats.getAsDouble(Statistic.MEAN), 1e-10);
     }
 
     @Test
-    void testDoubleStatistics2() {
+    void testMultipleStatisticsIndividualValues() {
+        IntStatistics stats = IntStatistics.of(
+            Statistic.MIN, Statistic.MAX, Statistic.MEAN);
+        Stream.of("one", "two", "three", "four")
+            .mapToInt(String::length)
+            .forEach(stats::accept);
+
+        Assertions.assertEquals(3, stats.getAsInt(Statistic.MIN));
+        Assertions.assertEquals(5, stats.getAsInt(Statistic.MAX));
+        Assertions.assertEquals(15.0 / 4.0, stats.getAsDouble(Statistic.MEAN), 1e-10);
+    }
+
+    @Test
+    void testMultipleStatisticsParallelStream() {
+        IntStatistics.Builder builder = IntStatistics.builder(
+            Statistic.MIN, Statistic.MAX, Statistic.MEAN);
+        IntStatistics stats =
+            Stream.of("one", "two", "three", "four")
+            .parallel()
+            .mapToInt(String::length)
+            .collect(builder::build, IntConsumer::accept, IntStatistics::combine);
+
+        Assertions.assertEquals(3, stats.getAsInt(Statistic.MIN));
+        Assertions.assertEquals(5, stats.getAsInt(Statistic.MAX));
+        Assertions.assertEquals(15.0 / 4.0, stats.getAsDouble(Statistic.MEAN), 1e-10);
+    }
+
+    @Test
+    void testMultipleStatisticsMultipleArrays() {
         double[][] data = {
             {1, 2, 3, 4},
             {5, 6, 7, 8},
@@ -87,11 +120,12 @@ class UserGuideTest {
     }
 
     @Test
-    void testDoubleStatistics3() {
+    void testMultipleStatisticsCollector() {
         double[][] data = {
             {1, 2, 3, 4},
             {5, 6, 7, 8},
         };
+        // A re-usable Collector
         DoubleStatistics.Builder builder = DoubleStatistics.builder(
             Statistic.MIN, Statistic.MAX, Statistic.VARIANCE);
         Collector<double[], DoubleStatistics, DoubleStatistics> collector =
@@ -106,25 +140,18 @@ class UserGuideTest {
     }
 
     @Test
-    void testDoubleStatistics4() {
-        double[] data = {1, 2, 3, 4, 5, 6, 7, 8};
-        DoubleStatistics varStats = DoubleStatistics.builder(Statistic.VARIANCE).build(data);
-        DoubleStatistics meanStats = DoubleStatistics.builder(Statistic.MEAN).build(data);
+    void testStatisticsCombineCompatibility() {
+        double[] data1 = {1, 2, 3, 4};
+        double[] data2 = {5, 6, 7, 8};
+        DoubleStatistics varStats = DoubleStatistics.builder(Statistic.VARIANCE).build(data1);
+        DoubleStatistics meanStats = DoubleStatistics.builder(Statistic.MEAN).build(data2);
         Assertions.assertThrows(IllegalArgumentException.class, () -> varStats.combine(meanStats));
-        Assertions.assertDoesNotThrow(() -> meanStats.combine(varStats));
+        meanStats.combine(varStats);
+        Assertions.assertEquals(4.5, meanStats.getAsDouble(Statistic.MEAN), 1e-10);
     }
 
     @Test
-    void testDoubleStatistics5() {
-        DoubleStatistics stats = DoubleStatistics.of(
-            EnumSet.of(Statistic.MIN, Statistic.MAX),
-            1, 1, 2, 3, 5, 8, 13);
-        Assertions.assertEquals(1, stats.getAsDouble(Statistic.MIN));
-        Assertions.assertEquals(13, stats.getAsDouble(Statistic.MAX));
-    }
-
-    @Test
-    void testDoubleStatistics6() {
+    void testStatisticsUpdating() {
         DoubleStatistics stats = DoubleStatistics.of(Statistic.MEAN, Statistic.MAX);
         DoubleSupplier mean = stats.getResult(Statistic.MEAN);
         DoubleSupplier max = stats.getResult(Statistic.MAX);
@@ -135,5 +162,31 @@ class UserGuideTest {
             // Example print
             // printf("[1 .. %d] mean=%.1f, max=%s%n", x, mean.getAsDouble(), max.getAsDouble());
         });
+    }
+
+    @Test
+    void testMedian() {
+        double[] data = {8, 7, 6, 5, 4, 3, 2, 1};
+        double m = Median.withDefaults()
+                         .withCopy(true)
+                         .with(NaNPolicy.ERROR)
+                         .evaluate(data);
+        Assertions.assertEquals(4.5, m);
+    }
+
+    @Test
+    void testQuantile() {
+        int size = 10000;
+        double origin = 0;
+        double bound = 100;
+        double[] data =
+            new SplittableRandom(123)
+            .doubles(size, origin, bound)
+            .toArray();
+        double[] q = Quantile.withDefaults()
+                             .evaluate(data, 0.25, 0.5, 0.75);
+        Assertions.assertEquals(25.0, q[0], 0.5);
+        Assertions.assertEquals(50.0, q[1], 0.5);
+        Assertions.assertEquals(75.0, q[2], 0.5);
     }
 }

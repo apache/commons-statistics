@@ -39,6 +39,17 @@
           <a href="#example-modules">Example Modules</a>
         </li>
         <li>
+          <a href="#descriptive">Descriptive Statistics</a>
+          <ul>
+            <li>
+              <a href="#desc_overview">Overview</a>
+            </li>
+            <li>
+              <a href="#desc_examples">Examples</a>
+            </li>
+          </ul>
+        </li>
+        <li>
           <a href="#distributions">Probability Distributions</a>
           <ul>
             <li>
@@ -85,6 +96,11 @@
       </p>
       <ul>
         <li>
+          <code><a href="../commons-statistics-descriptive/index.html">
+          commons-statistics-descriptive</a></code> - Provides computation
+          of descriptive statistics (mean, variance, median, etc).
+        </li>
+        <li>
           <code><a href="../commons-statistics-distribution/index.html">
           commons-statistics-distribution</a></code> - Provides interfaces
           and classes for probability distributions.
@@ -111,6 +127,234 @@
         contains a listing of available modules.
       </p>
       <hr/>
+    </section>
+
+    <section name="Descriptive Statistics" id="descriptive">
+      <p>
+        The <code>commons-statistics-descriptive</code> module provides descriptive statistics.
+      </p>
+      <subsection name="Overview" id="desc_overview">
+        <p>
+          The module provides classes to compute univariate statistics on <code>double</code>,
+          <code>int</code> and <code>long</code> data using array input or a Java stream. The
+          result is returned as a
+          <a href="../commons-statistics-descriptive/apidocs/org/apache/commons/statistics/descriptive/StatisticResult.html">StatisticResult</a>.
+          The <code>StatisticResult</code> provides methods to supply the result as a
+          <code>double</code>, <code>int</code>, <code>long</code> and <code>BigInteger</code>.
+          The integer types allow the exact result to be returned for integer data. For example
+          the sum of <code>long</code> values may not be exactly representable as a
+          <code>double</code> and may overflow a <code>long</code>.
+        </p>
+        <p>
+          Computation of an individual statistic involves creating an instance of
+          <code>StatisticResult</code> that can supply the current statistic value.
+          To allow addition of single values to update the statistic, instances
+          implement the primitive consumer interface for the supported type:
+          <code>DoubleConsumer</code>, <code>IntConsumer</code>, or <code>LongConsumer</code>.
+          Instances implement the
+          <a href="../commons-statistics-descriptive/apidocs/org/apache/commons/statistics/descriptive/StatisticAccumulator.html">StatisticAccumulator</a>
+          interface and can be combined with other instances. This allows computation in parallel on
+          subsets of data and combination to a final result. This can be performed using the
+          Java stream API.
+        </p>
+        <p>
+          Computation of multiple statistics uses a
+          <a href="../commons-statistics-descriptive/apidocs/org/apache/commons/statistics/descriptive/Statistic.html">Statistic</a>
+          enumeration to define the statistics to evaluate. A container class is created to
+          compute the desired statistics together and allows multiple statistics to be computed
+          concurrently using the Java stream API. Each statistic result is obtained using the
+          <code>Statistic</code> enum to access the required value. Providing a choice of the
+          statistics allows the user to avoid the computational cost of results that are not
+          required.
+        </p>
+        <p>
+          Note that <code>double</code> computations are subject to accumulated floating-point
+          rounding which can generate different results from permuted input data. Computation
+          on an array of <code>double</code> data can use a multiple-pass algorithm to increase
+          accuracy over a single-pass stream of values. This is the recommended approach if
+          all data is already stored in an array (i.e. is not dynamically generated).
+        </p>
+        <p>
+          If the data is an integer type then it is
+          preferred to use the integer specializations of the statistics.
+          Many implementations use exact integer math for the computation. This is faster than
+          using a <code>double</code> data type, more accurate and returns the same result
+          irrespective of the input order of the data. Note that for improved performance there
+          is no use of <code>BigInteger</code> in the accumulation of intermediate values; the
+          computation uses mutable fixed-precision integer classes for totals that may
+          overflow 64-bits.
+        </p>
+        <p>
+          Some statistics cannot be computed using a stream since they require all values for
+          computation, for example the median. These are evaluated on an array using an instance
+          of a computing class. The instance allows computation options to be changed. Instances
+          are immutable and the computation is thread-safe.
+        </p>
+      </subsection>
+      <subsection name="Examples" id="desc_examples">
+        <p>
+          Computation of a single statistic from an array of values, or a stream of data:
+        </p>
+<source class="prettyprint">
+int[] values = {1, 1, 2, 3, 5, 8, 13, 21};
+
+double v = IntVariance.of(values).getAsDouble();
+
+double m = Stream.of("one", "two", "three", "four")
+                 .mapToInt(String::length)
+                 .collect(IntMean::create, IntMean::accept, IntMean::combine)
+                 .getAsDouble();
+</source>
+        <p>
+          Computation of multiple statistics uses the <code>Statistic</code> enum.
+          These can be specified using an <code>EnumSet</code> together with the input array data.
+          Note that some statistics share the same underlying computation, for example the variance,
+          standard deviation and mean. When a container class is constructed using one of the
+          statistics, the other co-computed statistics are available in the result even if not
+          specified during construction. The <code>isSupported</code> method can
+          identify all results that are available from the container class.
+        </p>
+<source class="prettyprint">
+double[] data = {1, 2, 3, 4, 5, 6, 7, 8};
+DoubleStatistics stats = DoubleStatistics.of(
+    EnumSet.of(Statistic.MIN, Statistic.MAX, Statistic.VARIANCE),
+    data);
+
+stats.getAsDouble(Statistic.MIN);        // 1.0
+stats.getAsDouble(Statistic.MAX);        // 8.0
+stats.getAsDouble(Statistic.VARIANCE);   // 6.0
+
+// Get other statistics supported by the underlying computations
+stats.isSupported(Statistic.STANDARD_DEVIATION));   // true
+stats.getAsDouble(Statistic.STANDARD_DEVIATION);    // 2.449...
+</source>
+        <p>
+          Computation of multiple statistics on individual values can accumulate the results
+          using the <code>accept</code> method of the container class:
+        </p>
+<source class="prettyprint">
+IntStatistics stats = IntStatistics.of(
+    Statistic.MIN, Statistic.MAX, Statistic.MEAN);
+Stream.of("one", "two", "three", "four")
+    .mapToInt(String::length)
+    .forEach(stats::accept);
+
+stats.getAsInt(Statistic.MIN);       // 3
+stats.getAsInt(Statistic.MAX);       // 5
+stats.getAsDouble(Statistic.MEAN);   // 15.0 / 4
+</source>
+        <p>
+          Computation of multiple statistics on a stream of values in parallel.
+          This requires use of a <code>Builder</code> that
+          can supply instances of the container class to each worker with the
+          <code>build</code> method; populated using <code>accept</code>; and then collected
+          using <code>combine</code>:
+        </p>
+<source class="prettyprint">
+IntStatistics.Builder builder = IntStatistics.builder(
+    Statistic.MIN, Statistic.MAX, Statistic.MEAN);
+IntStatistics stats = corpus.stream()
+    Stream.of("one", "two", "three", "four")
+    .parallel()
+    .mapToInt(String::length)
+    .collect(builder::build, IntConsumer::accept, IntStatistics::combine);
+
+stats.getAsInt(Statistic.MIN);       // 3
+stats.getAsInt(Statistic.MAX);       // 5
+stats.getAsDouble(Statistic.MEAN);   // 15.0 / 4
+</source>
+        <p>
+          Computation on multiple arrays. This requires use of a <code>Builder</code> that
+          can supply instances of the container class to compute each array with the
+          <code>build</code> method:
+        </p>
+<source class="prettyprint">
+double[][] data = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+};
+DoubleStatistics.Builder builder = DoubleStatistics.builder(
+    Statistic.MIN, Statistic.MAX, Statistic.VARIANCE);
+DoubleStatistics stats = Arrays.stream(data)
+    .map(builder::build)
+    .reduce(DoubleStatistics::combine)
+    .get();
+
+stats.getAsDouble(Statistic.MIN);        // 1.0
+stats.getAsDouble(Statistic.MAX);        // 8.0
+stats.getAsDouble(Statistic.VARIANCE);   // 6.0
+
+// Get other statistics supported by the underlying computations
+stats.isSupported(Statistic.MEAN));   // true
+stats.getAsDouble(Statistic.MEAN);    // 4.5
+</source>
+        <p>
+          If computation on multiple arrays is to be repeated then this can be done with a
+          re-useable <code>java.util.stream.Collector</code>:
+        </p>
+<source class="prettyprint">
+double[][] data = {
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+};
+DoubleStatistics.Builder builder = DoubleStatistics.builder(
+    Statistic.MIN, Statistic.MAX, Statistic.VARIANCE);
+Collector&lt;double[], DoubleStatistics, DoubleStatistics&gt; collector =
+    Collector.of(builder::build, (s, d) -> s.combine(builder.build(d)), DoubleStatistics::combine);
+DoubleStatistics stats = Arrays.stream(data).collect(collector);
+
+stats.getAsDouble(Statistic.MIN);        // 1.0
+stats.getAsDouble(Statistic.MAX);        // 8.0
+stats.getAsDouble(Statistic.VARIANCE);   // 6.0
+</source>
+        <p>
+          Combination of multiple statistics requires them to be compatible, i.e. all supported
+          statistics in one container are also supported in the other. Note that combining another
+          container ignores any unsupported statistics and the compatibility
+          may be asymmetric.
+        </p>
+<source class="prettyprint">
+double[] data1 = {1, 2, 3, 4};
+double[] data2 = {5, 6, 7, 8};
+DoubleStatistics varStats = DoubleStatistics.builder(Statistic.VARIANCE).build(data1);
+DoubleStatistics meanStats = DoubleStatistics.builder(Statistic.MEAN).build(data2);
+
+// throws IllegalArgumentException
+varStats.combine(meanStats);
+
+// OK - mean is updated to 4.5
+meanStats.combine(varStats)
+</source>
+      <p>
+        Computation of a statistic that requires all data (i.e. does not support the
+        <code>Stream</code> API) uses a configurable instance of the computing class:
+      </p>
+<source class="prettyprint">
+double[] data = {8, 7, 6, 5, 4, 3, 2, 1};
+// Configure the statistic
+double m = Median.withDefaults()
+                 .withCopy(true)          // do not modify the input array
+                 .with(NaNPolicy.ERROR)   // raise an exception for NaN
+                 .evaluate(data);
+// m = 4.5
+</source>
+      <p>
+        Computation of multiple values of a statistic that requires all data:
+      </p>
+<source class="prettyprint">
+int size = 10000;
+double origin = 0;
+double bound = 100;
+double[] data =
+    new SplittableRandom(123)
+    .doubles(size, origin, bound)
+    .toArray();
+// Evaluate multiple statistics on the same data
+double[] q = Quantile.withDefaults()
+                     .evaluate(data, 0.25, 0.5, 0.75);   // probabilities
+// q ~ [25.0, 50.0, 75.0]
+</source>
+      </subsection>
     </section>
 
     <section name="Probability Distributions" id="distributions">
@@ -354,6 +598,7 @@ double x2 = chi2.inverseSurvivalProbability(q);
         </p>
       </subsection>
     </section>
+
     <section name="Inference" id="inference">
       <p>
         The <code>commons-statistics-inference</code> module provides hypothesis testing.

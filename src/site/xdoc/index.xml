@@ -30,6 +30,31 @@
         Apache Commons Statistics provides utilities for statistical applications.
       </p>
 
+
+      <p>
+        Descriptive statistics can be computed on array data or using the Java Stream API,
+        for example:
+      </p>
+
+<source class="prettyprint">
+int[] values = {1, 1, 2, 3, 5, 8, 13, 21};
+double v = IntVariance.of(values).getAsDouble();   // 49.929
+
+// A builder for specified statistics to allow
+// parallel computation on a stream of values
+IntStatistics.Builder builder = IntStatistics.builder(
+    Statistic.MIN, Statistic.MAX, Statistic.MEAN);
+IntStatistics stats =
+    Stream.of("one", "two", "three", "four")
+    .parallel()
+    .mapToInt(String::length)
+    .collect(builder::build, IntConsumer::accept, IntStatistics::combine);
+
+stats.getAsInt(Statistic.MIN);       // 3
+stats.getAsInt(Statistic.MAX);       // 5
+stats.getAsDouble(Statistic.MEAN);   // 15.0 / 4
+</source>
+
       <p>
         Support is provided for commonly used continuous and discrete distributions,
         for example:
