@@ -247,7 +247,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         if (cdfDelta > threshold) {
             // Create the rejection sampler
             final ZigguratSampler.NormalizedGaussian sampler = ZigguratSampler.NormalizedGaussian.of(rng);
-            DoubleSupplier gen;
+            final DoubleSupplier gen;
             // Use mirroring if possible
             if (lower >= 0) {
                 // Return the upper-half of the Gaussian
@@ -440,7 +440,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
 
         // dx = -0.5*(b*b-a*a)
         final double dx = 0.5 * (b + a) * (b - a);
-        double m;
+        final double m;
         if (a <= 0) {
             // Opposite signs
             m = ROOT_2_PI * -Math.expm1(-dx) * Math.exp(-0.5 * a * a) / ErfDifference.value(a / ROOT2, b / ROOT2);

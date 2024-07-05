@@ -193,7 +193,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
             // https://www.boost.org/doc/libs/1_78_0/libs/math/doc/html/math_toolkit/dist_ref/dists/students_t_dist.html
 
             final double t2 = x * x;
-            double z;
+            final double z;
             if (v < 2 * t2) {
                 z = RegularizedBeta.value(v / (v + t2), v / 2, 0.5) / 2;
             } else {
