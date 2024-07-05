@@ -353,7 +353,7 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
      * @param c End of the trapezoid constant density.
      * @param d Upper limit of this distribution (inclusive).
      */
-    private TrapezoidalDistribution(double a, double b, double c, double d) {
+    TrapezoidalDistribution(double a, double b, double c, double d) {
         this.a = a;
         this.b = b;
         this.c = c;

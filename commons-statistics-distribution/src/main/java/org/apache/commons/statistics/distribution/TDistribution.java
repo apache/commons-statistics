@@ -229,7 +229,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
     /**
      * @param degreesOfFreedom Degrees of freedom.
      */
-    private TDistribution(double degreesOfFreedom) {
+    TDistribution(double degreesOfFreedom) {
         this.degreesOfFreedom = degreesOfFreedom;
     }
 
