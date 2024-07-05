@@ -149,7 +149,7 @@ public final class FisherExactTest {
 
         // Note: The distribution validates the population size is > 0
         final HypergeometricDistribution distribution = HypergeometricDistribution.of(nn, k, n);
-        double p;
+        final double p;
         if (alternative == AlternativeHypothesis.GREATER_THAN) {
             p = distribution.survivalProbability(a - 1);
         } else if (alternative == AlternativeHypothesis.LESS_THAN) {

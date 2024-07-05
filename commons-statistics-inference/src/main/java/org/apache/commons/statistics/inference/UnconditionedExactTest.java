@@ -736,7 +736,7 @@ public final class UnconditionedExactTest {
         final double p1 = (double) b / n;
         // Avoid NaN generation 0 / 0 when the variance is 0
         if (p0 != p1) {
-            double variance;
+            final double variance;
             if (pooled) {
                 // Integer sums will not overflow
                 final double p = (double) (a + b) / (m + n);
@@ -763,7 +763,7 @@ public final class UnconditionedExactTest {
     private double findExtremeTablesZ(int a, int b, int m, int n, boolean pooled, XYList tableList) {
         final double statistic = statisticZ(a, b, m, n, pooled);
         // Identify more extreme tables using the alternate hypothesis
-        DoublePredicate test;
+        final DoublePredicate test;
         if (alternative == AlternativeHypothesis.GREATER_THAN) {
             test = z -> z >= statistic;
         } else if (alternative == AlternativeHypothesis.LESS_THAN) {
@@ -791,7 +791,7 @@ public final class UnconditionedExactTest {
                 if (p0 == p1) {
                     z = 0;
                 } else {
-                    double variance;
+                    final double variance;
                     if (pooled) {
                         // Integer sums will not overflow
                         final double p = (i + j) / mn;
@@ -889,7 +889,7 @@ public final class UnconditionedExactTest {
         final double statistic = statisticBoschloo(a, b, m, n);
 
         // Function to compute the statistic
-        BoschlooStatistic func;
+        final BoschlooStatistic func;
         if (alternative == AlternativeHypothesis.GREATER_THAN) {
             func = (dist, x) -> dist.sf(x - 1);
         } else if (alternative == AlternativeHypothesis.LESS_THAN) {
@@ -966,7 +966,7 @@ public final class UnconditionedExactTest {
             final BracketFinder bf = new BracketFinder();
             minima.forEach(candidate -> {
                 double a = candidate[0];
-                double fa;
+                final double fa;
                 // Attempt to bracket the minima. Use an initial second point placed relative to
                 // the size of the interval: [x - increment, x + increment].
                 // if a < 0.5 then add a small delta ; otherwise subtract the delta.
@@ -1013,8 +1013,8 @@ public final class UnconditionedExactTest {
         final int width = tableList.getWidth();
 
         // Compute the log binomial dynamically for a small number of values
-        IntToDoubleFunction binomM;
-        IntToDoubleFunction binomN;
+        final IntToDoubleFunction binomM;
+        final IntToDoubleFunction binomN;
         if (tableList.size() < mn) {
             binomM = k -> LogBinomialCoefficient.value(m, k);
             binomN = k -> LogBinomialCoefficient.value(n, k);

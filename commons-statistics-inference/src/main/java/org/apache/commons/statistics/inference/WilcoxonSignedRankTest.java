@@ -349,7 +349,7 @@ public final class WilcoxonSignedRankTest {
 
         final int n = z.length;
         // Exact p requires no ties and no zeros
-        double p;
+        final double p;
         if (selectMethod(pValueMethod, n) == PValueMethod.EXACT && n <= EXACT_LIMIT && !tiedValues && zeros == 0) {
             p = calculateExactPValue((int) wPlus, n, alternative);
         } else {

@@ -488,7 +488,7 @@ public final class KolmogorovSmirnovTest {
     public OneResult test(double[] x, DoubleUnaryOperator cdf) {
         final int[] sign = {0};
         final double d = computeStatistic(x, cdf, sign);
-        double p;
+        final double p;
         if (alternative == AlternativeHypothesis.TWO_SIDED) {
             PValueMethod method = pValueMethod;
             if (method == PValueMethod.AUTO) {
@@ -597,7 +597,7 @@ public final class KolmogorovSmirnovTest {
         final boolean significantTies = tiesD[1] > dnm;
         final double d2 = significantTies ? computeD(tiesD[1], n, m, gcd) : d;
 
-        double p;
+        final double p;
         double p2;
 
         // Allow bootstrap estimation of the p-value
@@ -649,8 +649,8 @@ public final class KolmogorovSmirnovTest {
         // Test if the random statistic is greater (strict), or greater or equal to d
         final long d = strictInequality ? dnm : dnm - 1;
 
-        long plus;
-        long minus;
+        final long plus;
+        final long minus;
         if (alternative == AlternativeHypothesis.GREATER_THAN) {
             plus = d;
             minus = Long.MIN_VALUE;

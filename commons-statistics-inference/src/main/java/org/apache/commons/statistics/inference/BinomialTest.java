@@ -117,7 +117,7 @@ public final class BinomialTest {
         }
 
         final BinomialDistribution distribution = BinomialDistribution.of(numberOfTrials, probability);
-        double p;
+        final double p;
         if (alternative == AlternativeHypothesis.GREATER_THAN) {
             p = distribution.survivalProbability(numberOfSuccesses - 1);
         } else if (alternative == AlternativeHypothesis.LESS_THAN) {

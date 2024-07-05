@@ -380,7 +380,7 @@ final class KolmogorovSmirnovDistribution {
                 Arrays.fill(vc, 0);
 
                 // Select (A[i] - A[i-1]) factor
-                double[] p;
+                final double[] p;
                 if (i == 2 || i == 2 * n + 2) {
                     // First or last
                     p = ap[0];
@@ -884,7 +884,7 @@ final class KolmogorovSmirnovDistribution {
             // fastPow error is around 2^-52, pow error is ~ 2^-70 or lower.
             // Smirnoff-Dwass has a sum of terms that cancel and requires higher precision.
             // The power can optionally be specified.
-            ScaledPower fpow;
+            final ScaledPower fpow;
             if (power == POWER_DEFAULT) {
                 // SD has only a few terms. Use a high accuracy power.
                 fpow = sd ? DDMath::pow : DD::pow;

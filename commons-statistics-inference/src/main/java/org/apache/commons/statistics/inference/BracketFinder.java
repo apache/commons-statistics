@@ -109,7 +109,7 @@ class BracketFinder {
         evaluations = 0;
 
         // Limit the range of x
-        DoubleUnaryOperator range;
+        final DoubleUnaryOperator range;
         if (min < max) {
             // Limit: min <= x <= max
             range = x -> {

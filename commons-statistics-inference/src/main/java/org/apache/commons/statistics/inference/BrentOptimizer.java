@@ -252,7 +252,7 @@ final class BrentOptimizer {
 
             // Update by at least "tol1".
             // Here d is never NaN so the evaluation point u is always finite.
-            double u;
+            final double u;
             if (Math.abs(d) < tol1) {
                 if (d >= 0) {
                     u = x + tol1;

@@ -402,8 +402,8 @@ public final class TTest {
         final DoubleStatistics s2 = b.build(y);
         final double m2 = s2.getAsDouble(Statistic.MEAN);
         final double v2 = s2.getAsDouble(Statistic.VARIANCE);
-        double t;
-        double df;
+        final double t;
+        final double df;
         if (equalVariances) {
             t = computeHomoscedasticT(mu, m1, v1, n1, m2, v2, n2);
             df = -2.0 + n1 + n2;
