@@ -50,6 +50,9 @@
     <exclude name="TooManyMethods" />
     <exclude name="LawOfDemeter" />
     <exclude name="LoosePackageCoupling" />
+    <!-- Suppresion of this for Double/Long/IntStatistics by XPath or regex is not working.
+         For now disable the rule. -->
+    <exclude name="CouplingBetweenObjects" />
   </rule>
   <rule ref="category/java/documentation.xml">
     <exclude name="CommentSize" />
@@ -71,6 +74,11 @@
       <!-- Array is generated internally in this case. -->
       <property name="violationSuppressXPath" value="./ancestor-or-self::ClassDeclaration[@SimpleName='DistributionException'
         or @SimpleName='ArrayRealSquareMatrix']"/>
+    </properties>
+  </rule>
+  <rule ref="category/java/bestpractices.xml/AvoidReassigningLoopVariables">
+    <properties>
+      <property name="violationSuppressXPath" value="./ancestor-or-self::ClassDeclaration[@SimpleName='NaNTransformers']"/>
     </properties>
   </rule>
 
