@@ -152,6 +152,11 @@ class Int128Test {
             builder.accept(Arguments.of(rng.nextLong() >>> 1, rng.nextLong(), rng.nextLong() >>> 2, rng.nextLong()));
             builder.accept(Arguments.of(rng.nextLong(), rng.nextLong(), rng.nextLong(), rng.nextLong()));
         }
+        // Special case where hi is non-zero and lo is zero.
+        // Hit edge case in toDouble()
+        for (int i = 0; i < 5; i++) {
+            builder.accept(Arguments.of(rng.nextLong() >>> 3, 0, rng.nextLong() >>> 3, 0));
+        }
         return builder.build();
     }
 
