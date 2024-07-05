@@ -261,12 +261,12 @@ final class Arguments {
         final int c = table[1][0];
         final int d = table[1][1];
         // Bitwise OR combines the sign bit from all values
-        Arguments.checkNonNegative(a | b | c | d);
+        checkNonNegative(a | b | c | d);
         // Sum must be an integer
         final long sum = (long) a + b + c + d;
         if (sum > Integer.MAX_VALUE) {
             throw new InferenceException(InferenceException.X_GT_Y, sum, Integer.MAX_VALUE);
         }
-        Arguments.checkStrictlyPositive((int) sum);
+        checkStrictlyPositive((int) sum);
     }
 }
