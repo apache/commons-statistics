@@ -50,6 +50,15 @@
     <Bug pattern="FE_FLOATING_POINT_EQUALITY" />
   </Match>
 
+  <Match>
+    <Class name="org.apache.commons.statistics.inference.UnconditionedExactTest" />
+    <Or>
+      <Method name="findExtremeTablesZ" />
+      <Method name="statisticZ" />
+    </Or>
+    <Bug pattern="FE_FLOATING_POINT_EQUALITY" />
+  </Match>
+
   <!-- Intentional use of floating-point loop counters -->
   <Match>
     <Class name="org.apache.commons.statistics.distribution.AbstractContinuousDistribution" />
