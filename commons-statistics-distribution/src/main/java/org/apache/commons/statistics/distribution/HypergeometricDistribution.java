@@ -72,8 +72,8 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
         this.sampleSize = sampleSize;
         lowerBound = getLowerDomain(populationSize, numberOfSuccesses, sampleSize);
         upperBound = getUpperDomain(numberOfSuccesses, sampleSize);
-        bp = (double) sampleSize / (double) populationSize;
-        bq = (double) (populationSize - sampleSize) / (double) populationSize;
+        bp = (double) sampleSize / populationSize;
+        bq = (double) (populationSize - sampleSize) / populationSize;
     }
 
     /**

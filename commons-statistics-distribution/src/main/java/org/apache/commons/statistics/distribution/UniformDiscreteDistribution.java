@@ -57,7 +57,7 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
                                         int upper) {
         this.lower = lower;
         this.upper = upper;
-        upperMinusLowerPlus1 = (double) upper - (double) lower + 1;
+        upperMinusLowerPlus1 = (double) upper - lower + 1;
         pmf = 1.0 / upperMinusLowerPlus1;
         logPmf = -Math.log(upperMinusLowerPlus1);
         sf0 = (upperMinusLowerPlus1 - 1) / upperMinusLowerPlus1;
@@ -221,7 +221,7 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
     @Override
     public double getMean() {
         // Avoid overflow
-        return 0.5 * ((double) upper + (double) lower);
+        return 0.5 * ((double) upper + lower);
     }
 
     /**
