@@ -209,7 +209,7 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
             sq += x2 * x2;
         }
         // Edge case to avoid floating-point error for zero
-        if (values.length <= SumOfCubedDeviations.LENGTH_TWO) {
+        if (values.length <= LENGTH_TWO) {
             sc = 0;
         }
         return new SumOfFourthDeviations(sq, sc, ss, xbar, values.length);
@@ -244,7 +244,7 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
             sq += x2 * x2;
         }
         // Edge case to avoid floating-point error for zero
-        if (values.length <= SumOfCubedDeviations.LENGTH_TWO) {
+        if (values.length <= LENGTH_TWO) {
             sc = 0;
         }
         return new SumOfFourthDeviations(sq, sc, ss, xbar, values.length);
