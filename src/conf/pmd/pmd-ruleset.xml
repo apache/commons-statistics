@@ -124,7 +124,8 @@
       <property name="violationSuppressXPath"
         value="./ancestor-or-self::ClassDeclaration[@SimpleName='AbstractContinuousDistribution'
           or @SimpleName='KolmogorovSmirnovTest' or @SimpleName='KolmogorovSmirnovDistribution'
-          or @SimpleName='MannWhitneyUTest' or @SimpleName='BrentOptimizer']"/>
+          or @SimpleName='MannWhitneyUTest' or @SimpleName='BrentOptimizer'
+          or @SimpleName='BracketFinder']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/CyclomaticComplexity">
@@ -187,6 +188,12 @@
       <!-- overridden in the inference module for documentation -->
       <property name="violationSuppressXPath"
         value="./ancestor-or-self::ClassDeclaration[matches(@SimpleName, '^.*Result$')]"/>
+    </properties>
+  </rule>
+  <rule ref="category/java/design.xml/DataClass">
+    <properties>
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::ClassDeclaration[@SimpleName='BracketFinder']"/>
     </properties>
   </rule>
 
