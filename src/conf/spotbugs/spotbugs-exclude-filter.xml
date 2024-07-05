@@ -38,6 +38,11 @@
     </Or>
     <Bug pattern="FE_FLOATING_POINT_EQUALITY" />
   </Match>
+  <Match>
+    <Class name="org.apache.commons.statistics.distribution.TrapezoidalDistribution" />
+    <Method name="of" />
+    <Bug pattern="FE_FLOATING_POINT_EQUALITY" />
+  </Match>
 
   <Match>
     <Class name="org.apache.commons.statistics.distribution.AbstractContinuousDistribution$BrentSolver" />
