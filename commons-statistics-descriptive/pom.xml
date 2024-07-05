@@ -40,6 +40,12 @@
         <!-- Workaround to avoid duplicating config files. -->
         <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
         <statistics.jira.component>descriptive</statistics.jira.component>
+
+        <!-- Change from commons-parent of 1.0 as some illegal state cases cannot be reached -->
+        <commons.jacoco.instructionRatio>0.99</commons.jacoco.instructionRatio>
+        <commons.jacoco.branchRatio>0.98</commons.jacoco.branchRatio>
+        <commons.jacoco.lineRatio>0.99</commons.jacoco.lineRatio>
+        <commons.jacoco.complexityRatio>0.99</commons.jacoco.complexityRatio>
     </properties>
 
     <dependencies>
