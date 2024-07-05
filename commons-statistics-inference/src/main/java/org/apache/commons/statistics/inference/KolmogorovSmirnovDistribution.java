@@ -240,7 +240,7 @@ final class KolmogorovSmirnovDistribution {
             int scale = h.scale();
             // Omit i == n as this is a no-op
             for (int i = 1; i < n; ++i) {
-                pFrac *= (double) i / (double) n;
+                pFrac *= (double) i / n;
                 if (pFrac < MTW_SCALE_THRESHOLD) {
                     pFrac *= MTW_UP_SCALE;
                     scale -= MTW_UP_SCALE_POWER;

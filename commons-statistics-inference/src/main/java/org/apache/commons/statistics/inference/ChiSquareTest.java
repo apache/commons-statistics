@@ -240,7 +240,7 @@ public final class ChiSquareTest {
         // Compare and compute weight only if different
         final boolean unequalCounts = colSum1 != colSum2;
         final double weight = unequalCounts ?
-            Math.sqrt((double) colSum1 / (double) colSum2) : 1;
+            Math.sqrt((double) colSum1 / colSum2) : 1;
         // Compute chi-square
         // This exploits an algebraic rearrangement of the generic n*m contingency table case
         // for a single sum squared addition per row.
