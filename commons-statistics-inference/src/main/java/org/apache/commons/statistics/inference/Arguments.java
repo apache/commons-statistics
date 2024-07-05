@@ -16,7 +16,7 @@
  */
 package org.apache.commons.statistics.inference;
 
-import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * Argument validation methods.
@@ -237,7 +237,7 @@ final class Arguments {
      * @return the value
      * @throws IllegalArgumentException if the value is not in the allowed options or is null
      */
-    static <E extends Enum<E>> E checkOption(E v, EnumSet<E> allowed) {
+    static <E extends Enum<E>> E checkOption(E v, Set<E> allowed) {
         if (!allowed.contains(v)) {
             throw new InferenceException("Invalid option: " + v);
         }
