@@ -29,6 +29,7 @@ import java.util.function.BiFunction;
 import java.util.function.BinaryOperator;
 import java.util.logging.Logger;
 import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.ArraySampler;
 import org.apache.commons.rng.sampling.PermutationSampler;
 import org.apache.commons.rng.sampling.distribution.DiscreteUniformSampler;
 import org.apache.commons.rng.sampling.distribution.SharedStateDiscreteSampler;
@@ -448,7 +449,7 @@ public class QuantilePerformance {
                 // First call, create objects
                 order = PermutationSampler.natural(size());
             }
-            PermutationSampler.shuffle(rng, order);
+            ArraySampler.shuffle(rng, order);
         }
 
         /**
@@ -715,8 +716,8 @@ public class QuantilePerformance {
                 medianOf3Killer(x);
                 final int j = 4 * (31 - Integer.numberOfLeadingZeros(n));
                 final int n2 = n >>> 1;
-                shuffle(rng, x, j, n2);
-                shuffle(rng, x, n2 + j, n);
+                ArraySampler.shuffle(rng, x, j, n2);
+                ArraySampler.shuffle(rng, x, n2 + j, n);
             }
             if (dist.contains(Distribution.ORGANPIPE)) {
                 distData.add(x = new int[n]);
@@ -789,34 +790,6 @@ public class QuantilePerformance {
                 a[i] += i % 5;
             }
             return a;
-        }
-
-        /**
-         * Shuffles the entries of the given array.
-         *
-         * @param rng Source of randomness.
-         * @param array Array whose entries will be shuffled (in-place).
-         * @param from Lower-bound (inclusive) of the sub-range.
-         * @param to Upper-bound (exclusive) of the sub-range.
-         */
-        private static void shuffle(UniformRandomProvider rng, int[] array, int from, int to) {
-            final int length = to - from;
-            for (int i = length; i > 1; i--) {
-                swap(array, from + i - 1, from + rng.nextInt(i));
-            }
-        }
-
-        /**
-         * Swaps the two specified elements in the array.
-         *
-         * @param array Array.
-         * @param i First index.
-         * @param j Second index.
-         */
-        private static void swap(int[] array, int i, int j) {
-            final int tmp = array[i];
-            array[i] = array[j];
-            array[j] = tmp;
         }
 
         /**

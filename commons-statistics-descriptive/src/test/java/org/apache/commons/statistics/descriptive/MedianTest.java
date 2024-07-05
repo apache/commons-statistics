@@ -20,6 +20,7 @@ package org.apache.commons.statistics.descriptive;
 import java.util.Arrays;
 import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.ArraySampler;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -108,7 +109,7 @@ class MedianTest {
             final double[] values = rng.doubles(size, -4.5, 1.5).toArray();
             final double expected = evaluate(values);
             for (int i = 0; i < 20; i++) {
-                x = TestHelper.shuffle(rng, values.clone());
+                x = ArraySampler.shuffle(rng, values.clone());
                 builder.add(Arguments.of(x, expected));
             }
             // Special values
@@ -122,7 +123,7 @@ class MedianTest {
             // Even: half -0.0
             x = new double[size];
             Arrays.fill(x, 0, (size + 1) / 2, -0.0);
-            TestHelper.shuffle(rng, x);
+            ArraySampler.shuffle(rng, x);
             builder.add(Arguments.of(x.clone(), (size & 0x1) == 1 ? -0.0 : 0.0));
         }
         // Special cases
@@ -198,7 +199,7 @@ class MedianTest {
             final int[] values = rng.ints(size, -4500, 1500).toArray();
             final double expected = evaluate(values);
             for (int i = 0; i < 20; i++) {
-                x = TestHelper.shuffle(rng, values.clone());
+                x = ArraySampler.shuffle(rng, values.clone());
                 builder.add(Arguments.of(x, expected));
             }
             // Special values

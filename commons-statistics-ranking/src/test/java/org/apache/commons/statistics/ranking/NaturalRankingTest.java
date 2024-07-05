@@ -27,6 +27,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.apache.commons.math3.stat.inference.ChiSquareTest;
 import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.ArraySampler;
 import org.apache.commons.rng.sampling.PermutationSampler;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
@@ -347,7 +348,7 @@ class NaturalRankingTest {
         final double[] expected = new double[values.length];
         final NaturalRanking ranking = new NaturalRanking(tiesStrategy);
         for (int i = 0; i < 3; i++) {
-            PermutationSampler.shuffle(rng, indices);
+            ArraySampler.shuffle(rng, indices);
             for (int j = 0; j < values.length; j++) {
                 data[j] = values[indices[j]];
                 expected[j] = indices[j] + 1;

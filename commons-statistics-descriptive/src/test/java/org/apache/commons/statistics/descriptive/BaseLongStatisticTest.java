@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.ArraySampler;
 import org.apache.commons.statistics.distribution.DoubleTolerance;
 import org.apache.commons.statistics.distribution.TestUtils;
 import org.junit.jupiter.api.Assertions;
@@ -1020,7 +1021,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
         int repeat = 0;
         try {
             while (repeat++ < RANDOM_PERMUTATIONS) {
-                testAccept(TestHelper.shuffle(rng, values), expected, tol);
+                testAccept(ArraySampler.shuffle(rng, values), expected, tol);
             }
         } catch (final AssertionError e) {
             rethrowWithSeedAndRepeat(e, seed, repeat);
@@ -1040,7 +1041,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
         int repeat = 0;
         try {
             while (repeat++ < RANDOM_PERMUTATIONS) {
-                testArray(TestHelper.shuffle(rng, values), expected, tol);
+                testArray(ArraySampler.shuffle(rng, values), expected, tol);
             }
         } catch (final AssertionError e) {
             rethrowWithSeedAndRepeat(e, seed, repeat);
@@ -1061,9 +1062,9 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
         int repeat = 0;
         try {
             while (repeat++ < RANDOM_PERMUTATIONS) {
-                TestHelper.shuffle(rng, allValues);
+                ArraySampler.shuffle(rng, allValues);
                 TestHelper.unconcatenate(allValues, values);
-                testAcceptAndCombine(TestHelper.shuffle(rng, values), expected, tol);
+                testAcceptAndCombine(ArraySampler.shuffle(rng, values), expected, tol);
             }
         } catch (final AssertionError e) {
             rethrowWithSeedAndRepeat(e, seed, repeat);
@@ -1084,9 +1085,9 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
         int repeat = 0;
         try {
             while (repeat++ < RANDOM_PERMUTATIONS) {
-                TestHelper.shuffle(rng, allValues);
+                ArraySampler.shuffle(rng, allValues);
                 TestHelper.unconcatenate(allValues, values);
-                testArrayAndCombine(TestHelper.shuffle(rng, values), expected, tol);
+                testArrayAndCombine(ArraySampler.shuffle(rng, values), expected, tol);
             }
         } catch (final AssertionError e) {
             rethrowWithSeedAndRepeat(e, seed, repeat);
