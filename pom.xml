@@ -332,7 +332,6 @@
           <!-- Java API links configured in commons-parent create redirect warnings on JDK 17
             and fail the build. The links are not required as detectJavaApiLink=true (default). -->
           <links combine.self="override">
-            <link>https://commons.apache.org/proper/commons-rng/commons-rng-client-api/javadocs/api-${statistics.commons.rng.version}/</link>
           </links>
           <failOnWarnings>true</failOnWarnings>
           <!-- Enable MathJax -->
@@ -448,7 +447,6 @@
           <!-- Java API links configured in commons-parent create redirect warnings on JDK 17
             and fail the build. The links are not required as detectJavaApiLink=true (default). -->
           <links combine.self="override">
-            <link>https://commons.apache.org/proper/commons-rng/commons-rng-client-api/javadocs/api-${statistics.commons.rng.version}/</link>
           </links>
           <failOnWarnings>true</failOnWarnings>
           <!-- Enable MathJax -->
