@@ -44,7 +44,7 @@
 
     <statistics.picocli.version>4.6.1</statistics.picocli.version>
     <statistics.exec.version>3.3.0</statistics.exec.version>
-    <statistics.shade.version>3.2.4</statistics.shade.version>
+    <statistics.shade.version>3.6.0</statistics.shade.version>
 
     <!-- Disable JApiCmp failures (but keep the report). The examples API is allowed to change. -->
     <commons.japicmp.breakBuildOnBinaryIncompatibleModifications>false</commons.japicmp.breakBuildOnBinaryIncompatibleModifications>
