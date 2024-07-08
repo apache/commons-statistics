@@ -259,12 +259,12 @@ class NaturalRankingTest {
     @MethodSource
     void testRanksTiesRandom(RankingAlgorithm ranking, int[] example, int[] tiesFirst, int[] tiesLast,
             int[] multipleNaNs, int[] multipleTies, int[] allSame) {
-        assertRanks(ranking, EXAMPLE_DATA, example, "Example data");
-        assertRanks(ranking, TIES_FIRST, tiesFirst, "Ties first");
-        assertRanks(ranking, TIES_LAST, tiesLast, "Ties last");
-        assertRanks(ranking, MULTIPLE_NANS, multipleNaNs, "Multiple NaNs");
-        assertRanks(ranking, MULTIPLE_TIES, multipleTies, "Multiple ties");
-        assertRanks(ranking, ALL_SAME, allSame, "All same");
+        assertRanksByGroup(ranking, EXAMPLE_DATA, example, "Example data");
+        assertRanksByGroup(ranking, TIES_FIRST, tiesFirst, "Ties first");
+        assertRanksByGroup(ranking, TIES_LAST, tiesLast, "Ties last");
+        assertRanksByGroup(ranking, MULTIPLE_NANS, multipleNaNs, "Multiple NaNs");
+        assertRanksByGroup(ranking, MULTIPLE_TIES, multipleTies, "Multiple ties");
+        assertRanksByGroup(ranking, ALL_SAME, allSame, "All same");
     }
 
     /**
@@ -506,24 +506,29 @@ class NaturalRankingTest {
      * through the algorithm and the result must be unchanged thus ensuring the
      * algorithm is stable.
      *
+     * <p>This asserts that the output ranks are sequential from 1.
+     *
      * <p>Groups must use a sequential ordering from 1.
      * Any negative expected group marks data to be removed (e.g. NaNs).
      * Any group of zero marks data to be left unchanged (e.g. NaNs).
      * Note that the current test assumes the removed and unchanged options are mutually exclusive.
-     * Groups are mapped to an expected rank using a sequential ordering from 1.
-     * The order within a group can be random.
      *
-     * For example:
+     * <p>Groups are mapped to an expected rank using a sequential ordering from 1.
+     * The order within a group can be random, but all members of the same group must
+     * have a set of continuous integer ranks.
+     *
+     * <p>For example:
      * <pre>
      * groups: [1, 2, 2, 2, 3]
      *
+     * ranking:
      * [1, 2, 3, 4, 5] : pass
      * [1, 4, 3, 2, 5] : pass
      * [1, 2, 4, 3, 5] : pass
-     * [1, 3, 3, 3, 5] : fail
-     * [1, 2, 2, 4, 5] : fail
-     * [1, 2, 3, 4, 4] : fail
-     * [1, 2, 3, 4, 6] : fail
+     * [1, 3, 3, 3, 5] : fail - ranking is not sequential from 1
+     * [1, 2, 3, 5, 4] : fail - item [3] and [4] do not match the groups
+     * [2, 1, 3, 4, 5] : fail - item [0] and [4] do not match the groups
+     * [1, 2, 3, 4, 6] : fail - ranking is not sequential from 1
      * </pre>
      *
      * @param ranking Ranking algorithm
@@ -531,7 +536,7 @@ class NaturalRankingTest {
      * @param expectedGroups Expected groups (if null the algorithm is expected to raise an {@link IllegalArgumentException})
      * @param msg Prefix for any assertion failure message
      */
-    private static void assertRanks(RankingAlgorithm ranking, double[] data, int[] expectedGroups, String msg) {
+    private static void assertRanksByGroup(RankingAlgorithm ranking, double[] data, int[] expectedGroups, String msg) {
         if (expectedGroups == null) {
             Assertions.assertThrows(IllegalArgumentException.class, () -> ranking.apply(data));
         } else {
@@ -542,8 +547,6 @@ class NaturalRankingTest {
             Assertions.assertArrayEquals(original, data, () -> msg + ": Data was destructively modified");
             final double[] ranks2 = ranking.apply(ranks);
             Assertions.assertArrayEquals(ranks, ranks2, () -> msg + ": Repeat ranking changed the result");
-
-            // TODO: Simplify the collation of groups into sets.
 
             // Check groups
             int max = 0;
@@ -584,6 +587,12 @@ class NaturalRankingTest {
                 Assertions.assertEquals(numberOfElements, j, "Error removing unchanged elements");
             }
 
+            // Check ranking is sequential from 1
+            final double[] copy = Arrays.copyOf(ranks, numberOfElements);
+            Arrays.sort(copy);
+            Assertions.assertArrayEquals(IntStream.rangeClosed(1, numberOfElements).asDoubleStream().toArray(),
+                copy, () -> "Ranking is not sequential from 1 to " + copy.length);
+
             // Count groups sizes
             final int[] sizes = new int[max + 1];
             for (int i = 0; i < numberOfElements; i++) {
@@ -595,10 +604,11 @@ class NaturalRankingTest {
                 Assertions.assertNotEquals(0, sizes[i], () -> "Empty group: " + index);
             }
 
-            // Here we have a number of groups with non-zero sizes.
-            // The expected ranks must be sequential from 1.
+            // Here we have a number of groups with non-zero sizes that define the
+            // order of elements; order within a group can be random.
+            // The ranks are sequential from 1.
             // Create a BitSet for each group filled with bits enabled for each rank
-            // within the group. This is typically a single value or a range: [1], [2, 3], [4], etc.
+            // within the group. This is either a single value or a range: [1], [2,3,4], [5], etc.
             // Store the set in an array using the rank as the index to allow look-up of
             // the set from the rank.
             final int[] rankIndex = {1};
