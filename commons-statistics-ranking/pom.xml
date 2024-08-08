@@ -39,6 +39,8 @@
     <commons.module.name>org.apache.commons.statistics.ranking</commons.module.name>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
+    <!-- Reproducible builds -->
+    <project.build.outputTimestamp>${statistics.build.outputTimestamp}</project.build.outputTimestamp>
     <statistics.jira.component>ranking</statistics.jira.component>
 
     <!-- Change from commons-parent of 1.0 as some illegal state cases cannot be reached -->

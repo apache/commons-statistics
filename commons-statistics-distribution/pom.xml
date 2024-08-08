@@ -37,6 +37,8 @@
     <commons.module.name>org.apache.commons.statistics.distribution</commons.module.name>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}/..</statistics.parent.dir>
+    <!-- Reproducible builds -->
+    <project.build.outputTimestamp>${statistics.build.outputTimestamp}</project.build.outputTimestamp>
     <statistics.jira.component>distribution</statistics.jira.component>
   </properties>
 

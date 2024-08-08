@@ -96,6 +96,9 @@
     <commons.module.name>org.apache.commons.statistics</commons.module.name>
     <!-- This flag should only be true in the dist-archive module. -->
     <commons.release.isDistModule>false</commons.release.isDistModule>
+    <!-- Reproducible builds: maven-artifact-plugin:check-buildplan -->
+    <statistics.build.outputTimestamp>2024-08-08T00:00:00Z</statistics.build.outputTimestamp>
+    <project.build.outputTimestamp>${statistics.build.outputTimestamp}</project.build.outputTimestamp>
     <!-- do not use snapshot suffix here -->
     <commons.release.version>1.1</commons.release.version>
     <commons.bc.version>1.0</commons.bc.version>

@@ -39,6 +39,8 @@
     <commons.module.name>org.apache.commons.statistics.examples.distribution</commons.module.name>
     <!-- Workaround to avoid duplicating config files. -->
     <statistics.parent.dir>${basedir}/../..</statistics.parent.dir>
+    <!-- Reproducible builds -->
+    <project.build.outputTimestamp>${statistics.build.outputTimestamp}</project.build.outputTimestamp>
 
     <uberjar.name>examples-distribution</uberjar.name>
     <project.mainClass>org.apache.commons.statistics.examples.distribution.DistributionsApplication</project.mainClass>
