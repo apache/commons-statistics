@@ -53,6 +53,8 @@ package org.apache.commons.statistics.descriptive;
  *       American Statistician, 37, 242-247.
  *       <a href="https://doi.org/10.2307/2683386">doi: 10.2307/2683386</a>
  * </ul>
+ *
+ * @since 1.1
  */
 class SumOfSquaredDeviations extends FirstMoment {
     /** Sum of squared deviations of the values that have been added. */

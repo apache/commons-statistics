@@ -60,6 +60,8 @@ import java.util.function.DoubleConsumer;
  *       Comparison of Several Algorithms for Computing Sample Means and Variances.
  *       Journal of the American Statistical Association, Vol. 69, No. 348, pp. 859-866.
  * </ul>
+ *
+ * @since 1.1
  */
 class FirstMoment implements DoubleConsumer {
     /** The downscale constant. Used to avoid overflow for all finite input. */

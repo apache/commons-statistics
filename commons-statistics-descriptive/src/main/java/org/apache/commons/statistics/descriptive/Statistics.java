@@ -22,6 +22,8 @@ import java.util.function.LongConsumer;
 
 /**
  * Utility methods for statistics.
+ *
+ * @since 1.1
  */
 final class Statistics {
     /** A no-operation double consumer. This is exposed for testing. */
