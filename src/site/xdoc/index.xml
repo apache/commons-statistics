@@ -85,7 +85,7 @@ result.reject(0.05);   // false
 </source>
 
       <p>
-        For more examples and advanced usage, see the <a href="userguide/index.html">userguide</a>.
+        For more examples and advanced usage, see the <a href="userguide/index.html">user guide</a>.
       </p>
 
     </section>
