@@ -247,13 +247,13 @@ stats.getAsDouble(Statistic.MEAN);   // 15.0 / 4
           Computation of multiple statistics on a stream of values in parallel.
           This requires use of a <code>Builder</code> that
           can supply instances of the container class to each worker with the
-          <code>build</code> method; populated using <code>accept</code>; and then collected
-          using <code>combine</code>:
+          <code>build</code> method. These are populated using <code>accept</code> and then
+          collected using <code>combine</code>:
         </p>
 <source class="prettyprint">
 IntStatistics.Builder builder = IntStatistics.builder(
     Statistic.MIN, Statistic.MAX, Statistic.MEAN);
-IntStatistics stats = corpus.stream()
+IntStatistics stats =
     Stream.of("one", "two", "three", "four")
     .parallel()
     .mapToInt(String::length)
@@ -646,7 +646,7 @@ result.reject(0.05);   // true
 result.reject(0.01);   // false
 </source>
         <p>
-          A paired t-test that the student's marks in the math exam were greater than the science
+          A paired t-test that the marks in the math exam were greater than the science
           exam. This fails to reject the null hypothesis (that there was no difference) with
           95% confidence.
         </p>
@@ -751,7 +751,7 @@ new NaturalRanking(NaNStrategy.FAILED).apply(data);    // IllegalArgumentExcepti
       </p>
 <source class="prettyprint">
 double[] data = new double[] {7, 5, 7, 6};
-new NaturalRanking(.apply(data);                           // (3.5, 1, 3.5, 2)
+new NaturalRanking().apply(data);                          // (3.5, 1, 3.5, 2)
 new NaturalRanking(TiesStrategy.SEQUENTIAL).apply(data);   // (3, 1, 4, 2)
 new NaturalRanking(TiesStrategy.MINIMUM).apply(data);      // (3, 1, 3, 2)
 new NaturalRanking(TiesStrategy.MAXIMUM).apply(data);      // (4, 1, 4, 2)
