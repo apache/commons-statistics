@@ -37,10 +37,6 @@ import org.apache.commons.rng.sampling.distribution.TSampler;
  * @see <a href="https://mathworld.wolfram.com/Studentst-Distribution.html">Student&#39;s t-distribution (MathWorld)</a>
  */
 public abstract class TDistribution extends AbstractContinuousDistribution {
-    /** A standard normal distribution used for calculations.
-     * This is immutable and thread-safe and can be used across instances. */
-    static final NormalDistribution STANDARD_NORMAL = NormalDistribution.of(0, 1);
-
     /** The degrees of freedom. */
     private final double degreesOfFreedom;
 
@@ -53,6 +49,9 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      * allowed to provide access to the degrees of freedom used during construction.
      */
     private static class NormalTDistribution extends TDistribution {
+        /** A standard normal distribution used for calculations.
+         * This is immutable and thread-safe and can be used across instances. */
+        private static final NormalDistribution STANDARD_NORMAL = NormalDistribution.of(0, 1);
 
         /**
          * @param degreesOfFreedom Degrees of freedom.
