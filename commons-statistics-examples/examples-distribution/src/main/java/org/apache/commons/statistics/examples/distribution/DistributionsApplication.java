@@ -74,6 +74,7 @@ public final class DistributionsApplication {
                  ChiSquaredCommand.class,
                  ExpCommand.class,
                  FCommand.class,
+                 FoldedNormalCommand.class,
                  GammaCommand.class,
                  GeometricCommand.class,
                  GumbelCommand.class,

@@ -24,6 +24,8 @@
   <suppress checks="LocalFinalVariableName" files=".*[/\\]HypergeometricDistribution.java" />
   <suppress checks="ParameterNumber" files=".*[/\\]TTest.java" />
   <suppress checks="ParameterNumber" files=".*[/\\](Double|Int|Long)Statistics.java" />
+  <!-- package-private fields are final -->
+  <suppress checks="VisibilityModifier" files=".*[/\\]FoldedNormalDistribution.java" />
   <!-- Be more lenient on tests. -->
   <suppress checks="Javadoc" files=".*[/\\]test[/\\].*" />
   <suppress checks="MultipleStringLiterals" files=".*[/\\]test[/\\].*" />

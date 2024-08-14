@@ -111,6 +111,13 @@
         value="./ancestor-or-self::MethodDeclaration[@Name='setBiased' or @Name='setConfiguration']"/>
     </properties>
   </rule>
+  <rule ref="category/java/codestyle.xml/EmptyMethodInAbstractClassShouldBeAbstract">
+    <properties>
+      <!-- Returning 0 for the lower bound triggers a false positive for an empty method -->
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::MethodDeclaration[@Name='getSupportLowerBound']"/>
+    </properties>
+  </rule>
 
   <rule ref="category/java/documentation.xml/CommentSize">
     <properties>
