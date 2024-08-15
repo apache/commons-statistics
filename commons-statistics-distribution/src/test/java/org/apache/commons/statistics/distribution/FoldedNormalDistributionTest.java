@@ -59,9 +59,7 @@ class FoldedNormalDistributionTest extends BaseContinuousDistributionTest {
      * Test the mean. This is performed using the folding together of two truncated
      * normal distributions, with the truncation at the origin.
      *
-     * <p>This test cross-validates the mean computation as the scipy reference
-     * implementation only supports a positive mu (and no sigma); and the R
-     * reference library VGAM does not provide mean computation.
+     * <p>This test cross-validates the mean computation.
      */
     @ParameterizedTest
     @MethodSource
