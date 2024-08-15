@@ -56,6 +56,9 @@ If the output is not quite correct, check for invisible trailing spaces!
     <release version="1.1" date="TBD" description="
 Adds ranking, inference, descriptive and bom modules. (requires Java 8).
 ">
+      <action dev="aherbert" type="add" issue="STATISTICS-88">
+        "LogUniformDistribution": Add a log uniform distribution.
+      </action>
       <action dev="aherbert" type="add" issue="STATISTICS-87">
         "FoldedNormalDistribution": Add a folded normal distribution implementation with
         specialized support for a half-normal distribution.

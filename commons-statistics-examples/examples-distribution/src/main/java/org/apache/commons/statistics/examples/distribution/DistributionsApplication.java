@@ -83,6 +83,7 @@ public final class DistributionsApplication {
                  LevyCommand.class,
                  LogisticCommand.class,
                  LogNormalCommand.class,
+                 LogUniformCommand.class,
                  NakagamiCommand.class,
                  NormalCommand.class,
                  ParetoCommand.class,
