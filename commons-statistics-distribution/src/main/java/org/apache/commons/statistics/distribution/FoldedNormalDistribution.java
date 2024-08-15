@@ -328,7 +328,7 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
      *
      * <p>For location parameter \( \mu \) and scale parameter \( \sigma \), the mean is:
      *
-     * <p>\[ \sigma \sqrt{ \frac 2 \pi } \exp \left( \frac{-u^2}{2\sigma^2} \right) +
+     * <p>\[ \sigma \sqrt{ \frac 2 \pi } \exp \left( \frac{-\mu^2}{2\sigma^2} \right) +
      *       \mu \operatorname{erf} \left( \frac \mu {\sqrt{2\sigma^2}} \right) \]
      *
      * <p>where \( \operatorname{erf} \) is the error function.
