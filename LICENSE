@@ -209,10 +209,10 @@ copyright notices and license terms. Your use of these subcomponents is
 subject to the terms and conditions of the following licenses.
 
 
-For the Commons Statistics Distributions (commons-statistics-distributions-x.x.x.jar)
+For the Commons Statistics Distributions (commons-statistics-distribution-x.x.x.jar)
 component:
 
-   * Part of the distributions package is licensed under the
+   * Part of the distribution package is licensed under the
      MIT "Expat" License
 
    Copyright (c) 2017: Jorge Fernandez-de-Cossio-Diaz.
