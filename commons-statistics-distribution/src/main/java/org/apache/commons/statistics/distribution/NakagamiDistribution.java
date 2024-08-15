@@ -42,8 +42,6 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     private static final double SUPPORT_LO = 0;
     /** Support upper bound. */
     private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
-    /** Natural logarithm of 2. */
-    private static final double LN_2 = 0.6931471805599453094172321;
 
     /** The shape parameter. */
     private final double mu;
@@ -67,7 +65,7 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
         this.mu = mu;
         this.omega = omega;
         densityPrefactor = 2.0 * Math.pow(mu, mu) / (Gamma.value(mu) * Math.pow(omega, mu));
-        logDensityPrefactor = LN_2 + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu;
+        logDensityPrefactor = Constants.LN_TWO + Math.log(mu) * mu - LogGamma.value(mu) - Math.log(omega) * mu;
         final double v = GammaRatio.delta(mu, 0.5);
         mean = Math.sqrt(omega / mu) / v;
         variance = omega - (omega / mu) / v / v;

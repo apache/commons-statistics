@@ -49,9 +49,6 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * @since 1.1
  */
 public abstract class FoldedNormalDistribution extends AbstractContinuousDistribution {
-    /** Normalisation constant sqrt(2 / pi). */
-    private static final double ROOT_TWO_DIV_PI = 0.7978845608028654;
-
     /** The scale. */
     final double sigma;
     /**
@@ -91,7 +88,7 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
             this.mu = mu;
 
             final double a = mu / sigmaSqrt2;
-            mean = sigma * ROOT_TWO_DIV_PI * Math.exp(-a * a) + mu * Erf.value(a);
+            mean = sigma * Constants.ROOT_TWO_DIV_PI * Math.exp(-a * a) + mu * Erf.value(a);
             this.variance = mu * mu + sigma * sigma - mean * mean;
         }
 
@@ -170,12 +167,8 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
      * functions and allows computation of the log density and inverse CDF/SF.
      */
     private static class HalfNormalDistribution extends FoldedNormalDistribution {
-        /** Variance constant (1 - 2/pi). */
-        private static final double VAR = 0.363380227632418617567;
-        /** ln(2). */
-        private static final double LN_2 = 0.6931471805599453094172;
-        /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */
-        private static final double HALF_LOG_TWO_PI = 0.9189385332046727417803297;
+        /** Variance constant (1 - 2/pi). Computed using Matlab's VPA to 30 digits. */
+        private static final double VAR = 0.36338022763241865692446494650994;
         /** The value of {@code log(sigma) + 0.5 * log(2*PI)} stored for faster computation. */
         private final double logSigmaPlusHalfLog2Pi;
 
@@ -184,7 +177,7 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
          */
         HalfNormalDistribution(double sigma) {
             super(sigma);
-            logSigmaPlusHalfLog2Pi = Math.log(sigma) + HALF_LOG_TWO_PI;
+            logSigmaPlusHalfLog2Pi = Math.log(sigma) + Constants.HALF_LOG_TWO_PI;
         }
 
         @Override
@@ -220,7 +213,7 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
                 return Double.NEGATIVE_INFINITY;
             }
             final double z = x / sigma;
-            return LN_2 - 0.5 * z * z - logSigmaPlusHalfLog2Pi;
+            return Constants.LN_TWO - 0.5 * z * z - logSigmaPlusHalfLog2Pi;
         }
 
         @Override
@@ -255,7 +248,7 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
 
         @Override
         public double getMean() {
-            return sigma * ROOT_TWO_DIV_PI;
+            return sigma * Constants.ROOT_TWO_DIV_PI;
         }
 
         @Override

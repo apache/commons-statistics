@@ -54,11 +54,11 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
     private static final double MIN_P = 0.0;
 
     /** sqrt(2). */
-    private static final double ROOT2 = 1.414213562373095048801688724209698078;
+    private static final double ROOT2 = Constants.ROOT_TWO;
     /** Normalisation constant 2 / sqrt(2 pi) = sqrt(2 / pi). */
-    private static final double ROOT_2_PI = 0.797884560802865405726436165423365309;
+    private static final double ROOT_2_PI = Constants.ROOT_TWO_DIV_PI;
     /** Normalisation constant sqrt(2 pi) / 2 = sqrt(pi / 2). */
-    private static final double ROOT_PI_2 = 1.253314137315500251207882642405522626;
+    private static final double ROOT_PI_2 = Constants.ROOT_PI_DIV_TWO;
 
     /**
      * The threshold to switch to a rejection sampler. When the truncated

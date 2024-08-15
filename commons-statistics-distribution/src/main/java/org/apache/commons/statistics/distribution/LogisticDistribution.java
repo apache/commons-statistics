@@ -35,8 +35,8 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
     private static final double SUPPORT_LO = Double.NEGATIVE_INFINITY;
     /** Support upper bound. */
     private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
-    /** &pi;<sup>2</sup>/3. */
-    private static final double PI_SQUARED_OVER_THREE = Math.PI * Math.PI / 3;
+    /** &pi;<sup>2</sup>/3. https://oeis.org/A195055. */
+    private static final double PI_SQUARED_OVER_THREE = 3.289868133696452872944830;
     /** Location parameter. */
     private final double mu;
     /** Scale parameter. */

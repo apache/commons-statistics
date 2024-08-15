@@ -37,8 +37,6 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * @see <a href="https://mathworld.wolfram.com/PoissonDistribution.html">Poisson distribution (MathWorld)</a>
  */
 public final class PoissonDistribution extends AbstractDiscreteDistribution {
-    /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */
-    private static final double HALF_LOG_TWO_PI = 0.9189385332046727417803297;
     /** Upper bound on the mean to use the PoissonSampler. */
     private static final double MAX_MEAN = 0.5 * Integer.MAX_VALUE;
     /** Mean of the distribution. */
@@ -82,7 +80,7 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
         }
         return -SaddlePointExpansionUtils.getStirlingError(x) -
               SaddlePointExpansionUtils.getDeviancePart(x, mean) -
-              HALF_LOG_TWO_PI - 0.5 * Math.log(x);
+              Constants.HALF_LOG_TWO_PI - 0.5 * Math.log(x);
     }
 
     /** {@inheritDoc} */

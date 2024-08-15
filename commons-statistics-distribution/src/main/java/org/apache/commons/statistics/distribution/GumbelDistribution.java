@@ -37,14 +37,15 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
     private static final double SUPPORT_LO = Double.NEGATIVE_INFINITY;
     /** Support upper bound. */
     private static final double SUPPORT_HI = Double.POSITIVE_INFINITY;
-    /** &pi;<sup>2</sup>/6. */
-    private static final double PI_SQUARED_OVER_SIX = Math.PI * Math.PI / 6;
+    /** &pi;<sup>2</sup>/6. https://oeis.org/A013661. */
+    private static final double PI_SQUARED_OVER_SIX = 1.644934066848226436472415166646;
     /**
      * <a href="https://en.wikipedia.org/wiki/Euler%27s_constant">
      * Approximation of Euler's constant</a>.
+     * https://oeis.org/A001620.
      */
-    private static final double EULER = 0.57721566490153286060;
-    /** ln(ln(2)). */
+    private static final double EULER = 0.5772156649015328606065;
+    /** ln(ln(2)). https://oeis.org/A074785. */
     private static final double LN_LN_2 = -0.3665129205816643270124;
     /** Location parameter. */
     private final double mu;

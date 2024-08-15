@@ -41,8 +41,6 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  * @see <a href="https://mathworld.wolfram.com/LogNormalDistribution.html">Log-normal distribution (MathWorld)</a>
  */
 public final class LogNormalDistribution extends AbstractContinuousDistribution {
-    /** 0.5 * ln(2 * pi). Computed to 25-digits precision. */
-    private static final double HALF_LOG_TWO_PI = 0.9189385332046727417803297;
     /** &radic;(2 &pi;). */
     private static final double SQRT2PI = Math.sqrt(2 * Math.PI);
     /** The mu parameter of this distribution. */
@@ -64,7 +62,7 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
                                   double sigma) {
         this.mu = mu;
         this.sigma = sigma;
-        logSigmaPlusHalfLog2Pi = Math.log(sigma) + HALF_LOG_TWO_PI;
+        logSigmaPlusHalfLog2Pi = Math.log(sigma) + Constants.HALF_LOG_TWO_PI;
         sigmaSqrt2 = ExtendedPrecision.sqrt2xx(sigma);
         sigmaSqrt2Pi = sigma * SQRT2PI;
     }

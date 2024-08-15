@@ -34,7 +34,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class ExtendedPrecisionTest {
     /** sqrt(2). */
     private static final double ROOT2 = Math.sqrt(2.0);
-    /** sqrt(2 pi) as a String. Computed to 64-digits. */
+    /** sqrt(2 pi) as a String. Computed to 64-digits. https://oeis.org/A019727. */
     private static final String SQRT_TWO_PI = "2.506628274631000502415765284811045253006986740609938316629923576";
     /** sqrt(2 pi) as a double. Note: This is 1 ULP different from Math.sqrt(2 * Math.PI). */
     private static final double ROOT2PI = Double.parseDouble(SQRT_TWO_PI);
