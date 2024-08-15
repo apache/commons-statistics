@@ -22,14 +22,14 @@ Application for calling distributions defined in Commons Statistics.
 
 Build the package using:
 
-    mvn package -Pexamples-distributions
+    mvn package -Pexamples-distribution
 
 The application contains help information describing the usage. Obtain the help
 by running the application with the `-h` flag to obtain the available commands
 and to obtain information for the commands:
 
-    java -jar target/examples-distributions.jar -h
-    java -jar target/examples-distributions.jar exp -h
+    java -jar target/examples-distribution.jar -h
+    java -jar target/examples-distribution.jar exp -h
 
 Each command of the application will create an instance of the distribution
 named by the command. Each distribution command has the following functions:
