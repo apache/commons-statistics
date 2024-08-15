@@ -135,7 +135,7 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
                                             x0, x1);
         }
         if (x0 <= 0) {
-            return super.probability(x0, x1);
+            return cumulativeProbability(x1);
         }
         // Assumes x1 >= x0 && x0 > 0
         final double v0 = (Math.log(x0) - mu) / sigmaSqrt2;
