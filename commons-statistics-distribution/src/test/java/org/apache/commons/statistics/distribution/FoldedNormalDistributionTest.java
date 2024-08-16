@@ -64,8 +64,8 @@ class FoldedNormalDistributionTest extends BaseContinuousDistributionTest {
     @ParameterizedTest
     @MethodSource
     void testMean(double mu, double sigma) {
-        // Expected mean is the weighted means of each truncated distribution;
-        // the mean of the distribution below the origin must be negated
+        // Expected mean is the weighted means of each truncated distribution.
+        // The mean of the distribution below the origin must be negated.
         final TruncatedNormalDistribution t1 = TruncatedNormalDistribution.of(mu, sigma, Double.NEGATIVE_INFINITY, 0);
         final TruncatedNormalDistribution t2 = TruncatedNormalDistribution.of(mu, sigma, 0, Double.POSITIVE_INFINITY);
         final NormalDistribution n = NormalDistribution.of(mu, sigma);
