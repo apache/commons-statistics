@@ -178,7 +178,7 @@ final class Statistics {
      * @param consumers Consumers.
      * @return a composed consumer (or null)
      */
-    static DoubleConsumer compose(DoubleConsumer... consumers) {
+    static DoubleConsumer composeDoubleConsumers(DoubleConsumer... consumers) {
         DoubleConsumer action = DOUBLE_NOOP;
         for (final DoubleConsumer consumer : consumers) {
             if (consumer != null) {
@@ -195,7 +195,7 @@ final class Statistics {
      * @param consumers Consumers.
      * @return a composed consumer (or null)
      */
-    static IntConsumer compose(IntConsumer... consumers) {
+    static IntConsumer composeIntConsumers(IntConsumer... consumers) {
         IntConsumer action = INT_NOOP;
         for (final IntConsumer consumer : consumers) {
             if (consumer != null) {
@@ -212,7 +212,7 @@ final class Statistics {
      * @param consumers Consumers.
      * @return a composed consumer (or null)
      */
-    static LongConsumer compose(LongConsumer... consumers) {
+    static LongConsumer composeLongConsumers(LongConsumer... consumers) {
         LongConsumer action = LONG_NOOP;
         for (final LongConsumer consumer : consumers) {
             if (consumer != null) {

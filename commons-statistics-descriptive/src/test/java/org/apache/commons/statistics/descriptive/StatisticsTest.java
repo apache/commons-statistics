@@ -43,13 +43,13 @@ class StatisticsTest {
 
     @Test
     void testComposeDoubleConsumers() {
-        Assertions.assertNull(Statistics.compose((DoubleConsumer) null));
-        Assertions.assertNull(Statistics.compose((DoubleConsumer) null, (DoubleConsumer) null));
+        Assertions.assertNull(Statistics.composeDoubleConsumers((DoubleConsumer) null));
+        Assertions.assertNull(Statistics.composeDoubleConsumers((DoubleConsumer) null, (DoubleConsumer) null));
         final double[] v1 = {0};
         final double[] v2 = {0};
         final DoubleConsumer c1 = x -> v1[0] = x;
         final DoubleConsumer c2 = x -> v2[0] = x;
-        final DoubleConsumer combined = Statistics.compose(c1, c2);
+        final DoubleConsumer combined = Statistics.composeDoubleConsumers(c1, c2);
         final double y = 42;
         combined.accept(y);
         Assertions.assertEquals(y, v1[0]);
@@ -72,13 +72,13 @@ class StatisticsTest {
 
     @Test
     void testComposeIntConsumers() {
-        Assertions.assertNull(Statistics.compose((IntConsumer) null));
-        Assertions.assertNull(Statistics.compose((IntConsumer) null, (IntConsumer) null));
+        Assertions.assertNull(Statistics.composeIntConsumers((IntConsumer) null));
+        Assertions.assertNull(Statistics.composeIntConsumers((IntConsumer) null, (IntConsumer) null));
         final int[] v1 = {0};
         final int[] v2 = {0};
         final IntConsumer c1 = x -> v1[0] = x;
         final IntConsumer c2 = x -> v2[0] = x;
-        final IntConsumer combined = Statistics.compose(c1, c2);
+        final IntConsumer combined = Statistics.composeIntConsumers(c1, c2);
         final int y = 42;
         combined.accept(y);
         Assertions.assertEquals(y, v1[0]);
@@ -101,13 +101,13 @@ class StatisticsTest {
 
     @Test
     void testComposeLongConsumers() {
-        Assertions.assertNull(Statistics.compose((LongConsumer) null));
-        Assertions.assertNull(Statistics.compose((LongConsumer) null, (LongConsumer) null));
+        Assertions.assertNull(Statistics.composeLongConsumers((LongConsumer) null));
+        Assertions.assertNull(Statistics.composeLongConsumers((LongConsumer) null, (LongConsumer) null));
         final long[] v1 = {0};
         final long[] v2 = {0};
         final LongConsumer c1 = x -> v1[0] = x;
         final LongConsumer c2 = x -> v2[0] = x;
-        final LongConsumer combined = Statistics.compose(c1, c2);
+        final LongConsumer combined = Statistics.composeLongConsumers(c1, c2);
         final long y = 42;
         combined.accept(y);
         Assertions.assertEquals(y, v1[0]);

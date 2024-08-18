@@ -248,8 +248,8 @@ public final class IntStatistics implements IntConsumer {
         this.config = config;
         // The final consumer should never be null as the builder is created
         // with at least one statistic.
-        consumer = Statistics.compose(min, max, sum, sumOfSquares,
-                                      composeAsInt(moment, product, sumOfLogs));
+        consumer = Statistics.composeIntConsumers(min, max, sum, sumOfSquares,
+                                                  composeAsInt(moment, product, sumOfLogs));
     }
 
     /**
@@ -260,7 +260,7 @@ public final class IntStatistics implements IntConsumer {
      * @return a composed consumer (or null)
      */
     private static IntConsumer composeAsInt(DoubleConsumer... consumers) {
-        final DoubleConsumer c = Statistics.compose(consumers);
+        final DoubleConsumer c = Statistics.composeDoubleConsumers(consumers);
         if (c != null) {
             return c::accept;
         }

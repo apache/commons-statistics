@@ -248,8 +248,8 @@ public final class LongStatistics implements LongConsumer {
         this.config = config;
         // The final consumer should never be null as the builder is created
         // with at least one statistic.
-        consumer = Statistics.compose(min, max, sum, sumOfSquares,
-                                      composeAsLong(moment, product, sumOfLogs));
+        consumer = Statistics.composeLongConsumers(min, max, sum, sumOfSquares,
+                                                   composeAsLong(moment, product, sumOfLogs));
     }
 
     /**
@@ -260,7 +260,7 @@ public final class LongStatistics implements LongConsumer {
      * @return a composed consumer (or null)
      */
     private static LongConsumer composeAsLong(DoubleConsumer... consumers) {
-        final DoubleConsumer c = Statistics.compose(consumers);
+        final DoubleConsumer c = Statistics.composeDoubleConsumers(consumers);
         if (c != null) {
             return c::accept;
         }

@@ -277,7 +277,8 @@ public final class DoubleStatistics implements DoubleConsumer {
         this.sumOfSquares = sumOfSquares;
         this.sumOfLogs = sumOfLogs;
         this.config = config;
-        consumer = Statistics.compose(min, max, moment, sum, product, sumOfSquares, sumOfLogs);
+        consumer = Statistics.composeDoubleConsumers(min, max, moment, sum, product,
+                                                     sumOfSquares, sumOfLogs);
     }
 
     /**
