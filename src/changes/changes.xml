@@ -53,8 +53,13 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
 
-    <release version="1.1" date="TBD" description="
-Adds ranking, inference, descriptive and bom modules. (requires Java 8).
+    <release version="1.2" date="TBD" description="
+New features, updates and bug fixes (requires Java 8).
+">
+    </release>
+
+    <release version="1.1" date="2024-08-20" description="
+Adds ranking, inference, descriptive and bom modules (requires Java 8).
 ">
       <action dev="aherbert" type="add" issue="STATISTICS-88">
         "LogUniformDistribution": Add a log uniform distribution.
@@ -67,41 +72,40 @@ Adds ranking, inference, descriptive and bom modules. (requires Java 8).
         Add a quantile and median implementation.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-81">
-        Add descriptive statistics for integer types. These allow improved accuracy and performance
-        for int and long data using an array or streams over using the equivalent double
-        implementation via primitive conversion.
+        Add descriptive statistics for integer types. These allow improved accuracy and
+        performance for int and long data using an array or streams over using the
+        equivalent double implementation via primitive conversion.
       </action>
       <action dev="aherbert" due-to="Anirudh Joshi, Alex Herbert"  type="add" issue="STATISTICS-71">
-        Add commons-statistics-descriptive module for implementations of univariate statistics.
-        Contains base interfaces for statistics and implementations for individual statistics
-        (e.g. Min, Max, Sum, Mean, Variance) and combinations of statistics.
+        Add commons-statistics-descriptive module for implementations of univariate
+        statistics. Contains base interfaces for statistics and implementations for
+        individual statistics (e.g. Min, Max, Sum, Mean, Variance) and combinations of
+        statistics.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-69">
-        "UncoditionedExactTest": Add an unconditioned exact test for 2x2 contingency tables.
+        "UncoditionedExactTest": Add an unconditioned exact test for 2x2 contingency
+        tables.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-70">
         "HypergeometricDistribution": Improve the summation used for the cumulative
         probability functions.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-66">
-        Add a Bill of Materials (BOM) to aid in dependency management when referencing multiple
-        Apache Commons Statistics artifacts. The BOM should be used to ensure all imported
-        artifacts are compatible.
+        Add a Bill of Materials (BOM) to aid in dependency management when referencing
+        multiple Apache Commons Statistics artifacts. The BOM should be used to ensure
+        all imported artifacts are compatible.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-64">
         "FisherExactTest": Add Fisher's exact test for 2x2 contingency tables.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-62">
         Add a commons-statistics-inference module for hypothesis testing. This ports and
-        updates functionality in org.apache.commons.math4.stat.inference including new support
-        for one-sided hypothesis testing.
+        updates functionality in org.apache.commons.math4.stat.inference including new
+        support for one-sided hypothesis testing.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-63">
         Add a commons-statistics-ranking module for rank transformations. This ports and
         updates functionality in org.apache.commons.math4.stat.ranking.
-      </action>
-      <action type="update" dev="ggregory">
-        Bump commons-parent from 57 to 58.
       </action>
     </release>
 

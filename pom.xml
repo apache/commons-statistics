@@ -25,7 +25,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>commons-statistics-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <name>Apache Commons Statistics</name>
 
   <inceptionYear>2018</inceptionYear>
@@ -97,11 +97,11 @@
     <!-- This flag should only be true in the dist-archive module. -->
     <commons.release.isDistModule>false</commons.release.isDistModule>
     <!-- Reproducible builds: maven-artifact-plugin:check-buildplan -->
-    <statistics.build.outputTimestamp>2024-08-08T00:00:00Z</statistics.build.outputTimestamp>
+    <statistics.build.outputTimestamp>2024-08-16T00:00:00Z</statistics.build.outputTimestamp>
     <project.build.outputTimestamp>${statistics.build.outputTimestamp}</project.build.outputTimestamp>
     <!-- do not use snapshot suffix here -->
-    <commons.release.version>1.1</commons.release.version>
-    <commons.bc.version>1.0</commons.bc.version>
+    <commons.release.version>1.2</commons.release.version>
+    <commons.bc.version>1.1</commons.bc.version>
     <commons.rc.version>RC1</commons.rc.version>
     <commons.release.desc>(requires Java 8)</commons.release.desc>
     <commons.binary.suffix>-bin</commons.binary.suffix>
@@ -118,8 +118,12 @@
     <!-- MathJax configuration. See the maven-javadoc-plugin plugin. -->
     <statistics.mathjax.url>https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js</statistics.mathjax.url>
 
+    <!-- Fix to avoid JXR 3.0.0 forking the lifecycle phase 'compile' during site report
+       jxr:aggregate. If compile is forked, the build fails when attempting
+       to collect the artifacts from other modules. -->
+    <commons.jxr.version>2.5</commons.jxr.version>
+
     <!-- Increase from commons-parent -->
-    <commons.jacoco.methodRatio>1.00</commons.jacoco.methodRatio>
     <commons.jacoco.haltOnFailure>true</commons.jacoco.haltOnFailure>
 
     <commons.site.path>statistics</commons.site.path>

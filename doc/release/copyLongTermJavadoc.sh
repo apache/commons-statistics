@@ -19,7 +19,10 @@ set -e
 
 # List of all modules paths for which the long-term Javadoc links must be copied
 # We keep only the official distribution (i.e. _not_ "commons-statistics-examples").
-MODULES=(commons-statistics-distribution)
+MODULES=(commons-statistics-descriptive \
+    commons-statistics-distribution \
+    commons-statistics-inference \
+    commons-statistics-ranking)
 
 while getopts r:v: option
 do
