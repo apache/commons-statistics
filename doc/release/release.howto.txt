@@ -75,11 +75,11 @@ NOTE
 When performing a release it is good practice to edit a copy of these notes during the process
 and merge the updated document into the repository following a release. To assist in this process
 a find-and-replace can be performed to update all the version numbers in order. For example
-based on a previous release of 1.0:
+based on a previous release of 1.1:
 
-- Next development version  : 1.1 -> 1.2
-- Next release version      : 1.0 -> 1.1
-- Previous release version  : NA -> 1.0
+- Next development version  : 1.2 -> 1.3
+- Next release version      : 1.1 -> 1.2
+- Previous release version  : 1.0 -> 1.1
 - Release candidate version : RC1 -> RC2   (if applicable)
 
 This allows the included commands to be coped during the release process.
@@ -95,9 +95,9 @@ Preliminary checks:
      <properties>
        <!-- ... -->
        <!-- upcoming release version -->
-       <commons.release.version>1.0</commons.release.version>
+       <commons.release.version>1.1</commons.release.version>
        <!-- previous release version -->
-       <commons.bc.version>NA</commons.bc.version>
+       <commons.bc.version>1.0</commons.bc.version>
        <!-- ... -->
      </properties>
    Check all the issues reported by the "japicmp" plugin.
@@ -126,10 +126,10 @@ that the build process can create all the necessary artifacts.
 
   The "dist-archive/target" directory will contain those files:
 
-    commons-statistics-1.0-SNAPSHOT-bin.tar.gz
-    commons-statistics-1.0-SNAPSHOT-bin.zip
-    commons-statistics-1.0-SNAPSHOT-src.tar.gz
-    commons-statistics-1.0-SNAPSHOT-src.zip
+    commons-statistics-1.1-SNAPSHOT-bin.tar.gz
+    commons-statistics-1.1-SNAPSHOT-bin.zip
+    commons-statistics-1.1-SNAPSHOT-src.tar.gz
+    commons-statistics-1.1-SNAPSHOT-src.zip
 
   At some point when processing the above command, the GPG passphrase will be
   requested; to avoid problems, the "gpg2" executable should be specified in
@@ -168,18 +168,18 @@ candidate, create it locally starting from the master branch or the version
 branch and push it to Apache repository (assuming it is called origin),
 remembering the binding between the local and remote origin branches:
 
-  $ git branch 1.0-release
-  $ git push -u origin 1.0-release
+  $ git branch 1.1-release
+  $ git push -u origin 1.1-release
 
-(Optional)
-Modify the dist-archive/pom.xml to update the release manager name and GPG signing key
-to be used for the release.
+Note that the the release manager name and GPG signing key to be used for the release
+should be defined in the .m2/settings.xml
+(see https://commons.apache.org/releases/prepare.html).
 
 
 (3)
 Switch to the release branch:
 
-  $ git checkout 1.0-release
+  $ git checkout 1.1-release
 
   (3a)
   if there are any modules not ready for release then remove them from the
@@ -193,18 +193,18 @@ If there have been changes committed in the master branch or the version
 branch since the creation of the release branch, there are two cases:
 
   (4a)
-  if all these changes must be included in version 1.0, merge "master"
-  or the version branch into "1.0-release":
+  if all these changes must be included in version 1.1, merge "master"
+  or the version branch into "1.1-release":
 
     $ git merge master
 
-  or, if the version branch is called "1.0-develop"
+  or, if the version branch is called "1.1-develop"
 
-    $ git merge 1.0-develop
+    $ git merge 1.1-develop
 
   (4b)
-  if only part of these changes must be included in version 1.0,
-  cherry-pick the required commits into the "1.0-release" branch:
+  if only part of these changes must be included in version 1.1,
+  cherry-pick the required commits into the "1.1-release" branch:
 
     $ git cherry-pick commit-SHA
 
@@ -219,18 +219,22 @@ In particular:
  * Estimate a release date (taking into account the release vote delay) and
    insert it in the "src/changes/changes.xml" file.
  * Update the "pom.xml" to contain the final version number and not a SNAPSHOT:
-   Assuming that the release version will be "1.0", modify the "<version>" tag to
+   Assuming that the release version will be "1.1", modify the "<version>" tag to
    read:
 
-    <version>1.0</version>
+    <version>1.1</version>
 
    This can be done using maven:
 
-    $ mvn versions:set -DnewVersion=1.0 -DgenerateBackupPoms=false -Pexamples
+    $ mvn versions:set -DnewVersion=1.1 -DgenerateBackupPoms=false -Pexamples
+
+    Note: The maven commands may update the project.build.outputTimestamp
+    property for reproducible builds. A suitable value should be placed into
+    the numbers.build.outputTimestamp property which is used throughout the modules.
 
    You may need to update the version in dist-archive/pom.xml manually.
 
-   Modify the section of "<properties>" that also refers to version statistics.
+   Modify the section of "<properties>" that also refers to version numbers.
    You should uncomment the "<commons.rc.version>" line and indicate the
    appropriate numbering of the release candidate: This refers to how many
    times you will need to repeat this whole release process until it is
@@ -238,11 +242,14 @@ In particular:
 
   <properties>
     <!-- ... -->
-    <commons.release.version>1.0</commons.release.version>
+    <commons.release.version>1.1</commons.release.version>
     <commons.rc.version>RC1</commons.rc.version>
     <!-- ... -->
   </properties>
 
+   Other known locations of the project version:
+
+   commons-statistics-bom/src/site/xdoc/index.xml
 
 (6)
 The "download" page template is located at "src/site/xdoc/download_statistics.xml".
@@ -271,11 +278,11 @@ issue field. Update changes.xml if appropriate.
 Append the previous release notes from src/site/resources/release-notes/ to the current one:
 
   $ (echo "=============================================================================" &&
-     cat src/site/resources/release-notes/RELEASE-NOTES-NA.txt) >> RELEASE-NOTES.txt
+     cat src/site/resources/release-notes/RELEASE-NOTES-1.0.txt) >> RELEASE-NOTES.txt
 
 Copy the RELEASE-NOTES.txt to src/site/resources/release-notes:
 
-  $ cp RELEASE-NOTES.txt src/site/resources/release-notes/RELEASE-NOTES-1.0.txt
+  $ cp RELEASE-NOTES.txt src/site/resources/release-notes/RELEASE-NOTES-1.1.txt
 
 Update the src/site/xdoc/release-history.xml to include the latest version. This generates
 the release history page on the web site.
@@ -309,7 +316,7 @@ Then, assuming the first candidate, the suffix will be "RC1" (this should
 be the same as in the "<properties>" in the "pom.xml"), and the command
 will be:
 
-  $ git tag -u "__Your_key_id__" -s -m "RC1" commons-statistics-1.0-RC1
+  $ git tag -u "__Your_key_id__" -s -m "RC1" commons-statistics-1.1-RC1
 
 If you have several GPG keys, you may prefer to use "-u keyId" to select a specific
 key for signing the tag instead of "-s" which select automatically one key
@@ -317,13 +324,13 @@ from the configured e-mail address.
 
 Check the tag GPG signature:
 
-  $ git tag -v commons-statistics-1.0-RC1
+  $ git tag -v commons-statistics-1.1-RC1
 
 You will get something like:
 
   object cf4a9d70c9ac24dd7196995390171150e4e56451
   type commit
-  tag commons-statistics-1.0-RC1
+  tag commons-statistics-1.1-RC1
   tagger YourName <YourApacheEmail> 1418934614 +0100
 
   RC1
@@ -335,7 +342,7 @@ as it is the most stable reference for traceability.
 
 Push everything (including the tag!) on the Apache repository:
 
-  $ git push && git push origin commons-statistics-1.0-RC1
+  $ git push && git push origin commons-statistics-1.1-RC1
 
 
 (9)
@@ -343,7 +350,7 @@ Switch to a new directory out of your regular workspace, and retrieve
 the official tag from the Apache repository:
 
   $ cd /tmp
-  $ git clone https://gitbox.apache.org/repos/asf/commons-statistics.git --branch commons-statistics-1.0-RC1
+  $ git clone https://gitbox.apache.org/repos/asf/commons-statistics.git --branch commons-statistics-1.1-RC1
 
 In the command above, the --branch option accepts both branch names and tags names,
 so we specify directly the tag here. Git will warn that the resulting workspace
@@ -386,25 +393,14 @@ the maven settings.xml file. Typically the username is the same for Nexus reposi
 settings.xml file can be used by setting the commons.distServer property for the commons release
 plugin (see https://commons.apache.org/proper/commons-release-plugin/index.html).
 
-You can then generate the release artifacts without the site generation (using Java 8):
+You can then generate the release artifacts without the site generation (using Java 11):
 
   $ mvn -Duser.name="__Your_Apache_id__" [-Dcommons.distServer=apache.releases.https] \
         [-Duser.password=<yourApacheIdsPassword] \
-        -Prelease clean deploy site
+        -Prelease clean install site
 
 which will transfer the artifacts to the Nexus repository located at
   https://repository.apache.org/index.html#stagingRepositories
-
-***
-Note: 1.0 RC1 failed to create the assembly in the dist-archive module.
-Restarting with maven 'resume from' was successful:
-
-  $ mvn -Duser.name=aherbert -Duser.password=<xxx> -Prelease clean deploy site -rf :commons-statistics
-
-The reason for the error creating the assembly archives is unknown. It is not
-reproducible using test-deploy. Artifacts were staged correctly on resume
-with no configuration changes.
-***
 
 The apache ID password is required to clean and deploy the binary distribution
 files to svn if the svn client is not configured to locally cache the user
@@ -416,28 +412,27 @@ documentation. The release profile will not include the example modules as they
 are not part of the binary release artifacts. The 'package' goal is required
 to generate a jar file for the japicmp report.
 
-Using Java 8 ensures a package-list is created for the javadoc in each module. Later Java
-versions may generate an element-list. If the site is generated including the examples
-module using JDK 11+ without running 'mvn clean' then the package-list will coexist
-alongside the newly generated element-list. This allows the javadocs to be searchable
-from new and old JDKs.
+Using Java 11 will include a module-info.java in the jar via the moditect plugin.
+However it will not create a package-list for the javadoc (instead creating an
+element-list). To ensure the generated javadoc are searchable for new and old
+JDKs a package-list will be generated later during the full site build.
 
 This process transfers more files than really needed in the "staging" (i.e.
 non official) maven repository. The files expected in the repository are
-  commons-statistics-<ModuleArtifactID>-1.0.pom
-  commons-statistics-<ModuleArtifactID>-1.0.jar
-  commons-statistics-<ModuleArtifactID>-1.0.javadoc.jar
-  commons-statistics-<ModuleArtifactID>-1.0.sources.jar
-  commons-statistics-<ModuleArtifactID>-1.0.test-sources.jar
-  commons-statistics-<ModuleArtifactID>-1.0.tests.jar
-  commons-statistics-<ModuleArtifactID>-1.0.spdx.rdf.xml
+  commons-statistics-<ModuleArtifactID>-1.1.pom
+  commons-statistics-<ModuleArtifactID>-1.1.jar
+  commons-statistics-<ModuleArtifactID>-1.1.javadoc.jar
+  commons-statistics-<ModuleArtifactID>-1.1.sources.jar
+  commons-statistics-<ModuleArtifactID>-1.1.test-sources.jar
+  commons-statistics-<ModuleArtifactID>-1.1.tests.jar
+  commons-statistics-<ModuleArtifactID>-1.1.spdx.rdf.xml
 and their associated fingerprints
   <file-name>.md5
   <file-name>.sha1
 and their signatures
   <file-name>.asc
 
-The commons-statistics-parent artifact should contain the pom
+The commons-statistics-parent and commons-statistics-bom artifact should contain the pom
 and the associated fingerprints and signatures. The commons-parent also
 contains a Software Package Data Exchange (SPDX) file.
 
@@ -445,12 +440,23 @@ Nexus used to add "md5" and "sha1" checksums files to the "asc" files
 (cryptographic signature). If these fingerprints on signatures are
 present, they must be manually removed from Nexus staging area.
 
+***
+Note: The commons-numbers-bom artifact is deployed using the sign-and-deploy goal
+of the maven gpg plugin. This still adds md5 and sha1 files for the artifact and
+site asc files and these should be deleted.
+
+Select each .asc.md5 and .asc.sha1 file and delete the artifact. Then refresh
+the view and confirm the deletion.
+
+Note: This was not required for release 1.1; the gpg plugin appears to have been fixed.
+***
+
 The process used to transfer the complete source and binaries distributions files,
 (for each module):
-  commons-statistics-<ModuleArtifactId>-1.0-bin.tar.gz
-  commons-statistics-<ModuleArtifactId>-1.0-bin.zip
-  commons-statistics-<ModuleArtifactId>-1.0-src.tar.gz
-  commons-statistics-<ModuleArtifactId>-1.0-src.zip
+  commons-statistics-<ModuleArtifactId>-1.1-bin.tar.gz
+  commons-statistics-<ModuleArtifactId>-1.1-bin.zip
+  commons-statistics-<ModuleArtifactId>-1.1-src.tar.gz
+  commons-statistics-<ModuleArtifactId>-1.1-src.zip
 as well as their associated .md5 and .sha1 fingerprints and .asc signatures.
 All these files are not maven artifacts but rather distribution archives: They
 belong elsewhere; hence they must also been removed from the Nexus staging
@@ -459,16 +465,13 @@ repository.
 All jar modules should have the correct entries in the manifest. The manifest
 can be read to stdout using e.g.
 
-  $ unzip -p commons-statistics-distribution/target/commons-statistics-distribution-1.0.jar META-INF/MANIFEST.MF
+  $ unzip -p commons-statistics-distribution/target/commons-statistics-distribution-1.1.jar META-INF/MANIFEST.MF
 
 Entries that must be specific to the module are:
 
   Automatic-Module-Name
   Bundle-SymbolicName
   Export-Package
-
-The Implementation-Build entry should point to the commit hash for the release
-tag.
 
 As a final validity check, the Nexus repository must be manually "closed"
 before other people review the deliverables just created.
@@ -486,13 +489,13 @@ referred to in this section.]
 ***
 Verify that the release plugin has performed the steps below.
 You may be required to remove the staged site from the "dev" area
-and add missing files. The following was performed for release 1.0:
+and add missing files. The following was performed for release 1.1:
 
   $ cd /tmp
   $ svn checkout https://dist.apache.org/repos/dist/dev/commons/statistics
-  $ cd statistics/1.0-RC1
+  $ cd statistics/1.1-RC1
   $ svn del site
-  $ svn commit -m "Distribution files for Commons Statistics v1.0 (RC1)."
+  $ svn commit -m "Distribution files for Commons Statistics v1.1 (RC1)."
 ***
 
 Create and upload the other distribution files to the Apache servers.
@@ -524,7 +527,7 @@ Create and upload the other distribution files to the Apache servers.
   Copy other files from the RC workspace:
 
     $ cp path-to-the-RC-workspace/RELEASE-NOTES.txt .
-    $ cp path-to-the-RC-workspace/dist-archive/target/commons-release-plugin/scm/1.0-RC1/README.html .
+    $ cp path-to-the-RC-workspace/dist-archive/target/commons-release-plugin/scm/1.1-RC1/README.html .
     $ cp path-to-the-RC-workspace/dist-archive/target/*-bin.* binaries
     $ cp path-to-the-RC-workspace/dist-archive/target/*-src.* source
 
@@ -549,7 +552,7 @@ Create and upload the other distribution files to the Apache servers.
       RELEASE-NOTES.txt \
       binaries/* \
       source/*
-    $ svn commit -m "Distribution files for Commons Statistics v1.0 (RC1)."
+    $ svn commit -m "Distribution files for Commons Statistics v1.1 (RC1)."
 
 
 (13)
@@ -557,39 +560,42 @@ Create and upload the other distribution files to the Apache servers.
 to the "dist dev" area of the svn repository.  However, for multi-module
 maven projects, the site is incomplete.]
 
-As the web site staging area is shared among all commons components and therefore
-could be published before the vote ends, it is not recommended to use the standard
-staging area for the release candidate. So you will just archive the site and
-transfer it to your apache personal area for review.
-Here is how to do this using "lftp" to initiate the sftp transfer. "lftp" supports
-a mirror command for recursive transfers; don't forget the -R flag for uploading
-instead of downloading the site.
-If you haven't setup your login on home.apache.org you will need to go to
-  https://id.apache.org/
-login and copy the contents of your
-  ~/.ssh/id_rsa.pub
-file to "SSH Key (authorized_keys line)".
-Then run these commands:
+Generate the multi-module site for the web site staging area.
+
+  Note: Site generation requires Java 11 for the examples JMH module.
+  With site generation the 'package' goal is required for the site report
+  for japicmp.
 
   Do not run 'clean' as it will delete the release source/binary artifacts and the
   release plugin cannot be used to generate the template VOTE.txt file with the
-  correct hashes. It also removes the previous javadocs package-list generated using
-  Java 8.
+  correct hashes.
 
   $ mvn -Pexamples package site site:stage
+  
+  To ensure the javadocs are searchable from Java 8 requires a package-list. This
+  can be created by copying the element-list. This is only required for the Java 8
+  modules:
+
+  $ find target/staging -name element-list -execdir cp {} package-list \;
 
   $ cd target
-  $ mv staging commons-statistics-1.0-RC1-site
-  $ lftp sftp://__Your_apache_login__@home.apache.org
-     lftp you@home.apache.org:~> mkdir public_html
-     lftp you@home.apache.org:~> cd public_html
-     lftp you@home.apache.org:~/public_html> mirror -R commons-statistics-1.0-RC1-site
-     lftp you@home.apache.org:~/public_html> bye
+  $ mv staging commons-statistics-1.1-RC1-site
 
-If lftp fails with 'Fatal error: Host key verification failed.' then the host
-key for home.apache.org may have changed. Try to ssh to the server. This will be
-refused as only ftp connections are allowed but the error message should
-describe how to update the SSH known hosts to remove the error.
+  Checkout the dev staging area. This assumes that the site folder was removed in
+  validation steps performed in step (12):
+
+  $ svn checkout https://dist.apache.org/repos/dist/dev/commons/statistics --depth immediates
+  $ cd statistics/1.1-RC1
+  
+  Update the site folder:
+  
+  $ cp -pR commons-statistics-1.1-RC1-site site
+  $ svn add site
+  $ svn commit -m "Site files for Commons Statistics v1.1 (RC1)."
+  
+Wait for the files to sync and validate the site at:
+
+  https://dist.apache.org/repos/dist/dev/commons/statistics/1.1-RC1/site
 
 (14)
 [NOTE: The "Commons release-plugin" can generate the text for the "[VOTE]"
@@ -599,37 +605,40 @@ a result that must be heavily edited.]
 Template the vote using this command (run from the dist-archive module):
 
   $ mvn org.apache.commons:commons-release-plugin:vote-txt \
-        -Dgit.tag.commit=commons-statistics-1.0-RC1 \
+        -Dgit.tag.commit=commons-statistics-1.1-RC1 \
+        -Prelease \
         -Dcommons.nexus.repo.id=XXXX
 
 where XXXX is the nexus repository staging ID. The output is target/VOTE.txt.
 This must be heavily edited. It is useful to generate the release hashes.
+The release profile is included assuming this is the name of the entry in
+the .m2/settings.xml that contains the commons.releaseManagerName/Key entries.
 
 Call to vote by sending a message to the "dev" ML with subject
-"[VOTE] Release Commons Statistics 1.0 based on RC1". You can use the following example as
+"[VOTE] Release Commons Statistics 1.1 based on RC1". You can use the following example as
 a reference point, replacing the URLs with the appropriate ones:
 ----------
-We have fixed quite a few bugs and added some significant enhancements since Apache Commons Statistics NA was released,
-so I would like to release Apache Commons Statistics 1.0.
+We have fixed quite a few bugs and added some significant enhancements since Apache Commons Statistics 1.0 was released,
+so I would like to release Apache Commons Statistics 1.1.
 
-Apache Commons Statistics 1.0 RC1 is available for review here:
-    https://dist.apache.org/repos/dist/dev/commons/statistics/1.0-RC1 (svn revision 48777)
+Apache Commons Statistics 1.1 RC1 is available for review here:
+    https://dist.apache.org/repos/dist/dev/commons/statistics/1.1-RC1 (svn revision 48777)
 
-The Git tag commit for this RC is commons-statistics-1.0-RC1 which you can browse here:
-    https://gitbox.apache.org/repos/asf?p=commons-statistics.git;a=commit;h=commons-statistics-1.0-RC1
+The Git tag commit for this RC is commons-statistics-1.1-RC1 which you can browse here:
+    https://gitbox.apache.org/repos/asf?p=commons-statistics.git;a=commit;h=commons-statistics-1.1-RC1
 
 You may checkout this tag using:
-    git clone https://gitbox.apache.org/repos/asf/commons-statistics.git --branch commons-statistics-1.0-RC1 commons-statistics-1.0-RC1
+    git clone https://gitbox.apache.org/repos/asf/commons-statistics.git --branch commons-statistics-1.1-RC1 commons-statistics-1.1-RC1
 
 Maven artifacts are here:
     https://repository.apache.org/content/repositories/orgapachecommons-XXXX/org/apache/commons/
 
 These are the artifacts and their hashes:
 
-commons-statistics-1.0-bin.tar.gz=<hash>
-commons-statistics-1.0-bin.zip=<hash>
-commons-statistics-1.0-src.tar.gz=<hash>
-commons-statistics-1.0-src.zip=<hash>
+commons-statistics-1.1-bin.tar.gz=<hash>
+commons-statistics-1.1-bin.zip=<hash>
+commons-statistics-1.1-src.tar.gz=<hash>
+commons-statistics-1.1-src.zip=<hash>
 
 (no need for .asc hashes!)
 
@@ -645,18 +654,18 @@ I have tested this with 'mvn clean install site site:stage -Pexamples' using:
 <mvn -version>
 ***
 
-Details of changes since NA are in the release notes:
-    https://dist.apache.org/repos/dist/dev/commons/statistics/1.0-RC1/RELEASE-NOTES.txt
+Details of changes since 1.0 are in the release notes:
+    https://dist.apache.org/repos/dist/dev/commons/statistics/1.1-RC1/RELEASE-NOTES.txt
 
 Site:
-    https://home.apache.org/~aherbert/commons-statistics-1.0-RC1-site/
-    (note some *relative* links are broken and the 1.0 directories are not yet created - these will be OK once the site is deployed.)
+    https://dist.apache.org/repos/dist/dev/commons/statistics/1.1-RC1/site/index.html
+    (note some *relative* links are broken and the 1.1 directories are not yet created - these will be OK once the site is deployed.)
 
 JApiCmp Report:
-    https://home.apache.org/~aherbert/commons-statistics-1.0-RC1-site/commons-statistics-distribution/japicmp.html
+    https://dist.apache.org/repos/dist/dev/commons/statistics/1.1-RC1/site/commons-statistics-distribution/japicmp.html
 
 RAT Report:
-    https://home.apache.org/~aherbert/commons-statistics-1.0-RC1-site/rat-report.html
+    https://dist.apache.org/repos/dist/dev/commons/statistics/1.1-RC1/site/rat-report.html
 
 KEYS:
   https://downloads.apache.org/commons/KEYS
@@ -707,8 +716,9 @@ area of the Apache dist server.
   Copy the files from the checkout of the repository that was voted on:
 
     $ svn co https://dist.apache.org/repos/dist/dev/commons/statistics statistics2
+    $ rm -rf statistics2/1.1-RC1/site   # remove the staged site
     $ cd statistics
-    $ rsync -Cav ../statistics2/1.0-RC1/ .
+    $ rsync -Cav ../statistics2/1.1-RC1/ .
 
   [Note: This might overwrite symbolic links; in this case, do a "svn
   revert" in order to restore the files that should not be updated.]
@@ -724,13 +734,13 @@ area of the Apache dist server.
   Perform a "svn add" for the new release artifacts.
   Perform a "svn del" for the old release(s) artifacts.
 
-    $ svn del binaries/*-NA-* source/*-NA-*
-    $ svn add binaries/*-1.0-* source/*-1.0-*
+    $ svn del binaries/*-1.0-* source/*-1.0-*
+    $ svn add binaries/*-1.1-* source/*-1.1-*
 
   (17d)
   Commit:
 
-    $ svn commit -m "Release Commons Statistics v1.0 (from RC1)."
+    $ svn commit -m "Release Commons Statistics v1.1 (from RC1)."
 
   (17e)
   Register the release at
@@ -768,7 +778,7 @@ Remove all files there (except .svn folder) and move all the files from the site
 
  $ cd site-content
  $ rm -rf *
- $ cp -pR ../target/commons-statistics-1.0-RC1-site/* .
+ $ cp -pR ../target/commons-statistics-1.1-RC1-site/* .
 
 Check for new or deleted files:
  $ svn status
@@ -790,8 +800,7 @@ D - Marked for deletion
 The following commands are useful.
 
 Note that the "awk '{if ... print $2}'" only works for files that have no
-spaces. Currently the only files known to have spaces are the SPDX files,
-e.g. 'Apache Commons Statistics-1.0.spdx.rdf.xml'; these must be committed manually.
+spaces; files with spaces must be committed manually.
 
 Reverting (may not be required):
 
@@ -813,7 +822,7 @@ Check the local website:
   $ open index.html
 
 Commit the new contents of the web site:
-  $ svn commit -m "Commons Statistics v1.0 was released (from RC1). Web site update"
+  $ svn commit -m "Commons Statistics v1.1 was released (from RC1). Web site update"
 
 Note the SVN website revision for the next step (javadocs archiving).
 
@@ -825,7 +834,7 @@ your component:
 
   [edit file: component_releases.properties]
 
-  $ (cd conf && svn commit -m "Commons Statistics v1.0 was released (from RC1)")
+  $ (cd conf && svn commit -m "Commons Statistics v1.1 was released (from RC1)")
 
 
 (20)
@@ -838,7 +847,7 @@ The Javadoc must therefore be copied manually using server side copy from the
 to work. This is done using the "doc/release/copyLongTermJavadoc.sh" script
 (options are the svn revision and the component's new version).
 
-  $ doc/release/copyLongTermJavadoc.sh -r 1080991 -v 1.0
+  $ doc/release/copyLongTermJavadoc.sh -v 1.1 -r 1080991
 
   Note: New modules will require the 'javadocs' directory to exist on
   the server, for example:
@@ -864,13 +873,36 @@ in the SVN repository.
 
   [edit file: doap/doap_statistics.rdf]
 
-  $ (cd doap && svn commit -m "Commons Statistics v1.0 was released (from RC1)")
+  $ (cd doap && svn commit -m "Commons Statistics v1.1 was released (from RC1)")
+
+  Note: A buildbot should automatically rebuild the commons site using the
+  component_releases.properties.
+  After a few minutes verify the latest release is listed here:
+    https://commons.apache.org/
+
+  Otherwise the site can be rebuilt manually using:
+
+  > svn co https://svn.apache.org/repos/asf/commons/cms-site/trunk/
+  ==> edit doap/doap_<component>.rdf
+  > conf/parse-latest-release.py
+  > svn diff
+  => check you have not downgraded other components - fix their doap file and repeat
+  > svn commit conf doap -m 'Regenerated component releases'
+  
+  > commons-site-build.sh
+  > svn diff target/site
+  > svn commit target/site -m 'Update the staging site prior to deployment'
+  => inspect at https://svn.apache.org/repos/infra/websites/staging/commons/trunk/content/index.html
+  
+  > commons-site-publish.sh
+  => inspect target/commons-site-publish.svnmucc
+  => Run svnmucc command printed by the script
 
 (22)
 In the git repository, put the official final tag to point at the same commit
 as the **last release candidate** tag:
 
-  $ git tag -v commons-statistics-1.0-RC1
+  $ git tag -v commons-statistics-1.1-RC1
 
 Check the commit hash then add the release tag.
 Note: The 'rel/' prefix adds the tag to the release section of the tags.
@@ -878,36 +910,45 @@ This cannot be deleted once pushed to the main repository due to restrictions
 on this section of the tag namespace (preventing deletion of official release
 tags).
 
-  $ git checkout 1.0-release
-  $ git tag -u "__Your_key_id__" -s -m "RC1 becomes v1.0 official release." rel/commons-statistics-1.0 [commit hash]
-  $ git tag -v rel/commons-statistics-1.0
+  $ git checkout 1.1-release
+  $ git tag -u "__Your_key_id__" -s -m "RC1 becomes v1.1 official release." rel/commons-statistics-1.1 [commit hash]
+  $ git tag -v rel/commons-statistics-1.1
   $ git log -1
-  $ git push origin rel/commons-statistics-1.0
+  $ git push origin rel/commons-statistics-1.1
 
 
 (23)
 Switch back to the "master" branch.
 We now prepare for the next round of development (here we assume that the
-next version will be 1.1).
+next version will be 1.2).
 
   (23a)
-  Retrieve changes made on the "1.0-release branch" (so that the web site will
+  Retrieve changes made on the "1.1-release branch" (so that the web site will
   contain up-to-date information):
 
     $ git cherry-pick -n [release commit range]
 
+  Note: Any unreleased modules may have been deleted; these must be restored:
+  
+    $ git restore --staged commons-statistics-regression/LICENSE
+    $ ...
+    $ git checkout commons-statistics-regression/LICENSE
+    $ ...
+
+  Check for any other changes to integrate and merge them (this is relevant
+  if other changes were made on the release branch). The following command
+  would show only version changes in the pom.xml if no other development on
+  master has been performed.
+
+    $ git diff 1.1-release
+
   Edit "src/changes/changes.xml" to add a new section for the next release,
   setting the release date and description to "TBD".
-  Then commit them.
 
   (23b)
-  Optional: If the release manager was changed retrieve the updated release manager details:
-
-    $ git checkout 1.0-release dist-archive/pom.xml
-
   Edit every "pom.xml" file (i.e. for each module) to contain
 
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
 
   This can be done using maven:
 
@@ -918,25 +959,31 @@ next version will be 1.1).
   These should be updated manually.
   Double-check that the "pom.xml" files *really* have a "-SNAPSHOT" suffix
   in the "<version>" property.
+  Also check the <project.build.outputTimestamp> correctly references
+  statistics.build.outputTimestamp (changes will have to be reverted):
 
-  $ git grep '1.0-SNAPSHOT'    [old version number]
-  $ git grep '1.1-SNAPSHOT'    [new version number]
+  $ git grep '1.1-SNAPSHOT'    [old version number]
+  $ git grep '1.2-SNAPSHOT'    [new version number]
   $ git grep '<version>'
+  $ git grep 'project.build.outputTimestamp'
 
   Then commit them.
 
   (23c)
   Update the README.md files to refer the latest release. These files are
-  auto-generated from the commons maven plugin using 'mvn common:readme-md'.
+  auto-generated from the commons maven plugin using:
+  
+  $ mvn commons-build:readme-md -Pexamples -Dcommons.release.version=1.1
+
   The generated README.md files may have been edited for the multi-module
   set-up with extra text added to the main README.md.
 
   An updated will involve:
 
-  1. Replacing the <version>NA</version> example XML for the maven dependency to
-     <version>1.0</version>.
+  1. Replacing the <version>1.0</version> example XML for the maven dependency to
+     <version>1.1</version>.
   2. Updating any badges for Javadocs. This can be done using search and replace
-     of 'NA.svg' for 'NA.svg' and '/NA)' for '/1.0)'.
+     of '1.0.svg' for '1.0.svg' and '/1.0)' for '/1.1)'.
 
   Check the changes using 'git diff' and commit.
 
@@ -968,10 +1015,10 @@ the Apache mailer daemon.
 You can use the following message as a template:
 
 Subject:
-[ANNOUNCE] Apache Commons Statistics Version 1.0 Released
+[ANNOUNCE] Apache Commons Statistics Version 1.1 Released
 ----------
 The Apache Commons Team is pleased to announce the availability of
-version 1.0 of "Apache Commons Statistics".
+version 1.1 of "Apache Commons Statistics".
 
 Apache Commons Statistics provides tools for statistics.
 
@@ -1014,7 +1061,7 @@ Update JIRA to close all issues resolved in this release and prepare for the nex
       Step 1: Select the issues to close.
       Step 2: Select 'Transition issues'.
       Step 3: Select to close.
-      Step 4: Enter comment: 'Closed by release 1.0'.
+      Step 4: Enter comment: 'Closed by release 1.1'.
               Unselect 'Send mail for this update'.
       Confirm.
 
@@ -1036,14 +1083,5 @@ Update JIRA to close all issues resolved in this release and prepare for the nex
 
 
 (26)
-If you created a staged version of the website you may wish to delete this
-from apache personal area:
-
-  $ lftp sftp://__Your_apache_login__@home.apache.org
-     lftp you@home.apache.org:~> cd public_html
-     lftp you@home.apache.org:~/public_html> rm -rf commons-statistics-1.0-RC1-site
-     lftp you@home.apache.org:~/public_html> bye
-
-(27)
 Finally revise the release notes (this document) with any changes to improve
 the release process.
