@@ -108,7 +108,7 @@
     <commons.compiler.release>11</commons.compiler.release>
 
     <!-- JMH Benchmark related properties: version, name of the benchmarking uber jar. -->
-    <jmh.version>1.36</jmh.version>
+    <jmh.version>1.37</jmh.version>
     <uberjar.name>examples-jmh</uberjar.name>
     <project.mainClass>org.openjdk.jmh.Main</project.mainClass>
     <!-- Disable analysis for benchmarking code. -->
