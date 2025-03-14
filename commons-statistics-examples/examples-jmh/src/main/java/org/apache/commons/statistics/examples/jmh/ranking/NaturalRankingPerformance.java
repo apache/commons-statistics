@@ -276,7 +276,7 @@ public class NaturalRankingPerformance {
                     return Double.compare(value, other.value);
                 }
 
-                // N.B. equals() and hashCode() are not implemented; see MATH-610 for discussion.
+                // equals() and hashCode() are not implemented; see MATH-610 for discussion.
 
                 /**
                  * Returns the data position.
