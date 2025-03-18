@@ -42,6 +42,11 @@ final class IntMaxTest extends BaseIntStatisticTest<IntMax> {
     }
 
     @Override
+    protected IntMax create(int[] values, int from, int to) {
+        return IntMax.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return Max.of(Arrays.stream(values).asDoubleStream().toArray());
     }

@@ -117,11 +117,40 @@ public final class IntStandardDeviation implements IntStatistic, StatisticAccumu
      * @return {@code IntStandardDeviation} instance.
      */
     public static IntStandardDeviation of(int... values) {
+        return createFromRange(values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntStandardDeviation} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static IntStandardDeviation ofRange(int[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntStandardDeviation} instance.
+     */
+    static IntStandardDeviation createFromRange(int[] values, int from, int to) {
         // Small arrays can be processed using the object
-        if (values.length < IntVariance.SMALL_SAMPLE) {
+        final int length = to - from;
+        if (length < IntVariance.SMALL_SAMPLE) {
             final IntStandardDeviation stat = new IntStandardDeviation();
-            for (final int x : values) {
-                stat.accept(x);
+            for (int i = from; i < to; i++) {
+                stat.accept(values[i]);
             }
             return stat;
         }
@@ -132,21 +161,21 @@ public final class IntStandardDeviation implements IntStatistic, StatisticAccumu
         final UInt96 ss = UInt96.create();
         // Process pairs as we know two maximum value int^2 will not overflow
         // an unsigned long.
-        final int end = values.length & ~0x1;
-        for (int i = 0; i < end; i += 2) {
+        final int end = from + (length & ~0x1);
+        for (int i = from; i < end; i += 2) {
             final long x = values[i];
             final long y = values[i + 1];
             s += x + y;
             ss.addPositive(x * x + y * y);
         }
-        if (end < values.length) {
+        if (end < to) {
             final long x = values[end];
             s += x;
             ss.addPositive(x * x);
         }
 
         // Convert
-        return new IntStandardDeviation(UInt128.of(ss), Int128.of(s), values.length);
+        return new IntStandardDeviation(UInt128.of(ss), Int128.of(s), length);
     }
 
     /**
@@ -185,7 +214,7 @@ public final class IntStandardDeviation implements IntStatistic, StatisticAccumu
      * Sets the value of the biased flag. The default value is {@code false}. The bias
      * term refers to the computation of the variance; the standard deviation is returned
      * as the square root of the biased or unbiased <em>sample variance</em>. For further
-     * details see {@link IntVariance#setBiased(boolean) IntVarianceVariance.setBiased}.
+     * details see {@link IntVariance#setBiased(boolean) IntVariance.setBiased}.
      *
      * <p>This flag only controls the final computation of the statistic. The value of
      * this flag will not affect compatibility between instances during a

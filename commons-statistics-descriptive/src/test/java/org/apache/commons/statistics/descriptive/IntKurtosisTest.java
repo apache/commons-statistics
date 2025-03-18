@@ -37,6 +37,11 @@ final class IntKurtosisTest extends BaseIntStatisticTest<DoubleAsIntStatistic> {
     }
 
     @Override
+    protected DoubleAsIntStatistic create(int[] values, int from, int to) {
+        return DoubleAsIntStatistic.from(Kurtosis.ofRange(values, from, to));
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return Kurtosis.of(Arrays.stream(values).asDoubleStream().toArray());
     }

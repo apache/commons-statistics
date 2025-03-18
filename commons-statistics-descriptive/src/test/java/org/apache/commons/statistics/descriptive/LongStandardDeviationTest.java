@@ -45,6 +45,11 @@ final class LongStandardDeviationTest extends BaseLongStatisticTest<LongStandard
     }
 
     @Override
+    protected LongStandardDeviation create(long[] values, int from, int to) {
+        return LongStandardDeviation.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         return StandardDeviation.of(Arrays.stream(values).asDoubleStream().toArray());
     }

@@ -45,6 +45,11 @@ final class LongVarianceTest extends BaseLongStatisticTest<LongVariance> {
     }
 
     @Override
+    protected LongVariance create(long[] values, int from, int to) {
+        return LongVariance.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         if (values.length == 0) {
             return Variance.create();

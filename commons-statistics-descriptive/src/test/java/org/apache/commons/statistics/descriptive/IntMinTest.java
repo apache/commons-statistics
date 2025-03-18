@@ -42,6 +42,11 @@ final class IntMinTest extends BaseIntStatisticTest<IntMin> {
     }
 
     @Override
+    protected IntMin create(int[] values, int from, int to) {
+        return IntMin.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return Min.of(Arrays.stream(values).asDoubleStream().toArray());
     }

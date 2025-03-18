@@ -37,6 +37,11 @@ final class IntGeometricMeanTest extends BaseIntStatisticTest<DoubleAsIntStatist
     }
 
     @Override
+    protected DoubleAsIntStatistic create(int[] values, int from, int to) {
+        return DoubleAsIntStatistic.from(GeometricMean.ofRange(values, from, to));
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return GeometricMean.of(Arrays.stream(values).asDoubleStream().toArray());
     }

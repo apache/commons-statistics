@@ -37,6 +37,11 @@ final class LongGeometricMeanTest extends BaseLongStatisticTest<DoubleAsLongStat
     }
 
     @Override
+    protected DoubleAsLongStatistic create(long[] values, int from, int to) {
+        return DoubleAsLongStatistic.from(GeometricMean.ofRange(values, from, to));
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         return GeometricMean.of(Arrays.stream(values).asDoubleStream().toArray());
     }

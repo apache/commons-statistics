@@ -48,6 +48,11 @@ final class IntSumTest extends BaseIntStatisticTest<IntSum> {
     }
 
     @Override
+    protected IntSum create(int[] values, int from, int to) {
+        return IntSum.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return Sum.of(Arrays.stream(values).asDoubleStream().toArray());
     }

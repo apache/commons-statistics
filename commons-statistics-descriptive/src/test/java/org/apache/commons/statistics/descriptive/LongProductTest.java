@@ -37,6 +37,11 @@ final class LongProductTest extends BaseLongStatisticTest<DoubleAsLongStatistic>
     }
 
     @Override
+    protected DoubleAsLongStatistic create(long[] values, int from, int to) {
+        return DoubleAsLongStatistic.from(Product.ofRange(values, from, to));
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         return Product.of(Arrays.stream(values).asDoubleStream().toArray());
     }

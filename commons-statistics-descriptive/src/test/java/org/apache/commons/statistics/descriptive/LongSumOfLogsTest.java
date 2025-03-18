@@ -37,6 +37,11 @@ final class LongSumOfLogsTest extends BaseLongStatisticTest<DoubleAsLongStatisti
     }
 
     @Override
+    protected DoubleAsLongStatistic create(long[] values, int from, int to) {
+        return DoubleAsLongStatistic.from(SumOfLogs.ofRange(values, from, to));
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         return SumOfLogs.of(Arrays.stream(values).asDoubleStream().toArray());
     }

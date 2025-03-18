@@ -37,6 +37,11 @@ final class IntSumOfLogsTest extends BaseIntStatisticTest<DoubleAsIntStatistic> 
     }
 
     @Override
+    protected DoubleAsIntStatistic create(int[] values, int from, int to) {
+        return DoubleAsIntStatistic.from(SumOfLogs.ofRange(values, from, to));
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return SumOfLogs.of(Arrays.stream(values).asDoubleStream().toArray());
     }

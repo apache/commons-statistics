@@ -45,6 +45,11 @@ final class IntStandardDeviationTest extends BaseIntStatisticTest<IntStandardDev
     }
 
     @Override
+    protected IntStandardDeviation create(int[] values, int from, int to) {
+        return IntStandardDeviation.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return StandardDeviation.of(Arrays.stream(values).asDoubleStream().toArray());
     }

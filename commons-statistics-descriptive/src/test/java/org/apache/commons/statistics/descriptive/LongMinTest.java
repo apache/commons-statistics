@@ -42,6 +42,11 @@ final class LongMinTest extends BaseLongStatisticTest<LongMin> {
     }
 
     @Override
+    protected LongMin create(long[] values, int from, int to) {
+        return LongMin.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         return Min.of(Arrays.stream(values).asDoubleStream().toArray());
     }

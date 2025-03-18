@@ -47,6 +47,11 @@ final class IntSumOfSquaresTest extends BaseIntStatisticTest<IntSumOfSquares> {
     }
 
     @Override
+    protected IntSumOfSquares create(int[] values, int from, int to) {
+        return IntSumOfSquares.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return SumOfSquares.of(Arrays.stream(values).asDoubleStream().toArray());
     }

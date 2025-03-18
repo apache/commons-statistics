@@ -137,6 +137,7 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
      * @param from Inclusive start of the range.
      * @param to Exclusive end of the range.
      * @return {@code SumOfFourthDeviations} instance.
+     * @since 1.2
      */
     static SumOfFourthDeviations ofRange(double[] values, int from, int to) {
         if (from == to) {
@@ -210,18 +211,35 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
     /**
      * Returns an instance populated using the input {@code values}.
      *
-     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept(double) accept} may be
+     * <p>Note: {@code SumOfFourthDeviations} computed using {@link #accept(double) accept} may be
      * different from this instance.
      *
      * @param values Values.
      * @return {@code SumOfCubedDeviations} instance.
      */
     static SumOfFourthDeviations of(int... values) {
+        return ofRange(values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code SumOfFourthDeviations} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfFourthDeviations} instance.
+     */
+    static SumOfFourthDeviations ofRange(int[] values, int from, int to) {
         // Logic shared with the double[] version with int[] lower order moments
-        if (values.length == 0) {
+        if (from == to) {
             return new SumOfFourthDeviations();
         }
-        final IntVariance variance = IntVariance.of(values);
+        final IntVariance variance = IntVariance.createFromRange(values, from, to);
         final double xbar = variance.computeMean();
         final double ss = variance.computeSumOfSquaredDeviations();
         // Unlike the double[] case, overflow/NaN is not possible:
@@ -229,52 +247,69 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
         // Compute sum of cubed and fourth deviations together.
         double sc = 0;
         double sq = 0;
-        for (final double y : values) {
-            final double x = y - xbar;
+        for (int i = from; i < to; i++) {
+            final double x = values[i] - xbar;
             final double x2 = x * x;
             sc += x2 * x;
             sq += x2 * x2;
         }
         // Edge case to avoid floating-point error for zero
-        if (values.length <= LENGTH_TWO) {
+        if (to - from <= LENGTH_TWO) {
             sc = 0;
         }
-        return new SumOfFourthDeviations(sq, sc, ss, xbar, values.length);
+        return new SumOfFourthDeviations(sq, sc, ss, xbar, to - from);
     }
 
     /**
      * Returns an instance populated using the input {@code values}.
      *
-     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept(double) accept} may be
+     * <p>Note: {@code SumOfFourthDeviations} computed using {@link #accept(double) accept} may be
      * different from this instance.
      *
      * @param values Values.
-     * @return {@code SumOfCubedDeviations} instance.
+     * @return {@code SumOfFourthDeviations} instance.
      */
     static SumOfFourthDeviations of(long... values) {
+        return ofRange(values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code SumOfFourthDeviations} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfFourthDeviations} instance.
+     */
+    static SumOfFourthDeviations ofRange(long[] values, int from, int to) {
         // Logic shared with the double[] version with long[] lower order moments
-        if (values.length == 0) {
+        if (from == to) {
             return new SumOfFourthDeviations();
         }
-        final LongVariance variance = LongVariance.of(values);
+        final LongVariance variance = LongVariance.createFromRange(values, from, to);
         final double xbar = variance.computeMean();
         final double ss = variance.computeSumOfSquaredDeviations();
         // Unlike the double[] case, overflow/NaN is not possible:
-        // (max value)^4 times max array length ~ (2^63)^4 * 2^31 ~ 2^283.
+        // (max value)^4 times max array length ~ (2^31)^4 * 2^31 ~ 2^155.
         // Compute sum of cubed and fourth deviations together.
         double sc = 0;
         double sq = 0;
-        for (final double y : values) {
-            final double x = y - xbar;
+        for (int i = from; i < to; i++) {
+            final double x = values[i] - xbar;
             final double x2 = x * x;
             sc += x2 * x;
             sq += x2 * x2;
         }
         // Edge case to avoid floating-point error for zero
-        if (values.length <= LENGTH_TWO) {
+        if (to - from <= LENGTH_TWO) {
             sc = 0;
         }
-        return new SumOfFourthDeviations(sq, sc, ss, xbar, values.length);
+        return new SumOfFourthDeviations(sq, sc, ss, xbar, to - from);
     }
 
     /**

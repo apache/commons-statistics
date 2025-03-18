@@ -33,6 +33,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.statistics.distribution.DoubleTolerances;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
@@ -61,6 +62,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 class IntStatisticsTest {
     /** Empty statistic array. */
     private static final Statistic[] EMPTY_STATISTIC_ARRAY = {};
+    /** The number of random permutations to perform. */
+    private static final int RANDOM_PERMUTATIONS = 5;
 
     /** The test data. */
     private static List<TestData> testData;
@@ -114,6 +117,13 @@ class IntStatisticsTest {
          */
         long size() {
             return size;
+        }
+
+        /**
+         * @return the values as a single array
+         */
+        int[] toArray() {
+            return TestHelper.concatenate(values);
         }
     }
 
@@ -309,6 +319,32 @@ class IntStatisticsTest {
     }
 
     /**
+     * Test the {@link IntStatistics} when data is passed as a range of {@code int[]} of values.
+     */
+    @ParameterizedTest
+    @MethodSource(value = {"streamTestData"})
+    final void testArrayRange(EnumSet<Statistic> stats, TestData data) {
+        // Test full range
+        final int[] values = data.toArray();
+        assertStatistics(stats, values, 0, values.length);
+        if (values.length == 0) {
+            // Nothing more to do
+            return;
+        }
+        // Test half-range
+        assertStatistics(stats, values, 0, values.length >> 1);
+        assertStatistics(stats, values, values.length >> 1, values.length);
+        // Random range
+        final long[] seed = TestHelper.createRNGSeed();
+        final UniformRandomProvider rng = TestHelper.createRNG(seed);
+        for (int repeat = RANDOM_PERMUTATIONS; --repeat >= 0;) {
+            final int i = rng.nextInt(values.length);
+            final int j = rng.nextInt(values.length);
+            assertStatistics(stats, values, Math.min(i, j), Math.max(i, j));
+        }
+    }
+
+    /**
      * Assert the computed statistics match the expected result.
      *
      * @param stats Statistics that are computed.
@@ -326,14 +362,7 @@ class IntStatisticsTest {
             .orElseThrow(IllegalStateException::new);
         final int id = data.getId();
         Assertions.assertEquals(data.size(), statistics.getCount(), "Count");
-        final EnumSet<Statistic> computed = EnumSet.copyOf(stats);
-        stats.forEach(s -> computed.addAll(coComputed.get(s)));
-        // Currently we only have to support pairs here as the test only uses paired stats.
-        // Add an assertion to ensure this is fixed in future if required (e.g. using an
-        // enumeration of all possible combinations of the input stats as keys into
-        // coComputedAsCombination).
-        Assertions.assertFalse(stats.size() > 2, "Combinations other than pairs are not supported");
-        computed.addAll(coComputedAsCombination.getOrDefault(stats, EnumSet.noneOf(Statistic.class)));
+        final EnumSet<Statistic> computed = buildComputedStatistics(stats);
 
         // Test if the statistics are correctly identified as supported
         EnumSet.allOf(Statistic.class).forEach(s -> {
@@ -370,6 +399,54 @@ class IntStatisticsTest {
                     () -> stats + " getResult -> " + s.toString());
             }
         });
+    }
+
+    /**
+     * Assert the computation of the statistics from the specified range of values
+     * matches the computation using a copy of the range.
+     *
+     * @param stats Statistics that are computed.
+     * @param data Test data.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     */
+    private static void assertStatistics(EnumSet<Statistic> stats, int[] data, int from, int to) {
+        final IntStatistics expected = IntStatistics.of(stats, Arrays.copyOfRange(data, from, to));
+        final IntStatistics statistics = IntStatistics.ofRange(stats, data, from, to);
+        Assertions.assertEquals(expected.getCount(), statistics.getCount(), "Count");
+        final EnumSet<Statistic> computed = buildComputedStatistics(stats);
+
+        // Test if the statistics are correctly identified as supported
+        EnumSet.allOf(Statistic.class).forEach(s -> {
+            final boolean isSupported = computed.contains(s);
+            Assertions.assertEquals(isSupported, statistics.isSupported(s),
+                () -> stats + " isSupported -> " + s.toString());
+            if (isSupported) {
+                // Test individual values
+                Assertions.assertEquals(expected.getAsDouble(s), statistics.getAsDouble(s),
+                    () -> stats + " getAsDouble -> " + s.toString());
+            }
+        });
+    }
+
+    /**
+     * Builds the complete set of supported statistics from the specified statistics to compute.
+     * This method expands the input statistics with co-computed statistics and those derived as
+     * combinations of other statistics.
+     *
+     * @param stats Statistics.
+     * @return the statistics
+     */
+    private static EnumSet<Statistic> buildComputedStatistics(EnumSet<Statistic> stats) {
+        final EnumSet<Statistic> computed = EnumSet.copyOf(stats);
+        stats.forEach(s -> computed.addAll(coComputed.get(s)));
+        // Currently we only have to support pairs here as the test only uses paired stats.
+        // Add an assertion to ensure this is fixed in future if required (e.g. using an
+        // enumeration of all possible combinations of the input stats as keys into
+        // coComputedAsCombination).
+        Assertions.assertFalse(stats.size() > 2, "Combinations other than pairs are not supported");
+        computed.addAll(coComputedAsCombination.getOrDefault(stats, EnumSet.noneOf(Statistic.class)));
+        return computed;
     }
 
     /**
@@ -455,6 +532,30 @@ class IntStatisticsTest {
         final EnumSet<Statistic> s3 = EnumSet.of(Statistic.MIN);
         final int[] nullValues = null;
         Assertions.assertThrows(NullPointerException.class, () -> IntStatistics.of(s3, nullValues));
+    }
+
+    @Test
+    void testOfSetRangeThrows() {
+        final int[] data = {};
+        final EnumSet<Statistic> s1 = EnumSet.noneOf(Statistic.class);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> IntStatistics.ofRange(s1, data, 0, data.length));
+        final EnumSet<Statistic> s2 = null;
+        Assertions.assertThrows(NullPointerException.class, () -> IntStatistics.ofRange(s2, data, 0, data.length));
+        final EnumSet<Statistic> s3 = EnumSet.of(Statistic.MIN);
+        Assertions.assertThrows(NullPointerException.class, () -> IntStatistics.ofRange(s3, null, 0, 0));
+    }
+
+    /**
+     * Test the {@link IntStatistics#ofRange(Set, int[], int, int)} method throws with an invalid range.
+     */
+    @ParameterizedTest
+    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
+    final void testArrayRangeThrows(int from, int to, int length) {
+        final EnumSet<Statistic> statistics = EnumSet.of(Statistic.MIN);
+        final int[] values = new int[length];
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> IntStatistics.ofRange(statistics, values, from, to),
+            () -> String.format("range [%d, %d) in length %d", from, to, length));
     }
 
     @Test

@@ -40,6 +40,11 @@ final class IntMeanTest extends BaseIntStatisticTest<IntMean> {
     }
 
     @Override
+    protected IntMean create(int[] values, int from, int to) {
+        return IntMean.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return Mean.of(Arrays.stream(values).asDoubleStream().toArray());
     }

@@ -93,15 +93,48 @@ public final class IntSumOfSquares implements IntStatistic, StatisticAccumulator
     /**
      * Returns an instance populated using the input {@code values}.
      *
+     * <p>When the input is an empty array, the result is zero.
+     *
      * @param values Values.
      * @return {@code IntSumOfSquares} instance.
      */
     public static IntSumOfSquares of(int... values) {
+        return createFromRange(values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>When the range is empty, the result is zero.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntSumOfSquares} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static IntSumOfSquares ofRange(int[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntSumOfSquares} instance.
+     */
+    static IntSumOfSquares createFromRange(int[] values, int from, int to) {
         // Small arrays can be processed using the object
-        if (values.length < SMALL_SAMPLE) {
+        final int length = to - from;
+        if (length < SMALL_SAMPLE) {
             final IntSumOfSquares stat = new IntSumOfSquares();
-            for (final int x : values) {
-                stat.accept(x);
+            for (int i = from; i < to; i++) {
+                stat.accept(values[i]);
             }
             return stat;
         }
@@ -111,13 +144,13 @@ public final class IntSumOfSquares implements IntStatistic, StatisticAccumulator
         final UInt96 ss = UInt96.create();
         // Process pairs as we know two maximum value int^2 will not overflow
         // an unsigned long.
-        final int end = values.length & ~0x1;
-        for (int i = 0; i < end; i += 2) {
+        final int end = from + (length & ~0x1);
+        for (int i = from; i < end; i += 2) {
             final long x = values[i];
             final long y = values[i + 1];
             ss.addPositive(x * x + y * y);
         }
-        if (end < values.length) {
+        if (end < to) {
             final long x = values[end];
             ss.addPositive(x * x);
         }

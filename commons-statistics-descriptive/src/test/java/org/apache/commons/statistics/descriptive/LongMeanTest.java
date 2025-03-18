@@ -43,6 +43,11 @@ final class LongMeanTest extends BaseLongStatisticTest<LongMean> {
     }
 
     @Override
+    protected LongMean create(long[] values, int from, int to) {
+        return LongMean.ofRange(values, from, to);
+    }
+
+    @Override
     protected StatisticResult getEmptyValue() {
         return createStatisticResult(Double.NaN);
     }

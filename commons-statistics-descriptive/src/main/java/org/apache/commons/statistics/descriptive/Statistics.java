@@ -123,6 +123,24 @@ final class Statistics {
     }
 
     /**
+     * Add the specified range of {@code values} to the {@code statistic}.
+     * <p>Warning: No range checks are performed.
+     *
+     * @param <T> Type of the statistic
+     * @param statistic Statistic.
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the statistic
+     */
+    static <T extends DoubleConsumer> T add(T statistic, int[] values, int from, int to) {
+        for (int i = from; i < to; i++) {
+            statistic.accept(values[i]);
+        }
+        return statistic;
+    }
+
+    /**
      * Add all the {@code values} to the {@code statistic}.
      *
      * @param <T> Type of the statistic
@@ -133,6 +151,24 @@ final class Statistics {
     static <T extends DoubleConsumer> T add(T statistic, long[] values) {
         for (final double x : values) {
             statistic.accept(x);
+        }
+        return statistic;
+    }
+
+    /**
+     * Add the specified range of {@code values} to the {@code statistic}.
+     * <p>Warning: No range checks are performed.
+     *
+     * @param <T> Type of the statistic
+     * @param statistic Statistic.
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the statistic
+     */
+    static <T extends DoubleConsumer> T add(T statistic, long[] values, int from, int to) {
+        for (int i = from; i < to; i++) {
+            statistic.accept(values[i]);
         }
         return statistic;
     }
@@ -153,6 +189,24 @@ final class Statistics {
     }
 
     /**
+     * Add the specified range of {@code values} to the {@code statistic}.
+     * <p>Warning: No range checks are performed.
+     *
+     * @param <T> Type of the statistic
+     * @param statistic Statistic.
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the statistic
+     */
+    static <T extends IntConsumer> T add(T statistic, int[] values, int from, int to) {
+        for (int i = from; i < to; i++) {
+            statistic.accept(values[i]);
+        }
+        return statistic;
+    }
+
+    /**
      * Add all the {@code values} to the {@code statistic}.
      *
      * @param <T> Type of the statistic
@@ -163,6 +217,24 @@ final class Statistics {
     static <T extends LongConsumer> T add(T statistic, long[] values) {
         for (final long x : values) {
             statistic.accept(x);
+        }
+        return statistic;
+    }
+
+    /**
+     * Add the specified range of {@code values} to the {@code statistic}.
+     * <p>Warning: No range checks are performed.
+     *
+     * @param <T> Type of the statistic
+     * @param statistic Statistic.
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the statistic
+     */
+    static <T extends LongConsumer> T add(T statistic, long[] values, int from, int to) {
+        for (int i = from; i < to; i++) {
+            statistic.accept(values[i]);
         }
         return statistic;
     }

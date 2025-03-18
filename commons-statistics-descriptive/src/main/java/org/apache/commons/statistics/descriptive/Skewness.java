@@ -181,6 +181,23 @@ public final class Skewness implements DoubleStatistic, StatisticAccumulator<Ske
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code Skewness} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code Skewness} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static Skewness ofRange(int[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return new Skewness(SumOfCubedDeviations.ofRange(values, from, to));
+    }
+
+    /**
      * Returns an instance populated using the input {@code values}.
      *
      * <p>Note: {@code Skewness} computed using {@link #accept(double) accept} may be
@@ -191,6 +208,23 @@ public final class Skewness implements DoubleStatistic, StatisticAccumulator<Ske
      */
     public static Skewness of(long... values) {
         return new Skewness(SumOfCubedDeviations.of(values));
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code Skewness} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code Skewness} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static Skewness ofRange(long[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return new Skewness(SumOfCubedDeviations.ofRange(values, from, to));
     }
 
     /**

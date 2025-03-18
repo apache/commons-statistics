@@ -62,7 +62,7 @@ public final class IntMin implements IntStatistic, StatisticAccumulator<IntMin> 
      *
      * <p>The initial result is {@link Integer#MAX_VALUE}.
      *
-     * @return {@code Min} instance.
+     * @return {@code IntMin} instance.
      */
     public static IntMin create() {
         return new IntMin();
@@ -75,10 +75,41 @@ public final class IntMin implements IntStatistic, StatisticAccumulator<IntMin> 
      * {@link Integer#MAX_VALUE}.
      *
      * @param values Values.
-     * @return {@code Min} instance.
+     * @return {@code IntMin} instance.
      */
     public static IntMin of(int... values) {
         return Statistics.add(new IntMin(), values);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>When the range is empty, the result is
+     * {@link Integer#MAX_VALUE}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntMin} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static IntMin ofRange(int[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntMin} instance.
+     */
+    static IntMin createFromRange(int[] values, int from, int to) {
+        return Statistics.add(new IntMin(), values, from, to);
     }
 
     /**

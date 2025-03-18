@@ -48,6 +48,11 @@ final class LongSumTest extends BaseLongStatisticTest<LongSum> {
     }
 
     @Override
+    protected LongSum create(long[] values, int from, int to) {
+        return LongSum.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         return Sum.of(Arrays.stream(values).asDoubleStream().toArray());
     }

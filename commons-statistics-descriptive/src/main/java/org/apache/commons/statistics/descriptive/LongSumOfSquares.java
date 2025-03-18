@@ -90,6 +90,8 @@ public final class LongSumOfSquares implements LongStatistic, StatisticAccumulat
     /**
      * Returns an instance populated using the input {@code values}.
      *
+     * <p>When the input is an empty array, the result is zero.
+     *
      * @param values Values.
      * @return {@code LongSumOfSquares} instance.
      */
@@ -97,6 +99,40 @@ public final class LongSumOfSquares implements LongStatistic, StatisticAccumulat
         final UInt192 ss = UInt192.create();
         for (final long x : values) {
             ss.addSquare(x);
+        }
+        return new LongSumOfSquares(ss);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>When the range is empty, the result is zero.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongSumOfSquares} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static LongSumOfSquares ofRange(long[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongSumOfSquares} instance.
+     */
+    static LongSumOfSquares createFromRange(long[] values, int from, int to) {
+        final UInt192 ss = UInt192.create();
+        for (int i = from; i < to; i++) {
+            ss.addSquare(values[i]);
         }
         return new LongSumOfSquares(ss);
     }

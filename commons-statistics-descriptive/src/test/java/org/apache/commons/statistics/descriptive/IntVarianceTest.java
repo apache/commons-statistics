@@ -45,6 +45,11 @@ final class IntVarianceTest extends BaseIntStatisticTest<IntVariance> {
     }
 
     @Override
+    protected IntVariance create(int[] values, int from, int to) {
+        return IntVariance.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return Variance.of(Arrays.stream(values).asDoubleStream().toArray());
     }

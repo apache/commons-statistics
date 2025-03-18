@@ -37,6 +37,11 @@ final class IntSkewnessTest extends BaseIntStatisticTest<DoubleAsIntStatistic> {
     }
 
     @Override
+    protected DoubleAsIntStatistic create(int[] values, int from, int to) {
+        return DoubleAsIntStatistic.from(Skewness.ofRange(values, from, to));
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return Skewness.of(Arrays.stream(values).asDoubleStream().toArray());
     }

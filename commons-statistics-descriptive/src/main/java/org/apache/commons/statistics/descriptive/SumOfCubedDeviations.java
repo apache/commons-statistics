@@ -222,21 +222,38 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
      * @return {@code SumOfCubedDeviations} instance.
      */
     static SumOfCubedDeviations of(int... values) {
+        return ofRange(values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfCubedDeviations} instance.
+     */
+    static SumOfCubedDeviations ofRange(int[] values, int from, int to) {
         // Logic shared with the double[] version with int[] lower order moments
-        if (values.length == 0) {
+        if (from == to) {
             return new SumOfCubedDeviations();
         }
-        final IntVariance variance = IntVariance.of(values);
+        final IntVariance variance = IntVariance.createFromRange(values, from, to);
         final double xbar = variance.computeMean();
         final double ss = variance.computeSumOfSquaredDeviations();
 
         double sc = 0;
-        if (values.length > LENGTH_TWO) {
-            for (final double x : values) {
-                sc += pow3(x - xbar);
+        if (to - from > LENGTH_TWO) {
+            for (int i = from; i < to; i++) {
+                sc += pow3(values[i] - xbar);
             }
         }
-        return new SumOfCubedDeviations(sc, ss, xbar, values.length);
+        return new SumOfCubedDeviations(sc, ss, xbar, to - from);
     }
 
     /**
@@ -249,21 +266,39 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
      * @return {@code SumOfCubedDeviations} instance.
      */
     static SumOfCubedDeviations of(long... values) {
-        // Logic shared with the double[] version with long[] lower order moments
-        if (values.length == 0) {
+        return ofRange(values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfCubedDeviations} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    static SumOfCubedDeviations ofRange(long[] values, int from, int to) {
+        // Logic shared with the double[] version with int[] lower order moments
+        if (from == to) {
             return new SumOfCubedDeviations();
         }
-        final LongVariance variance = LongVariance.of(values);
+        final LongVariance variance = LongVariance.createFromRange(values, from, to);
         final double xbar = variance.computeMean();
         final double ss = variance.computeSumOfSquaredDeviations();
 
         double sc = 0;
-        if (values.length > LENGTH_TWO) {
-            for (final double x : values) {
-                sc += pow3(x - xbar);
+        if (to - from > LENGTH_TWO) {
+            for (int i = from; i < to; i++) {
+                sc += pow3(values[i] - xbar);
             }
         }
-        return new SumOfCubedDeviations(sc, ss, xbar, values.length);
+        return new SumOfCubedDeviations(sc, ss, xbar, to - from);
     }
 
     /**

@@ -116,16 +116,45 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
      * @return {@code LongVariance} instance.
      */
     public static LongVariance of(long... values) {
+        return createFromRange(values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongVariance} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static LongVariance ofRange(long[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongVariance} instance.
+     */
+    static LongVariance createFromRange(long[] values, int from, int to) {
         // Note: Arrays could be processed using specialised counts knowing the maximum limit
         // for an array is 2^31 values. Requires a UInt160.
 
         final Int128 s = Int128.create();
         final UInt192 ss = UInt192.create();
-        for (final long x : values) {
+        for (int i = from; i < to; i++) {
+            final long x = values[i];
             s.add(x);
             ss.addSquare(x);
         }
-        return new LongVariance(ss, s, values.length);
+        return new LongVariance(ss, s, to - from);
     }
 
     /**

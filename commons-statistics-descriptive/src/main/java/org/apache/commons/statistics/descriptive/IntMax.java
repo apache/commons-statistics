@@ -62,7 +62,7 @@ public final class IntMax implements IntStatistic, StatisticAccumulator<IntMax> 
      *
      * <p>The initial result is {@link Integer#MIN_VALUE}.
      *
-     * @return {@code Max} instance.
+     * @return {@code IntMax} instance.
      */
     public static IntMax create() {
         return new IntMax();
@@ -75,10 +75,41 @@ public final class IntMax implements IntStatistic, StatisticAccumulator<IntMax> 
      * {@link Integer#MIN_VALUE}.
      *
      * @param values Values.
-     * @return {@code Max} instance.
+     * @return {@code IntMax} instance.
      */
     public static IntMax of(int... values) {
         return Statistics.add(new IntMax(), values);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>When the range is empty, the result is
+     * {@link Integer#MIN_VALUE}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntMax} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static IntMax ofRange(int[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntMax} instance.
+     */
+    static IntMax createFromRange(int[] values, int from, int to) {
+        return Statistics.add(new IntMax(), values, from, to);
     }
 
     /**

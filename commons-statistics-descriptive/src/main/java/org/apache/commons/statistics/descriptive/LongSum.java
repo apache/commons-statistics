@@ -99,6 +99,40 @@ public final class LongSum implements LongStatistic, StatisticAccumulator<LongSu
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>When the range is empty, the result is zero.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongSum} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static LongSum ofRange(long[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongSum} instance.
+     */
+    static LongSum createFromRange(long[] values, int from, int to) {
+        final Int128 s = Int128.create();
+        for (int i = from; i < to; i++) {
+            s.add(values[i]);
+        }
+        return new LongSum(s);
+    }
+
+    /**
      * Gets the sum.
      *
      * <p>This is package private for use in {@link LongStatistics}.

@@ -82,7 +82,7 @@ public final class LongMean implements LongStatistic, StatisticAccumulator<LongM
      *
      * <p>The initial result is {@code NaN}.
      *
-     * @return {@code IntMean} instance.
+     * @return {@code LongMean} instance.
      */
     public static LongMean create() {
         return new LongMean();
@@ -92,7 +92,7 @@ public final class LongMean implements LongStatistic, StatisticAccumulator<LongM
      * Returns an instance populated using the input {@code values}.
      *
      * @param values Values.
-     * @return {@code IntMean} instance.
+     * @return {@code LongMean} instance.
      */
     public static LongMean of(long... values) {
         final Int128 s = Int128.create();
@@ -100,6 +100,40 @@ public final class LongMean implements LongStatistic, StatisticAccumulator<LongM
             s.add(x);
         }
         return new LongMean(s, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongMean} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static LongMean ofRange(long[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongMean} instance.
+     */
+    static LongMean createFromRange(long[] values, int from, int to) {
+        // Sum of an array cannot exceed a 64-bit long
+        final Int128 s = Int128.create();
+        for (int i = from; i < to; i++) {
+            s.add(values[i]);
+        }
+        // Convert
+        return new LongMean(s, to - from);
     }
 
     /**

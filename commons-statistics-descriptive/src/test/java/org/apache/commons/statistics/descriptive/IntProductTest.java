@@ -37,6 +37,11 @@ final class IntProductTest extends BaseIntStatisticTest<DoubleAsIntStatistic> {
     }
 
     @Override
+    protected DoubleAsIntStatistic create(int[] values, int from, int to) {
+        return DoubleAsIntStatistic.from(Product.ofRange(values, from, to));
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(int... values) {
         return Product.of(Arrays.stream(values).asDoubleStream().toArray());
     }

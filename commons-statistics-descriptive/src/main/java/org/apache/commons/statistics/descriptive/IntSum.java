@@ -106,6 +106,45 @@ public final class IntSum implements IntStatistic, StatisticAccumulator<IntSum> 
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>When the range is empty, the result is zero.
+     *
+     * <p>The {@link #getAsLong()} result is valid for any range length;
+     * the {@link #getAsInt()} result may overflow.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntSum} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static IntSum ofRange(int[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code IntSum} instance.
+     */
+    static IntSum createFromRange(int[] values, int from, int to) {
+        // Sum of an array cannot exceed a 64-bit long
+        long s = 0;
+        for (int i = from; i < to; i++) {
+            s += values[i];
+        }
+        // Convert
+        return new IntSum(Int128.of(s));
+    }
+
+    /**
      * Gets the sum.
      *
      * <p>This is package private for use in {@link IntStatistics}.

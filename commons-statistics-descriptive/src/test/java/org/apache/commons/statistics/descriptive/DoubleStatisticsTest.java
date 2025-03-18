@@ -329,8 +329,7 @@ class DoubleStatisticsTest {
             .orElseThrow(IllegalStateException::new);
         final int id = data.getId();
         Assertions.assertEquals(data.size(), statistics.getCount(), "Count");
-        final EnumSet<Statistic> computed = EnumSet.copyOf(stats);
-        stats.forEach(s -> computed.addAll(coComputed.get(s)));
+        final EnumSet<Statistic> computed = buildComputedStatistics(stats);
 
         // Test if the statistics are correctly identified as supported
         EnumSet.allOf(Statistic.class).forEach(s -> {
@@ -369,8 +368,7 @@ class DoubleStatisticsTest {
         final DoubleStatistics expected = DoubleStatistics.of(stats, Arrays.copyOfRange(data, from, to));
         final DoubleStatistics statistics = DoubleStatistics.ofRange(stats, data, from, to);
         Assertions.assertEquals(expected.getCount(), statistics.getCount(), "Count");
-        final EnumSet<Statistic> computed = EnumSet.copyOf(stats);
-        stats.forEach(s -> computed.addAll(coComputed.get(s)));
+        final EnumSet<Statistic> computed = buildComputedStatistics(stats);
 
         // Test if the statistics are correctly identified as supported
         EnumSet.allOf(Statistic.class).forEach(s -> {
@@ -383,6 +381,19 @@ class DoubleStatisticsTest {
                     () -> stats + " getAsDouble -> " + s.toString());
             }
         });
+    }
+
+    /**
+     * Builds the complete set of supported statistics from the specified statistics to compute.
+     * This method expands the input statistics with co-computed statistics.
+     *
+     * @param stats Statistics.
+     * @return the statistics
+     */
+    private static EnumSet<Statistic> buildComputedStatistics(EnumSet<Statistic> stats) {
+        final EnumSet<Statistic> computed = EnumSet.copyOf(stats);
+        stats.forEach(s -> computed.addAll(coComputed.get(s)));
+        return computed;
     }
 
     /**

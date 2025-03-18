@@ -20,7 +20,6 @@ import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.DoubleConsumer;
-import java.util.function.Function;
 import java.util.function.IntConsumer;
 
 /**
@@ -70,19 +69,19 @@ public final class IntStatistics implements IntConsumer {
         private static final int[] NO_VALUES = {};
 
         /** The {@link IntMin} constructor. */
-        private Function<int[], IntMin> min;
+        private RangeFunction<int[], IntMin> min;
         /** The {@link IntMax} constructor. */
-        private Function<int[], IntMax> max;
+        private RangeFunction<int[], IntMax> max;
         /** The moment constructor. May return any instance of {@link FirstMoment}. */
-        private Function<int[], FirstMoment> moment;
+        private RangeFunction<int[], FirstMoment> moment;
         /** The {@link IntSum} constructor. */
-        private Function<int[], IntSum> sum;
+        private RangeFunction<int[], IntSum> sum;
         /** The {@link Product} constructor. */
-        private Function<int[], Product> product;
+        private RangeFunction<int[], Product> product;
         /** The {@link IntSumOfSquares} constructor. */
-        private Function<int[], IntSumOfSquares> sumOfSquares;
+        private RangeFunction<int[], IntSumOfSquares> sumOfSquares;
         /** The {@link SumOfLogs} constructor. */
-        private Function<int[], SumOfLogs> sumOfLogs;
+        private RangeFunction<int[], SumOfLogs> sumOfLogs;
         /** The order of the moment. It corresponds to the power computed by the {@link FirstMoment}
          * instance constructed by {@link #moment}. This should only be increased from the default
          * of zero (corresponding to no moment computation). */
@@ -107,34 +106,34 @@ public final class IntStatistics implements IntConsumer {
             switch (statistic) {
             case GEOMETRIC_MEAN:
             case SUM_OF_LOGS:
-                sumOfLogs = SumOfLogs::of;
+                sumOfLogs = SumOfLogs::createFromRange;
                 break;
             case KURTOSIS:
                 createMoment(4);
                 break;
             case MAX:
-                max = IntMax::of;
+                max = IntMax::createFromRange;
                 break;
             case MIN:
-                min = IntMin::of;
+                min = IntMin::createFromRange;
                 break;
             case PRODUCT:
-                product = Product::of;
+                product = Product::createFromRange;
                 break;
             case SKEWNESS:
                 createMoment(3);
                 break;
             case STANDARD_DEVIATION:
             case VARIANCE:
-                sum = IntSum::of;
-                sumOfSquares = IntSumOfSquares::of;
+                sum = IntSum::createFromRange;
+                sumOfSquares = IntSumOfSquares::createFromRange;
                 break;
             case MEAN:
             case SUM:
-                sum = IntSum::of;
+                sum = IntSum::createFromRange;
                 break;
             case SUM_OF_SQUARES:
-                sumOfSquares = IntSumOfSquares::of;
+                sumOfSquares = IntSumOfSquares::createFromRange;
                 break;
             default:
                 throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
@@ -152,10 +151,10 @@ public final class IntStatistics implements IntConsumer {
             if (order > momentOrder) {
                 momentOrder = order;
                 if (order == 4) {
-                    moment = SumOfFourthDeviations::of;
+                    moment = SumOfFourthDeviations::ofRange;
                 } else {
                     // Assume order == 3
-                    moment = SumOfCubedDeviations::of;
+                    moment = SumOfCubedDeviations::ofRange;
                 }
             }
         }
@@ -173,16 +172,16 @@ public final class IntStatistics implements IntConsumer {
         }
 
         /**
-         * Builds a {@code IntStatistics} instance.
+         * Builds an {@code IntStatistics} instance.
          *
          * @return {@code IntStatistics} instance.
          */
         public IntStatistics build() {
-            return build(NO_VALUES);
+            return create(NO_VALUES, 0, 0);
         }
 
         /**
-         * Builds a {@code IntStatistics} instance using the input {@code values}.
+         * Builds an {@code IntStatistics} instance using the input {@code values}.
          *
          * <p>Note: {@code IntStatistics} computed using
          * {@link IntStatistics#accept(int) accept} may be
@@ -193,29 +192,68 @@ public final class IntStatistics implements IntConsumer {
          */
         public IntStatistics build(int... values) {
             Objects.requireNonNull(values, "values");
+            return create(values, 0, values.length);
+        }
+
+        /**
+         * Builds an {@code IntStatistics} instance using the specified range of {@code values}.
+         *
+         * <p>Note: {@code IntStatistics} computed using
+         * {@link IntStatistics#accept(int) accept} may be
+         * different from this instance.
+         *
+         * @param values Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return {@code IntStatistics} instance.
+         * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+         */
+        public IntStatistics build(int[] values, int from, int to) {
+            Statistics.checkFromToIndex(from, to, values.length);
+            return create(values, from, to);
+        }
+
+        /**
+         * Builds an {@code IntStatistics} instance using the input {@code values}.
+         *
+         * <p>Note: {@code IntStatistics} computed using
+         * {@link IntStatistics#accept(int) accept} may be
+         * different from this instance.
+         *
+         * <p>Warning: No range checks are performed.
+         *
+         * @param values Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return {@code IntStatistics} instance.
+         */
+        private IntStatistics create(int[] values, int from, int to) {
             return new IntStatistics(
-                values.length,
-                create(min, values),
-                create(max, values),
-                create(moment, values),
-                create(sum, values),
-                create(product, values),
-                create(sumOfSquares, values),
-                create(sumOfLogs, values),
+                to - from,
+                create(min, values, from, to),
+                create(max, values, from, to),
+                create(moment, values, from, to),
+                create(sum, values, from, to),
+                create(product, values, from, to),
+                create(sumOfSquares, values, from, to),
+                create(sumOfLogs, values, from, to),
                 config);
         }
 
         /**
          * Creates the object from the {@code values}.
          *
+         * @param <S> value type
          * @param <T> object type
          * @param constructor Constructor.
          * @param values Values
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
          * @return the instance
          */
-        private static <T> T create(Function<int[], T> constructor, int[] values) {
+        private static <S, T> T create(RangeFunction<S, T> constructor, S values, int from, int to) {
             if (constructor != null) {
-                return constructor.apply(values);
+                return constructor.apply(values, from, to);
             }
             return null;
         }
@@ -306,6 +344,37 @@ public final class IntStatistics implements IntConsumer {
         final Builder b = new Builder();
         statistics.forEach(b::add);
         return b.build(values);
+    }
+
+    /**
+     * Returns a new instance configured to compute the specified {@code statistics}
+     * populated using the specified range of {@code values}.
+     *
+     * <p>Use this method to create an instance populated with part of an array of
+     * {@code int[]} data, e.g. to use the first half of the data:
+     *
+     * <pre>
+     * int[] data = ...
+     * IntStatistics stats = IntStatistics.of(
+     *     EnumSet.of(Statistic.MIN, Statistic.MAX),
+     *     data, 0, data.length / 2);
+     * </pre>
+     *
+     * @param statistics Statistics to compute.
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the instance
+     * @throws IllegalArgumentException if there are no {@code statistics} to compute.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static IntStatistics ofRange(Set<Statistic> statistics, int[] values, int from, int to) {
+        if (statistics.isEmpty()) {
+            throw new IllegalArgumentException(NO_CONFIGURED_STATISTICS);
+        }
+        final Builder b = new Builder();
+        statistics.forEach(b::add);
+        return b.build(values, from, to);
     }
 
     /**

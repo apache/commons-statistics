@@ -20,7 +20,6 @@ import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.DoubleConsumer;
-import java.util.function.Function;
 import java.util.function.LongConsumer;
 
 /**
@@ -70,19 +69,19 @@ public final class LongStatistics implements LongConsumer {
         private static final long[] NO_VALUES = {};
 
         /** The {@link LongMin} constructor. */
-        private Function<long[], LongMin> min;
+        private RangeFunction<long[], LongMin> min;
         /** The {@link LongMax} constructor. */
-        private Function<long[], LongMax> max;
+        private RangeFunction<long[], LongMax> max;
         /** The moment constructor. May return any instance of {@link FirstMoment}. */
-        private Function<long[], FirstMoment> moment;
+        private RangeFunction<long[], FirstMoment> moment;
         /** The {@link LongSum} constructor. */
-        private Function<long[], LongSum> sum;
+        private RangeFunction<long[], LongSum> sum;
         /** The {@link Product} constructor. */
-        private Function<long[], Product> product;
+        private RangeFunction<long[], Product> product;
         /** The {@link LongSumOfSquares} constructor. */
-        private Function<long[], LongSumOfSquares> sumOfSquares;
+        private RangeFunction<long[], LongSumOfSquares> sumOfSquares;
         /** The {@link SumOfLogs} constructor. */
-        private Function<long[], SumOfLogs> sumOfLogs;
+        private RangeFunction<long[], SumOfLogs> sumOfLogs;
         /** The order of the moment. It corresponds to the power computed by the {@link FirstMoment}
          * instance constructed by {@link #moment}. This should only be increased from the default
          * of zero (corresponding to no moment computation). */
@@ -107,34 +106,34 @@ public final class LongStatistics implements LongConsumer {
             switch (statistic) {
             case GEOMETRIC_MEAN:
             case SUM_OF_LOGS:
-                sumOfLogs = SumOfLogs::of;
+                sumOfLogs = SumOfLogs::createFromRange;
                 break;
             case KURTOSIS:
                 createMoment(4);
                 break;
             case MAX:
-                max = LongMax::of;
+                max = LongMax::createFromRange;
                 break;
             case MIN:
-                min = LongMin::of;
+                min = LongMin::createFromRange;
                 break;
             case PRODUCT:
-                product = Product::of;
+                product = Product::createFromRange;
                 break;
             case SKEWNESS:
                 createMoment(3);
                 break;
             case STANDARD_DEVIATION:
             case VARIANCE:
-                sum = LongSum::of;
-                sumOfSquares = LongSumOfSquares::of;
+                sum = LongSum::createFromRange;
+                sumOfSquares = LongSumOfSquares::createFromRange;
                 break;
             case MEAN:
             case SUM:
-                sum = LongSum::of;
+                sum = LongSum::createFromRange;
                 break;
             case SUM_OF_SQUARES:
-                sumOfSquares = LongSumOfSquares::of;
+                sumOfSquares = LongSumOfSquares::createFromRange;
                 break;
             default:
                 throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
@@ -152,10 +151,10 @@ public final class LongStatistics implements LongConsumer {
             if (order > momentOrder) {
                 momentOrder = order;
                 if (order == 4) {
-                    moment = SumOfFourthDeviations::of;
+                    moment = SumOfFourthDeviations::ofRange;
                 } else {
                     // Assume order == 3
-                    moment = SumOfCubedDeviations::of;
+                    moment = SumOfCubedDeviations::ofRange;
                 }
             }
         }
@@ -178,7 +177,7 @@ public final class LongStatistics implements LongConsumer {
          * @return {@code LongStatistics} instance.
          */
         public LongStatistics build() {
-            return build(NO_VALUES);
+            return create(NO_VALUES, 0, 0);
         }
 
         /**
@@ -193,29 +192,68 @@ public final class LongStatistics implements LongConsumer {
          */
         public LongStatistics build(long... values) {
             Objects.requireNonNull(values, "values");
+            return create(values, 0, values.length);
+        }
+
+        /**
+         * Builds a {@code LongStatistics} instance using the specified range of {@code values}.
+         *
+         * <p>Note: {@code LongStatistics} computed using
+         * {@link LongStatistics#accept(long) accept} may be
+         * different from this instance.
+         *
+         * @param values Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return {@code LongStatistics} instance.
+         * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+         */
+        public LongStatistics build(long[] values, int from, int to) {
+            Statistics.checkFromToIndex(from, to, values.length);
+            return create(values, from, to);
+        }
+
+        /**
+         * Builds a {@code LongStatistics} instance using the input {@code values}.
+         *
+         * <p>Note: {@code LongStatistics} computed using
+         * {@link LongStatistics#accept(long) accept} may be
+         * different from this instance.
+         *
+         * <p>Warning: No range checks are performed.
+         *
+         * @param values Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return {@code LongStatistics} instance.
+         */
+        private LongStatistics create(long[] values, int from, int to) {
             return new LongStatistics(
-                values.length,
-                create(min, values),
-                create(max, values),
-                create(moment, values),
-                create(sum, values),
-                create(product, values),
-                create(sumOfSquares, values),
-                create(sumOfLogs, values),
+                to - from,
+                create(min, values, from, to),
+                create(max, values, from, to),
+                create(moment, values, from, to),
+                create(sum, values, from, to),
+                create(product, values, from, to),
+                create(sumOfSquares, values, from, to),
+                create(sumOfLogs, values, from, to),
                 config);
         }
 
         /**
          * Creates the object from the {@code values}.
          *
+         * @param <S> value type
          * @param <T> object type
          * @param constructor Constructor.
          * @param values Values
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
          * @return the instance
          */
-        private static <T> T create(Function<long[], T> constructor, long[] values) {
+        private static <S, T> T create(RangeFunction<S, T> constructor, S values, int from, int to) {
             if (constructor != null) {
-                return constructor.apply(values);
+                return constructor.apply(values, from, to);
             }
             return null;
         }
@@ -306,6 +344,37 @@ public final class LongStatistics implements LongConsumer {
         final Builder b = new Builder();
         statistics.forEach(b::add);
         return b.build(values);
+    }
+
+    /**
+     * Returns a new instance configured to compute the specified {@code statistics}
+     * populated using the specified range of {@code values}.
+     *
+     * <p>Use this method to create an instance populated with part of an array of
+     * {@code long[]} data, e.g. to use the first half of the data:
+     *
+     * <pre>
+     * long[] data = ...
+     * LongStatistics stats = LongStatistics.of(
+     *     EnumSet.of(Statistic.MIN, Statistic.MAX),
+     *     data, 0, data.length / 2);
+     * </pre>
+     *
+     * @param statistics Statistics to compute.
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the instance
+     * @throws IllegalArgumentException if there are no {@code statistics} to compute.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static LongStatistics ofRange(Set<Statistic> statistics, long[] values, int from, int to) {
+        if (statistics.isEmpty()) {
+            throw new IllegalArgumentException(NO_CONFIGURED_STATISTICS);
+        }
+        final Builder b = new Builder();
+        statistics.forEach(b::add);
+        return b.build(values, from, to);
     }
 
     /**

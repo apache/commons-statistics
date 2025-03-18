@@ -42,6 +42,11 @@ final class LongMaxTest extends BaseLongStatisticTest<LongMax> {
     }
 
     @Override
+    protected LongMax create(long[] values, int from, int to) {
+        return LongMax.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         return Max.of(Arrays.stream(values).asDoubleStream().toArray());
     }

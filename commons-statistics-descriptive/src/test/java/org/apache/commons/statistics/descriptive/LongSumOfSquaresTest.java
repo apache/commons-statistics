@@ -47,6 +47,11 @@ final class LongSumOfSquaresTest extends BaseLongStatisticTest<LongSumOfSquares>
     }
 
     @Override
+    protected LongSumOfSquares create(long[] values, int from, int to) {
+        return LongSumOfSquares.ofRange(values, from, to);
+    }
+
+    @Override
     protected DoubleStatistic createAsDoubleStatistic(long... values) {
         return SumOfSquares.of(Arrays.stream(values).asDoubleStream().toArray());
     }

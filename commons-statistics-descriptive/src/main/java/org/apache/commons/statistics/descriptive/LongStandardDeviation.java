@@ -117,16 +117,45 @@ public final class LongStandardDeviation implements LongStatistic, StatisticAccu
      * @return {@code LongStandardDeviation} instance.
      */
     public static LongStandardDeviation of(long... values) {
+        return createFromRange(values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongStandardDeviation} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static LongStandardDeviation ofRange(long[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongStandardDeviation} instance.
+     */
+    static LongStandardDeviation createFromRange(long[] values, int from, int to) {
         // Note: Arrays could be processed using specialised counts knowing the maximum limit
         // for an array is 2^31 values. Requires a UInt160.
 
         final Int128 s = Int128.create();
         final UInt192 ss = UInt192.create();
-        for (final long x : values) {
+        for (int i = from; i < to; i++) {
+            final long x = values[i];
             s.add(x);
             ss.addSquare(x);
         }
-        return new LongStandardDeviation(ss, s, values.length);
+        return new LongStandardDeviation(ss, s, to - from);
     }
 
     /**
@@ -165,7 +194,7 @@ public final class LongStandardDeviation implements LongStatistic, StatisticAccu
      * Sets the value of the biased flag. The default value is {@code false}. The bias
      * term refers to the computation of the variance; the standard deviation is returned
      * as the square root of the biased or unbiased <em>sample variance</em>. For further
-     * details see {@link LongVariance#setBiased(boolean) LongStandardDeviationVariance.setBiased}.
+     * details see {@link LongVariance#setBiased(boolean) LongVariance.setBiased}.
      *
      * <p>This flag only controls the final computation of the statistic. The value of
      * this flag will not affect compatibility between instances during a
@@ -173,9 +202,8 @@ public final class LongStandardDeviation implements LongStatistic, StatisticAccu
      *
      * @param v Value.
      * @return {@code this} instance
-     * @see LongStandardDeviation#setBiased(boolean)
+     * @see LongVariance#setBiased(boolean)
      */
-
     public LongStandardDeviation setBiased(boolean v) {
         biased = v;
         return this;

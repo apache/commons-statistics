@@ -62,7 +62,7 @@ public final class LongMax implements LongStatistic, StatisticAccumulator<LongMa
      *
      * <p>The initial result is {@link Long#MIN_VALUE}.
      *
-     * @return {@code Min} instance.
+     * @return {@code LongMax} instance.
      */
     public static LongMax create() {
         return new LongMax();
@@ -75,10 +75,41 @@ public final class LongMax implements LongStatistic, StatisticAccumulator<LongMa
      * {@link Long#MIN_VALUE}.
      *
      * @param values Values.
-     * @return {@code Min} instance.
+     * @return {@code LongMax} instance.
      */
     public static LongMax of(long... values) {
         return Statistics.add(new LongMax(), values);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>When the range is empty, the result is
+     * {@link Long#MIN_VALUE}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongMax} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static LongMax ofRange(long[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code LongMax} instance.
+     */
+    static LongMax createFromRange(long[] values, int from, int to) {
+        return Statistics.add(new LongMax(), values, from, to);
     }
 
     /**
