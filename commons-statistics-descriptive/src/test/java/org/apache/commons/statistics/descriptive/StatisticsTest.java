@@ -20,8 +20,12 @@ package org.apache.commons.statistics.descriptive;
 import java.util.function.DoubleConsumer;
 import java.util.function.IntConsumer;
 import java.util.function.LongConsumer;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test for {@link Statistics} utilities.
@@ -112,5 +116,31 @@ class StatisticsTest {
         combined.accept(y);
         Assertions.assertEquals(y, v1[0]);
         Assertions.assertEquals(y, v2[0]);
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testCheckFromToIndex(int from, int to, int length) {
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> Statistics.checkFromToIndex(from, to, length));
+    }
+
+    static Stream<Arguments> testCheckFromToIndex() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        // fromIndex < 0
+        builder.add(Arguments.of(-1, 10, 10));
+        builder.add(Arguments.of(Integer.MIN_VALUE, 10, 10));
+        builder.add(Arguments.of(Integer.MIN_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE));
+        // fromIndex > toIndex
+        builder.add(Arguments.of(2, 1, 10));
+        builder.add(Arguments.of(20, 10, 10));
+        builder.add(Arguments.of(0, -1, 10));
+        // toIndex > length
+        builder.add(Arguments.of(0, 11, 10));
+        builder.add(Arguments.of(0, Integer.MAX_VALUE, Integer.MAX_VALUE - 1));
+        // length < 0
+        builder.add(Arguments.of(0, 1, -1));
+        builder.add(Arguments.of(0, 1, Integer.MIN_VALUE));
+        builder.add(Arguments.of(0, Integer.MAX_VALUE, Integer.MIN_VALUE));
+        return builder.build();
     }
 }

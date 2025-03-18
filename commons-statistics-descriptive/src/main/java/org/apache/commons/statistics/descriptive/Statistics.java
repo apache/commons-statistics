@@ -90,6 +90,24 @@ final class Statistics {
     }
 
     /**
+     * Add the specified range of {@code values} to the {@code statistic}.
+     * <p>Warning: No range checks are performed.
+     *
+     * @param <T> Type of the statistic
+     * @param statistic Statistic.
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the statistic
+     */
+    static <T extends DoubleConsumer> T add(T statistic, double[] values, int from, int to) {
+        for (int i = from; i < to; i++) {
+            statistic.accept(values[i]);
+        }
+        return statistic;
+    }
+
+    /**
      * Add all the {@code values} to the {@code statistic}.
      *
      * @param <T> Type of the statistic
@@ -342,5 +360,69 @@ final class Statistics {
         } else if (a != null) {
             a.combine(b);
         }
+    }
+
+    /**
+     * Checks if the sub-range from fromIndex (inclusive) to toIndex (exclusive) is
+     * within the bounds of range from 0 (inclusive) to length (exclusive).
+     *
+     * <p>This function provides the functionality of
+     * {@code java.utils.Objects.checkFromToIndex} introduced in JDK 9. The <a
+     * href="https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/Objects.html#checkFromToIndex(int,int,int)">Objects</a>
+     * javadoc has been reproduced for reference. The return value has been changed
+     * to void.
+     *
+     * <p>The sub-range is defined to be out of bounds if any of the following
+     * inequalities is true:
+     * <ul>
+     * <li>{@code fromIndex < 0}
+     * <li>{@code fromIndex > toIndex}
+     * <li>{@code toIndex > length}
+     * <li>{@code length < 0}, which is implied from the former inequalities
+     * </ul>
+     *
+     * @param fromIndex Lower-bound (inclusive) of the sub-range.
+     * @param toIndex Upper-bound (exclusive) of the sub-range.
+     * @param length Upper-bound (exclusive) of the range.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    static void checkFromToIndex(int fromIndex, int toIndex, int length) {
+        // Checks as documented above
+        if (fromIndex < 0 || fromIndex > toIndex || toIndex > length) {
+            throw new IndexOutOfBoundsException(
+                msgRangeOutOfBounds(fromIndex, toIndex, length));
+        }
+    }
+
+    // Message formatting moved to separate methods to assist inlining of the validation methods.
+
+    /**
+     * Format a message when range [from, to) is not entirely within the length.
+     *
+     * @param fromIndex Lower-bound (inclusive) of the sub-range.
+     * @param toIndex Upper-bound (exclusive) of the sub-range.
+     * @param length Upper-bound (exclusive) of the range.
+     * @return the message
+     */
+    private static String msgRangeOutOfBounds(int fromIndex, int toIndex, int length) {
+        return String.format("Range [%d, %d) out of bounds for length %d", fromIndex, toIndex, length);
+    }
+
+    /**
+     * Sum the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the sum
+     */
+    static org.apache.commons.numbers.core.Sum sum(double[] values, int from, int to) {
+        final org.apache.commons.numbers.core.Sum s = org.apache.commons.numbers.core.Sum.create();
+        for (int i = from; i < to; i++) {
+            s.accept(values[i]);
+        }
+        return s;
     }
 }

@@ -115,7 +115,27 @@ class SumOfSquaredDeviations extends FirstMoment {
         if (values.length == 0) {
             return new SumOfSquaredDeviations();
         }
-        return create(FirstMoment.of(values), values);
+        return create(FirstMoment.of(values), values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code SumOfSquaredDeviations} computed using {@link #accept accept} may be
+     * different from this instance.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfSquaredDeviations} instance.
+     */
+    static SumOfSquaredDeviations ofRange(double[] values, int from, int to) {
+        if (from == to) {
+            return new SumOfSquaredDeviations();
+        }
+        return create(FirstMoment.ofRange(values, from, to), values, from, to);
     }
 
     /**
@@ -125,15 +145,20 @@ class SumOfSquaredDeviations extends FirstMoment {
      * This method is used by {@link DoubleStatistics} using a sum that can be reused
      * for the {@link Sum} statistic.
      *
+     * <p>Warning: No range checks are performed.
+     *
      * @param sum Sum of the values.
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return {@code SumOfSquaredDeviations} instance.
      */
-    static SumOfSquaredDeviations create(org.apache.commons.numbers.core.Sum sum, double[] values) {
-        if (values.length == 0) {
+    static SumOfSquaredDeviations createFromRange(org.apache.commons.numbers.core.Sum sum,
+                                                  double[] values, int from, int to) {
+        if (from == to) {
             return new SumOfSquaredDeviations();
         }
-        return create(FirstMoment.create(sum, values), values);
+        return create(FirstMoment.createFromRange(sum, values, from, to), values, from, to);
     }
 
     /**
@@ -141,9 +166,11 @@ class SumOfSquaredDeviations extends FirstMoment {
      *
      * @param m1 First moment.
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return {@code SumOfSquaredDeviations} instance.
      */
-    private static SumOfSquaredDeviations create(FirstMoment m1, double[] values) {
+    private static SumOfSquaredDeviations create(FirstMoment m1, double[] values, int from, int to) {
         // "Corrected two-pass algorithm"
         // See: Chan et al (1983) Equation 1.7
 
@@ -153,8 +180,8 @@ class SumOfSquaredDeviations extends FirstMoment {
         }
         double s = 0;
         double ss = 0;
-        for (final double x : values) {
-            final double dx = x - xbar;
+        for (int i = from; i < to; i++) {
+            final double dx = values[i] - xbar;
             s += dx;
             ss += dx * dx;
         }
@@ -165,7 +192,7 @@ class SumOfSquaredDeviations extends FirstMoment {
         // when ss is infinite, assign it an infinite value which is its intended value.
         final double sumSquaredDev = ss == Double.POSITIVE_INFINITY ?
             Double.POSITIVE_INFINITY :
-            ss - (s * s / values.length);
+            ss - (s * s / (to - from));
         return new SumOfSquaredDeviations(sumSquaredDev, m1);
     }
 

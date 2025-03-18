@@ -122,7 +122,27 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
         if (values.length == 0) {
             return new SumOfFourthDeviations();
         }
-        return create(SumOfCubedDeviations.of(values), values);
+        return create(SumOfCubedDeviations.of(values), values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code SumOfFourthDeviations} computed using {@link #accept accept} may be
+     * different from this instance.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfFourthDeviations} instance.
+     */
+    static SumOfFourthDeviations ofRange(double[] values, int from, int to) {
+        if (from == to) {
+            return new SumOfFourthDeviations();
+        }
+        return create(SumOfCubedDeviations.ofRange(values, from, to), values, from, to);
     }
 
     /**
@@ -132,15 +152,20 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
      * This method is used by {@link DoubleStatistics} using a sum that can be reused
      * for the {@link Sum} statistic.
      *
+     * <p>Warning: No range checks are performed.
+     *
      * @param sum Sum of the values.
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return {@code SumOfFourthDeviations} instance.
      */
-    static SumOfFourthDeviations create(org.apache.commons.numbers.core.Sum sum, double[] values) {
-        if (values.length == 0) {
+    static SumOfFourthDeviations createFromRange(org.apache.commons.numbers.core.Sum sum,
+                                                 double[] values, int from, int to) {
+        if (from == to) {
             return new SumOfFourthDeviations();
         }
-        return create(SumOfCubedDeviations.create(sum, values), values);
+        return create(SumOfCubedDeviations.createFromRange(sum, values, from, to), values, from, to);
     }
 
     /**
@@ -148,9 +173,11 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
      *
      * @param sc Sum of cubed deviations.
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return {@code SumOfFourthDeviations} instance.
      */
-    private static SumOfFourthDeviations create(SumOfCubedDeviations sc, double[] values) {
+    private static SumOfFourthDeviations create(SumOfCubedDeviations sc, double[] values, int from, int to) {
         // Edge cases
         final double xbar = sc.getFirstMoment();
         if (!Double.isFinite(xbar) ||
@@ -162,8 +189,8 @@ class SumOfFourthDeviations extends SumOfCubedDeviations {
         // Compute the sum of fourth (quad) deviations.
         // Note: This handles n=1.
         double s = 0;
-        for (final double x : values) {
-            s += pow4(x - xbar);
+        for (int i = from; i < to; i++) {
+            s += pow4(values[i] - xbar);
         }
         return new SumOfFourthDeviations(s, sc);
     }

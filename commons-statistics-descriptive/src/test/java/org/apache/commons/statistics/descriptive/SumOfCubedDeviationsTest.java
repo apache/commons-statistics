@@ -49,6 +49,13 @@ final class SumOfCubedDeviationsTest extends BaseDoubleStatisticTest<SumOfCubedD
     }
 
     @Override
+    protected SumOfCubedDeviationsWrapper create(double[] values, int from, int to) {
+        // Add range checks here to pass the range validation tests
+        Statistics.checkFromToIndex(from, to, values.length);
+        return new SumOfCubedDeviationsWrapper(SumOfCubedDeviations.ofRange(values, from, to));
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.NaN;
     }

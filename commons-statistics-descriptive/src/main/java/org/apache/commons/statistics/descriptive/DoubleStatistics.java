@@ -18,7 +18,6 @@ package org.apache.commons.statistics.descriptive;
 
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.DoubleConsumer;
 import java.util.function.Function;
 
@@ -68,19 +67,19 @@ public final class DoubleStatistics implements DoubleConsumer {
         private static final double[] NO_VALUES = {};
 
         /** The {@link Min} constructor. */
-        private Function<double[], Min> min;
+        private RangeFunction<double[], Min> min;
         /** The {@link Max} constructor. */
-        private Function<double[], Max> max;
+        private RangeFunction<double[], Max> max;
         /** The moment constructor. May return any instance of {@link FirstMoment}. */
-        private BiFunction<org.apache.commons.numbers.core.Sum, double[], FirstMoment> moment;
+        private RangeBiFunction<org.apache.commons.numbers.core.Sum, double[], FirstMoment> moment;
         /** The {@link Sum} constructor. */
         private Function<org.apache.commons.numbers.core.Sum, Sum> sum;
         /** The {@link Product} constructor. */
-        private Function<double[], Product> product;
+        private RangeFunction<double[], Product> product;
         /** The {@link SumOfSquares} constructor. */
-        private Function<double[], SumOfSquares> sumOfSquares;
+        private RangeFunction<double[], SumOfSquares> sumOfSquares;
         /** The {@link SumOfLogs} constructor. */
-        private Function<double[], SumOfLogs> sumOfLogs;
+        private RangeFunction<double[], SumOfLogs> sumOfLogs;
         /** The order of the moment. It corresponds to the power computed by the {@link FirstMoment}
          * instance constructed by {@link #moment}. This should only be increased from the default
          * of zero (corresponding to no moment computation). */
@@ -105,22 +104,22 @@ public final class DoubleStatistics implements DoubleConsumer {
             switch (statistic) {
             case GEOMETRIC_MEAN:
             case SUM_OF_LOGS:
-                sumOfLogs = SumOfLogs::of;
+                sumOfLogs = SumOfLogs::createFromRange;
                 break;
             case KURTOSIS:
                 createMoment(4);
                 break;
             case MAX:
-                max = Max::of;
+                max = Max::createFromRange;
                 break;
             case MEAN:
                 createMoment(1);
                 break;
             case MIN:
-                min = Min::of;
+                min = Min::createFromRange;
                 break;
             case PRODUCT:
-                product = Product::of;
+                product = Product::createFromRange;
                 break;
             case SKEWNESS:
                 createMoment(3);
@@ -133,7 +132,7 @@ public final class DoubleStatistics implements DoubleConsumer {
                 sum = Sum::new;
                 break;
             case SUM_OF_SQUARES:
-                sumOfSquares = SumOfSquares::of;
+                sumOfSquares = SumOfSquares::createFromRange;
                 break;
             default:
                 throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
@@ -151,14 +150,14 @@ public final class DoubleStatistics implements DoubleConsumer {
             if (order > momentOrder) {
                 momentOrder = order;
                 if (order == 4) {
-                    moment = SumOfFourthDeviations::create;
+                    moment = SumOfFourthDeviations::createFromRange;
                 } else if (order == 3) {
-                    moment = SumOfCubedDeviations::create;
+                    moment = SumOfCubedDeviations::createFromRange;
                 } else if (order == 2) {
-                    moment = SumOfSquaredDeviations::create;
+                    moment = SumOfSquaredDeviations::createFromRange;
                 } else {
                     // Assume order == 1
-                    moment = FirstMoment::create;
+                    moment = FirstMoment::createFromRange;
                 }
             }
         }
@@ -181,7 +180,7 @@ public final class DoubleStatistics implements DoubleConsumer {
          * @return {@code DoubleStatistics} instance.
          */
         public DoubleStatistics build() {
-            return build(NO_VALUES);
+            return create(NO_VALUES, 0, 0);
         }
 
         /**
@@ -196,24 +195,59 @@ public final class DoubleStatistics implements DoubleConsumer {
          */
         public DoubleStatistics build(double... values) {
             Objects.requireNonNull(values, "values");
+            return create(values, 0, values.length);
+        }
+
+        /**
+         * Builds a {@code DoubleStatistics} instance using the specified range of {@code values}.
+         *
+         * <p>Note: {@code DoubleStatistics} computed using
+         * {@link DoubleStatistics#accept(double) accept} may be
+         * different from this instance.
+         *
+         * @param values Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return {@code DoubleStatistics} instance.
+         * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+         */
+        public DoubleStatistics build(double[] values, int from, int to) {
+            Statistics.checkFromToIndex(from, to, values.length);
+            return create(values, from, to);
+        }
+
+        /**
+         * Builds a {@code DoubleStatistics} instance using the input {@code values}.
+         *
+         * <p>Note: {@code DoubleStatistics} computed using
+         * {@link DoubleStatistics#accept(double) accept} may be
+         * different from this instance.
+         *
+         * <p>Warning: No range checks are performed.
+         *
+         * @param values Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return {@code DoubleStatistics} instance.
+         */
+        private DoubleStatistics create(double[] values, int from, int to) {
             // Create related statistics
             FirstMoment m = null;
             Sum sumStat = null;
             if (moment != null || sum != null) {
-                final org.apache.commons.numbers.core.Sum s =
-                    org.apache.commons.numbers.core.Sum.of(values);
-                m = create(moment, s, values);
+                final org.apache.commons.numbers.core.Sum s = Statistics.sum(values, from, to);
+                m = create(moment, s, values, from, to);
                 sumStat = create(sum, s);
             }
             return new DoubleStatistics(
-                values.length,
-                create(min, values),
-                create(max, values),
+                to - from,
+                create(min, values, from, to),
+                create(max, values, from, to),
                 m,
                 sumStat,
-                create(product, values),
-                create(sumOfSquares, values),
-                create(sumOfLogs, values),
+                create(product, values, from, to),
+                create(sumOfSquares, values, from, to),
+                create(sumOfLogs, values, from, to),
                 config);
         }
 
@@ -234,6 +268,24 @@ public final class DoubleStatistics implements DoubleConsumer {
         }
 
         /**
+         * Creates the object from the {@code values}.
+         *
+         * @param <S> value type
+         * @param <T> object type
+         * @param constructor Constructor.
+         * @param values Values
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return the instance
+         */
+        private static <S, T> T create(RangeFunction<S, T> constructor, S values, int from, int to) {
+            if (constructor != null) {
+                return constructor.apply(values, from, to);
+            }
+            return null;
+        }
+
+        /**
          * Creates the object from the values {@code r} and {@code s}.
          *
          * @param <R> value type
@@ -242,11 +294,13 @@ public final class DoubleStatistics implements DoubleConsumer {
          * @param constructor Constructor.
          * @param r Value.
          * @param s Value.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
          * @return the instance
          */
-        private static <R, S, T> T create(BiFunction<R, S, T> constructor, R r, S s) {
+        private static <R, S, T> T create(RangeBiFunction<R, S, T> constructor, R r, S s, int from, int to) {
             if (constructor != null) {
-                return constructor.apply(r, s);
+                return constructor.apply(r, s, from, to);
             }
             return null;
         }
@@ -320,6 +374,37 @@ public final class DoubleStatistics implements DoubleConsumer {
         final Builder b = new Builder();
         statistics.forEach(b::add);
         return b.build(values);
+    }
+
+    /**
+     * Returns a new instance configured to compute the specified {@code statistics}
+     * populated using the specified range of {@code values}.
+     *
+     * <p>Use this method to create an instance populated with part of an array of
+     * {@code double[]} data, e.g. to use the first half of the data:
+     *
+     * <pre>
+     * double[] data = ...
+     * DoubleStatistics stats = DoubleStatistics.of(
+     *     EnumSet.of(Statistic.MIN, Statistic.MAX),
+     *     data, 0, data.length / 2);
+     * </pre>
+     *
+     * @param statistics Statistics to compute.
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the instance
+     * @throws IllegalArgumentException if there are no {@code statistics} to compute.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static DoubleStatistics ofRange(Set<Statistic> statistics, double[] values, int from, int to) {
+        if (statistics.isEmpty()) {
+            throw new IllegalArgumentException(NO_CONFIGURED_STATISTICS);
+        }
+        final Builder b = new Builder();
+        statistics.forEach(b::add);
+        return b.build(values, from, to);
     }
 
     /**

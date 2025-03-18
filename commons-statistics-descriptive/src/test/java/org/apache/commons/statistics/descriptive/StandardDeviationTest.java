@@ -44,6 +44,11 @@ final class StandardDeviationTest extends BaseDoubleStatisticTest<StandardDeviat
     }
 
     @Override
+    protected StandardDeviation create(double[] values, int from, int to) {
+        return StandardDeviation.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.NaN;
     }

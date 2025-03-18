@@ -45,6 +45,11 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
     }
 
     @Override
+    protected Variance create(double[] values, int from, int to) {
+        return Variance.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.NaN;
     }

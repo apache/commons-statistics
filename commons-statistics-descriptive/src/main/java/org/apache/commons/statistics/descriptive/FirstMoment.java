@@ -153,7 +153,28 @@ class FirstMoment implements DoubleConsumer {
         }
         // In the typical use-case a sum of values will not overflow and
         // is faster than the rolling algorithm
-        return create(org.apache.commons.numbers.core.Sum.of(values), values);
+        return createFromRange(org.apache.commons.numbers.core.Sum.of(values), values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code FirstMoment} computed using {@link #accept} may be different from
+     * this instance.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code FirstMoment} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    static FirstMoment ofRange(double[] values, int from, int to) {
+        if (from == to) {
+            return new FirstMoment();
+        }
+        return createFromRange(Statistics.sum(values, from, to), values, from, to);
     }
 
     /**
@@ -165,38 +186,43 @@ class FirstMoment implements DoubleConsumer {
      * <p>This method is used by {@link DoubleStatistics} using a sum that can be reused
      * for the {@link Sum} statistic.
      *
+     * <p>Warning: No range checks are performed.
+     *
      * @param sum Sum of the values.
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return {@code FirstMoment} instance.
      */
-    static FirstMoment create(org.apache.commons.numbers.core.Sum sum, double[] values) {
+    static FirstMoment createFromRange(org.apache.commons.numbers.core.Sum sum,
+                                       double[] values, int from, int to) {
         // Protect against empty values
-        if (values.length == 0) {
+        if (from == to) {
             return new FirstMoment();
         }
 
         final double s = sum.getAsDouble();
         if (Double.isFinite(s)) {
-            return new FirstMoment(s / values.length, values.length);
+            return new FirstMoment(s / (to - from), to - from);
         }
 
         // "Corrected two-pass algorithm"
 
         // First pass
-        final FirstMoment m1 = create(values);
+        final FirstMoment m1 = create(values, from, to);
         final double xbar = m1.getFirstMoment();
         if (!Double.isFinite(xbar)) {
             return m1;
         }
         // Second pass
         double correction = 0;
-        for (final double x : values) {
-            correction += x - xbar;
+        for (int i = from; i < to; i++) {
+            correction += values[i] - xbar;
         }
         // Note: Correction may be infinite
         if (Double.isFinite(correction)) {
             // Down scale the correction to the half representation
-            m1.m1 += DOWNSCALE * correction / values.length;
+            m1.m1 += DOWNSCALE * correction / m1.n;
         }
         return m1;
     }
@@ -212,14 +238,16 @@ class FirstMoment implements DoubleConsumer {
      * </ul>
      *
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return the first moment
      */
-    private static FirstMoment create(double[] values) {
+    private static FirstMoment create(double[] values, int from, int to) {
         double m1 = 0;
         int n = 0;
-        for (final double x : values) {
+        for (int i = from; i < to; i++) {
             // Downscale to avoid overflow for all finite input
-            m1 += (x * DOWNSCALE - m1) / ++n;
+            m1 += (values[i] * DOWNSCALE - m1) / ++n;
         }
         final FirstMoment m = new FirstMoment();
         m.n = n;
@@ -227,7 +255,7 @@ class FirstMoment implements DoubleConsumer {
         m.m1 = m1;
         // The non-finite value is only relevant if the data contains inf/nan
         if (!Double.isFinite(m1 * RESCALE)) {
-            m.nonFiniteValue = computeNonFiniteValue(values);
+            m.nonFiniteValue = computeNonFiniteValue(values, from, to);
         }
         return m;
     }
@@ -236,13 +264,15 @@ class FirstMoment implements DoubleConsumer {
      * Compute the result in the event of non-finite values.
      *
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return the non-finite result
      */
-    private static double computeNonFiniteValue(double[] values) {
+    private static double computeNonFiniteValue(double[] values, int from, int to) {
         double sum = 0;
-        for (final double x : values) {
+        for (int i = from; i < to; i++) {
             // Scaling down values prevents overflow of finites.
-            sum += x * Double.MIN_NORMAL;
+            sum += values[i] * Double.MIN_NORMAL;
         }
         return sum;
     }

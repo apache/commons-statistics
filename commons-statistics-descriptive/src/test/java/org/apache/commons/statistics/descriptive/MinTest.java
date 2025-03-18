@@ -37,6 +37,11 @@ final class MinTest extends BaseDoubleStatisticTest<Min> {
     }
 
     @Override
+    protected Min create(double[] values, int from, int to) {
+        return Min.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.POSITIVE_INFINITY;
     }

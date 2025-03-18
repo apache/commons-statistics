@@ -401,6 +401,16 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccu
     protected abstract S create(double... values);
 
     /**
+     * Creates the statistic from the {@code values} using the range {@code [from, to)}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the statistic
+     */
+    protected abstract S create(double[] values, int from, int to);
+
+    /**
      * Get the maximum number of values that can be added where the statistic is
      * considered empty.
      *
@@ -804,6 +814,22 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccu
     }
 
     /**
+     * Stream the arguments to test the computation of the statistic using the
+     * {@link #create(double[], int, int)} method. The expected value is the same as
+     * using the {@link #create(double...)} method with the values from
+     * {@link Arrays#copyOfRange(double[], int, int)}.
+     *
+     * @return the stream
+     */
+    final Stream<double[]> testArrayRange() {
+        final Builder<double[]> b = Stream.builder();
+        data.forEach(d -> b.accept(d.getValues()));
+        dataNonFinite.forEach(d -> b.accept(d.getValues()));
+        dataCustom.forEach(d -> b.accept(d.getValues()));
+        return b.build();
+    }
+
+    /**
      * Stream the arguments to test the computation of the statistic using a single
      * {@code double[]} array.
      *
@@ -970,6 +996,14 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccu
     }
 
     /**
+     * Test the uninitialized state of the statistic created from an empty range of an array.
+     */
+    @Test
+    final void testEmptyArrayRange() {
+        assertEmpty(create(new double[10], 2, 2), getToleranceArray());
+    }
+
+    /**
      * Assert the uninitialized state of the statistic.
      *
      * @param stat Statistic.
@@ -1011,6 +1045,37 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccu
     @MethodSource
     final void testArray(double[] values, double expected, DoubleTolerance tol) {
         assertStatistic(this::create, values, expected, tol);
+    }
+
+    /**
+     * Test the computation of the statistic using the {@link #create(double[], int, int)} method.
+     */
+    @ParameterizedTest
+    @MethodSource
+    final void testArrayRange(double[] values) {
+        // Test full range and half-range
+        assertStatistic(values, 0, values.length);
+        assertStatistic(values, 0, values.length >> 1);
+        assertStatistic(values, values.length >> 1, values.length);
+        // Random range
+        final long[] seed = TestHelper.createRNGSeed();
+        final UniformRandomProvider rng = TestHelper.createRNG(seed);
+        for (int repeat = RANDOM_PERMUTATIONS; --repeat >= 0;) {
+            final int i = rng.nextInt(values.length);
+            final int j = rng.nextInt(values.length);
+            assertStatistic(values, Math.min(i, j), Math.max(i, j));
+        }
+    }
+
+    /**
+     * Test the {@link #create(double[], int, int)} method throws with an invalid range.
+     */
+    @ParameterizedTest
+    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
+    final void testArrayRangeThrows(int from, int to, int length) {
+        final double[] values = new double[length];
+        Assertions.assertThrows(IndexOutOfBoundsException.class, () -> create(values, from, to),
+            () -> String.format("%s for range [%d, %d) in length %d", statisticName, from, to, length));
     }
 
     /**
@@ -1237,6 +1302,20 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccu
         final double actual = stat.getAsDouble();
         TestUtils.assertEquals(expected, actual, tol, () -> statisticName + ": " + format(values));
         return actual;
+    }
+
+    /**
+     * Assert the computation of the statistic from the specified range of values.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     */
+    final void assertStatistic(double[] values, int from, int to) {
+        final double expected = create(Arrays.copyOfRange(values, from, to)).getAsDouble();
+        final double actual = create(values, from, to).getAsDouble();
+        Assertions.assertEquals(expected, actual,
+            () -> String.format("%s : [%d, %d) %s", statisticName, from, to, format(values)));
     }
 
     /**

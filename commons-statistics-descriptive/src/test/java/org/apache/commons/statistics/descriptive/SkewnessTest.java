@@ -43,6 +43,11 @@ final class SkewnessTest extends BaseDoubleStatisticTest<Skewness> {
     }
 
     @Override
+    protected Skewness create(double[] values, int from, int to) {
+        return Skewness.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.NaN;
     }

@@ -125,6 +125,25 @@ public final class Mean implements DoubleStatistic, StatisticAccumulator<Mean> {
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code Mean} computed using {@link #accept(double) accept} may be
+     * different from this mean.
+     *
+     * <p>See {@link Mean} for details on the computing algorithm.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code Mean} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static Mean ofRange(double[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return new Mean(FirstMoment.ofRange(values, from, to));
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

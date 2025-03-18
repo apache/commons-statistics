@@ -84,6 +84,39 @@ public final class Min implements DoubleStatistic, StatisticAccumulator<Min> {
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>The result is {@code NaN} if any of the values is {@code NaN}.
+     *
+     * <p>When the range is empty, the result is
+     * {@link Double#POSITIVE_INFINITY positive infinity}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code Min} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static Min ofRange(double[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code Min} instance.
+     */
+    static Min createFromRange(double[] values, int from, int to) {
+        return Statistics.add(new Min(), values, from, to);
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

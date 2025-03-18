@@ -43,6 +43,11 @@ final class KurtosisTest extends BaseDoubleStatisticTest<Kurtosis> {
     }
 
     @Override
+    protected Kurtosis create(double[] values, int from, int to) {
+        return Kurtosis.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.NaN;
     }

@@ -96,6 +96,39 @@ public final class SumOfLogs implements DoubleStatistic, StatisticAccumulator<Su
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>The result is {@code NaN} if any of the values is {@code NaN}
+     * or negative; or the sum at any point is a {@code NaN}.
+     *
+     * <p>When the range is empty, the result is zero.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfLogs} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static SumOfLogs ofRange(double[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return createFromRange(values, from, to);
+    }
+
+    /**
+     * Create an instance using the specified range of {@code values}.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfLogs} instance.
+     */
+    static SumOfLogs createFromRange(double[] values, int from, int to) {
+        return Statistics.add(new SumOfLogs(), values, from, to);
+    }
+
+    /**
      * Returns an instance populated using the input {@code values}.
      *
      * <p>The result is {@code NaN} if any of the values is negative.

@@ -37,6 +37,11 @@ final class MaxTest extends BaseDoubleStatisticTest<Max> {
     }
 
     @Override
+    protected Max create(double[] values, int from, int to) {
+        return Max.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.NEGATIVE_INFINITY;
     }

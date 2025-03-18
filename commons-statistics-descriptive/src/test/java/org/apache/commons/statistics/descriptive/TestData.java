@@ -17,6 +17,7 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.Arguments;
 
 /**
  * Utility class which provides the data for tests in {o.a.c.s.descriptive} module.
@@ -51,5 +52,27 @@ final class TestData {
             // zeros
             new double[10]
         );
+    }
+
+
+    /**
+     * Stream the arguments to test creation methods with an invalid array range.
+     * Arguments are [from, to, length].
+     *
+     * @return the stream
+     */
+    static Stream<Arguments> arrayRangeTestData() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        // fromIndex < 0
+        builder.add(Arguments.of(-1, 10, 10));
+        builder.add(Arguments.of(Integer.MIN_VALUE, 10, 10));
+        // fromIndex > toIndex
+        builder.add(Arguments.of(2, 1, 10));
+        builder.add(Arguments.of(20, 10, 10));
+        builder.add(Arguments.of(0, -1, 10));
+        // toIndex > length
+        builder.add(Arguments.of(0, 11, 10));
+        builder.add(Arguments.of(0, 1, 0));
+        return builder.build();
     }
 }

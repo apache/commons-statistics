@@ -38,6 +38,11 @@ final class SumOfLogsTest extends BaseDoubleStatisticTest<SumOfLogs> {
     }
 
     @Override
+    protected SumOfLogs create(double[] values, int from, int to) {
+        return SumOfLogs.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return 0;
     }

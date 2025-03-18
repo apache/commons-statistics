@@ -37,6 +37,11 @@ final class ProductTest extends BaseDoubleStatisticTest<Product> {
     }
 
     @Override
+    protected Product create(double[] values, int from, int to) {
+        return Product.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return 1;
     }

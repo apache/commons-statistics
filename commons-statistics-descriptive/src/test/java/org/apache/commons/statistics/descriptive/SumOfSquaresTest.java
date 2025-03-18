@@ -37,6 +37,11 @@ final class SumOfSquaresTest extends BaseDoubleStatisticTest<SumOfSquares> {
     }
 
     @Override
+    protected SumOfSquares create(double[] values, int from, int to) {
+        return SumOfSquares.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return 0;
     }

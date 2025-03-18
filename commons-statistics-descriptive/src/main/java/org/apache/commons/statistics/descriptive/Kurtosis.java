@@ -149,6 +149,23 @@ public final class Kurtosis implements DoubleStatistic, StatisticAccumulator<Kur
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code Kurtosis} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code Kurtosis} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static Kurtosis ofRange(double[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return new Kurtosis(SumOfFourthDeviations.ofRange(values, from, to));
+    }
+
+    /**
      * Returns an instance populated using the input {@code values}.
      *
      * <p>Note: {@code Kurtosis} computed using {@link #accept(double) accept} may be

@@ -142,6 +142,25 @@ public final class StandardDeviation implements DoubleStatistic, StatisticAccumu
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code StandardDeviation} computed using {@link #accept(double) accept} may be
+     * different from this standard deviation.
+     *
+     * <p>See {@link StandardDeviation} for details on the computing algorithm.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code StandardDeviation} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static StandardDeviation ofRange(double[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return new StandardDeviation(SumOfSquaredDeviations.ofRange(values, from, to));
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

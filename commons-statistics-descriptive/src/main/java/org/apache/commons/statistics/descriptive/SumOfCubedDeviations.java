@@ -130,7 +130,27 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
         if (values.length == 0) {
             return new SumOfCubedDeviations();
         }
-        return create(SumOfSquaredDeviations.of(values), values);
+        return create(SumOfSquaredDeviations.of(values), values, 0, values.length);
+    }
+
+    /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>Note: {@code SumOfCubedDeviations} computed using {@link #accept(double) accept} may be
+     * different from this instance.
+     *
+     * <p>Warning: No range checks are performed.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code SumOfCubedDeviations} instance.
+     */
+    static SumOfCubedDeviations ofRange(double[] values, int from, int to) {
+        if (from == to) {
+            return new SumOfCubedDeviations();
+        }
+        return create(SumOfSquaredDeviations.ofRange(values, from, to), values, from, to);
     }
 
     /**
@@ -140,15 +160,20 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
      * This method is used by {@link DoubleStatistics} using a sum that can be reused
      * for the {@link Sum} statistic.
      *
+     * <p>Warning: No range checks are performed.
+     *
      * @param sum Sum of the values.
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return {@code SumOfCubedDeviations} instance.
      */
-    static SumOfCubedDeviations create(org.apache.commons.numbers.core.Sum sum, double[] values) {
-        if (values.length == 0) {
+    static SumOfCubedDeviations createFromRange(org.apache.commons.numbers.core.Sum sum,
+                                                double[] values, int from, int to) {
+        if (from == to) {
             return new SumOfCubedDeviations();
         }
-        return create(SumOfSquaredDeviations.create(sum, values), values);
+        return create(SumOfSquaredDeviations.createFromRange(sum, values, from, to), values, from, to);
     }
 
     /**
@@ -156,9 +181,11 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
      *
      * @param ss Sum of squared deviations.
      * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
      * @return {@code SumOfCubedDeviations} instance.
      */
-    private static SumOfCubedDeviations create(SumOfSquaredDeviations ss, double[] values) {
+    private static SumOfCubedDeviations create(SumOfSquaredDeviations ss, double[] values, int from, int to) {
         // Edge cases
         final double xbar = ss.getFirstMoment();
         if (!Double.isFinite(xbar)) {
@@ -170,16 +197,16 @@ class SumOfCubedDeviations extends SumOfSquaredDeviations {
             // +/- values around a mean of zero, or approximately sqrt(MAX_VALUE / 2^31) = 2.89e149.
             // In this case the sum cubed could be finite due to cancellation
             // but this cannot be computed. Only a small array can be known to be zero.
-            return new SumOfCubedDeviations(values.length <= LENGTH_TWO ? 0 : Double.NaN, ss);
+            return new SumOfCubedDeviations(ss.n <= LENGTH_TWO ? 0 : Double.NaN, ss);
         }
         // Compute the sum of cubed deviations.
         double s = 0;
         // n=1: no deviation
         // n=2: the two deviations from the mean are equal magnitude
         // and opposite sign. So the sum-of-cubed deviations is zero.
-        if (values.length > LENGTH_TWO) {
-            for (final double x : values) {
-                s += pow3(x - xbar);
+        if (ss.n > LENGTH_TWO) {
+            for (int i = from; i < to; i++) {
+                s += pow3(values[i] - xbar);
             }
         }
         return new SumOfCubedDeviations(s, ss);

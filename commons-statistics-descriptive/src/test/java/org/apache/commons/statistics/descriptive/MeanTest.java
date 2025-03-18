@@ -41,6 +41,11 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
     }
 
     @Override
+    protected Mean create(double[] values, int from, int to) {
+        return Mean.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.NaN;
     }

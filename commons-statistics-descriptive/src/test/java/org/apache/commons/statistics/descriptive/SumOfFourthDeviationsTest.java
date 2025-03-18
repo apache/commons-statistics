@@ -32,11 +32,11 @@ import org.apache.commons.statistics.distribution.DoubleTolerances;
  * the algorithm on an array is not high precision.
  *
  * <p>Note that the output value is always positive and so does not
- * suffer as much from cancellation effects observed in the sum of cubed
- * deviations. However the sum of cubed deviation is used during the
+ * suffer as much from cancellation effects observed in the sum of Fourth
+ * deviations. However the sum of Fourth deviation is used during the
  * updating and combine methods so errors can propagate. The test
  * tolerances are higher than the first two moments, and lower than
- * the sum of cubed deviations.
+ * the sum of Fourth deviations.
  */
 final class SumOfFourthDeviationsTest extends BaseDoubleStatisticTest<SumOfFourthDeviationsWrapper> {
 
@@ -53,6 +53,13 @@ final class SumOfFourthDeviationsTest extends BaseDoubleStatisticTest<SumOfFourt
     @Override
     protected SumOfFourthDeviationsWrapper create(double... values) {
         return new SumOfFourthDeviationsWrapper(SumOfFourthDeviations.of(values));
+    }
+
+    @Override
+    protected SumOfFourthDeviationsWrapper create(double[] values, int from, int to) {
+        // Add range checks here to pass the range validation tests
+        Statistics.checkFromToIndex(from, to, values.length);
+        return new SumOfFourthDeviationsWrapper(SumOfFourthDeviations.ofRange(values, from, to));
     }
 
     @Override
@@ -100,11 +107,11 @@ final class SumOfFourthDeviationsTest extends BaseDoubleStatisticTest<SumOfFourt
         TestData.momentTestData().forEach(x -> builder.accept(addCase(x)));
         // The value 2^1023 will overflow the sum of squared deviations
         builder.accept(addCase(0, 0, 0, 0x1.0p1023));
-        // The value 2^500 will overflow the sum of cubed deviations but not
+        // The value 2^500 will overflow the sum of Fourth deviations but not
         // the sum of squared deviations
         builder.accept(addCase(0, 0, 0, 0x1.0p500));
         // The value 2^300 will overflow the sum of fourth deviations
-        // but not the sum of cubed deviations
+        // but not the sum of Fourth deviations
         builder.accept(addCase(0, 0, 0, 0x1.0p300));
         return builder.build();
     }

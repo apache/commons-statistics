@@ -97,6 +97,24 @@ public final class Sum implements DoubleStatistic, StatisticAccumulator<Sum> {
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>The result is {@code NaN} if any of the values is {@code NaN}
+     * or the sum at any point is a {@code NaN}.
+     *
+     * <p>When the range is empty, the result is zero.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code Sum} instance.
+     */
+    public static Sum ofRange(double[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return new Sum(Statistics.sum(values, from, to));
+    }
+
+    /**
      * Updates the state of the statistic to reflect the addition of {@code value}.
      *
      * @param value Value.

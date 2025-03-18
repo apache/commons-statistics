@@ -40,6 +40,11 @@ final class GeometricMeanTest extends BaseDoubleStatisticTest<GeometricMean> {
     }
 
     @Override
+    protected GeometricMean create(double[] values, int from, int to) {
+        return GeometricMean.ofRange(values, from, to);
+    }
+
+    @Override
     protected double getEmptyValue() {
         return Double.NaN;
     }

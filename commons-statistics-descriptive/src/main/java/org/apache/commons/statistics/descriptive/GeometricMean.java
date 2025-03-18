@@ -112,6 +112,22 @@ public final class GeometricMean implements DoubleStatistic, StatisticAccumulato
     }
 
     /**
+     * Returns an instance populated using the specified range of {@code values}.
+     *
+     * <p>When the range is empty, the result is {@code NaN}.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return {@code GeometricMean} instance.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     */
+    public static GeometricMean ofRange(double[] values, int from, int to) {
+        // Range checks performed by the sum-of-logs
+        return new GeometricMean(SumOfLogs.ofRange(values, from, to), to - from);
+    }
+
+    /**
      * Returns an instance populated using the input {@code values}.
      *
      * <p>When the input is an empty array, the result is {@code NaN}.
