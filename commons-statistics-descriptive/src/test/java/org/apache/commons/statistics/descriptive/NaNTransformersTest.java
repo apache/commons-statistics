@@ -30,11 +30,27 @@ class NaNTransformersTest {
     @ParameterizedTest
     @MethodSource(value = {"nanData"})
     void testNaNErrorWithNaN(double[] a) {
-        final int[] bound = new int[1];
-        final NaNTransformer t1 = NaNTransformers.createNaNTransformer(NaNPolicy.ERROR, false);
-        Assertions.assertThrows(IllegalArgumentException.class, () -> t1.apply(a, bound));
-        final NaNTransformer t2 = NaNTransformers.createNaNTransformer(NaNPolicy.ERROR, true);
-        Assertions.assertThrows(IllegalArgumentException.class, () -> t2.apply(a, bound));
+        final int[] bounds = new int[2];
+        for (final boolean copy : new boolean[] {false, true}) {
+            final NaNTransformer t = NaNTransformers.createNaNTransformer(NaNPolicy.ERROR, copy);
+            Assertions.assertThrows(IllegalArgumentException.class, () -> t.apply(a, 0, a.length, bounds));
+            // Partial ranges.
+            // Note: Checks on the contents of the returned array range without NaN are
+            // done in a separate test on the nonNanData.
+            // First half
+            final int half = a.length >> 1;
+            if (Arrays.stream(a, 0, half).anyMatch(Double::isNaN)) {
+                Assertions.assertThrows(IllegalArgumentException.class, () -> t.apply(a, 0, half, bounds));
+            } else {
+                Assertions.assertDoesNotThrow(() -> t.apply(a, 0, half, bounds));
+            }
+            // Second half
+            if (Arrays.stream(a, half, a.length).anyMatch(Double::isNaN)) {
+                Assertions.assertThrows(IllegalArgumentException.class, () -> t.apply(a, half, a.length, bounds));
+            } else {
+                Assertions.assertDoesNotThrow(() -> t.apply(a, half, a.length, bounds));
+            }
+        }
     }
 
     @ParameterizedTest
@@ -68,24 +84,65 @@ class NaNTransformersTest {
      */
     private static void assertNaNTransformer(double[] a, NaNTransformer t,
             boolean includeNaN, boolean copy) {
-        final int[] bounds = new int[1];
-        final double[] b = t.apply(a, bounds);
-        if (copy) {
-            Assertions.assertNotSame(a, b);
-        } else {
-            Assertions.assertSame(a, b);
-        }
+        final int n = a.length;
+        assertNaNTransformer(a.clone(), 0, n, t, includeNaN, copy);
+        assertNaNTransformer(a.clone(), 0, n >> 1, t, includeNaN, copy);
+        assertNaNTransformer(a.clone(), n >> 1, n, t, includeNaN, copy);
+    }
+
+    /**
+     * Assert the NaN transformer allows including or excluding NaN.
+     *
+     * @param a Data.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param t Transformer.
+     * @param includeNaN True if the size should include NaN.
+     * @param copy True if the pre-processed data should be a copy.
+     */
+    private static void assertNaNTransformer(double[] a, int from, int to, NaNTransformer t,
+            boolean includeNaN, boolean copy) {
         // Count NaN
-        final int nanCount = (int) Arrays.stream(a).filter(Double::isNaN).count();
-        final int size = a.length - (includeNaN ? 0 : nanCount);
-        Assertions.assertEquals(size, bounds[0], "Size of data");
-        if (!includeNaN) {
-            for (int i = 0; i < size; i++) {
-                Assertions.assertNotEquals(Double.NaN, b[i], "NaN in unsorted range");
+        final int nanCount = (int) Arrays.stream(a, from, to).filter(Double::isNaN).count();
+        final int length = to - from - (includeNaN ? 0 : nanCount);
+
+        final int[] bounds = {-1, -1};
+        final double[] original = a.clone();
+        final double[] b = t.apply(a, from, to, bounds);
+
+        // Sort the original and the returned range to allow equality comparison
+        double[] s1 = Arrays.copyOfRange(original, from, to);
+        Arrays.sort(s1);
+        final double[] s2 = Arrays.copyOfRange(b, bounds[0], bounds[1]);
+        Arrays.sort(s2);
+
+        if (copy) {
+            Assertions.assertNotSame(a, b, "copy returned the original");
+            Assertions.assertArrayEquals(original, a, "original array was modified");
+            // b is a new array, it can be any length but the returned range
+            // should contains the same values as a, optionally excluding NaN
+            if (!includeNaN) {
+                s1 = Arrays.copyOf(s1, length);
             }
-            for (int i = size; i < b.length; i++) {
-                Assertions.assertEquals(Double.NaN, b[i], "non-NaN in upper range");
+            Assertions.assertArrayEquals(s1, s2);
+        } else {
+            Assertions.assertSame(a, b, "no copy returned a new array");
+            // Unchanged outside of [from, to)
+            for (int i = 0; i < from; i++) {
+                Assertions.assertEquals(original[i], a[i]);
             }
+            for (int i = to; i < a.length; i++) {
+                Assertions.assertEquals(original[i], a[i]);
+            }
+            // Same values inside the range (including NaN)
+            final double[] s3 = Arrays.copyOfRange(b, from, to);
+            Arrays.sort(s3);
+            Assertions.assertArrayEquals(s1, s3);
+            // The returned range has the same values optionally excluding NaN
+            if (!includeNaN) {
+                s1 = Arrays.copyOf(s1, length);
+            }
+            Assertions.assertArrayEquals(s1, s2);
         }
     }
 

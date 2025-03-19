@@ -38,8 +38,6 @@ package org.apache.commons.statistics.descriptive;
  *
  * <p>This interface allows implementations to respect the behaviour of
  * {@link Double#compare(double, double)}, or implement different behaviour.
- *
- * @since 1.1
  */
 interface NaNTransformer {
     /**
@@ -50,13 +48,19 @@ interface NaNTransformer {
      * <p>The method will return:
      * <ul>
      * <li>An array to partition; this may be a copy.
-     * <li>The {@code size} of the data; this can be smaller than the input array length if
-     * the transformer is configured to exclude NaN values.
+     * <li>The {@code bounds} of the returned data as [start, end); this can be smaller than the
+     * input range if the transformer is configured to exclude NaN values. The start is inclusive
+     * and the end is exclusive.
      * </ul>
      *
+     * <p>Implementations may assume the input {@code [from, to)} range is valid given the
+     * length of the {@code data} array.
+     *
      * @param data Data.
-     * @param bounds [size].
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param bounds Set to [start, end).
      * @return pre-processed data (may be a copy)
      */
-    double[] apply(double[] data, int[] bounds);
+    double[] apply(double[] data, int from, int to, int[] bounds);
 }

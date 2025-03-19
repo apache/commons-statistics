@@ -18,6 +18,7 @@
 package org.apache.commons.statistics.descriptive;
 
 import java.util.Arrays;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.sampling.ArraySampler;
@@ -33,6 +34,9 @@ import org.junit.jupiter.params.provider.MethodSource;
  * Test for {@link Median}.
  */
 class MedianTest {
+    /** The number of random trials to perform. */
+    private static final int RANDOM_TRIALS = 5;
+
     @Test
     void testNullPropertyThrows() {
         final Median m = Median.withDefaults();
@@ -52,6 +56,8 @@ class MedianTest {
         } else {
             Assertions.assertEquals(expected, q, Math.ulp(expected));
         }
+        // Note: This assertion is not strictly necessary. If the median uses a different
+        // partial sort than the quantile the assertion can be removed.
         Assertions.assertArrayEquals(values, copy);
     }
 
@@ -59,7 +65,7 @@ class MedianTest {
     @MethodSource(value = {"testDoubleMedian"})
     void testDoubleMedianExcludeNaN(double[] values, double expected) {
         // If NaN is present then the result will change from expected so ignore this
-        Assumptions.assumeTrue(Arrays.stream(values).filter(Double::isNaN).count() == 0);
+        Assumptions.assumeFalse(Arrays.stream(values).anyMatch(Double::isNaN));
         // Note: Use copy here. This checks that the copy of the data
         // (with excluded NaNs) is used for special cases.
         final Median m = Median.withDefaults().with(NaNPolicy.EXCLUDE).withCopy(true);
@@ -73,6 +79,19 @@ class MedianTest {
             x[pos] = Double.NaN;
             System.arraycopy(values, pos, x, pos + 1, values.length - pos);
             Assertions.assertEquals(expected, m.evaluate(x));
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"testDoubleMedian"})
+    void testDoubleMedianErrorNaN(double[] values, double expected) {
+        final Median m = Median.withDefaults().with(NaNPolicy.ERROR);
+        final double[] y = values.clone();
+        if (Arrays.stream(values).anyMatch(Double::isNaN)) {
+            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values));
+            Assertions.assertArrayEquals(y, values, "Input was modified");
+        } else {
+            Assertions.assertEquals(expected, m.evaluate(values));
         }
     }
 
@@ -169,6 +188,74 @@ class MedianTest {
     }
 
     @ParameterizedTest
+    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
+    final void testDoubleMedianRangeThrows(int from, int to, int length) {
+        final double[] values = new double[length];
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> Median.withDefaults().evaluateRange(values, from, to),
+            () -> String.format("range [%d, %d) in length %d", from, to, length));
+    }
+
+    /**
+     * Test data with an internal region evaluates exactly the same when using
+     * a copy of the internal region evaluated as a full length array,
+     * or the range method on the full array.
+     */
+    @Test
+    void testDoubleMedianRange() {
+        // Empty range
+        assertMedianRange(new double[] {1, 2, 3, 4, 5}, 2, 2);
+        // Range range
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        for (int count = RANDOM_TRIALS; --count >= 0;) {
+            final int n = 10 + count;
+            final double[] x = rng.doubles(n).toArray();
+            final int i = rng.nextInt(n);
+            final int j = rng.nextInt(n);
+            assertMedianRange(x, Math.min(i, j), Math.max(i, j));
+        }
+        // NaN in the range
+        final double[] x = rng.doubles(10).toArray();
+        x[5] = Double.NaN;
+        assertMedianRange(x.clone(), 2, 8);
+        assertMedianRange(x.clone(), 2, 9);
+    }
+
+    private static void assertMedianRange(double[] values, int from, int to) {
+        // Test all NaN policies as these apply to double[] data
+        for (final NaNPolicy p : NaNPolicy.values()) {
+            assertMedianRange(values.clone(), from, to, p);
+        }
+    }
+
+    private static void assertMedianRange(double[] values, int from, int to, NaNPolicy nanPolicy) {
+        final Supplier<String> msg = () -> String.format("NaN=%s; range [%d, %d) in length %d",
+            nanPolicy, from, to, values.length);
+        final double[] original = values.clone();
+        final double[] x = Arrays.copyOfRange(values, from, to);
+        // Test with/without modification of the input
+        final Median m = Median.withDefaults().with(nanPolicy).withCopy(false);
+        final Median mCopy = Median.withDefaults().with(nanPolicy).withCopy(true);
+        try {
+            // Reference result operating in-place
+            final double expected = m.evaluate(x);
+            // With copy the input is unchanged
+            Assertions.assertEquals(expected, mCopy.evaluateRange(values, from, to), msg);
+            Assertions.assertArrayEquals(original, values, msg);
+            // Without copy only the values inside the range should be modified.
+            // Compose the expected result.
+            System.arraycopy(x, 0, original, from, x.length);
+            Assertions.assertEquals(expected, m.evaluateRange(values, from, to), msg);
+            Assertions.assertArrayEquals(original, values, msg);
+        } catch (IllegalArgumentException e) {
+            // NaN input
+            Assertions.assertThrows(e.getClass(), () -> mCopy.evaluateRange(values, from, to), msg);
+            Assertions.assertThrows(e.getClass(), () -> m.evaluateRange(values, from, to), msg);
+            Assertions.assertArrayEquals(original, values, msg);
+        }
+    }
+
+    @ParameterizedTest
     @MethodSource(value = {"testIntMedian"})
     void testIntMedian(int[] values, double expected) {
         final int[] copy = values.clone();
@@ -246,5 +333,54 @@ class MedianTest {
         Assertions.assertArrayEquals(original, values);
         Assertions.assertEquals(expected, Median.withDefaults().withCopy(false).evaluate(values));
         Assertions.assertFalse(Arrays.equals(original, values));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
+    final void testIntMedianRangeThrows(int from, int to, int length) {
+        final int[] values = new int[length];
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> Median.withDefaults().evaluateRange(values, from, to),
+            () -> String.format("range [%d, %d) in length %d", from, to, length));
+    }
+
+    /**
+     * Test data with an internal region evaluates exactly the same when using
+     * a copy of the internal region evaluated as a full length array,
+     * or the range method on the full array.
+     */
+    @Test
+    void testIntMedianRange() {
+        // Empty range
+        assertMedianRange(new int[] {1, 2, 3, 4, 5}, 2, 2);
+        // Range range
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        for (int count = RANDOM_TRIALS; --count >= 0;) {
+            final int n = 10 + count;
+            final int[] x = rng.ints(n).toArray();
+            final int i = rng.nextInt(n);
+            final int j = rng.nextInt(n);
+            assertMedianRange(x, Math.min(i, j), Math.max(i, j));
+        }
+    }
+
+    private static void assertMedianRange(int[] values, int from, int to) {
+        final Supplier<String> msg = () -> String.format("range [%d, %d) in length %d",
+            from, to, values.length);
+        final int[] original = values.clone();
+        final int[] x = Arrays.copyOfRange(values, from, to);
+        // Test with/without modification of the input
+        final Median m = Median.withDefaults().withCopy(false);
+        final Median mCopy = Median.withDefaults().withCopy(true);
+        // Reference result operating in-place
+        final double expected = m.evaluate(x);
+        // With copy the input is unchanged
+        Assertions.assertEquals(expected, mCopy.evaluateRange(values, from, to), msg);
+        Assertions.assertArrayEquals(original, values, msg);
+        // Without copy only the values inside the range should be modified.
+        // Compose the expected result.
+        System.arraycopy(x, 0, original, from, x.length);
+        Assertions.assertEquals(expected, m.evaluateRange(values, from, to), msg);
+        Assertions.assertArrayEquals(original, values, msg);
     }
 }

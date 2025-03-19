@@ -220,28 +220,77 @@ public final class Quantile {
      * @param values Values.
      * @param p Probability for the quantile to compute.
      * @return the quantile
-     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]}
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]};
+     * or if the values contain NaN and the configuration is {@link NaNPolicy#ERROR}
      * @see #evaluate(double[], double...)
+     * @see #with(NaNPolicy)
      */
     public double evaluate(double[] values, double p) {
+        return compute(values, 0, values.length, p);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantile of the specified range of values.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * <p><strong>Performance</strong>
+     *
+     * <p>It is not recommended to use this method for repeat calls for different quantiles
+     * within the same values. The {@link #evaluateRange(double[], int, int, double...)} method should be used
+     * which provides better performance.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]};
+     * or if the values contain NaN and the configuration is {@link NaNPolicy#ERROR}
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @see #evaluateRange(double[], int, int, double...)
+     * @see #with(NaNPolicy)
+     * @since 1.2
+     */
+    public double evaluateRange(double[] values, int from, int to, double p) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to, p);
+    }
+
+    /**
+     * Compute the {@code p}-th quantile of the specified range of values.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]}
+     */
+    private double compute(double[] values, int from, int to, double p) {
         checkProbability(p);
         // Floating-point data handling
-        final int[] bounds = new int[1];
-        final double[] x = nanTransformer.apply(values, bounds);
-        final int n = bounds[0];
+        final int[] bounds = new int[2];
+        final double[] x = nanTransformer.apply(values, from, to, bounds);
+        final int start = bounds[0];
+        final int end = bounds[1];
+        final int n = end - start;
         // Special cases
         if (n <= 1) {
-            return n == 0 ? Double.NaN : x[0];
+            return n == 0 ? Double.NaN : x[start];
         }
+
         final double pos = estimationType.index(p, n);
-        final int i = (int) pos;
+        final int ip = (int) pos;
+        final int i = start + ip;
 
         // Partition and compute
-        if (pos > i) {
-            Selection.select(x, 0, n, new int[] {i, i + 1});
-            return Interpolation.interpolate(x[i], x[i + 1], pos - i);
+        if (pos > ip) {
+            Selection.select(x, start, end, new int[] {i, i + 1});
+            return Interpolation.interpolate(x[i], x[i + 1], pos - ip);
         }
-        Selection.select(x, 0, n, i);
+        Selection.select(x, start, end, i);
         return x[i];
     }
 
@@ -255,32 +304,74 @@ public final class Quantile {
      * @param p Probabilities for the quantiles to compute.
      * @return the quantiles
      * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
-     * or no probabilities are specified.
+     * no probabilities are specified; or if the values contain NaN and the configuration is {@link NaNPolicy#ERROR}
+     * @see #with(NaNPolicy)
      */
     public double[] evaluate(double[] values, double... p) {
+        return compute(values, 0, values.length, p);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantiles of the specified range of values.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
+     * no probabilities are specified; or if the values contain NaN and the configuration is {@link NaNPolicy#ERROR}
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @see #with(NaNPolicy)
+     * @since 1.2
+     */
+    public double[] evaluateRange(double[] values, int from, int to, double... p) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to, p);
+    }
+
+    /**
+     * Compute the {@code p}-th quantiles of the specified range of values.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
+     * or no probabilities are specified.
+     */
+    private double[] compute(double[] values, int from, int to, double... p) {
         checkProbabilities(p);
         // Floating-point data handling
-        final int[] bounds = new int[1];
-        final double[] x = nanTransformer.apply(values, bounds);
-        final int n = bounds[0];
+        final int[] bounds = new int[2];
+        final double[] x = nanTransformer.apply(values, from, to, bounds);
+        final int start = bounds[0];
+        final int end = bounds[1];
+        final int n = end - start;
         // Special cases
         final double[] q = new double[p.length];
         if (n <= 1) {
-            Arrays.fill(q, n == 0 ? Double.NaN : x[0]);
+            Arrays.fill(q, n == 0 ? Double.NaN : x[start]);
             return q;
         }
 
         // Collect interpolation positions. We use the output q as storage.
-        final int[] indices = computeIndices(n, p, q);
+        final int[] indices = computeIndices(n, p, q, start);
 
         // Partition
-        Selection.select(x, 0, n, indices);
+        Selection.select(x, start, end, indices);
 
         // Compute
         for (int k = 0; k < p.length; k++) {
-            final int i = (int) q[k];
-            if (q[k] > i) {
-                q[k] = Interpolation.interpolate(x[i], x[i + 1], q[k] - i);
+            // ip in [0, n); i in [start, end)
+            final int ip = (int) q[k];
+            final int i = start + ip;
+            if (q[k] > ip) {
+                q[k] = Interpolation.interpolate(x[i], x[i + 1], q[k] - ip);
             } else {
                 q[k] = x[i];
             }
@@ -307,22 +398,78 @@ public final class Quantile {
      * @see #evaluate(int[], double...)
      */
     public double evaluate(int[] values, double p) {
+        return compute(values, 0, values.length, p);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantile of the specified range of values.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * <p><strong>Performance</strong>
+     *
+     * <p>It is not recommended to use this method for repeat calls for different quantiles
+     * within the same values. The {@link #evaluateRange(int[], int, int, double...)} method should be used
+     * which provides better performance.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]}
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @see #evaluateRange(int[], int, int, double...)
+     * @since 1.2
+     */
+    public double evaluateRange(int[] values, int from, int to, double p) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to, p);
+    }
+
+    /**
+     * Compute the {@code p}-th quantile of the specified range of values.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]}
+     */
+    private double compute(int[] values, int from, int to, double p) {
         checkProbability(p);
-        final int n = values.length;
+        final int n = to - from;
         // Special cases
         if (n <= 1) {
-            return n == 0 ? Double.NaN : values[0];
+            return n == 0 ? Double.NaN : values[from];
         }
+
+        // Create the range
+        final int[] x;
+        final int start;
+        final int end;
+        if (copy) {
+            x = Statistics.copy(values, from, to);
+            start = 0;
+            end = n;
+        } else {
+            x = values;
+            start = from;
+            end = to;
+        }
+
         final double pos = estimationType.index(p, n);
-        final int i = (int) pos;
+        final int ip = (int) pos;
+        final int i = start + ip;
 
         // Partition and compute
-        final int[] x = copy ? values.clone() : values;
-        if (pos > i) {
-            Selection.select(x, 0, n, new int[] {i, i + 1});
-            return Interpolation.interpolate(x[i], x[i + 1], pos - i);
+        if (pos > ip) {
+            Selection.select(x, start, end, new int[] {i, i + 1});
+            return Interpolation.interpolate(x[i], x[i + 1], pos - ip);
         }
-        Selection.select(x, 0, n, i);
+        Selection.select(x, start, end, i);
         return x[i];
     }
 
@@ -339,27 +486,81 @@ public final class Quantile {
      * or no probabilities are specified.
      */
     public double[] evaluate(int[] values, double... p) {
+        return compute(values, 0, values.length, p);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantiles of the specified range of values..
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
+     * or no probabilities are specified.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
+     */
+    public double[] evaluateRange(int[] values, int from, int to, double... p) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to, p);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantiles of the specified range of values..
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
+     * or no probabilities are specified.
+     */
+    private double[] compute(int[] values, int from, int to, double... p) {
         checkProbabilities(p);
-        final int n = values.length;
+        final int n = to - from;
         // Special cases
         final double[] q = new double[p.length];
         if (n <= 1) {
-            Arrays.fill(q, n == 0 ? Double.NaN : values[0]);
+            Arrays.fill(q, n == 0 ? Double.NaN : values[from]);
             return q;
         }
 
+        // Create the range
+        final int[] x;
+        final int start;
+        final int end;
+        if (copy) {
+            x = Statistics.copy(values, from, to);
+            start = 0;
+            end = n;
+        } else {
+            x = values;
+            start = from;
+            end = to;
+        }
+
         // Collect interpolation positions. We use the output q as storage.
-        final int[] indices = computeIndices(n, p, q);
+        final int[] indices = computeIndices(n, p, q, start);
 
         // Partition
-        final int[] x = copy ? values.clone() : values;
-        Selection.select(x, 0, n, indices);
+        Selection.select(x, start, end, indices);
 
         // Compute
         for (int k = 0; k < p.length; k++) {
-            final int i = (int) q[k];
-            if (q[k] > i) {
-                q[k] = Interpolation.interpolate(x[i], x[i + 1], q[k] - i);
+            // ip in [0, n); i in [start, end)
+            final int ip = (int) q[k];
+            final int i = start + ip;
+            if (q[k] > ip) {
+                q[k] = Interpolation.interpolate(x[i], x[i + 1], q[k] - ip);
             } else {
                 q[k] = x[i];
             }
@@ -502,22 +703,26 @@ public final class Quantile {
      * <p>The zero-based interpolation index in {@code [0, n)} is
      * saved into the working array {@code q} for each {@code p}.
      *
+     * <p>The indices are incremented by the provided {@code offset} to allow
+     * addressing sub-ranges of a larger array.
+     *
      * @param n Size of the data.
      * @param p Probabilities for the quantiles to compute.
-     * @param q Working array for quantiles.
-     * @return the indices
+     * @param q Working array for quantiles in {@code [0, n)}.
+     * @param offset Array offset.
+     * @return the indices in {@code [offset, offset + n)}
      */
-    private int[] computeIndices(int n, double[] p, double[] q) {
+    private int[] computeIndices(int n, double[] p, double[] q, int offset) {
         final int[] indices = new int[p.length << 1];
         int count = 0;
         for (int k = 0; k < p.length; k++) {
             final double pos = estimationType.index(p[k], n);
             q[k] = pos;
             final int i = (int) pos;
-            indices[count++] = i;
+            indices[count++] = offset + i;
             if (pos > i) {
                 // Require the next index for interpolation
-                indices[count++] = i + 1;
+                indices[count++] = offset + i + 1;
             }
         }
         if (count < indices.length) {

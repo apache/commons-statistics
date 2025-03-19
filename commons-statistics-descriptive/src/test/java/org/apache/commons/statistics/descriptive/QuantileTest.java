@@ -20,6 +20,8 @@ package org.apache.commons.statistics.descriptive;
 import java.util.Arrays;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
 import org.apache.commons.statistics.descriptive.Quantile.EstimationMethod;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -34,6 +36,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 class QuantileTest {
     /** Estimation types to test. */
     private static final EstimationMethod[] TYPES = EstimationMethod.values();
+    /** The number of random trials to perform. */
+    private static final int RANDOM_TRIALS = 5;
 
     @Test
     void testNullPropertyThrows() {
@@ -86,6 +90,10 @@ class QuantileTest {
             Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values1, new double[] {p}));
             Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values2, p));
             Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values2, new double[] {p}));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values1, 0, values1.length, p));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values1, 0, values1.length, new double[] {p}));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values2, 0, values2.length, p));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values2, 0, values2.length, new double[] {p}));
             Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(10, i -> 1, p));
             Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(10, i -> 1, new double[] {p}));
         }
@@ -100,6 +108,10 @@ class QuantileTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values1, new double[0]));
         Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values2));
         Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values2, new double[0]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values1, 0, values1.length));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values1, 0, values1.length, new double[0]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values2, 0, values2.length));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values2, 0, values2.length, new double[0]));
         Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(10, i -> 1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(10, i -> 1, new double[0]));
     }
@@ -154,6 +166,20 @@ class QuantileTest {
             x[pos] = Double.NaN;
             System.arraycopy(values, pos, x, pos + 1, values.length - pos);
             assertQuantile(q, x, p, expected, delta,
+                Quantile::evaluate, Quantile::evaluate);
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"testDoubleQuantile"})
+    void testDoubleQuantileErrorNaN(double[] values, double[] p, double[][] expected, double delta) {
+        final Quantile q = Quantile.withDefaults().with(NaNPolicy.ERROR);
+        final double[] y = values.clone();
+        if (Arrays.stream(values).anyMatch(Double::isNaN)) {
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values));
+            Assertions.assertArrayEquals(y, values, "Input was modified");
+        } else {
+            assertQuantile(q, values, p, expected, delta,
                 Quantile::evaluate, Quantile::evaluate);
         }
     }
@@ -399,6 +425,87 @@ class QuantileTest {
         Assertions.assertFalse(Arrays.equals(original, values));
     }
 
+    @ParameterizedTest
+    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
+    final void testDoubleQuantileRangeThrows(int from, int to, int length) {
+        final double[] values = new double[length];
+        final Supplier<String> msg = () -> String.format("range [%d, %d) in length %d", from, to, length);
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> Quantile.withDefaults().evaluateRange(values, from, to, 0.5), msg);
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> Quantile.withDefaults().evaluateRange(values, from, to, 0.25, 0.5), msg);
+    }
+
+    /**
+     * Test data with an internal region evaluates exactly the same when using
+     * a copy of the internal region evaluated as a full length array,
+     * or the range method on the full array.
+     */
+    @Test
+    void testDoubleQuantileRange() {
+        // Empty range
+        assertQuantileRange(new double[] {1, 2, 3, 4, 5}, 2, 2);
+        // Range range
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        for (int count = RANDOM_TRIALS; --count >= 0;) {
+            final int n = 10 + count;
+            final double[] x = rng.doubles(n).toArray();
+            final int i = rng.nextInt(n);
+            final int j = rng.nextInt(n);
+            assertQuantileRange(x, Math.min(i, j), Math.max(i, j));
+        }
+        // NaN in the range
+        final double[] x = rng.doubles(10).toArray();
+        x[5] = Double.NaN;
+        assertQuantileRange(x.clone(), 2, 8);
+        assertQuantileRange(x.clone(), 2, 9);
+    }
+
+    private static void assertQuantileRange(double[] values, int from, int to) {
+        // Test all NaN policies as these apply to double[] data
+        for (final NaNPolicy p : NaNPolicy.values()) {
+            // Using p={0, 1} ensures quantiles with no interpolation are included
+            for (final double prob : new double[] {0, 0.5, 0.75, 1}) {
+                assertQuantileRange(values.clone(), from, to, p, prob);
+            }
+        }
+    }
+
+    private static void assertQuantileRange(double[] values, int from, int to, NaNPolicy nanPolicy, double prob) {
+        final Supplier<String> msg = () -> String.format("NaN=%s; p=%.2f; range [%d, %d) in length %d",
+            nanPolicy, prob, from, to, values.length);
+        final double[] original = values.clone();
+        final double[] x = Arrays.copyOfRange(values, from, to);
+        final double[] p = {prob};
+        // Test with/without modification of the input
+        final Quantile q = Quantile.withDefaults().with(nanPolicy).withCopy(false);
+        final Quantile qCopy = Quantile.withDefaults().with(nanPolicy).withCopy(true);
+        try {
+            // Reference result operating in-place
+            final double expected = q.evaluate(x, p[0]);
+            // With copy the input is unchanged
+            Assertions.assertEquals(expected, qCopy.evaluateRange(values, from, to, p[0]), msg);
+            Assertions.assertArrayEquals(original, values, msg);
+            Assertions.assertEquals(expected, qCopy.evaluateRange(values, from, to, p)[0], msg);
+            Assertions.assertArrayEquals(original, values, msg);
+            // Without copy only the values inside the range should be modified.
+            // Compose the expected result.
+            System.arraycopy(x, 0, original, from, x.length);
+            final double[] copy = values.clone();
+            Assertions.assertEquals(expected, q.evaluateRange(values, from, to, p)[0], msg);
+            Assertions.assertArrayEquals(original, values, msg);
+            Assertions.assertEquals(expected, q.evaluateRange(copy, from, to, p[0]), msg);
+            Assertions.assertArrayEquals(original, copy, msg);
+        } catch (IllegalArgumentException e) {
+            // NaN input
+            Assertions.assertThrows(e.getClass(), () -> qCopy.evaluateRange(values, from, to, p[0]), msg);
+            Assertions.assertThrows(e.getClass(), () -> qCopy.evaluateRange(values, from, to, p), msg);
+            Assertions.assertThrows(e.getClass(), () -> q.evaluateRange(values, from, to, p[0]), msg);
+            Assertions.assertThrows(e.getClass(), () -> q.evaluateRange(values, from, to, p), msg);
+            Assertions.assertArrayEquals(original, values, msg);
+        }
+    }
+
     // int[]
 
     /**
@@ -604,5 +711,69 @@ class QuantileTest {
         Assertions.assertArrayEquals(original, values);
         Assertions.assertEquals(2, Quantile.withDefaults().withCopy(false).evaluate(values, new double[] {0.5})[0]);
         Assertions.assertFalse(Arrays.equals(original, values));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
+    final void testIntQuantileRangeThrows(int from, int to, int length) {
+        final int[] values = new int[length];
+        final Supplier<String> msg = () -> String.format("range [%d, %d) in length %d", from, to, length);
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> Quantile.withDefaults().evaluateRange(values, from, to, 0.5), msg);
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> Quantile.withDefaults().evaluateRange(values, from, to, 0.25, 0.5), msg);
+    }
+
+    /**
+     * Test data with an internal region evaluates exactly the same when using
+     * a copy of the internal region evaluated as a full length array,
+     * or the range method on the full array.
+     */
+    @Test
+    void testIntQuantileRange() {
+        // Empty range
+        assertQuantileRange(new int[] {1, 2, 3, 4, 5}, 2, 2);
+        // Range range
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        for (int count = RANDOM_TRIALS; --count >= 0;) {
+            final int n = 10 + count;
+            final int[] x = rng.ints(n).toArray();
+            final int i = rng.nextInt(n);
+            final int j = rng.nextInt(n);
+            assertQuantileRange(x, Math.min(i, j), Math.max(i, j));
+        }
+    }
+
+    private static void assertQuantileRange(int[] values, int from, int to) {
+        // Using p={0, 1} ensures quantiles with no interpolation are included
+        for (final double p : new double[] {0, 0.5, 0.75, 1}) {
+            assertQuantileRange(values.clone(), from, to, p);
+        }
+    }
+
+    private static void assertQuantileRange(int[] values, int from, int to, double prob) {
+        final Supplier<String> msg = () -> String.format("p=%.2f range [%d, %d) in length %d",
+            prob, from, to, values.length);
+        final int[] original = values.clone();
+        final int[] x = Arrays.copyOfRange(values, from, to);
+        final double[] p = {prob};
+        // Test with/without modification of the input
+        final Quantile q = Quantile.withDefaults().withCopy(false);
+        final Quantile qCopy = Quantile.withDefaults().withCopy(true);
+        // Reference result operating in-place
+        final double expected = q.evaluate(x, p[0]);
+        // With copy the input is unchanged
+        Assertions.assertEquals(expected, qCopy.evaluateRange(values, from, to, p[0]), msg);
+        Assertions.assertArrayEquals(original, values, msg);
+        Assertions.assertEquals(expected, qCopy.evaluateRange(values, from, to, p)[0], msg);
+        Assertions.assertArrayEquals(original, values, msg);
+        // Without copy only the values inside the range should be modified.
+        // Compose the expected result.
+        System.arraycopy(x, 0, original, from, x.length);
+        final int[] copy = values.clone();
+        Assertions.assertEquals(expected, q.evaluateRange(values, from, to, p)[0], msg);
+        Assertions.assertArrayEquals(original, values, msg);
+        Assertions.assertEquals(expected, q.evaluateRange(copy, from, to, p[0]), msg);
+        Assertions.assertArrayEquals(original, copy, msg);
     }
 }

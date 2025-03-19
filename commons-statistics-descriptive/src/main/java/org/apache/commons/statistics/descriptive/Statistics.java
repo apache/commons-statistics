@@ -497,4 +497,23 @@ final class Statistics {
         }
         return s;
     }
+
+    /**
+     * Copy the specified range of data.
+     *
+     * <p>This is a simplification of {@link Arrays#copyOfRange(double[], int, int)}
+     * and does not support range checks or padding of the original input to
+     * a longer output.
+     *
+     * @param data Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the copy
+     */
+    static int[] copy(int[] data, int from, int to) {
+        final int length = to - from;
+        final int[] copy = new int[length];
+        System.arraycopy(data, from, copy, 0, length);
+        return copy;
+    }
 }

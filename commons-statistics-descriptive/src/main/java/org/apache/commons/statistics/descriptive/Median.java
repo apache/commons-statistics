@@ -133,39 +133,75 @@ public final class Median {
      *
      * @param values Values.
      * @return the median
+     * @throws IllegalArgumentException if the values contain NaN and the configuration is {@link NaNPolicy#ERROR}
+     * @see #with(NaNPolicy)
      */
     public double evaluate(double[] values) {
+        return compute(values, 0, values.length);
+    }
+
+    /**
+     * Evaluate the median of the specified range.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the median
+     * @throws IllegalArgumentException if the values contain NaN and the configuration is {@link NaNPolicy#ERROR}
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @see #with(NaNPolicy)
+     * @since 1.2
+     */
+    public double evaluateRange(double[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to);
+    }
+
+    /**
+     * Compute the median of the specified range.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the median
+     */
+    private double compute(double[] values, int from, int to) {
         // Floating-point data handling
-        final int[] bounds = new int[1];
-        final double[] x = nanTransformer.apply(values, bounds);
-        final int n = bounds[0];
+        final int[] bounds = new int[2];
+        final double[] x = nanTransformer.apply(values, from, to, bounds);
+        final int start = bounds[0];
+        final int end = bounds[1];
+        final int n = end - start;
         // Special cases
         if (n <= 2) {
             switch (n) {
             case 2:
                 // Sorting the array matches the behaviour of Quantile for n==2
                 // Handle NaN and signed zeros
-                if (Double.compare(x[1], x[0]) < 0) {
-                    final double t = x[0];
-                    x[0] = x[1];
-                    x[1] = t;
+                if (Double.compare(x[start + 1], x[start]) < 0) {
+                    final double t = x[start];
+                    x[start] = x[start + 1];
+                    x[start + 1] = t;
                 }
-                return Interpolation.mean(x[0], x[1]);
+                return Interpolation.mean(x[start], x[start + 1]);
             case 1:
-                return x[0];
+                return x[start];
             default:
                 return Double.NaN;
             }
         }
-        // Median index
-        final int m = n >>> 1;
+        // Median index (including the offset)
+        final int m = (start + end) >>> 1;
         // Odd
         if ((n & 0x1) == 1) {
-            Selection.select(x, 0, n, m);
+            Selection.select(x, start, end, m);
             return x[m];
         }
         // Even: require (m-1, m)
-        Selection.select(x, 0, n, new int[] {m - 1, m});
+        Selection.select(x, start, end, new int[] {m - 1, m});
         return Interpolation.mean(x[m - 1], x[m]);
     }
 
@@ -179,34 +215,75 @@ public final class Median {
      * @return the median
      */
     public double evaluate(int[] values) {
-        final int[] x = copy ? values.clone() : values;
-        final int n = values.length;
+        return compute(values, 0, values.length);
+    }
+
+    /**
+     * Evaluate the median of the specified range.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the median
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
+     */
+    public double evaluateRange(int[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to);
+    }
+
+    /**
+     * Compute the median of the specified range.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the median
+     */
+    private double compute(int[] values, int from, int to) {
+        final int[] x;
+        final int start;
+        final int end;
+        if (copy) {
+            x = Statistics.copy(values, from, to);
+            start = 0;
+            end = x.length;
+        } else {
+            x = values;
+            start = from;
+            end = to;
+        }
+        final int n = end - start;
         // Special cases
         if (n <= 2) {
             switch (n) {
             case 2:
                 // Sorting the array matches the behaviour of Quantile for n==2
-                if (x[1] < x[0]) {
-                    final int t = x[0];
-                    x[0] = x[1];
-                    x[1] = t;
+                if (x[start + 1] < x[start]) {
+                    final int t = x[start];
+                    x[start] = x[start + 1];
+                    x[start + 1] = t;
                 }
-                return Interpolation.mean(x[0], x[1]);
+                return Interpolation.mean(x[start], x[start + 1]);
             case 1:
-                return x[0];
+                return x[start];
             default:
                 return Double.NaN;
             }
         }
-        // Median index
-        final int m = n >>> 1;
+        // Median index (including the offset)
+        final int m = (start + end) >>> 1;
         // Odd
         if ((n & 0x1) == 1) {
-            Selection.select(x, 0, n, m);
+            Selection.select(x, start, end, m);
             return x[m];
         }
         // Even: require (m-1, m)
-        Selection.select(x, 0, n, new int[] {m - 1, m});
+        Selection.select(x, start, end, new int[] {m - 1, m});
         return Interpolation.mean(x[m - 1], x[m]);
     }
 }
