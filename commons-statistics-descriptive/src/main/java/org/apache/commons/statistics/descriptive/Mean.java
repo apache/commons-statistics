@@ -137,6 +137,7 @@ public final class Mean implements DoubleStatistic, StatisticAccumulator<Mean> {
      * @param to Exclusive end of the range.
      * @return {@code Mean} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static Mean ofRange(double[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

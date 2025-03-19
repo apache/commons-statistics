@@ -92,6 +92,7 @@ public final class LongMax implements LongStatistic, StatisticAccumulator<LongMa
      * @param to Exclusive end of the range.
      * @return {@code LongMax} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static LongMax ofRange(long[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

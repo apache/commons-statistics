@@ -121,6 +121,7 @@ public final class GeometricMean implements DoubleStatistic, StatisticAccumulato
      * @param to Exclusive end of the range.
      * @return {@code GeometricMean} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static GeometricMean ofRange(double[] values, int from, int to) {
         // Range checks performed by the sum-of-logs
@@ -149,6 +150,7 @@ public final class GeometricMean implements DoubleStatistic, StatisticAccumulato
      * @param to Exclusive end of the range.
      * @return {@code GeometricMean} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static GeometricMean ofRange(int[] values, int from, int to) {
         // Range checks performed by the sum-of-logs
@@ -177,6 +179,7 @@ public final class GeometricMean implements DoubleStatistic, StatisticAccumulato
      * @param to Exclusive end of the range.
      * @return {@code GeometricMean} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static GeometricMean ofRange(long[] values, int from, int to) {
         // Range checks performed by the sum-of-logs

@@ -150,6 +150,7 @@ public final class Variance implements DoubleStatistic, StatisticAccumulator<Var
      * @param to Exclusive end of the range.
      * @return {@code Variance} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static Variance ofRange(double[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

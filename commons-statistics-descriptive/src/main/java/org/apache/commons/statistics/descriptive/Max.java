@@ -96,6 +96,7 @@ public final class Max implements DoubleStatistic, StatisticAccumulator<Max> {
      * @param to Exclusive end of the range.
      * @return {@code Max} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static Max ofRange(double[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

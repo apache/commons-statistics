@@ -118,6 +118,7 @@ public final class IntSum implements IntStatistic, StatisticAccumulator<IntSum> 
      * @param to Exclusive end of the range.
      * @return {@code IntSum} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static IntSum ofRange(int[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

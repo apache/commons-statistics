@@ -108,6 +108,7 @@ public final class Sum implements DoubleStatistic, StatisticAccumulator<Sum> {
      * @param from Inclusive start of the range.
      * @param to Exclusive end of the range.
      * @return {@code Sum} instance.
+     * @since 1.2
      */
     public static Sum ofRange(double[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

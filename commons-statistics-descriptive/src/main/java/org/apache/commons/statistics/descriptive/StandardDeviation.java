@@ -154,6 +154,7 @@ public final class StandardDeviation implements DoubleStatistic, StatisticAccumu
      * @param to Exclusive end of the range.
      * @return {@code StandardDeviation} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static StandardDeviation ofRange(double[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

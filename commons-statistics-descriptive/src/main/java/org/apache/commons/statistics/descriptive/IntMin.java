@@ -92,6 +92,7 @@ public final class IntMin implements IntStatistic, StatisticAccumulator<IntMin> 
      * @param to Exclusive end of the range.
      * @return {@code IntMin} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static IntMin ofRange(int[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

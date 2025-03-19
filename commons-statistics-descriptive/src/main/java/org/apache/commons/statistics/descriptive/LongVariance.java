@@ -127,6 +127,7 @@ public final class LongVariance implements LongStatistic, StatisticAccumulator<L
      * @param to Exclusive end of the range.
      * @return {@code LongVariance} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static LongVariance ofRange(long[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

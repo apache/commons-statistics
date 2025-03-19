@@ -93,6 +93,7 @@ public final class Product implements DoubleStatistic, StatisticAccumulator<Prod
      * @param to Exclusive end of the range.
      * @return {@code Product} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static Product ofRange(double[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);
@@ -135,6 +136,7 @@ public final class Product implements DoubleStatistic, StatisticAccumulator<Prod
      * @param to Exclusive end of the range.
      * @return {@code Product} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static Product ofRange(int[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);
@@ -177,6 +179,7 @@ public final class Product implements DoubleStatistic, StatisticAccumulator<Prod
      * @param to Exclusive end of the range.
      * @return {@code Product} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static Product ofRange(long[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

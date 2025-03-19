@@ -210,6 +210,7 @@ public final class DoubleStatistics implements DoubleConsumer {
          * @param to Exclusive end of the range.
          * @return {@code DoubleStatistics} instance.
          * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+         * @since 1.2
          */
         public DoubleStatistics build(double[] values, int from, int to) {
             Statistics.checkFromToIndex(from, to, values.length);
@@ -397,6 +398,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      * @return the instance
      * @throws IllegalArgumentException if there are no {@code statistics} to compute.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static DoubleStatistics ofRange(Set<Statistic> statistics, double[] values, int from, int to) {
         if (statistics.isEmpty()) {

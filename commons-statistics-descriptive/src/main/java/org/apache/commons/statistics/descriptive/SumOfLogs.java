@@ -108,6 +108,7 @@ public final class SumOfLogs implements DoubleStatistic, StatisticAccumulator<Su
      * @param to Exclusive end of the range.
      * @return {@code SumOfLogs} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static SumOfLogs ofRange(double[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);
@@ -154,6 +155,7 @@ public final class SumOfLogs implements DoubleStatistic, StatisticAccumulator<Su
      * @param to Exclusive end of the range.
      * @return {@code SumOfLogs} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static SumOfLogs ofRange(int[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);
@@ -200,6 +202,7 @@ public final class SumOfLogs implements DoubleStatistic, StatisticAccumulator<Su
      * @param to Exclusive end of the range.
      * @return {@code SumOfLogs} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static SumOfLogs ofRange(long[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

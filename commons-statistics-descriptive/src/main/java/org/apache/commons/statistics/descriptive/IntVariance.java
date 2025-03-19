@@ -130,6 +130,7 @@ public final class IntVariance implements IntStatistic, StatisticAccumulator<Int
      * @param to Exclusive end of the range.
      * @return {@code IntVariance} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static IntVariance ofRange(int[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

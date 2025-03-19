@@ -96,6 +96,7 @@ public final class Min implements DoubleStatistic, StatisticAccumulator<Min> {
      * @param to Exclusive end of the range.
      * @return {@code Min} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static Min ofRange(double[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

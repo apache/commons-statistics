@@ -169,6 +169,7 @@ class FirstMoment implements DoubleConsumer {
      * @param to Exclusive end of the range.
      * @return {@code FirstMoment} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     static FirstMoment ofRange(double[] values, int from, int to) {
         if (from == to) {

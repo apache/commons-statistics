@@ -113,6 +113,7 @@ public final class IntMean implements IntStatistic, StatisticAccumulator<IntMean
      * @param to Exclusive end of the range.
      * @return {@code IntMean} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static IntMean ofRange(int[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);

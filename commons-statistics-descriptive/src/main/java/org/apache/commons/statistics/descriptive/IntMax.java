@@ -92,6 +92,7 @@ public final class IntMax implements IntStatistic, StatisticAccumulator<IntMax> 
      * @param to Exclusive end of the range.
      * @return {@code IntMax} instance.
      * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.2
      */
     public static IntMax ofRange(int[] values, int from, int to) {
         Statistics.checkFromToIndex(from, to, values.length);
