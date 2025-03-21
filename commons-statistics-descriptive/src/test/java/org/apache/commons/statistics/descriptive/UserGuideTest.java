@@ -38,6 +38,8 @@ class UserGuideTest {
 
         double v = IntVariance.of(values).getAsDouble();
 
+        int max = IntMax.ofRange(values, 3, 6).getAsInt();
+
         double m = Stream.of("one", "two", "three", "four")
                          .mapToInt(String::length)
                          .collect(IntMean::create, IntMean::accept, IntMean::combine)
@@ -46,6 +48,8 @@ class UserGuideTest {
         // import numpy as np
         // np.var([1, 1, 2, 3, 5, 8, 13, 21], ddof=1)
         Assertions.assertEquals(49.92857142857143, v, 1e-10);
+
+        Assertions.assertEquals(8, max);
 
         // mean = sum([3, 3, 5, 4]) / 4
         Assertions.assertEquals(15.0 / 4.0, m);

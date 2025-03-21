@@ -193,12 +193,16 @@
       </subsection>
       <subsection name="Examples" id="desc_examples">
         <p>
-          Computation of a single statistic from an array of values, or a stream of data:
+          Computation of a single statistic from an array of values, an array range or a
+          stream of data:
         </p>
 <source class="prettyprint">
 int[] values = {1, 1, 2, 3, 5, 8, 13, 21};
 
 double v = IntVariance.of(values).getAsDouble();
+
+// Range uses inclusive start and exclusive end
+int max = IntMax.ofRange(values, 3, 6).getAsInt();   // 8
 
 double m = Stream.of("one", "two", "three", "four")
                  .mapToInt(String::length)
