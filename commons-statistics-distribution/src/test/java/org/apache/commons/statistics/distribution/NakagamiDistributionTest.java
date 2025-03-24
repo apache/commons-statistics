@@ -101,7 +101,7 @@ class NakagamiDistributionTest extends BaseContinuousDistributionTest {
         // #define quad boost::multiprecision::float128
         // T v = boost::math::tgamma_delta_ratio(mu, T(0.5));
         // T mean = sqrt(omega / mu) / v;
-        // T var = omega - (omega / mu) / v / v;
+        // T variance = omega - (omega / mu) / v / v;
         "175, 0.75, 0.865407035923572335404337637742305354, 0.00107066217397678136642741884083229635",
         "175, 1, 0.999285970298141244170512691211913862, 0.0014275495653023751552365584544430618",
         "175, 1.25, 1.11723567927423980521693795242933784, 0.00178443695662796894404569806805382725",

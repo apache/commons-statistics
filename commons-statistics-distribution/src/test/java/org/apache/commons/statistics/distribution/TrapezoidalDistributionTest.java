@@ -128,8 +128,8 @@ class TrapezoidalDistributionTest extends BaseContinuousDistributionTest {
         divisor = divisor.multiply(BigDecimal.valueOf(2));
         dc = dd.pow(4).subtract(cc.pow(4)).divide(dd.subtract(cc), mc);
         ba = bb.pow(4).subtract(aa.pow(4)).divide(bb.subtract(aa), mc);
-        final BigDecimal var = dc.subtract(ba).divide(divisor, mc).subtract(mu.pow(2));
-        return Arguments.of(a, b, c, d, mu.doubleValue(), var.doubleValue(), ulps);
+        final BigDecimal variance = dc.subtract(ba).divide(divisor, mc).subtract(mu.pow(2));
+        return Arguments.of(a, b, c, d, mu.doubleValue(), variance.doubleValue(), ulps);
     }
 
     /**

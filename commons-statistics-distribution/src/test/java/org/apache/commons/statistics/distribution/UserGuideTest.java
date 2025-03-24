@@ -63,7 +63,7 @@ class UserGuideTest {
         ChiSquaredDistribution chi2 = ChiSquaredDistribution.of(42);
         double df = chi2.getDegreesOfFreedom();    // 42
         double mean = chi2.getMean();              // 42
-        double var = chi2.getVariance();           // 84
+        double variance = chi2.getVariance();           // 84
 
         CauchyDistribution cauchy = CauchyDistribution.of(1.23, 4.56);
         double location = cauchy.getLocation();    // 1.23
@@ -73,7 +73,7 @@ class UserGuideTest {
 
         Assertions.assertEquals(42, df);
         Assertions.assertEquals(42, mean);
-        Assertions.assertEquals(84, var);
+        Assertions.assertEquals(84, variance);
         Assertions.assertEquals(1.23, location);
         Assertions.assertEquals(4.56, scale);
         Assertions.assertEquals(Double.NaN, undefined1);

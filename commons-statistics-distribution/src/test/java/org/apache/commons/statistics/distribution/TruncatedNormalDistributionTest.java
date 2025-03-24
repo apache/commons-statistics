@@ -340,10 +340,10 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
             // Allow small absolute variances using an absolute threshold of
             // machine epsilon (2^-52) * 1.5. Any true variance approaching machine epsilon
             // is allowed to be computed as small or zero but cannot be too large.
-            final double var = TruncatedNormalDistribution.variance(lower, upper);
-            Assertions.assertTrue(var >= 0, () -> "Variance is not positive: " + var);
-            Assertions.assertEquals(var, TruncatedNormalDistribution.variance(-upper, -lower));
-            TestUtils.assertEquals(variance, var,
+            final double v = TruncatedNormalDistribution.variance(lower, upper);
+            Assertions.assertTrue(v >= 0, () -> "Variance is not positive: " + v);
+            Assertions.assertEquals(v, TruncatedNormalDistribution.variance(-upper, -lower));
+            TestUtils.assertEquals(variance, v,
                     createAbsOrRelTolerance(1.5 * 0x1.0p-52, -varianceRelativeError),
                 () -> String.format("variance(%s, %s)", lower, upper));
         } else {
@@ -378,9 +378,9 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
      * Assert the variance of the truncated normal distribution is within the provided relative error.
      */
     private static void assertVariance(double lower, double upper, double expected, double eps) {
-        final double var = TruncatedNormalDistribution.variance(lower, upper);
-        Assertions.assertEquals(var, TruncatedNormalDistribution.variance(-upper, -lower));
-        TestUtils.assertEquals(expected, var, DoubleTolerances.relative(eps),
+        final double variance = TruncatedNormalDistribution.variance(lower, upper);
+        Assertions.assertEquals(variance, TruncatedNormalDistribution.variance(-upper, -lower));
+        TestUtils.assertEquals(expected, variance, DoubleTolerances.relative(eps),
             () -> String.format("variance(%s, %s)", lower, upper));
     }
 
@@ -392,8 +392,8 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
     private static void assertVariance(double lower, double upper, double u, double s, double expected, double eps) {
         final double a = (lower - u) / s;
         final double b = (upper - u) / s;
-        final double var = TruncatedNormalDistribution.variance(a, b) * s * s;
-        TestUtils.assertEquals(expected, var, DoubleTolerances.relative(eps),
+        final double variance = TruncatedNormalDistribution.variance(a, b) * s * s;
+        TestUtils.assertEquals(expected, variance, DoubleTolerances.relative(eps),
             () -> String.format("variance(%s, %s, %s, %s)", lower, upper, u, s));
     }
 }
