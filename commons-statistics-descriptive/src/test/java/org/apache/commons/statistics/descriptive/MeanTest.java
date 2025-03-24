@@ -65,8 +65,8 @@ final class MeanTest extends BaseDoubleStatisticTest<Mean> {
             .average().orElse(getEmptyValue());
     }
 
-    // The full-array method should be more accurate on average;
-    // however the tolerance is for the max error which is similar
+    // The full-array method should be more accurate on average.
+    // However the tolerance is for the max error which is similar
 
     @Override
     protected DoubleTolerance getToleranceAccept() {
