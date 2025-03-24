@@ -128,8 +128,7 @@ class KolmogorovSmirnovDistributionTest {
         "0.000922, 50000, 0.999999999996305, 2e-16",
     })
     void testDurbinMTW(double x, int n, double p, double eps) {
-        final double p2 = KolmogorovSmirnovDistribution.Two.sf(x, n);
-        TestUtils.assertProbability(p, p2, eps, "sf");
+        testTwoSf(x, n, p, eps);
     }
 
     /**
@@ -239,6 +238,10 @@ class KolmogorovSmirnovDistributionTest {
         "0.169, 140, 0.0005778682806183945, 2e-13",
     })
     void testPomeranz(double x, int n, double p, double eps) {
+        testTwoSf(x, n, p, eps);
+    }
+
+    private void testTwoSf(double x, int n, double p, double eps) {
         final double p2 = KolmogorovSmirnovDistribution.Two.sf(x, n);
         TestUtils.assertProbability(p, p2, eps, "sf");
     }
@@ -307,8 +310,7 @@ class KolmogorovSmirnovDistributionTest {
         "0.00044, 150000, 1, 0",
     })
     void testPelzGood(double x, int n, double p, double eps) {
-        final double p2 = KolmogorovSmirnovDistribution.Two.sf(x, n);
-        TestUtils.assertProbability(p, p2, eps, "sf");
+        testTwoSf(x, n, p, eps);
     }
 
     /**
@@ -348,8 +350,7 @@ class KolmogorovSmirnovDistributionTest {
         "0.1, 10000, 1.6633113315950355e-87, 2e-16",
     })
     void testMillerApproximation(double x, int n, double p, double eps) {
-        final double p2 = KolmogorovSmirnovDistribution.Two.sf(x, n);
-        TestUtils.assertProbability(p, p2, eps, "sf");
+        testTwoSf(x, n, p, eps);
     }
 
     /**
@@ -1008,7 +1009,7 @@ class KolmogorovSmirnovDistributionTest {
             return x;
         }
         // Debugging
-        final long start = System.nanoTime();
+        //final long start = System.nanoTime();
         final double p = KolmogorovSmirnovDistribution.One.sf(x, n, power);
         //TestUtils.printf("\"%s, %d, %s\", // %.6fs%n", x, n, p, (System.nanoTime() - start) * 1e-9);
         return p;
@@ -1043,7 +1044,7 @@ class KolmogorovSmirnovDistributionTest {
             return x;
         }
         // Debugging
-        final long start = System.nanoTime();
+        //final long start = System.nanoTime();
         final double p = sf(x, n, mc);
         //TestUtils.printf("\"%s, %d, %s\", // %.6fs%n", x, n, p, (System.nanoTime() - start) * 1e-9);
         return p;
