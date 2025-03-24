@@ -430,10 +430,11 @@ class QuantileTest {
     final void testDoubleQuantileRangeThrows(int from, int to, int length) {
         final double[] values = new double[length];
         final Supplier<String> msg = () -> String.format("range [%d, %d) in length %d", from, to, length);
+        final Quantile q = Quantile.withDefaults();
         Assertions.assertThrows(IndexOutOfBoundsException.class,
-            () -> Quantile.withDefaults().evaluateRange(values, from, to, 0.5), msg);
+            () -> q.evaluateRange(values, from, to, 0.5), msg);
         Assertions.assertThrows(IndexOutOfBoundsException.class,
-            () -> Quantile.withDefaults().evaluateRange(values, from, to, 0.25, 0.5), msg);
+            () -> q.evaluateRange(values, from, to, 0.25, 0.5), msg);
     }
 
     /**
@@ -718,10 +719,11 @@ class QuantileTest {
     final void testIntQuantileRangeThrows(int from, int to, int length) {
         final int[] values = new int[length];
         final Supplier<String> msg = () -> String.format("range [%d, %d) in length %d", from, to, length);
+        final Quantile q = Quantile.withDefaults();
         Assertions.assertThrows(IndexOutOfBoundsException.class,
-            () -> Quantile.withDefaults().evaluateRange(values, from, to, 0.5), msg);
+            () -> q.evaluateRange(values, from, to, 0.5), msg);
         Assertions.assertThrows(IndexOutOfBoundsException.class,
-            () -> Quantile.withDefaults().evaluateRange(values, from, to, 0.25, 0.5), msg);
+            () -> q.evaluateRange(values, from, to, 0.25, 0.5), msg);
     }
 
     /**

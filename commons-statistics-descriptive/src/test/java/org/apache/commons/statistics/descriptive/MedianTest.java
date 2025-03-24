@@ -191,8 +191,9 @@ class MedianTest {
     @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
     final void testDoubleMedianRangeThrows(int from, int to, int length) {
         final double[] values = new double[length];
+        final Median m = Median.withDefaults();
         Assertions.assertThrows(IndexOutOfBoundsException.class,
-            () -> Median.withDefaults().evaluateRange(values, from, to),
+            () -> m.evaluateRange(values, from, to),
             () -> String.format("range [%d, %d) in length %d", from, to, length));
     }
 
@@ -339,8 +340,9 @@ class MedianTest {
     @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
     final void testIntMedianRangeThrows(int from, int to, int length) {
         final int[] values = new int[length];
+        final Median m = Median.withDefaults();
         Assertions.assertThrows(IndexOutOfBoundsException.class,
-            () -> Median.withDefaults().evaluateRange(values, from, to),
+            () -> m.evaluateRange(values, from, to),
             () -> String.format("range [%d, %d) in length %d", from, to, length));
     }
 
