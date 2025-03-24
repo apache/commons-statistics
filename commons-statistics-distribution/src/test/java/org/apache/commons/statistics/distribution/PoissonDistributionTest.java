@@ -63,11 +63,10 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
 
             double x = mean * 2.0;
             final double dx = x / 10.0;
-            double p = Double.NaN;
             final double sigma = Math.sqrt(mean);
             while (x >= 0) {
                 try {
-                    p = dist.cumulativeProbability((int) x);
+                    final double p = dist.cumulativeProbability((int) x);
                     Assertions.assertFalse(Double.isNaN(p), "NaN cumulative probability");
                     if (x > mean - 2 * sigma) {
                         Assertions.assertTrue(p > 0, "Zero cumulative probaility");
