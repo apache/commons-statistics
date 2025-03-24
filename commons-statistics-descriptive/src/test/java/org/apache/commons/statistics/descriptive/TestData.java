@@ -40,7 +40,7 @@ final class TestData {
             new double[] {10E-50, 5E-100, 25E-200, 35.345E-50},
             // Small numbers
             new double[] {0.001, 0.0002, 0.00003, 10000.11, 0.000004},
-            // Overflow of the sum which prevents using the sum for the mean}
+            // Overflow of the sum which prevents using the sum for the mean
             new double[] {max, max},
             new double[] {-max, -max},
             new double[] {max, max, max, max},
