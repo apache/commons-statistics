@@ -791,14 +791,13 @@ class KolmogorovSmirnovTestTest {
             if (p == 1) {
                 break;
             }
-            //TestUtils.printf("%s", p);
             double x = dnm / ((double) n * m);
             final double en = ((double) m * n) / ((double) m + n);
             final double p1 = KolmogorovSmirnovDistribution.Two.sf(x, (int) Math.round(en));
             final double e1 = Math.abs(p - p1) / Math.max(p, p1);
             x *= Math.sqrt(en);
             // From wikipedia:
-            //x = x + 1.0 / (6 * Math.sqrt(en)) + (x - 1) / (4 * en);
+            //x = x + 1.0 / (6 * Math.sqrt(en)) + (x - 1) / (4 * en)
             final double p2 = KolmogorovSmirnovDistribution.ksSum(x);
             final double e2 = Math.abs(p - p2) / Math.max(p, p2);
             if (e1 > maxe1) {
