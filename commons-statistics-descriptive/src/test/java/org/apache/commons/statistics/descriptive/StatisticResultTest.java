@@ -57,9 +57,9 @@ final class StatisticResultTest {
     @ValueSource(doubles = {Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY})
     void testNonFinite(double x) {
         final StatisticResult r = () -> x;
-        Assertions.assertThrows(ArithmeticException.class, () -> r.getAsInt(), "int result: " + x);
-        Assertions.assertThrows(ArithmeticException.class, () -> r.getAsLong(), "long result: " + x);
-        Assertions.assertThrows(ArithmeticException.class, () -> r.getAsBigInteger(), "BigInteger result: " + x);
+        Assertions.assertThrows(ArithmeticException.class, r::getAsInt, "int result: " + x);
+        Assertions.assertThrows(ArithmeticException.class, r::getAsLong, "long result: " + x);
+        Assertions.assertThrows(ArithmeticException.class, r::getAsBigInteger, "BigInteger result: " + x);
     }
 
     @ParameterizedTest
@@ -92,7 +92,7 @@ final class StatisticResultTest {
     void testNonRepresentableInt(double x) {
         final StatisticResult r = () -> x;
         final BigDecimal expected = round(x);
-        Assertions.assertThrows(ArithmeticException.class, () -> r.getAsInt(), () -> "int result: " + x);
+        Assertions.assertThrows(ArithmeticException.class, r::getAsInt, () -> "int result: " + x);
         Assertions.assertEquals(expected.longValue(), r.getAsLong(), () -> "long result: " + x);
         Assertions.assertEquals(expected.toBigInteger(), r.getAsBigInteger(), () -> "BigInteger result: " + x);
     }
@@ -108,8 +108,8 @@ final class StatisticResultTest {
     void testNonRepresentableLong(double x) {
         final StatisticResult r = () -> x;
         final BigDecimal expected = round(x);
-        Assertions.assertThrows(ArithmeticException.class, () -> r.getAsInt(), () -> "int result: " + x);
-        Assertions.assertThrows(ArithmeticException.class, () -> r.getAsLong(), () -> "long result: " + x);
+        Assertions.assertThrows(ArithmeticException.class, r::getAsInt, () -> "int result: " + x);
+        Assertions.assertThrows(ArithmeticException.class, r::getAsLong, () -> "long result: " + x);
         Assertions.assertEquals(expected.toBigInteger(), r.getAsBigInteger(), () -> "BigInteger result: " + x);
     }
 

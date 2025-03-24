@@ -211,18 +211,18 @@ class QuantileTest {
             for (int j = 0; j < p.length; j++) {
                 if (f1 != null) {
                     assertEqualsOrExactlyEqual(expected[i][j], f1.evaluate(m, values.clone(), p[j]), delta,
-                        () -> type.toString());
+                        type::toString);
                 }
                 assertEqualsOrExactlyEqual(expected[i][j], fn.evaluate(m, values.clone(), new double[] {p[j]})[0], delta,
-                    () -> type.toString());
+                    type::toString);
             }
             // Bulk quantiles
             if (delta < 0) {
                 Assertions.assertArrayEquals(expected[i], fn.evaluate(m, values.clone(), p),
-                    () -> type.toString());
+                    type::toString);
             } else {
                 Assertions.assertArrayEquals(expected[i], fn.evaluate(m, values.clone(), p), delta,
-                    () -> type.toString());
+                    type::toString);
             }
         }
     }
@@ -557,18 +557,18 @@ class QuantileTest {
             for (int j = 0; j < p.length; j++) {
                 if (f1 != null) {
                     assertEqualsOrExactlyEqual(expected[i][j], f1.evaluate(m, values.clone(), p[j]), delta,
-                        () -> type.toString());
+                        type::toString);
                 }
                 assertEqualsOrExactlyEqual(expected[i][j], fn.evaluate(m, values.clone(), new double[] {p[j]})[0], delta,
-                    () -> type.toString());
+                    type::toString);
             }
             // Bulk quantiles
             if (delta < 0) {
                 Assertions.assertArrayEquals(expected[i], fn.evaluate(m, values.clone(), p),
-                    () -> type.toString());
+                    type::toString);
             } else {
                 Assertions.assertArrayEquals(expected[i], fn.evaluate(m, values.clone(), p), delta,
-                    () -> type.toString());
+                    type::toString);
             }
         }
     }
