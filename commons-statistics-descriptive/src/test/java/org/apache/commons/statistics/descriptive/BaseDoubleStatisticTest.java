@@ -1282,7 +1282,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccu
         final S empty = create();
         assertStatistic(v ->
             Arrays.stream(values)
-                  .mapToObj(x -> create(x))
+                  .mapToObj(this::create)
                   .reduce(empty, this::assertCombine),
             values, expected, tol);
     }

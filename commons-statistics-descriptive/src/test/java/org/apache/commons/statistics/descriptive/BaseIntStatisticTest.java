@@ -1171,7 +1171,7 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
         final S empty = create();
         assertStatistic(v ->
             Arrays.stream(values)
-                  .mapToObj(x -> create(x))
+                  .mapToObj(this::create)
                   .reduce(empty, this::assertCombine),
             values, expected, tol);
     }

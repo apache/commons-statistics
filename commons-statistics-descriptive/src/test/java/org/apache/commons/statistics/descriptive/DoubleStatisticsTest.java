@@ -561,7 +561,7 @@ class DoubleStatisticsTest {
         for (final Statistic s : stat1) {
             final double expected = statistics1.getAsDouble(s);
             assertFinite(expected, s);
-            Assertions.assertEquals(expected, statistics2.getAsDouble(s), () -> s.toString());
+            Assertions.assertEquals(expected, statistics2.getAsDouble(s), s::toString);
         }
     }
 
