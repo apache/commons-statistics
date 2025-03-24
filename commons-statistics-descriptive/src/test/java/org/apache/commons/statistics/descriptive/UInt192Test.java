@@ -212,25 +212,25 @@ class UInt192Test {
         final UInt192 v = new UInt192(0, 0, x);
         Assertions.assertEquals(x, v.toIntExact());
         v.addSquare(1);
-        Assertions.assertThrows(ArithmeticException.class, () -> v.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v::toIntExact);
         Assertions.assertEquals(0x1.0p31, v.toDouble());
         Assertions.assertEquals(y, v.toLongExact());
         // 2^32 has no low bits - check the result is not returned as zero
         final UInt192 v2 = new UInt192(0, 0, 2 * y);
-        Assertions.assertThrows(ArithmeticException.class, () -> v2.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v2::toIntExact);
         Assertions.assertEquals(0x1.0p32, v2.toDouble());
         Assertions.assertEquals(2 * y, v2.toLongExact());
         // 2^64 has no low bits - check the result is not returned as zero
         final UInt192 v3 = new UInt192(0, 1, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> v3.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v3::toIntExact);
         Assertions.assertEquals(0x1.0p64, v3.toDouble());
         // 2^96 has no low bits - check the result is not returned as zero
         final UInt192 v4 = new UInt192(0, 1L << 32, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> v4.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v4::toIntExact);
         Assertions.assertEquals(0x1.0p96, v4.toDouble());
         // 2^128 has no low bits - check the result is not returned as zero
         final UInt192 v5 = new UInt192(1, 0, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> v5.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v5::toIntExact);
         Assertions.assertEquals(0x1.0p128, v5.toDouble());
     }
 
@@ -240,19 +240,19 @@ class UInt192Test {
         final UInt192 v = new UInt192(0, 0, x);
         Assertions.assertEquals(x, v.toLongExact());
         v.addSquare(1);
-        Assertions.assertThrows(ArithmeticException.class, () -> v.toLongExact());
+        Assertions.assertThrows(ArithmeticException.class, v::toLongExact);
         Assertions.assertEquals(0x1.0p63, v.toDouble());
         // 2^64 has no low bits - check the result is not returned as zero
         final UInt192 v3 = new UInt192(0, 1, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> v3.toLongExact());
+        Assertions.assertThrows(ArithmeticException.class, v3::toLongExact);
         Assertions.assertEquals(0x1.0p64, v3.toDouble());
         // 2^96 has no low bits - check the result is not returned as zero
         final UInt192 v4 = new UInt192(0, 1L << 32, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> v4.toLongExact());
+        Assertions.assertThrows(ArithmeticException.class, v4::toLongExact);
         Assertions.assertEquals(0x1.0p96, v4.toDouble());
         // 2^128 has no low bits - check the result is not returned as zero
         final UInt192 v5 = new UInt192(1, 0, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> v5.toLongExact());
+        Assertions.assertThrows(ArithmeticException.class, v5::toLongExact);
         Assertions.assertEquals(0x1.0p128, v5.toDouble());
     }
 

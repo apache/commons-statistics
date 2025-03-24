@@ -301,7 +301,7 @@ final class TestHelper {
         try {
             i = expected.getAsInt();
         } catch (final Throwable t) {
-            Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsInt(), intMsg);
+            Assertions.assertThrowsExactly(t.getClass(), actual::getAsInt, intMsg);
         }
         if (i != null) {
             Assertions.assertEquals(i.intValue(), actual.getAsInt(), intMsg);
@@ -325,7 +325,7 @@ final class TestHelper {
         try {
             l = expected.getAsLong();
         } catch (final Throwable t) {
-            Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsLong(), longMsg);
+            Assertions.assertThrowsExactly(t.getClass(), actual::getAsLong, longMsg);
         }
         if (l != null) {
             Assertions.assertEquals(l.longValue(), actual.getAsLong(), longMsg);
@@ -355,7 +355,7 @@ final class TestHelper {
         try {
             d = expected.getAsDouble();
         } catch (final Throwable t) {
-            Assertions.assertThrowsExactly(t.getClass(), () -> actual.getAsDouble(), doubleMsg);
+            Assertions.assertThrowsExactly(t.getClass(), actual::getAsDouble, doubleMsg);
         }
         if (d != null) {
             if (tol == null) {
@@ -391,7 +391,7 @@ final class TestHelper {
         try {
             b = expected.getAsBigInteger();
         } catch (final Throwable t) {
-            Assertions.assertThrowsExactly(t.getClass(), () -> actual.get(), bigMsg);
+            Assertions.assertThrowsExactly(t.getClass(), actual::get, bigMsg);
         }
         if (b != null) {
             if (tol == null) {

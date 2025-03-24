@@ -243,17 +243,17 @@ class UInt128Test {
         final UInt128 v = new UInt128(0, x);
         Assertions.assertEquals(x, v.toIntExact());
         v.addPositive(1);
-        Assertions.assertThrows(ArithmeticException.class, () -> v.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v::toIntExact);
         Assertions.assertEquals(0x1.0p31, v.toDouble());
         Assertions.assertEquals(y, v.toLongExact());
         // 2^32 has no low bits - check the result is not returned as zero
         final UInt128 v2 = new UInt128(0, 2 * y);
-        Assertions.assertThrows(ArithmeticException.class, () -> v2.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v2::toIntExact);
         Assertions.assertEquals(0x1.0p32, v2.toDouble());
         Assertions.assertEquals(2 * y, v2.toLongExact());
         // 2^64 has no low bits - check the result is not returned as zero
         final UInt128 v3 = new UInt128(1, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> v3.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v3::toIntExact);
         Assertions.assertEquals(0x1.0p64, v3.toDouble());
     }
 
@@ -263,11 +263,11 @@ class UInt128Test {
         final UInt128 v = new UInt128(0, x);
         Assertions.assertEquals(x, v.toLongExact());
         v.addPositive(1);
-        Assertions.assertThrows(ArithmeticException.class, () -> v.toLongExact());
+        Assertions.assertThrows(ArithmeticException.class, v::toLongExact);
         Assertions.assertEquals(0x1.0p63, v.toDouble());
         // 2^64 has no low bits - check the result is not returned as zero
         final UInt128 v3 = new UInt128(1, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> v3.toLongExact());
+        Assertions.assertThrows(ArithmeticException.class, v3::toLongExact);
         Assertions.assertEquals(0x1.0p64, v3.toDouble());
     }
 }

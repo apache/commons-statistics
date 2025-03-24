@@ -186,7 +186,7 @@ class Int128Test {
         Assertions.assertEquals(x, v.toIntExact());
         final int y = x < 0 ? -1 : 1;
         v.add(y);
-        Assertions.assertThrows(ArithmeticException.class, () -> v.toIntExact());
+        Assertions.assertThrows(ArithmeticException.class, v::toIntExact);
         v.add(-y);
         Assertions.assertEquals(x, v.toIntExact());
     }
@@ -198,7 +198,7 @@ class Int128Test {
         Assertions.assertEquals(x, v.toLongExact());
         final int y = x < 0 ? -1 : 1;
         v.add(y);
-        Assertions.assertThrows(ArithmeticException.class, () -> v.toLongExact());
+        Assertions.assertThrows(ArithmeticException.class, v::toLongExact);
         v.add(-y);
         Assertions.assertEquals(x, v.toLongExact());
     }
