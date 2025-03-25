@@ -158,7 +158,7 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
             }
         }
 
-        // https://github.com/JuliaStats/Distributions.jl/issues/827, 1e-15);
+        // https://github.com/JuliaStats/Distributions.jl/issues/827
         assertMean(0, 1000, 1000000, 1, 999.99999899899899900100501101901899090472046236710608108591983, 6e-14);
     }
 
