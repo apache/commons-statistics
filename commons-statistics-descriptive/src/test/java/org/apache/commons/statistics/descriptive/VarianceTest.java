@@ -203,12 +203,12 @@ final class VarianceTest extends BaseDoubleStatisticTest<Variance> {
             .mapToObj(BigDecimal::new)
             .reduce(BigDecimal.ZERO, BigDecimal::add)
             .divide(BigDecimal.valueOf(values.length), mc);
-        final double var = Arrays.stream(values)
+        final double variance = Arrays.stream(values)
             .mapToObj(BigDecimal::new)
             .map(x -> x.subtract(mean))
             .map(x -> x.pow(2))
             .reduce(BigDecimal.ZERO, BigDecimal::add)
             .divide(BigDecimal.valueOf(values.length - 1), mc).doubleValue();
-        Assertions.assertEquals(var, v, "256-digit precision result");
+        Assertions.assertEquals(variance, v, "256-digit precision result");
     }
 }
