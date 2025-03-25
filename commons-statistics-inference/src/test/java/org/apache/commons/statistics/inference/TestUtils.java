@@ -106,7 +106,7 @@ final class TestUtils {
         for (final double alpha : INVALID_ALPHA) {
             final IllegalArgumentException ex = Assertions.assertThrows(IllegalArgumentException.class,
                 () -> fun.accept(alpha),
-                () -> String.format("Alpha %s", prefix(msg), alpha));
+                () -> String.format("%sAlpha %s", prefix(msg), alpha));
             final String m = ex.getMessage().toLowerCase(Locale.ROOT);
             Assertions.assertTrue(m.contains("significance"),
                     () -> "Exception message <" + ex.getMessage() + "> missing value 'significance'");
