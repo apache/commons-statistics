@@ -195,9 +195,6 @@ class WilcoxonSignedRankTestTest {
                                 double mu, PValueMethod method, boolean correct, double eps) {
         WilcoxonSignedRankTest test = WilcoxonSignedRankTest.withDefaults().withMu(mu).with(method)
             .with(correct ? ContinuityCorrection.ENABLED : ContinuityCorrection.DISABLED);
-        final double s = mu == 0 ?
-            WilcoxonSignedRankTest.withDefaults().statistic(x, y) :
-            test.statistic(x, y);
         final boolean hasTies = hasTies(x, y);
         final int zeros = countZeros(x, y);
         // Note: Assertions are within a try-catch block to allow printing the R command
