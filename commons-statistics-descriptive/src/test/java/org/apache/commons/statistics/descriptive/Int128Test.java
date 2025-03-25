@@ -19,11 +19,14 @@ package org.apache.commons.statistics.descriptive;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
+import org.apache.commons.statistics.distribution.DoubleTolerances;
+import org.apache.commons.statistics.distribution.TestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -176,6 +179,32 @@ class Int128Test {
             builder.accept(-i);
         }
         RandomSource.XO_RO_SHI_RO_128_PP.create().longs(20).forEach(builder);
+        return builder.build();
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    void testDivideToDouble(long a, long b, long n) {
+        final Int128 x = new Int128(a, b);
+        final BigInteger bi = BigInteger.valueOf(a).shiftLeft(Long.SIZE).add(BigInteger.valueOf(b));
+        final double expected = new BigDecimal(bi).divide(
+            new BigDecimal(n), MathContext.DECIMAL128).doubleValue();
+        // This may require a 1 ulp tolerance; log the seed to allow repeats
+        TestUtils.assertEquals(expected, x.divideToDouble(n), DoubleTolerances.equals(),
+            () -> String.format("(2^64 * %d + %d) / %d; Seed=%s",
+                a, b, n, Arrays.toString(TestHelper.createRNGSeed())));
+    }
+
+    static Stream<Arguments> testDivideToDouble() {
+        final UniformRandomProvider rng = TestHelper.createRNG(TestHelper.createRNGSeed());
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        for (int i = 0; i < 100; i++) {
+            final long a = rng.nextLong();
+            final long b = rng.nextLong();
+            final long n = rng.nextLong();
+            builder.accept(Arguments.of(a, b, n >>> 1));
+            builder.accept(Arguments.of(a, b, n >>> 43));
+        }
         return builder.build();
     }
 

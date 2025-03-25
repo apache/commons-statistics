@@ -18,7 +18,6 @@ package org.apache.commons.statistics.descriptive;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import org.apache.commons.numbers.core.DD;
 
 /**
  * Support class for integer math.
@@ -36,8 +35,6 @@ final class IntMath {
     private static final int EXP_SHIFT = 52;
     /** 0.5. */
     private static final double HALF = 0.5;
-    /** 2^53. */
-    private static final long TWO_POW_53 = 1L << 53;
 
     /** No instances. */
     private IntMath() {}
@@ -390,22 +387,5 @@ final class IntMath {
             return y + 1.0;
         }
         return y;
-    }
-
-    /**
-     * Divide value {@code x} by the count {@code n}.
-     *
-     * @param x Value.
-     * @param n Count.
-     * @return the quotient
-     */
-    static double divide(Int128 x, long n) {
-        final DD a = x.toDD();
-        if (n < TWO_POW_53) {
-            // n is a representable double
-            return a.divide(n).doubleValue();
-        }
-        // Extended precision divide when n > 2^53
-        return a.divide(DD.of(n)).doubleValue();
     }
 }

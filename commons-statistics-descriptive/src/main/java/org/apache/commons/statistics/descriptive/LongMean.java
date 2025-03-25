@@ -177,7 +177,7 @@ public final class LongMean implements LongStatistic, StatisticAccumulator<LongM
             return (double) sum.lo64() / n;
         }
         // Extended precision
-        return IntMath.divide(sum, n);
+        return sum.divideToDouble(n);
     }
 
     @Override

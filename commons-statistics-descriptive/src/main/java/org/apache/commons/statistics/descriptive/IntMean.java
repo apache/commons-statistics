@@ -180,7 +180,7 @@ public final class IntMean implements IntStatistic, StatisticAccumulator<IntMean
             return (double) sum.lo64() / n;
         }
         // Extended precision
-        return IntMath.divide(sum, n);
+        return sum.divideToDouble(n);
     }
 
     @Override

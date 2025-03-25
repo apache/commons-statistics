@@ -38,6 +38,8 @@ import org.apache.commons.numbers.core.DD;
 final class Int128 {
     /** Mask for the lower 32-bits of a long. */
     private static final long MASK32 = 0xffff_ffffL;
+    /** 2^53. */
+    private static final long TWO_POW_53 = 1L << 53;
 
     /** low 64-bits. */
     private long lo;
@@ -247,6 +249,22 @@ final class Int128 {
         // to add to a larger negative number:
         // e.g. x = (x & 0xff) + ((x >> 8) << 8)
         return DD.of(lo).add((hi & MASK32) * 0x1.0p64).add((hi >> Integer.SIZE) * 0x1.0p96);
+    }
+
+    /**
+     * Divide by the count {@code n}, returning the value as a {@code double}.
+     *
+     * @param n Count.
+     * @return the quotient
+     */
+    double divideToDouble(long n) {
+        final DD a = toDD();
+        if (n < TWO_POW_53) {
+            // n is a representable double
+            return a.divide(n).doubleValue();
+        }
+        // Extended precision divide when n > 2^53
+        return a.divide(DD.of(n)).doubleValue();
     }
 
     /**
