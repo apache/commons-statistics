@@ -77,8 +77,8 @@ class HypergeometricDistributionTest extends BaseDiscreteDistributionTest {
 
     static Stream<Arguments> testAdditionalMoments() {
         return Stream.of(
-            Arguments.of(1500, 40, 100, 40d * 100d / 1500d, (100d * 40d * (1500d - 100d) * (1500d - 40d)) / ((1500d * 1500d * 1499d))),
-            Arguments.of(3000, 55, 200, 55d * 200d / 3000d, (200d * 55d * (3000d - 200d) * (3000d - 55d)) / ((3000d * 3000d * 2999d)))
+            Arguments.of(1500, 40, 100, 40d * 100d / 1500d, (100d * 40d * (1500d - 100d) * (1500d - 40d)) / (1500d * 1500d * 1499d)),
+            Arguments.of(3000, 55, 200, 55d * 200d / 3000d, (200d * 55d * (3000d - 200d) * (3000d - 55d)) / (3000d * 3000d * 2999d))
         );
     }
 
