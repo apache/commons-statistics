@@ -25,8 +25,8 @@
 
   <rule ref="category/java/bestpractices.xml">
     <exclude name="UseVarargs" />
-    <!-- Inference 'Test' classes are not JUnit 4 tests. -->
-    <exclude name="JUnit4TestShouldUseTestAnnotation" />
+    <!-- Inference 'Test' classes are not tests. -->
+    <exclude name="UnitTestShouldUseTestAnnotation" />
   </rule>
   <rule ref="category/java/codestyle.xml">
     <exclude name="MethodArgumentCouldBeFinal" />
