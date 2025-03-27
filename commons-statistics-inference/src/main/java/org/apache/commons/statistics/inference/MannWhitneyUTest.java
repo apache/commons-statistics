@@ -20,6 +20,7 @@ import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.Objects;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.IntStream;
 import org.apache.commons.numbers.combinatorics.BinomialCoefficientDouble;
 import org.apache.commons.statistics.distribution.NormalDistribution;
@@ -43,7 +44,7 @@ public final class MannWhitneyUTest {
     /** Value for an unset f computation. */
     private static final double UNSET = -1;
     /** An object to use for synchonization when accessing the cache of F. */
-    private static final Object LOCK = new Object();
+    private static final ReentrantLock LOCK = new ReentrantLock();
     /** A reference to a previously computed storage for f.
      * Use of a SoftReference ensures this is garbage collected before an OutOfMemoryError.
      * The value should only be accessed, checked for size and optionally
@@ -505,7 +506,8 @@ public final class MannWhitneyUTest {
         // F is only modified within this synchronized block.
         // Any concurrent threads using a reference returned by this method
         // will not receive an index out-of-bounds as f is only ever expanded.
-        synchronized (LOCK) {
+        try {
+            LOCK.lock();
             // Note: f(x<m, y<n, z<k) is always the same.
             // Cache the array and re-use any previous computation.
             double[][][] f = cacheF.get();
@@ -578,6 +580,8 @@ public final class MannWhitneyUTest {
                 cacheF = new SoftReference<>(f);
             }
             return f;
+        } finally {
+            LOCK.unlock();
         }
     }
 
