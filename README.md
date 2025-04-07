@@ -45,7 +45,7 @@ Apache Commons Statistics
 
 [![Java CI](https://github.com/apache/commons-statistics/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-statistics/actions/workflows/maven.yml)
 [![Coverage Status](https://codecov.io/gh/apache/commons-statistics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-statistics)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-bom/badge.svg?gav=true)](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-bom/?gav=true)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.commons/commons-statistics-bom?label=Maven%20Central)](https://search.maven.org/artifact/org.apache.commons/commons-statistics-bom/)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=commons-statistics&metric=alert_status)](https://sonarcloud.io/dashboard?id=commons-statistics)
 
 The Apache Commons Statistics project provides tools for statistics.

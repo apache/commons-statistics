@@ -45,7 +45,7 @@ Apache Commons Statistics Ranking
 
 [![Java CI](https://github.com/apache/commons-statistics/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-statistics/actions/workflows/maven.yml)
 [![Coverage Status](https://codecov.io/gh/apache/commons-statistics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-statistics)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-ranking/badge.svg?gav=true)](https://maven-badges.herokuapp.com/maven-central/org.apache.commons/commons-statistics-ranking/?gav=true)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.commons/commons-statistics-ranking?label=Maven%20Central)](https://search.maven.org/artifact/org.apache.commons/commons-statistics-ranking/)
 
 Statistical rank transformations.
 
