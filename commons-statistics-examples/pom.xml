@@ -44,7 +44,7 @@
     <!-- Reproducible builds -->
     <project.build.outputTimestamp>${statistics.build.outputTimestamp}</project.build.outputTimestamp>
 
-    <statistics.picocli.version>4.7.6</statistics.picocli.version>
+    <statistics.picocli.version>4.7.7</statistics.picocli.version>
     <statistics.exec.version>3.5.0</statistics.exec.version>
     <statistics.shade.version>3.6.0</statistics.shade.version>
 
