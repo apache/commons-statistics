@@ -23,6 +23,7 @@ package org.apache.commons.statistics.descriptive;
  *
  * @since 1.1
  */
+@FunctionalInterface
 public interface StatisticAccumulator<T extends StatisticResult> {
 
     /**

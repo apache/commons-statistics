@@ -517,6 +517,7 @@ public final class UnconditionedExactTest {
     /**
      * Compute the statistic for Boschloo's test.
      */
+    @FunctionalInterface
     private interface BoschlooStatistic {
         /**
          * Compute Fisher's p-value for the 2x2 contingency table with the observed

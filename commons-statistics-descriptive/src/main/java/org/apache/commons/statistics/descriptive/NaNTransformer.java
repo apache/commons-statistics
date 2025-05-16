@@ -39,6 +39,7 @@ package org.apache.commons.statistics.descriptive;
  * <p>This interface allows implementations to respect the behaviour of
  * {@link Double#compare(double, double)}, or implement different behaviour.
  */
+@FunctionalInterface
 interface NaNTransformer {
     /**
      * Pre-process the data for partitioning.

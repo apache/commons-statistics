@@ -706,6 +706,7 @@ final class KolmogorovSmirnovDistribution {
          * Defines a scaled power function.
          * Package-private to allow the main sf method to be called direct in testing.
          */
+        @FunctionalInterface
         interface ScaledPower {
             /**
              * Compute the number {@code x} raised to the power {@code n}.
