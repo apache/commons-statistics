@@ -231,12 +231,12 @@ class LongStatisticsTest {
             // Stream values
             final StatisticResult e1 = d.stream()
                 .map(values -> Statistics.add(constructor.get(), values))
-                .reduce(StatisticAccumulator::combine)
+                .reduce(StatisticAccumulator<T>::combine)
                 .orElseThrow(IllegalStateException::new);
             // Create from array
             final StatisticResult e2 = d.stream()
                 .map(arrayConstructor)
-                .reduce(StatisticAccumulator::combine)
+                .reduce(StatisticAccumulator<T>::combine)
                 .orElseThrow(IllegalStateException::new);
             // Check that there is a finite value to compute during testing
             if (d.size() != 0) {

@@ -1042,7 +1042,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
     final void testAcceptParallelStream(long[] values, StatisticResult expected, DoubleTolerance tol) {
         final S actual = Arrays.stream(values)
             .parallel()
-            .collect(this::create, LongStatistic::accept, StatisticAccumulator::combine);
+            .collect(this::create, LongStatistic::accept, StatisticAccumulator<S>::combine);
         TestHelper.assertEquals(expected, actual, tol, () -> statisticName + ": " + format(values));
     }
 
@@ -1065,7 +1065,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
         final S actual = Arrays.stream(values)
             .parallel()
             .map(this::create)
-            .reduce(StatisticAccumulator::combine)
+            .reduce(StatisticAccumulator<S>::combine)
             // Return an empty instance if there is no data
             .orElseGet(this::create);
         TestHelper.assertEquals(expected, actual, tol, () -> statisticName + ": " + format(values));

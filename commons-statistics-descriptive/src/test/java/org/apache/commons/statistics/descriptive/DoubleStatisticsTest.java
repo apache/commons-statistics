@@ -207,13 +207,13 @@ class DoubleStatisticsTest {
             // Stream values
             final double e1 = d.stream()
                 .map(values -> Statistics.add(constructor.get(), values))
-                .reduce(StatisticAccumulator::combine)
+                .reduce(StatisticAccumulator<T>::combine)
                 .orElseThrow(IllegalStateException::new)
                 .getAsDouble();
             // Create from array
             final double e2 = d.stream()
                 .map(arrayConstructor)
-                .reduce(StatisticAccumulator::combine)
+                .reduce(StatisticAccumulator<T>::combine)
                 .orElseThrow(IllegalStateException::new)
                 .getAsDouble();
             // Check that there is a finite value to compute during testing

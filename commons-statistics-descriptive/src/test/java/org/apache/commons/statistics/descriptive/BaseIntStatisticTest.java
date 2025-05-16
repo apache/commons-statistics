@@ -1043,7 +1043,7 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
     final void testAcceptParallelStream(int[] values, StatisticResult expected, DoubleTolerance tol) {
         final S actual = Arrays.stream(values)
             .parallel()
-            .collect(this::create, IntStatistic::accept, StatisticAccumulator::combine);
+            .collect(this::create, IntStatistic::accept, StatisticAccumulator<S>::combine);
         TestHelper.assertEquals(expected, actual, tol, () -> statisticName + ": " + format(values));
     }
 
@@ -1066,7 +1066,7 @@ abstract class BaseIntStatisticTest<S extends IntStatistic & StatisticAccumulato
         final S actual = Arrays.stream(values)
             .parallel()
             .map(this::create)
-            .reduce(StatisticAccumulator::combine)
+            .reduce(StatisticAccumulator<S>::combine)
             // Return an empty instance if there is no data
             .orElseGet(this::create);
         TestHelper.assertEquals(expected, actual, tol, () -> statisticName + ": " + format(values));

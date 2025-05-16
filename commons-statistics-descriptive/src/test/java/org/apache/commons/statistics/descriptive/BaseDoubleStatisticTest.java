@@ -1152,7 +1152,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccu
     final void testAcceptParallelStream(double[] values, double expected, DoubleTolerance tol) {
         final double actual = Arrays.stream(values)
             .parallel()
-            .collect(this::create, DoubleStatistic::accept, StatisticAccumulator::combine)
+            .collect(this::create, DoubleStatistic::accept, StatisticAccumulator<S>::combine)
             .getAsDouble();
         TestUtils.assertEquals(expected, actual, tol, () -> statisticName + ": " + format(values));
     }
@@ -1176,7 +1176,7 @@ abstract class BaseDoubleStatisticTest<S extends DoubleStatistic & StatisticAccu
         final double actual = Arrays.stream(values)
             .parallel()
             .map(this::create)
-            .reduce(StatisticAccumulator::combine)
+            .reduce(StatisticAccumulator<S>::combine)
             // Return an empty instance if there is no data
             .orElseGet(this::create)
             .getAsDouble();
