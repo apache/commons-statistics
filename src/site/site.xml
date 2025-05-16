@@ -15,15 +15,13 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<project name="Statistics"
-    xmlns="http://maven.apache.org/DECORATION/1.6.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/DECORATION/1.6.0 https://maven.apache.org/xsd/decoration-1.6.0.xsd">
-  <bannerRight>
-    <name>Apache Commons Statistics</name>
-    <!-- Use a full URL allows a correct banner for the modules. -->
-    <src>https://commons.apache.org/proper/commons-statistics/images/commons_statistics.small.png</src>
-    <href>https://commons.apache.org/proper/commons-statistics/index.html</href>
+<site name="Statistics"
+  xmlns="http://maven.apache.org/SITE/2.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SITE/2.0.0 https://maven.apache.org/xsd/site-2.0.0.xsd">
+  <!-- Use a full URL allows a correct banner for the modules. -->
+  <bannerRight name="Apache Commons Statistics" href="https://commons.apache.org/proper/commons-statistics/index.html">
+    <image src="https://commons.apache.org/proper/commons-statistics/images/commons_statistics.small.png"/>
   </bannerRight>
 
   <body>
@@ -67,4 +65,4 @@
       <prettyPrintLineNumbersEnabled>false</prettyPrintLineNumbersEnabled>
     </commonsSkin>
   </custom>
-</project>
+</site>

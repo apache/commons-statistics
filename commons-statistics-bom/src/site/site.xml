@@ -15,18 +15,15 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-<project name="Statistics">
-  <bannerRight>
-    <name>Apache Commons Statistics</name>
-    <!-- Use a full URL allows a correct banner for the modules. -->
-    <src>https://commons.apache.org/proper/commons-statistics/images/commons_statistics.small.png</src>
-    <href>https://commons.apache.org/proper/commons-statistics/index.html</href>
+<site name="Statistics">
+  <!-- Use a full URL allows a correct banner for the modules. -->
+  <bannerRight name="Apache Commons Statistics" href="https://commons.apache.org/proper/commons-statistics/index.html">
+    <image src="https://commons.apache.org/proper/commons-statistics/images/commons_statistics.small.png"/>
   </bannerRight>
 
   <body>
     <menu name="Statistics Bill of Materials">
       <item name="Overview" href="index.html"/>
     </menu>
-
   </body>
-</project>
+</site>
