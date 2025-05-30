@@ -45,7 +45,6 @@
     <project.build.outputTimestamp>${statistics.build.outputTimestamp}</project.build.outputTimestamp>
 
     <statistics.picocli.version>4.7.6</statistics.picocli.version>
-    <statistics.exec.version>3.5.0</statistics.exec.version>
     <statistics.shade.version>3.6.0</statistics.shade.version>
 
     <!-- Disable JApiCmp failures (but keep the report). The examples API is allowed to change. -->
@@ -80,15 +79,6 @@
   </dependencyManagement>
 
   <build>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>${statistics.exec.version}</version>
-        </plugin>
-      </plugins>
-    </pluginManagement>
     <plugins>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
