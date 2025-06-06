@@ -315,6 +315,7 @@ public class NaturalRanking implements RankingAlgorithm {
      * @return the operator applied to NaN values
      */
     private DoubleUnaryOperator createNaNAction(int[] nanCount) {
+        // Exhaustive switch statement
         switch (nanStrategy) {
         case MAXIMAL: // Replace NaNs with +INFs
             return ACTION_POS_INF;
@@ -329,10 +330,9 @@ public class NaturalRanking implements RankingAlgorithm {
             };
         case FAILED:
             return ACTION_ERROR;
-        default:
-            // this should not happen unless NaNStrategy enum is changed
-            throw new IllegalStateException();
         }
+        // Unreachable code
+        throw new IllegalStateException(String.valueOf(nanStrategy));
     }
 
     /**
@@ -399,6 +399,7 @@ public class NaturalRanking implements RankingAlgorithm {
         // length of sequence of tied ranks
         final int length = tiesTrace.size();
 
+        // Exhaustive switch
         switch (tiesStrategy) {
         case  AVERAGE:   // Replace ranks with average: (lower + upper) / 2
             fill(ranks, tiesTrace, (2 * c + length - 1) * 0.5);
@@ -422,8 +423,6 @@ public class NaturalRanking implements RankingAlgorithm {
                 ranks[tiesTrace.get(i)] = r++;
             }
             break;
-        default: // this should not happen unless TiesStrategy enum is changed
-            throw new IllegalStateException();
         }
 
         tiesTrace.clear();

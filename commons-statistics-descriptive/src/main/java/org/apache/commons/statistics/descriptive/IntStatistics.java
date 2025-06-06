@@ -103,6 +103,7 @@ public final class IntStatistics implements IntConsumer {
          * @return {@code this} instance
          */
         Builder add(Statistic statistic) {
+            // Exhaustive switch statement
             switch (statistic) {
             case GEOMETRIC_MEAN:
             case SUM_OF_LOGS:
@@ -135,8 +136,6 @@ public final class IntStatistics implements IntConsumer {
             case SUM_OF_SQUARES:
                 sumOfSquares = IntSumOfSquares::createFromRange;
                 break;
-            default:
-                throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
             }
             return this;
         }
@@ -471,6 +470,7 @@ public final class IntStatistics implements IntConsumer {
      */
     public boolean isSupported(Statistic statistic) {
         // Check for the appropriate underlying implementation
+        // Exhaustive switch statement
         switch (statistic) {
         case GEOMETRIC_MEAN:
         case SUM_OF_LOGS:
@@ -493,9 +493,9 @@ public final class IntStatistics implements IntConsumer {
             return sum != null;
         case SUM_OF_SQUARES:
             return sumOfSquares != null;
-        default:
-            return false;
         }
+        // Unreachable code
+        throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
     }
 
     /**
@@ -598,6 +598,7 @@ public final class IntStatistics implements IntConsumer {
         // of IntStatistic. This ensures the statistic implementation cannot
         // be updated with new values by casting the result and calling accept(int).
         StatisticResult stat = null;
+        // Exhaustive switch statement
         switch (statistic) {
         case GEOMETRIC_MEAN:
             stat = getGeometricMean();
@@ -634,8 +635,6 @@ public final class IntStatistics implements IntConsumer {
             break;
         case VARIANCE:
             stat = getVariance();
-            break;
-        default:
             break;
         }
         if (stat != null) {

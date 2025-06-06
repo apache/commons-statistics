@@ -642,6 +642,7 @@ public final class UnconditionedExactTest {
         final int d = table[1][1];
         final int m = a + c;
         final int n = b + d;
+        // Exhaustive switch statement
         switch (method) {
         case Z_POOLED:
             return statisticZ(a, b, m, n, true);
@@ -649,9 +650,8 @@ public final class UnconditionedExactTest {
             return statisticZ(a, b, m, n, false);
         case BOSCHLOO:
             return statisticBoschloo(a, b, m, n);
-        default:
-            throw new IllegalStateException(String.valueOf(method));
         }
+        throw new IllegalStateException(String.valueOf(method));
     }
 
     /**
@@ -710,6 +710,7 @@ public final class UnconditionedExactTest {
     private double findExtremeTables(int a, int b, XYList tableList) {
         final int m = tableList.getMaxX();
         final int n = tableList.getMaxY();
+        // Exhaustive switch statement
         switch (method) {
         case Z_POOLED:
             return findExtremeTablesZ(a, b, m, n, true, tableList);
@@ -717,9 +718,8 @@ public final class UnconditionedExactTest {
             return findExtremeTablesZ(a, b, m, n, false, tableList);
         case BOSCHLOO:
             return findExtremeTablesBoschloo(a, b, m, n, tableList);
-        default:
-            throw new IllegalStateException(String.valueOf(method));
         }
+        throw new IllegalStateException(String.valueOf(method));
     }
 
     /**

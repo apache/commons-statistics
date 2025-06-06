@@ -101,6 +101,7 @@ public final class DoubleStatistics implements DoubleConsumer {
          * @return {@code this} instance
          */
         Builder add(Statistic statistic) {
+            // Exhaustive switch statement
             switch (statistic) {
             case GEOMETRIC_MEAN:
             case SUM_OF_LOGS:
@@ -134,8 +135,6 @@ public final class DoubleStatistics implements DoubleConsumer {
             case SUM_OF_SQUARES:
                 sumOfSquares = SumOfSquares::createFromRange;
                 break;
-            default:
-                throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
             }
             return this;
         }
@@ -501,6 +500,7 @@ public final class DoubleStatistics implements DoubleConsumer {
      */
     public boolean isSupported(Statistic statistic) {
         // Check for the appropriate underlying implementation
+        // Exhaustive switch statement
         switch (statistic) {
         case GEOMETRIC_MEAN:
         case SUM_OF_LOGS:
@@ -524,9 +524,9 @@ public final class DoubleStatistics implements DoubleConsumer {
             return sum != null;
         case SUM_OF_SQUARES:
             return sumOfSquares != null;
-        default:
-            return false;
         }
+        // Unreachable code
+        throw new IllegalArgumentException(UNSUPPORTED_STATISTIC + statistic);
     }
 
     /**
@@ -566,6 +566,7 @@ public final class DoubleStatistics implements DoubleConsumer {
         // of DoubleStatistic. This ensures the statistic implementation cannot
         // be updated with new values by casting the result and calling accept(double).
         StatisticResult stat = null;
+        // Exhaustive switch statement
         switch (statistic) {
         case GEOMETRIC_MEAN:
             stat = getGeometricMean();
@@ -602,8 +603,6 @@ public final class DoubleStatistics implements DoubleConsumer {
             break;
         case VARIANCE:
             stat = getVariance();
-            break;
-        default:
             break;
         }
         if (stat != null) {
