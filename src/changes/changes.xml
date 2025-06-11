@@ -56,6 +56,10 @@ If the output is not quite correct, check for invisible trailing spaces!
     <release version="1.2" date="TBD" description="
 New features, updates and bug fixes (requires Java 8).
 ">
+      <action dev="aherbert" type="add" issue="STATISTICS-6">
+        Add a commons-statistics-interval module for statistical intervals. This ports and
+        updates functionality in org.apache.commons.math4.stat.interval.
+      </action>
       <action dev="aherbert" type="add" issue="STATISTICS-90">
         Support creation of descriptive statistics from an array range defined
         using [from, to) indices.

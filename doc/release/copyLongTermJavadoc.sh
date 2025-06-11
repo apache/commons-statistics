@@ -22,6 +22,7 @@ set -e
 MODULES=(commons-statistics-descriptive \
     commons-statistics-distribution \
     commons-statistics-inference \
+    commons-statistics-interval \
     commons-statistics-ranking)
 
 while getopts r:v: option

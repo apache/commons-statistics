@@ -78,6 +78,9 @@
           </ul>
         </li>
         <li>
+          <a href="#interval">Interval</a>
+        </li>
+        <li>
           <a href="#ranking">Ranking</a>
         </li>
       </ul>
@@ -108,6 +111,10 @@
         <li>
           <code><a href="../commons-statistics-inference/index.html">
           commons-statistics-inference</a></code> - Provides hypothesis testing.
+        </li>
+        <li>
+          <code><a href="../commons-statistics-interval/index.html">
+          commons-statistics-interval</a></code> - Provides statistical intervals.
         </li>
         <li>
           <code><a href="../commons-statistics-ranking/index.html">
@@ -721,6 +728,42 @@ result.reject(0.001);    // true
         <tr><td>within groups</td><td>34</td><td>0.000159</td><td></td><td></td></tr>
       </table>
       </subsection>
+    </section>
+    <section name="Interval" id="interval">
+      <p>
+        The <code>commons-statistics-interval</code> module provides statistical intervals.
+      </p>
+      <p>
+        The <code>Interval</code> interface provides a bounded interval with a lower and upper
+        bound: \( [l, u] \).
+      </p>
+      <p>
+        The <code>BinomialConfidenceInterval</code> enumeration provides methods
+        to create a confidence interval for a binomial proportion. This is an interval
+        containing the probability of success given a series of success-failure experiments.
+        The interval is constructed using a confidence level. For example a 95% confidence interval
+        will contain the true proportion of successes 95% of the times that the procedure
+        for constructing the confidence interval is employed. The target error rate \( \alpha \)
+        is defined as \( 1 - confidence \) when expressing the confidence level as a probability
+        in \( (0, 1) \).
+      </p>
+      <p>
+        The following example demonstrates an ideal coin toss experiment. Note how the 95%
+        confidence interval containing the true probability narrows as the number of trials
+        increases.
+      </p>
+<source class="prettyprint">
+BinomialConfidenceInterval method = BinomialConfidenceInterval.WILSON_SCORE;
+double alpha = 0.05;
+
+Interval interval = method.fromErrorRate(10, 5, alpha);
+interval.getLowerBound();   // 0.23659
+interval.getUpperBound();   // 0.76341
+
+method.fromErrorRate(100, 50, alpha);       // 0.40383, 0.59617
+method.fromErrorRate(1000, 500, alpha);     // 0.46907, 0.53093
+method.fromErrorRate(10000, 5000, alpha);   // 0.49020, 0.50980
+</source>
     </section>
     <section name="Ranking" id="ranking">
       <p>

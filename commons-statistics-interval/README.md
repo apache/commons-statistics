@@ -40,50 +40,32 @@
  |                                                                      |
  +======================================================================+
 --->
-Apache Commons Statistics
+Apache Commons Statistics Interval
 ===================
 
 [![Java CI](https://github.com/apache/commons-statistics/actions/workflows/maven.yml/badge.svg)](https://github.com/apache/commons-statistics/actions/workflows/maven.yml)
 [![Coverage Status](https://codecov.io/gh/apache/commons-statistics/branch/master/graph/badge.svg)](https://app.codecov.io/gh/apache/commons-statistics)
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.commons/commons-statistics-bom?label=Maven%20Central)](https://search.maven.org/artifact/org.apache.commons/commons-statistics-bom/)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=commons-statistics&metric=alert_status)](https://sonarcloud.io/dashboard?id=commons-statistics)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.commons/commons-statistics-interval?label=Maven%20Central)](https://search.maven.org/artifact/org.apache.commons/commons-statistics-interval/)
 
-The Apache Commons Statistics project provides tools for statistics.
+Statistical intervals.
 
 Documentation
 -------------
 
 More information can be found on the [Apache Commons Statistics homepage](https://commons.apache.org/proper/commons-statistics).
-The [Javadoc](https://commons.apache.org/proper/commons-statistics/commons-statistics-docs/apidocs) for each of the modules can be browsed:
-
-- [Commons Statistics Descriptive](https://commons.apache.org/proper/commons-statistics/commons-statistics-descriptive/apidocs/)
-- [Commons Statistics Distribution](https://commons.apache.org/proper/commons-statistics/commons-statistics-distribution/apidocs/)
-- [Commons Statistics Inference](https://commons.apache.org/proper/commons-statistics/commons-statistics-inference/apidocs/)
-- [Commons Statistics Interval](https://commons.apache.org/proper/commons-statistics/commons-statistics-interval/apidocs/)
-- [Commons Statistics Ranking](https://commons.apache.org/proper/commons-statistics/commons-statistics-ranking/apidocs/)
-
+The [Javadoc](https://commons.apache.org/proper/commons-statistics/commons-statistics-interval/apidocs) can be browsed.
 Questions related to the usage of Apache Commons Statistics should be posted to the [user mailing list](https://commons.apache.org/mail-lists.html).
 
 Getting the latest release
 --------------------------
 You can download source and binaries from our [download page](https://commons.apache.org/proper/commons-statistics/download_statistics.cgi).
 
-Alternatively, you can pull it from the central Maven repositories, for example:
+Alternatively, you can pull it from the central Maven repositories:
 
 ```xml
 <dependency>
   <groupId>org.apache.commons</groupId>
-  <artifactId>commons-statistics-descriptive</artifactId>
-  <version>1.1</version>
-</dependency>
-<dependency>
-  <groupId>org.apache.commons</groupId>
-  <artifactId>commons-statistics-distribution</artifactId>
-  <version>1.1</version>
-</dependency>
-<dependency>
-  <groupId>org.apache.commons</groupId>
-  <artifactId>commons-statistics-inference</artifactId>
+  <artifactId>commons-statistics-interval</artifactId>
   <version>1.1</version>
 </dependency>
 ```
