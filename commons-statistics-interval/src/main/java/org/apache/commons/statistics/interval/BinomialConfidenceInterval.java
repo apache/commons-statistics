@@ -177,10 +177,7 @@ public enum BinomialConfidenceInterval {
                 String.format("Number of successes (%d) must be less than or equal to number of trials (%d)",
                     numberOfSuccesses, numberOfTrials));
         }
-        // Negation of alpha inside the interval (0, 1) detects NaN
-        if (!(alpha > 0 && alpha < 1)) {
-            throw new IllegalArgumentException("Error rate is not in (0, 1): " + alpha);
-        }
+        ArgumentUtils.checkErrorRate(alpha);
         return create(numberOfTrials, numberOfSuccesses, alpha);
     }
 

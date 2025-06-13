@@ -764,6 +764,35 @@ method.fromErrorRate(100, 50, alpha);       // 0.40383, 0.59617
 method.fromErrorRate(1000, 500, alpha);     // 0.46907, 0.53093
 method.fromErrorRate(10000, 5000, alpha);   // 0.49020, 0.50980
 </source>
+      <p>
+        The <code>NormalConfidenceInterval</code> enumeration provides methods
+        to create a confidence interval for a normally distributed population.
+        Intervals can be created for the mean or the variance from a sample of
+        the population.
+      </p>
+      <p>
+        The following example demonstrates how to generate a 95% confidence interval
+        for the mean given a sample. The mean and variance of the sample are
+        required for the interval; here they are generated using the descriptive
+        statistics API.
+      </p>
+<source class="prettyprint">
+double[] x = {
+    1.47, 1.40, 1.55, 1.44, 1.41,
+    1.38, 1.53, 1.42, 1.55, 1.55,
+    1.31, 1.37, 1.53, 1.47, 1.51
+};
+DoubleStatistics stats = DoubleStatistics.of(EnumSet.of(Statistic.MEAN, Statistic.VARIANCE), x);
+
+double mean = stats.getAsDouble(Statistic.MEAN);          // 1.46
+double variance = stats.getAsDouble(Statistic.VARIANCE);  // 0.0058
+long n = stats.getCount();                                // 15
+double alpha = 0.05;
+
+Interval interval = NormalConfidenceInterval.MEAN.fromErrorRate(mean, variance, n, alpha);
+interval.getLowerBound();   // 1.4170
+interval.getUpperBound();   // 1.5017
+</source>
     </section>
     <section name="Ranking" id="ranking">
       <p>
