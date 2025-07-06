@@ -38,7 +38,7 @@
   </issueManagement>
 
   <scm>
-    <connection>scm:git:http://gitbox.apache.org/repos/asf/commons-statistics.git</connection>
+    <connection>scm:git:https://gitbox.apache.org/repos/asf/commons-statistics.git</connection>
     <developerConnection>scm:git:https://gitbox.apache.org/repos/asf/commons-statistics.git</developerConnection>
     <url>https://gitbox.apache.org/repos/asf?p=commons-statistics.git</url>
   </scm>
