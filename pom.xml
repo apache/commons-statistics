@@ -118,11 +118,6 @@
     <!-- MathJax configuration. See the maven-javadoc-plugin plugin. -->
     <statistics.mathjax.url>https://commons.apache.org/js/mathjax/tex-mml-chtml.js</statistics.mathjax.url>
 
-    <!-- Fix to avoid JXR 3.0.0 forking the lifecycle phase 'compile' during site report
-       jxr:aggregate. If compile is forked, the build fails when attempting
-       to collect the artifacts from other modules. -->
-    <commons.jxr.version>2.5</commons.jxr.version>
-
     <!-- Increase from commons-parent -->
     <commons.jacoco.haltOnFailure>true</commons.jacoco.haltOnFailure>
 
