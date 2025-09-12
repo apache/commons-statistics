@@ -142,7 +142,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
             final double a = (lower - mean) / sd;
             final double b = (upper - mean) / sd;
             throw new DistributionException(
-               "Excess truncation of standard normal : CDF(%s, %s) = %s", a, b, z);
+                "Excess truncation of standard normal : CDF(%s, %s) = %s", a, b, z);
         }
 
         // Here we have a meaningful truncation. Note that excess truncation may not be optimal.
