@@ -42,7 +42,7 @@ final class IntMath {
     /**
      * Square the values as if an unsigned 64-bit long to produce the high 64-bits
      * of the 128-bit unsigned result.
-     *a
+     *
      * <p>This method computes the equivalent of:
      * <pre>{@code
      * Math.multiplyHigh(x, x)
@@ -53,7 +53,7 @@ final class IntMath {
      * and should be used as above when the source code targets Java 11
      * to exploit the intrinsic method.
      *
-     * <p>Note: The method uses the unsigned multiplication. When the input is negative
+     * <p>Note: The method uses unsigned multiplication. When the input is negative
      * it can be adjusted to the signed result by subtracting the argument twice from the
      * result.
      *
