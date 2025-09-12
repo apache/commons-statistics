@@ -53,23 +53,21 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
 
-    <release version="1.2" date="TBD" description="
-New features, updates and bug fixes (requires Java 8).
+    <release version="1.2" date="2025-09-17" description="
+Adds interval module (requires Java 8).
 ">
       <action dev="aherbert" type="add" issue="STATISTICS-91">
         "NormalConfidenceInterval": Support confidence intervals for a normally
         distributed population.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-6">
-        Add a commons-statistics-interval module for statistical intervals. This ports and
-        updates functionality in org.apache.commons.math4.stat.interval.
+        Add a commons-statistics-interval module for statistical intervals. This ports
+        and updates functionality in org.apache.commons.math4.stat.interval.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-90">
         Support creation of descriptive statistics from an array range defined
         using [from, to) indices.
       </action>
-	  <action dev="ggregory" type="update">Pick up exec-maven-plugin version from parent POM.</action>
-	  <action dev="ggregory" type="update">Bump org.apache.commons:commons-parent from 84 to 85 #90.</action>
     </release>
 
     <release version="1.1" date="2024-08-20" description="

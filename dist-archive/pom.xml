@@ -23,7 +23,7 @@ under the License.
   <parent>
     <groupId>org.apache.commons</groupId>
     <artifactId>commons-statistics-parent</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
   </parent>
 
   <artifactId>commons-statistics</artifactId>
@@ -65,18 +65,18 @@ under the License.
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-descriptive</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-descriptive</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-descriptive</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>javadoc</classifier>
         </dependency>
 
@@ -84,18 +84,18 @@ under the License.
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-distribution</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-distribution</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-distribution</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>javadoc</classifier>
         </dependency>
 
@@ -103,18 +103,18 @@ under the License.
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-inference</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-inference</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-inference</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>javadoc</classifier>
         </dependency>
 
@@ -122,18 +122,18 @@ under the License.
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-interval</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-interval</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-interval</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>javadoc</classifier>
         </dependency>
 
@@ -141,18 +141,18 @@ under the License.
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-ranking</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-ranking</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>sources</classifier>
         </dependency>
         <dependency>
           <groupId>org.apache.commons</groupId>
           <artifactId>commons-statistics-ranking</artifactId>
-          <version>1.2-SNAPSHOT</version>
+          <version>1.2</version>
           <classifier>javadoc</classifier>
         </dependency>
 
