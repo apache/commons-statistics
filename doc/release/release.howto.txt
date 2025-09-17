@@ -1017,6 +1017,8 @@ the Apache mailer daemon.
 
 You can use the following message as a template:
 
+*** Note: Ensure all the links are valid as these are subject to change ***
+
 Subject:
 [ANNOUNCE] Apache Commons Statistics Version 1.2 Released
 ----------
@@ -1030,7 +1032,7 @@ Changes in this version include:
 ***<Include release notes inline wrapped to 80 characters>***
 
 Historical list of changes:
-  https://commons.apache.org/proper/commons-statistics/changes-report.html
+  https://commons.apache.org/proper/commons-statistics/changes.html
 
 For complete information on Apache Commons Statistics, including instructions on how
 to submit bug reports, patches, or suggestions for improvement, see the
