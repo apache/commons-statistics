@@ -59,7 +59,7 @@ public enum NormalConfidenceInterval {
      * distributed population with the given error rate.
      *
      * <p>The error rate {@code alpha} is related to the confidence level that the
-     * interval contains the true probability of success as
+     * interval contains the true value as
      * {@code alpha = 1 - confidence}, where {@code confidence} is the confidence level
      * in {@code [0, 1]}. For example a 95% confidence level is an {@code alpha} of 0.05.
      *
@@ -69,7 +69,7 @@ public enum NormalConfidenceInterval {
      * @param mean Sample mean.
      * @param variance Unbiased sample variance.
      * @param n Sample size.
-     * @param alpha Desired error rate that the true probability of success falls
+     * @param alpha Desired error rate that the true value falls
      * <em>outside</em> the returned interval.
      * @return Confidence interval containing the target with error rate {@code alpha}
      * @throws IllegalArgumentException if {@code n <= 1}, or if {@code alpha} is not in
