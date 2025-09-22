@@ -248,7 +248,7 @@ public class NaturalRanking implements RankingAlgorithm {
             return nanStrategy == NaNStrategy.FIXED ? data : new double[0];
         }
 
-        Arrays.sort(ranks);
+        Arrays.sort(ranks, (a, b) -> Double.compare(a.getValue(), b.getValue()));
 
         // Walk the sorted array, filling output array using sorted positions,
         // resolving ties as we go.
@@ -266,7 +266,7 @@ public class NaturalRanking implements RankingAlgorithm {
         for (int i = 1; i < nonNanSize; i++) {
             final DataPosition previous = current;
             current = ranks[i];
-            if (current.compareTo(previous) > 0) {
+            if (current.getValue() > previous.getValue()) {
                 // Check for a previous tie sequence
                 if (tiesTrace.size() != 0) {
                     resolveTie(out, tiesTrace, previous.getPosition());
@@ -545,12 +545,9 @@ public class NaturalRanking implements RankingAlgorithm {
     }
 
     /**
-     * Represents the position of a {@code double} value in a data array. The
-     * Comparable interface is implemented so Arrays.sort can be used to sort an
-     * array of data positions by value. Note that the implicitly defined natural
-     * ordering is NOT consistent with equals.
+     * Represents the position of a {@code double} value in a data array.
      */
-    private static class DataPosition implements Comparable<DataPosition>  {
+    private static class DataPosition {
         /** Data value. */
         private final double value;
         /** Data position. */
@@ -568,18 +565,13 @@ public class NaturalRanking implements RankingAlgorithm {
         }
 
         /**
-         * Compare this value to another.
-         * Only the <strong>values</strong> are compared.
+         * Returns the value.
          *
-         * @param other the other pair to compare this to
-         * @return result of {@code Double.compare(value, other.value)}
+         * @return value
          */
-        @Override
-        public int compareTo(DataPosition other) {
-            return Double.compare(value, other.value);
+        double getValue() {
+            return value;
         }
-
-        // equals() and hashCode() are not implemented; see MATH-610 for discussion.
 
         /**
          * Returns the data position.
