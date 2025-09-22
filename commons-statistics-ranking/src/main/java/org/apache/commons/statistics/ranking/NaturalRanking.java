@@ -452,7 +452,8 @@ public class NaturalRanking implements RankingAlgorithm {
         IntUnaryOperator r = randomIntFunction;
         if (r == null) {
             // Default to a SplittableRandom
-            randomIntFunction = r = new SplittableRandom()::nextInt;
+            r = new SplittableRandom()::nextInt;
+            randomIntFunction = r;
         }
         return r;
     }

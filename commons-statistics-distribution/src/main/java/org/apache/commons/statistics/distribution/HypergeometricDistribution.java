@@ -484,7 +484,8 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
                 x--;
                 p1 = p0;
             }
-            midpoint = v = new double[] {x, p1};
+            v = new double[] {x, p1};
+            midpoint = v;
         }
         return v;
     }

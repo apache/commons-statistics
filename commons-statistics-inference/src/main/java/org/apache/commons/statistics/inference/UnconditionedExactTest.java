@@ -1084,7 +1084,8 @@ public final class UnconditionedExactTest {
         // ignore: binom(n, 0) == binom(n, n) == 1
         int j = n - 1;
         for (int i = 1; i <= j; i++, j--) {
-            binom[i] = binom[j] = LogBinomialCoefficient.value(n, i);
+            binom[i] = LogBinomialCoefficient.value(n, i);
+            binom[j] = binom[i];
         }
         return k -> binom[k];
     }

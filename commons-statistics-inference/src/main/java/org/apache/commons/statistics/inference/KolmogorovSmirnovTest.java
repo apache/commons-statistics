@@ -598,7 +598,7 @@ public final class KolmogorovSmirnovTest {
         final double d2 = significantTies ? computeD(tiesD[1], n, m, gcd) : d;
 
         final double p;
-        double p2;
+        final double p2;
 
         // Allow bootstrap estimation of the p-value
         if (method == PValueMethod.ESTIMATE) {
@@ -606,7 +606,7 @@ public final class KolmogorovSmirnovTest {
             p2 = Double.NaN;
         } else {
             final boolean exact = method == PValueMethod.EXACT;
-            p = p2 = twoSampleP(dnm, n, m, gcd, d, exact);
+            p = twoSampleP(dnm, n, m, gcd, d, exact);
             if (significantTies) {
                 // Compute the upper bound on D.
                 // The p-value is also computed. The alternative is to save the options
@@ -614,6 +614,8 @@ public final class KolmogorovSmirnovTest {
                 // Note detection of whether the exact P computation is possible is based on
                 // n and m, thus this will use the same computation.
                 p2 = twoSampleP(tiesD[1], n, m, gcd, d2, exact);
+            } else {
+                p2 = p;
             }
         }
         return new TwoResult(d, sign[0], p, significantTies, d2, p2);

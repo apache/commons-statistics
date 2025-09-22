@@ -561,7 +561,8 @@ public final class MannWhitneyUTest {
                     for (int x = 0; x < m1; x++) {
                         f[x] = Arrays.copyOf(f[x], sn);
                         for (int y = n1; y < sn; y++) {
-                            final double[] b = f[x][y] = new double[sk];
+                            final double[] b = new double[sk];
+                            f[x][y] = b;
                             initialize(b);
                         }
                     }
@@ -569,7 +570,8 @@ public final class MannWhitneyUTest {
                 if (growK) {
                     for (int x = 0; x < m1; x++) {
                         for (int y = 0; y < n1; y++) {
-                            final double[] b = f[x][y] = Arrays.copyOf(f[x][y], sk);
+                            final double[] b = Arrays.copyOf(f[x][y], sk);
+                            f[x][y] = b;
                             for (int z = k1; z < sk; z++) {
                                 b[z] = UNSET;
                             }
@@ -624,7 +626,8 @@ public final class MannWhitneyUTest {
 
             // Recursion from formula (3):
             // f(m, n, k) = f(m-1, n, k-n) + f(m, n-1, k)
-            f[m][n][k] = fmnk = fmnk(f, m - 1, n, k - n) + fmnk(f, m, n - 1, k);
+            fmnk = fmnk(f, m - 1, n, k - n) + fmnk(f, m, n - 1, k);
+            f[m][n][k] = fmnk;
         }
         return fmnk;
     }

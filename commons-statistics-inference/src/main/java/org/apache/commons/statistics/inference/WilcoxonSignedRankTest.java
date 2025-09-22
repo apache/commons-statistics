@@ -640,7 +640,8 @@ public final class WilcoxonSignedRankTest {
         // Compute all u_n(t) up to t.
         final double[] u = new double[t + 1];
         // Initialize u_1(t) using base cases for recursion
-        u[0] = u[1] = 1;
+        u[0] = 1;
+        u[1] = 1;
 
         // Each u_n(t) is created using the current correct values for u_{n-1}(t)
         for (int nn = 2; nn < n + 1; nn++) {

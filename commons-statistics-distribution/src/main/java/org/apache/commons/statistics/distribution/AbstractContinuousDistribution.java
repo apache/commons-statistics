@@ -81,7 +81,8 @@ abstract class AbstractContinuousDistribution
     double getMedian() {
         double m = median;
         if (Double.isNaN(m)) {
-            median = m = inverseCumulativeProbability(0.5);
+            m = inverseCumulativeProbability(0.5);
+            median = m;
         }
         return m;
     }
