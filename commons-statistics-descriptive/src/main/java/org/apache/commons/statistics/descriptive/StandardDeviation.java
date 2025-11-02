@@ -75,7 +75,7 @@ package org.apache.commons.statistics.descriptive;
  *   <li>Chan and Lewis (1979)
  *       Computing standard deviations: accuracy.
  *       Communications of the ACM, 22, 526-531.
- *       <a href="http://doi.acm.org/10.1145/359146.359152">doi: 10.1145/359146.359152</a>
+ *       <a href="https://doi.acm.org/10.1145/359146.359152">doi: 10.1145/359146.359152</a>
  *   <li>Chan, Golub and Levesque (1983)
  *       Algorithms for Computing the Sample Variance: Analysis and Recommendations.
  *       American Statistician, 37, 242-247.

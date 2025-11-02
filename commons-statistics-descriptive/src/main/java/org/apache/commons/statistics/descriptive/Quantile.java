@@ -45,7 +45,7 @@ import org.apache.commons.numbers.arrays.Selection;
  * <p>Instances of this class are immutable and thread-safe.
  *
  * @see #with(NaNPolicy)
- * @see <a href="http://en.wikipedia.org/wiki/Quantile">Quantile (Wikipedia)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Quantile">Quantile (Wikipedia)</a>
  * @since 1.1
  */
 public final class Quantile {
@@ -762,7 +762,7 @@ public final class Quantile {
      *     <i>Sample Quantiles in Statistical Packages.</i>
      *     The American Statistician, 50, 361-365.
      *     <a href="https://www.jstor.org/stable/2684934">doi.org/10.2307/2684934</a>
-     * <li><a href="http://en.wikipedia.org/wiki/Quantile">Quantile (Wikipedia)</a>
+     * <li><a href="https://en.wikipedia.org/wiki/Quantile">Quantile (Wikipedia)</a>
      * </ol>
      */
     public enum EstimationMethod {

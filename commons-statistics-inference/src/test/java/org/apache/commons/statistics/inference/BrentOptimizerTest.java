@@ -348,7 +348,7 @@ final class BrentOptimizerTest {
     }
 
     /**
-     * <a href="http://en.wikipedia.org/wiki/Step_function">Step function</a>.
+     * <a href="https://en.wikipedia.org/wiki/Step_function">Step function</a>.
      */
     static class StepFunction implements DoubleUnaryOperator {
         /** Abscissae. */

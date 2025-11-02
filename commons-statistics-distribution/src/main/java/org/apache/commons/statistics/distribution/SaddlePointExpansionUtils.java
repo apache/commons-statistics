@@ -20,7 +20,7 @@ package org.apache.commons.statistics.distribution;
  * Utility class used by various distributions to accurately compute their
  * respective probability mass functions. The implementation for this class is
  * based on the Catherine Loader's
- * <a href="http://www.herine.net/stat/software/dbinom.html">dbinom</a> routines.
+ * <a href="https://www.herine.net/stat/software/dbinom.html">dbinom</a> routines.
  *
  * This class is not intended to be called directly.
  */
@@ -108,7 +108,7 @@ final class SaddlePointExpansionUtils {
      * <ol>
      * <li>Catherine Loader (2000). "Fast and Accurate Computation of Binomial
      * Probabilities.". <a target="_blank"
-     * href="http://www.herine.net/stat/papers/dbinom.pdf">
+     * href="https://www.herine.net/stat/papers/dbinom.pdf">
      * http://www.herine.net/stat/papers/dbinom.pdf</a></li>
      * </ol>
      *

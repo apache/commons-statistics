@@ -25,7 +25,7 @@ import org.apache.commons.statistics.distribution.BinomialDistribution;
  * <p>Performs an exact test for the statistical significance of deviations from a
  * theoretically expected distribution of observations into two categories.
  *
- * @see <a href="http://en.wikipedia.org/wiki/Binomial_test">Binomial test (Wikipedia)</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Binomial_test">Binomial test (Wikipedia)</a>
  * @since 1.1
  */
 public final class BinomialTest {
