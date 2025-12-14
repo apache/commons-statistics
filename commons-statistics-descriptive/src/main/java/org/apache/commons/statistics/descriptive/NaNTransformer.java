@@ -48,10 +48,10 @@ interface NaNTransformer {
      *
      * <p>The method will return:
      * <ul>
-     * <li>An array to partition; this may be a copy.
+     * <li>An array to partition; this may be a copy.</li>
      * <li>The {@code bounds} of the returned data as [start, end); this can be smaller than the
      * input range if the transformer is configured to exclude NaN values. The start is inclusive
-     * and the end is exclusive.
+     * and the end is exclusive.</li>
      * </ul>
      *
      * <p>Implementations may assume the input {@code [from, to)} range is valid given the

@@ -20,20 +20,20 @@ package org.apache.commons.statistics.descriptive;
  * Returns the sum of the {@link Math#log(double) natural logarithm} of available values.
  *
  * <ul>
- *   <li>The result is zero if no values are added.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
- *   <li>The result is {@code NaN} if any of the values is negative.
+ *   <li>The result is zero if no values are added.</li>
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.</li>
+ *   <li>The result is {@code NaN} if any of the values is negative.</li>
  * </ul>
  *
  * <p>The sum follows the IEEE754 result for summing infinite values:
  *
  * <ul>
  *   <li>The result is {@code +infinity} if all values are in the range {@code (0, +infinity]}
- *       and at least one value is {@code +infinity}.
+ *       and at least one value is {@code +infinity}.</li>
  *   <li>The result is {@code -infinity} if all values are in the range {@code [0, +infinity)}
- *       and at least one value is zero.
+ *       and at least one value is zero.</li>
  *   <li>The result is {@code NaN} if all values are in the range {@code [0, +infinity]}
- *       and at least one value is zero, and one value is {@code +infinity}.
+ *       and at least one value is zero, and one value is {@code +infinity}.</li>
  * </ul>
  *
  * <p>This class is designed to work with (though does not require)

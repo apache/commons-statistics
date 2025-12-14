@@ -67,7 +67,7 @@ package org.apache.commons.statistics.descriptive;
  *       Decomposition of the Sum of Cubes, the Sum Raised to the
  *       Power of Four and Codeviance.
  *       Applied Mathematics, 11, 1013-1020.
- *       <a href="https://doi.org/10.4236/am.2020.1110067">doi: 10.4236/am.2020.1110067</a>
+ *       <a href="https://doi.org/10.4236/am.2020.1110067">doi: 10.4236/am.2020.1110067</a></li>
  * </ul>
  *
  * @since 1.1

@@ -24,10 +24,10 @@ package org.apache.commons.statistics.descriptive;
  * <p>where \( n \) is the number of samples.
  *
  * <ul>
- *   <li>The result is zero if no values are observed.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
+ *   <li>The result is zero if no values are observed.</li>
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.</li>
  *   <li>The result is {@code +infinity} if any of the values is {@code infinity},
- *       or the sum overflows.
+ *       or the sum overflows.</li>
  * </ul>
  *
  * <p>This class is designed to work with (though does not require)

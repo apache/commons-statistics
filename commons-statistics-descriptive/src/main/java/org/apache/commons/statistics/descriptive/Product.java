@@ -20,8 +20,8 @@ package org.apache.commons.statistics.descriptive;
  * Returns the product of the available values.
  *
  * <ul>
- *   <li>The result is one if no values are observed.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
+ *   <li>The result is one if no values are observed.</li>
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.</li>
  * </ul>
  *
  * <p>This class is designed to work with (though does not require)

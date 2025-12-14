@@ -20,10 +20,10 @@ package org.apache.commons.statistics.descriptive;
  * Returns the sum of the available values.
  *
  * <ul>
- *   <li>The result is zero if no values are added.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
- *   <li>The result is {@code NaN} if the values contain positive and negative infinity.
- *   <li>The result is non-finite if the values contain infinities of the same sign.
+ *   <li>The result is zero if no values are added.</li>
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.</li>
+ *   <li>The result is {@code NaN} if the values contain positive and negative infinity.</li>
+ *   <li>The result is non-finite if the values contain infinities of the same sign.</li>
  * </ul>
  *
  * <p>Note: In the event of infinite values of the same sign the result will be non-finite.

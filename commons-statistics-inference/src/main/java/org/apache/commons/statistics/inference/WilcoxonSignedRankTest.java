@@ -123,10 +123,10 @@ public final class WilcoxonSignedRankTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@link AlternativeHypothesis#TWO_SIDED}
-     * <li>{@link PValueMethod#AUTO}
-     * <li>{@link ContinuityCorrection#ENABLED}
-     * <li>{@linkplain #withMu(double) mu = 0}
+     * <li>{@link AlternativeHypothesis#TWO_SIDED}</li>
+     * <li>{@link PValueMethod#AUTO}</li>
+     * <li>{@link ContinuityCorrection#ENABLED}</li>
+     * <li>{@linkplain #withMu(double) mu = 0}</li>
      * </ul>
      *
      * @return default instance
@@ -240,11 +240,11 @@ public final class WilcoxonSignedRankTest {
      * <p>The test is defined by the {@link AlternativeHypothesis}.
      *
      * <ul>
-     * <li>'two-sided': the distribution of the difference is not symmetric about {@code mu}.
+     * <li>'two-sided': the distribution of the difference is not symmetric about {@code mu}.</li>
      * <li>'greater': the distribution of the difference is stochastically greater than a
-     * distribution symmetric about {@code mu}.
+     * distribution symmetric about {@code mu}.</li>
      * <li>'less': the distribution of the difference is stochastically less than a distribution
-     * symmetric about {@code mu}.
+     * symmetric about {@code mu}.</li>
      * </ul>
      *
      * <p>If the p-value method is {@linkplain PValueMethod#AUTO auto} an exact p-value

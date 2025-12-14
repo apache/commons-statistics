@@ -132,9 +132,9 @@ public final class FDistribution extends AbstractContinuousDistribution {
      *
      * <p>Returns the limit when {@code x = 0}:
      * <ul>
-     * <li>{@code df1 < 2}: Infinity
-     * <li>{@code df1 == 2}: 1
-     * <li>{@code df1 > 2}: 0
+     * <li>{@code df1 < 2}: Infinity</li>
+     * <li>{@code df1 == 2}: 1</li>
+     * <li>{@code df1 > 2}: 0</li>
      * </ul>
      * <p>Where {@code df1} is the numerator degrees of freedom.
      */
@@ -158,9 +158,9 @@ public final class FDistribution extends AbstractContinuousDistribution {
      *
      * <p>Returns the limit when {@code x = 0}:
      * <ul>
-     * <li>{@code df1 < 2}: Infinity
-     * <li>{@code df1 == 2}: 0
-     * <li>{@code df1 > 2}: -Infinity
+     * <li>{@code df1 < 2}: Infinity</li>
+     * <li>{@code df1 == 2}: 0</li>
+     * <li>{@code df1 > 2}: -Infinity</li>
      * </ul>
      * <p>Where {@code df1} is the numerator degrees of freedom.
      */

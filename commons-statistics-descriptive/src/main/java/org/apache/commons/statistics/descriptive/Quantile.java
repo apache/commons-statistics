@@ -26,9 +26,9 @@ import org.apache.commons.numbers.arrays.Selection;
  *
  * <p>For values of length {@code n}:
  * <ul>
- * <li>The result is {@code NaN} if {@code n = 0}.
- * <li>The result is {@code values[0]} if {@code n = 1}.
- * <li>Otherwise the result is computed using the {@link EstimationMethod}.
+ * <li>The result is {@code NaN} if {@code n = 0}.</li>
+ * <li>The result is {@code values[0]} if {@code n = 1}.</li>
+ * <li>Otherwise the result is computed using the {@link EstimationMethod}.</li>
  * </ul>
  *
  * <p>Computation of multiple quantiles and will handle duplicate and unordered
@@ -86,9 +86,9 @@ public final class Quantile {
      * Return a new instance with the default options.
      *
      * <ul>
-     * <li>{@linkplain #withCopy(boolean) Copy = false}
-     * <li>{@linkplain #with(NaNPolicy) NaN policy = include}
-     * <li>{@linkplain #with(EstimationMethod) Estimation method = HF8}
+     * <li>{@linkplain #withCopy(boolean) Copy = false}</li>
+     * <li>{@linkplain #with(NaNPolicy) NaN policy = include}</li>
+     * <li>{@linkplain #with(EstimationMethod) Estimation method = HF8}</li>
      * </ul>
      *
      * <p>Note: The default options configure for processing in-place and including
@@ -128,13 +128,13 @@ public final class Quantile {
      * <ul>
      * <li>{@link NaNPolicy#INCLUDE}: {@code NaN} values are moved to the end of the data;
      * the size of the data <em>includes</em> the {@code NaN} values and the quantile will be
-     * {@code NaN} if any value used for quantile interpolation is {@code NaN}.
+     * {@code NaN} if any value used for quantile interpolation is {@code NaN}.</li>
      * <li>{@link NaNPolicy#EXCLUDE}: {@code NaN} values are moved to the end of the data;
      * the size of the data <em>excludes</em> the {@code NaN} values and the quantile will
      * never be {@code NaN} for non-zero size. If all data are {@code NaN} then the size is zero
-     * and the result is {@code NaN}.
+     * and the result is {@code NaN}.</li>
      * <li>{@link NaNPolicy#ERROR}: An exception is raised if the data contains {@code NaN}
-     * values.
+     * values.</li>
      * </ul>
      *
      * <p>Note that the result is identical for all policies if no {@code NaN} values are present.
@@ -761,8 +761,8 @@ public final class Quantile {
      * <li>Hyndman and Fan (1996)
      *     <i>Sample Quantiles in Statistical Packages.</i>
      *     The American Statistician, 50, 361-365.
-     *     <a href="https://www.jstor.org/stable/2684934">doi.org/10.2307/2684934</a>
-     * <li><a href="https://en.wikipedia.org/wiki/Quantile">Quantile (Wikipedia)</a>
+     *     <a href="https://www.jstor.org/stable/2684934">doi.org/10.2307/2684934</a></li>
+     * <li><a href="https://en.wikipedia.org/wiki/Quantile">Quantile (Wikipedia)</a></li>
      * </ol>
      */
     public enum EstimationMethod {

@@ -21,9 +21,9 @@ package org.apache.commons.statistics.descriptive;
  * underlying function to compute the {@code maximum}.
  *
  * <ul>
- *   <li>The result is {@link Double#NEGATIVE_INFINITY negative infinity} if no values are added.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
- *   <li>The value {@code -0.0} is considered strictly smaller than {@code 0.0}.
+ *   <li>The result is {@link Double#NEGATIVE_INFINITY negative infinity} if no values are added.</li>
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.</li>
+ *   <li>The value {@code -0.0} is considered strictly smaller than {@code 0.0}.</li>
  * </ul>
  *
  * <p>This class is designed to work with (though does not require)

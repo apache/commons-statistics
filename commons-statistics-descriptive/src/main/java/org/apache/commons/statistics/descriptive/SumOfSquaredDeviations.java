@@ -51,7 +51,7 @@ package org.apache.commons.statistics.descriptive;
  *   <li>Chan, Golub and Levesque (1983)
  *       Algorithms for Computing the Sample Variance: Analysis and Recommendations.
  *       American Statistician, 37, 242-247.
- *       <a href="https://doi.org/10.2307/2683386">doi: 10.2307/2683386</a>
+ *       <a href="https://doi.org/10.2307/2683386">doi: 10.2307/2683386</a></li>
  * </ul>
  *
  * @since 1.1

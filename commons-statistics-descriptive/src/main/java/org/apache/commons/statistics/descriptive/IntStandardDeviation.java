@@ -25,8 +25,8 @@ package org.apache.commons.statistics.descriptive;
  * <p>where \( \overline{x} \) is the sample mean, and \( n \) is the number of samples.
  *
  * <ul>
- *   <li>The result is {@code NaN} if no values are added.
- *   <li>The result is zero if there is one value in the data set.
+ *   <li>The result is {@code NaN} if no values are added.</li>
+ *   <li>The result is zero if there is one value in the data set.</li>
  * </ul>
  *
  * <p>The use of the term \( n − 1 \) is called Bessel's correction. Omitting the square root,

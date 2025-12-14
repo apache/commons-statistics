@@ -43,7 +43,7 @@ public final class StatisticsConfiguration {
      * Return an instance using the default options.
      *
      * <ul>
-     *  <li>{@linkplain #isBiased() Biased = false}
+     *  <li>{@linkplain #isBiased() Biased = false}</li>
      * </ul>
      *
      * @return default instance
@@ -60,10 +60,10 @@ public final class StatisticsConfiguration {
      *
      * <p>This option is used by:
      * <ul>
-     *  <li>{@link StandardDeviation}
-     *  <li>{@link Variance}
-     *  <li>{@link Skewness}
-     *  <li>{@link Kurtosis}
+     *  <li>{@link StandardDeviation}</li>
+     *  <li>{@link Variance}</li>
+     *  <li>{@link Skewness}</li>
+     *  <li>{@link Kurtosis}</li>
      * </ul>
      *
      * @param v Value.

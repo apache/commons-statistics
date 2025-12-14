@@ -200,9 +200,9 @@ public final class OneWayAnova {
      * <p>Special cases:
      * <ul>
      * <li>If the value in each category is the same (no variance within groups) but different
-     * between groups, the f-value is {@linkplain Double#POSITIVE_INFINITY infinity}.
+     * between groups, the f-value is {@linkplain Double#POSITIVE_INFINITY infinity}.</li>
      * <li>If the value in every group is the same (no variance within or between groups),
-     * the f-value is {@link Double#NaN NaN}.
+     * the f-value is {@link Double#NaN NaN}.</li>
      * </ul>
      *
      * @param data Category summary data.
@@ -225,9 +225,9 @@ public final class OneWayAnova {
      * <p>Special cases:
      * <ul>
      * <li>If the value in each category is the same (no variance within groups) but different
-     * between groups, the f-value is {@linkplain Double#POSITIVE_INFINITY infinity} and the p-value is zero.
+     * between groups, the f-value is {@linkplain Double#POSITIVE_INFINITY infinity} and the p-value is zero.</li>
      * <li>If the value in every group is the same (no variance within or between groups),
-     * the f-value and p-value are {@link Double#NaN NaN}.
+     * the f-value and p-value are {@link Double#NaN NaN}.</li>
      * </ul>
      *
      * @param data Category summary data.

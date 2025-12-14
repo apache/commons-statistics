@@ -55,10 +55,10 @@ import java.util.function.DoubleConsumer;
  * <ul>
  *   <li>Chan, Golub, Levesque (1983)
  *       Algorithms for Computing the Sample Variance.
- *       American Statistician, vol. 37, no. 3, pp. 242-247.
+ *       American Statistician, vol. 37, no. 3, pp. 242-247.</li>
  *   <li>Ling (1974)
  *       Comparison of Several Algorithms for Computing Sample Means and Variances.
- *       Journal of the American Statistical Association, Vol. 69, No. 348, pp. 859-866.
+ *       Journal of the American Statistical Association, Vol. 69, No. 348, pp. 859-866.</li>
  * </ul>
  *
  * @since 1.1
@@ -234,8 +234,8 @@ class FirstMoment implements DoubleConsumer {
      * <p>This duplicates the algorithm in the {@link #accept(double)} method
      * with optimisations due to the processing of an entire array:
      * <ul>
-     *  <li>Avoid updating (unused) class level working variables.
-     *  <li>Only computing the non-finite value if required.
+     *  <li>Avoid updating (unused) class level working variables.</li>
+     *  <li>Only computing the non-finite value if required.</li>
      * </ul>
      *
      * @param values Values.

@@ -42,8 +42,8 @@ import org.openjdk.jmh.annotations.Warmup;
  * <p>This benchmark is used to determine what sampler to use in a truncated
  * normal distribution:
  * <ul>
- *  <li>Rejection sampling from a normal distribution (ignore samples outside the truncated range)
- *  <li>Inverse transform sampling
+ *  <li>Rejection sampling from a normal distribution (ignore samples outside the truncated range)</li>
+ *  <li>Inverse transform sampling</li>
  * </ul>
  *
  * <p>Rejection sampling can be used when the truncated distribution covers a

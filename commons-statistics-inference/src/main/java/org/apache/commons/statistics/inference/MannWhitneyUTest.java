@@ -132,10 +132,10 @@ public final class MannWhitneyUTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@link AlternativeHypothesis#TWO_SIDED}
-     * <li>{@link PValueMethod#AUTO}
-     * <li>{@link ContinuityCorrection#ENABLED}
-     * <li>{@linkplain #withMu(double) mu = 0}
+     * <li>{@link AlternativeHypothesis#TWO_SIDED}</li>
+     * <li>{@link PValueMethod#AUTO}</li>
+     * <li>{@link ContinuityCorrection#ENABLED}</li>
+     * <li>{@linkplain #withMu(double) mu = 0}</li>
      * </ul>
      *
      * @return default instance
@@ -234,11 +234,11 @@ public final class MannWhitneyUTest {
      * <p>The test is defined by the {@link AlternativeHypothesis}.
      * <ul>
      * <li>'two-sided': the distribution underlying {@code (x - mu)} is not equal to the
-     * distribution underlying {@code y}.
+     * distribution underlying {@code y}.</li>
      * <li>'greater': the distribution underlying {@code (x - mu)} is stochastically greater than
-     * the distribution underlying {@code y}.
+     * the distribution underlying {@code y}.</li>
      * <li>'less': the distribution underlying {@code (x - mu)} is stochastically less than
-     * the distribution underlying {@code y}.
+     * the distribution underlying {@code y}.</li>
      * </ul>
      *
      * <p>If the p-value method is {@linkplain PValueMethod#AUTO auto} an exact p-value is

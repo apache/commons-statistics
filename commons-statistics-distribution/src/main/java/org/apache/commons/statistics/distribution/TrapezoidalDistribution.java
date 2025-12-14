@@ -35,8 +35,8 @@ import org.apache.commons.rng.UniformRandomProvider;
  *
  * <p>Note the special cases:
  * <ul>
- * <li>\( b = c \) is the triangular distribution
- * <li>\( a = b \) and \( c = d \) is the uniform distribution
+ * <li>\( b = c \) is the triangular distribution</li>
+ * <li>\( a = b \) and \( c = d \) is the uniform distribution</li>
  * </ul>
  *
  * @see <a href="https://en.wikipedia.org/wiki/Trapezoidal_distribution">Trapezoidal distribution (Wikipedia)</a>

@@ -27,10 +27,10 @@ import org.apache.commons.statistics.distribution.TDistribution;
  *
  * <p>Tests can be:
  * <ul>
- * <li>One-sample or two-sample
- * <li>One-sided or two-sided
- * <li>Paired or unpaired (for two-sample tests)
- * <li>Homoscedastic (equal variance assumption) or heteroscedastic (for two sample tests)
+ * <li>One-sample or two-sample</li>
+ * <li>One-sided or two-sided</li>
+ * <li>Paired or unpaired (for two-sample tests)</li>
+ * <li>Homoscedastic (equal variance assumption) or heteroscedastic (for two sample tests)</li>
  * </ul>
  *
  * <p>Input to tests can be either {@code double[]} arrays or the mean, variance, and size
@@ -96,9 +96,9 @@ public final class TTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@link AlternativeHypothesis#TWO_SIDED}
-     * <li>{@link DataDispersion#HETEROSCEDASTIC}
-     * <li>{@linkplain #withMu(double) mu = 0}
+     * <li>{@link AlternativeHypothesis#TWO_SIDED}</li>
+     * <li>{@link DataDispersion#HETEROSCEDASTIC}</li>
+     * <li>{@linkplain #withMu(double) mu = 0}</li>
      * </ul>
      *
      * @return default instance

@@ -37,9 +37,9 @@ package org.apache.commons.statistics.descriptive;
  * and \( n \) is the number of samples.
  *
  * <ul>
- *   <li>The result is {@code NaN} if less than 3 values are added.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN} or infinite.
- *   <li>The result is {@code NaN} if the sum of the cubed deviations from the mean is infinite.
+ *   <li>The result is {@code NaN} if less than 3 values are added.</li>
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN} or infinite.</li>
+ *   <li>The result is {@code NaN} if the sum of the cubed deviations from the mean is infinite.</li>
  * </ul>
  *
  * <p>The default computation is for the adjusted Fisher–Pearson standardized moment coefficient

@@ -43,23 +43,23 @@ import org.apache.commons.rng.UniformRandomProvider;
  * <li>
  * Marsaglia, G., Tsang, W. W., &amp; Wang, J. (2003).
  * <a href="https://doi.org/10.18637/jss.v008.i18">Evaluating Kolmogorov's Distribution.</a>
- * Journal of Statistical Software, 8(18), 1–4.
+ * Journal of Statistical Software, 8(18), 1–4.</li>
  * <li>Simard, R., &amp; L’Ecuyer, P. (2011).
  * <a href="https://doi.org/10.18637/jss.v039.i11">Computing the Two-Sided Kolmogorov-Smirnov Distribution.</a>
- * Journal of Statistical Software, 39(11), 1–18.
+ * Journal of Statistical Software, 39(11), 1–18.</li>
  * <li>Sekhon, J. S. (2011).
  * <a href="https://doi.org/10.18637/jss.v042.i07">
  * Multivariate and Propensity Score Matching Software with Automated Balance Optimization:
  * The Matching package for R.</a>
- * Journal of Statistical Software, 42(7), 1–52.
+ * Journal of Statistical Software, 42(7), 1–52.</li>
  * <li>Viehmann, T (2021).
  * <a href="https://doi.org/10.48550/arXiv.2102.08037">
  * Numerically more stable computation of the p-values for the two-sample Kolmogorov-Smirnov test.</a>
- * arXiv:2102.08037
+ * arXiv:2102.08037</li>
  * <li>Hodges, J. L. (1958).
  * <a href="https://doi.org/10.1007/BF02589501">
  * The significance probability of the smirnov two-sample test.</a>
- * Arkiv for Matematik, 3(5), 469-486.
+ * Arkiv for Matematik, 3(5), 469-486.</li>
  * </ol>
  *
  * <p>Note that [1] contains an error in computing h, refer to <a
@@ -294,11 +294,11 @@ public final class KolmogorovSmirnovTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@link AlternativeHypothesis#TWO_SIDED}
-     * <li>{@link PValueMethod#AUTO}
-     * <li>{@link Inequality#NON_STRICT}
-     * <li>{@linkplain #with(UniformRandomProvider) RNG = none}
-     * <li>{@linkplain #withIterations(int) Iterations = 1000}
+     * <li>{@link AlternativeHypothesis#TWO_SIDED}</li>
+     * <li>{@link PValueMethod#AUTO}</li>
+     * <li>{@link Inequality#NON_STRICT}</li>
+     * <li>{@linkplain #with(UniformRandomProvider) RNG = none}</li>
+     * <li>{@linkplain #withIterations(int) Iterations = 1000}</li>
      * </ul>
      *
      * @return default instance
@@ -396,9 +396,9 @@ public final class KolmogorovSmirnovTest {
      * Computes the one-sample Kolmogorov-Smirnov test statistic.
      *
      * <ul>
-     * <li>two-sided: \(D_n=\sup_x |F_n(x)-F(x)|\)
-     * <li>greater: \(D_n^+=\sup_x (F_n(x)-F(x))\)
-     * <li>less: \(D_n^-=\sup_x (F(x)-F_n(x))\)
+     * <li>two-sided: \(D_n=\sup_x |F_n(x)-F(x)|\)</li>
+     * <li>greater: \(D_n^+=\sup_x (F_n(x)-F(x))\)</li>
+     * <li>less: \(D_n^-=\sup_x (F(x)-F_n(x))\)</li>
      * </ul>
      *
      * <p>where \(F\) is the distribution cumulative density function ({@code cdf}),
@@ -428,9 +428,9 @@ public final class KolmogorovSmirnovTest {
      * Computes the two-sample Kolmogorov-Smirnov test statistic.
      *
      * <ul>
-     * <li>two-sided: \(D_{n,m}=\sup_x |F_n(x)-F_m(x)|\)
-     * <li>greater: \(D_{n,m}^+=\sup_x (F_n(x)-F_m(x))\)
-     * <li>less: \(D_{n,m}^-=\sup_x (F_m(x)-F_n(x))\)
+     * <li>two-sided: \(D_{n,m}=\sup_x |F_n(x)-F_m(x)|\)</li>
+     * <li>greater: \(D_{n,m}^+=\sup_x (F_n(x)-F_m(x))\)</li>
+     * <li>less: \(D_{n,m}^-=\sup_x (F_m(x)-F_n(x))\)</li>
      * </ul>
      *
      * <p>where \(n\) is the length of {@code x}, \(m\) is the length of {@code y}, \(F_n\) is the
@@ -462,11 +462,11 @@ public final class KolmogorovSmirnovTest {
      * <ul>
      * <li>Two-sided evaluates the null hypothesis that the two distributions are
      * identical, \(F_n(i) = F(i)\) for all \( i \); the alternative is that the are not
-     * identical. The statistic is \( max(D_n^+, D_n^-) \) and the sign of \( D \) is provided.
+     * identical. The statistic is \( max(D_n^+, D_n^-) \) and the sign of \( D \) is provided.</li>
      * <li>Greater evaluates the null hypothesis that the \(F_n(i) &lt;= F(i)\) for all \( i \);
-     * the alternative is \(F_n(i) &gt; F(i)\) for at least one \( i \). The statistic is \( D_n^+ \).
+     * the alternative is \(F_n(i) &gt; F(i)\) for at least one \( i \). The statistic is \( D_n^+ \).</li>
      * <li>Less evaluates the null hypothesis that the \(F_n(i) &gt;= F(i)\) for all \( i \);
-     * the alternative is \(F_n(i) &lt; F(i)\) for at least one \( i \). The statistic is \( D_n^- \).
+     * the alternative is \(F_n(i) &lt; F(i)\) for at least one \( i \). The statistic is \( D_n^- \).</li>
      * </ul>
      *
      * <p>The p-value method defaults to exact. The one-sided p-value uses Smirnov's stable formula:
@@ -520,11 +520,11 @@ public final class KolmogorovSmirnovTest {
      * <ul>
      * <li>Two-sided evaluates the null hypothesis that the two distributions are
      * identical, \(F_n(i) = F_m(i)\) for all \( i \); the alternative is that they are not
-     * identical. The statistic is \( max(D_n^+, D_n^-) \) and the sign of \( D \) is provided.
+     * identical. The statistic is \( max(D_n^+, D_n^-) \) and the sign of \( D \) is provided.</li>
      * <li>Greater evaluates the null hypothesis that the \(F_n(i) &lt;= F_m(i)\) for all \( i \);
-     * the alternative is \(F_n(i) &gt; F_m(i)\) for at least one \( i \). The statistic is \( D_n^+ \).
+     * the alternative is \(F_n(i) &gt; F_m(i)\) for at least one \( i \). The statistic is \( D_n^+ \).</li>
      * <li>Less evaluates the null hypothesis that the \(F_n(i) &gt;= F_m(i)\) for all \( i \);
-     * the alternative is \(F_n(i) &lt; F_m(i)\) for at least one \( i \). The statistic is \( D_n^- \).
+     * the alternative is \(F_n(i) &lt; F_m(i)\) for at least one \( i \). The statistic is \( D_n^- \).</li>
      * </ul>
      *
      * <p>If the {@linkplain PValueMethod p-value method} is auto, then an exact p computation
@@ -890,8 +890,8 @@ public final class KolmogorovSmirnovTest {
      * or minimum long value. The {@code minus} should be negatively signed:
      *
      * <ul>
-     * <li>greater: {@code plus} = D, {@code minus} = {@link Long#MIN_VALUE}
-     * <li>greater: {@code minus} = -D, {@code plus} = {@link Long#MAX_VALUE}
+     * <li>greater: {@code plus} = D, {@code minus} = {@link Long#MIN_VALUE}</li>
+     * <li>greater: {@code minus} = -D, {@code plus} = {@link Long#MAX_VALUE}</li>
      * </ul>
      *
      * <p>Note: This method has not been specialized for the one-sided case. Specialization

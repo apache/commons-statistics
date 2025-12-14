@@ -27,15 +27,15 @@ package org.apache.commons.statistics.descriptive;
  * <p>\[ \exp{\left( {\frac{1}{n}\sum_{i=1}^n \ln x_i} \right)} \]
  *
  * <ul>
- *   <li>The result is {@code NaN} if no values are added.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN}.
- *   <li>The result is {@code NaN} if any of the values is negative.
+ *   <li>The result is {@code NaN} if no values are added.</li>
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN}.</li>
+ *   <li>The result is {@code NaN} if any of the values is negative.</li>
  *   <li>The result is {@code +infinity} if all values are in the range {@code (0, +infinity]}
- *       and at least one value is {@code +infinity}.
+ *       and at least one value is {@code +infinity}.</li>
  *   <li>The result is {@code 0} if all values are in the range {@code [0, +infinity)}
- *       and at least one value is zero.
+ *       and at least one value is zero.</li>
  *   <li>The result is {@code NaN} if all values are in the range {@code [0, +infinity]}
- *       and at least one value is zero, and one value is {@code +infinity}.
+ *       and at least one value is zero, and one value is {@code +infinity}.</li>
  * </ul>
  *
  * <p>Supports up to 2<sup>63</sup> (exclusive) observations.

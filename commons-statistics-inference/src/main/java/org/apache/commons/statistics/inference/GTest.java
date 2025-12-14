@@ -62,7 +62,7 @@ public final class GTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@linkplain #withDegreesOfFreedomAdjustment(int) Degrees of freedom adjustment = 0}
+     * <li>{@linkplain #withDegreesOfFreedomAdjustment(int) Degrees of freedom adjustment = 0}</li>
      * </ul>
      *
      * @return default instance

@@ -26,7 +26,7 @@ import java.math.BigInteger;
  * <p>where \( n \) is the number of samples.
  *
  * <ul>
- *   <li>The result is zero if no values are observed.
+ *   <li>The result is zero if no values are observed.</li>
  * </ul>
  *
  * <p>The implementation uses an exact integer sum to compute the sum of squared values.

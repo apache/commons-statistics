@@ -25,11 +25,11 @@ package org.apache.commons.statistics.descriptive;
  * <p>where \( n \) is the number of samples.
  *
  * <ul>
- *   <li>The result is {@code NaN} if no values are added.
+ *   <li>The result is {@code NaN} if no values are added.</li>
  *   <li>The result is {@code NaN} if any of the values is {@code NaN}, or the values include
- *       infinite values of opposite sign.
- *   <li>The result is {@code +/-infinity} if values include infinite values of same sign.
- *   <li>The result is finite if all input values are finite.
+ *       infinite values of opposite sign.</li>
+ *   <li>The result is {@code +/-infinity} if values include infinite values of same sign.</li>
+ *   <li>The result is finite if all input values are finite.</li>
  * </ul>
  *
  * <p>The {@link #accept(double)} method uses the following recursive updating algorithm
@@ -69,7 +69,7 @@ package org.apache.commons.statistics.descriptive;
  *   <li>Ling, R.F. (1974)
  *       Comparison of Several Algorithms for Computing Sample Means and Variances.
  *       Journal of the American Statistical Association, 69, 859-866.
- *       <a href="https://doi.org/10.2307/2286154">doi: 10.2307/2286154</a>
+ *       <a href="https://doi.org/10.2307/2286154">doi: 10.2307/2286154</a></li>
  * </ul>
  *
  * @see <a href="https://en.wikipedia.org/wiki/Mean">Mean (Wikipedia)</a>

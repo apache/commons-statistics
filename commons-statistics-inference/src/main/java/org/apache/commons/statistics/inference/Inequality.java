@@ -26,8 +26,8 @@ public enum Inequality {
     /**
      * Represents a strict inequality.
      * <ul>
-     * <li>{@code a < b}
-     * <li>{@code a > b}
+     * <li>{@code a < b}</li>
+     * <li>{@code a > b}</li>
      * </ul>
      */
     STRICT,
@@ -35,8 +35,8 @@ public enum Inequality {
     /**
      * Represents a non-strict inequality (numbers may be equal).
      * <ul>
-     * <li>{@code a <= b}
-     * <li>{@code a >= b}
+     * <li>{@code a <= b}</li>
+     * <li>{@code a >= b}</li>
      * </ul>
      */
     NON_STRICT

@@ -43,8 +43,8 @@ public interface DiscreteDistribution {
      *
      * <p>Special cases:
      * <ul>
-     * <li>returns {@code 0.0} if {@code x0 == x1};
-     * <li>returns {@code probability(x1)} if {@code x0 + 1 == x1};
+     * <li>returns {@code 0.0} if {@code x0 == x1};</li>
+     * <li>returns {@code probability(x1)} if {@code x0 + 1 == x1};</li>
      * </ul>
      *
      * @param x0 Lower bound (exclusive).

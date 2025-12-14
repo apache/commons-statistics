@@ -46,7 +46,7 @@ public final class BinomialTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@link AlternativeHypothesis#TWO_SIDED}
+     * <li>{@link AlternativeHypothesis#TWO_SIDED}</li>
      * </ul>
      *
      * @return default instance

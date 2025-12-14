@@ -62,11 +62,11 @@ final class KolmogorovSmirnovDistribution {
      * <ol>
      * <li>Simard, R., &amp; L’Ecuyer, P. (2011).
      * <a href="https://doi.org/10.18637/jss.v039.i11">Computing the Two-Sided Kolmogorov-Smirnov Distribution.</a>
-     * Journal of Statistical Software, 39(11), 1–18.
+     * Journal of Statistical Software, 39(11), 1–18.</li>
      * <li>
      * Marsaglia, G., Tsang, W. W., &amp; Wang, J. (2003).
      * <a href="https://doi.org/10.18637/jss.v008.i18">Evaluating Kolmogorov's Distribution.</a>
-     * Journal of Statistical Software, 8(18), 1–4.
+     * Journal of Statistical Software, 8(18), 1–4.</li>
      * </ol>
      *
      * <p>Note that [2] contains an error in computing h, refer to <a
@@ -665,10 +665,10 @@ final class KolmogorovSmirnovDistribution {
      * <li>
      * van Mulbregt, P. (2018).
      * <a href="https://doi.org/10.48550/arxiv.1802.06966">Computing the Cumulative Distribution Function and Quantiles of the One-sided Kolmogorov-Smirnov Statistic</a>
-     * arxiv:1802.06966.
+     * arxiv:1802.06966.</li>
      * <li>Magg &amp; Dicaire (1971).
      * <a href="https://doi.org/10.1093/biomet/58.3.653">On Kolmogorov-Smirnov Type One-Sample Statistics</a>
-     * Biometrika 58.3 pp. 653–656.
+     * Biometrika 58.3 pp. 653–656.</li>
      * </ol>
      *
      * @since 1.1

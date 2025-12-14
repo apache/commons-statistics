@@ -105,9 +105,9 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
      *
      * <p>Returns the limit when {@code x = 0}:
      * <ul>
-     * <li>{@code shape < 1}: Infinity
-     * <li>{@code shape == 1}: 1 / scale
-     * <li>{@code shape > 1}: 0
+     * <li>{@code shape < 1}: Infinity</li>
+     * <li>{@code shape == 1}: 1 / scale</li>
+     * <li>{@code shape > 1}: 0</li>
      * </ul>
      */
     @Override
@@ -130,9 +130,9 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
      *
      * <p>Returns the limit when {@code x = 0}:
      * <ul>
-     * <li>{@code shape < 1}: Infinity
-     * <li>{@code shape == 1}: -log(scale)
-     * <li>{@code shape > 1}: -Infinity
+     * <li>{@code shape < 1}: Infinity</li>
+     * <li>{@code shape == 1}: -log(scale)</li>
+     * <li>{@code shape > 1}: -Infinity</li>
      * </ul>
      */
     @Override

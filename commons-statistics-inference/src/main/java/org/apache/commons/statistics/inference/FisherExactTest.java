@@ -49,7 +49,7 @@ public final class FisherExactTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@link AlternativeHypothesis#TWO_SIDED}
+     * <li>{@link AlternativeHypothesis#TWO_SIDED}</li>
      * </ul>
      *
      * @return default instance
@@ -83,8 +83,8 @@ public final class FisherExactTest {
      *
      * <p>Special cases:
      * <ul>
-     * <li>If the denominator is zero, the value is {@linkplain Double#POSITIVE_INFINITY infinity}.
-     * <li>If a row or column sum is zero, the value is {@link Double#NaN NaN}.
+     * <li>If the denominator is zero, the value is {@linkplain Double#POSITIVE_INFINITY infinity}.</li>
+     * <li>If a row or column sum is zero, the value is {@link Double#NaN NaN}.</li>
      * </ul>
      *
      * <p>Note: This statistic is equal to the statistic computed by the SciPy function
@@ -119,11 +119,11 @@ public final class FisherExactTest {
      * of the upper-left element {@code a} are {@code min(0, a - d) <= x <= a + min(b, c)}.
      * <ul>
      * <li>'two-sided': the odds ratio of the underlying population is not one; the p-value
-     * is the probability that a random table has probability equal to or less than the input table.
+     * is the probability that a random table has probability equal to or less than the input table.</li>
      * <li>'greater': the odds ratio of the underlying population is greater than one; the p-value
-     * is the probability that a random table has {@code x >= a}.
+     * is the probability that a random table has {@code x >= a}.</li>
      * <li>'less': the odds ratio of the underlying population is less than one; the p-value
-     * is the probability that a random table has {@code x <= a}.
+     * is the probability that a random table has {@code x <= a}.</li>
      * </ul>
      *
      * @param table 2-by-2 contingency table.

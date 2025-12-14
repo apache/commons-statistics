@@ -22,7 +22,7 @@ import java.math.BigInteger;
  * Returns the sum of the available values.
  *
  * <ul>
- *   <li>The result is zero if no values are added.
+ *   <li>The result is zero if no values are added.</li>
  * </ul>
  *
  * <p>This class uses an exact integer sum. The exact sum is

@@ -166,7 +166,7 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
      * <ul>
      * <li>{@code 0} if {@code x <= 0},</li>
      * <li>{@code 0} if {@code ln(x) - mu < 0} and {@code mu - ln(x) > 40 * s}, as
-     * in these cases the actual value is within {@link Double#MIN_VALUE} of 0,
+     * in these cases the actual value is within {@link Double#MIN_VALUE} of 0,</li>
      * <li>{@code 1} if {@code ln(x) - mu >= 0} and {@code ln(x) - mu > 40 * s},
      * as in these cases the actual value is within {@link Double#MIN_VALUE} of
      * 1,</li>

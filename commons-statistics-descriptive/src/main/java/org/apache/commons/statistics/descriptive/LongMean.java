@@ -25,7 +25,7 @@ package org.apache.commons.statistics.descriptive;
  * <p>where \( n \) is the number of samples.
  *
  * <ul>
- *   <li>The result is {@code NaN} if no values are added.
+ *   <li>The result is {@code NaN} if no values are added.</li>
  * </ul>
  *
  * <p>This class uses an exact integer sum to compute the mean.

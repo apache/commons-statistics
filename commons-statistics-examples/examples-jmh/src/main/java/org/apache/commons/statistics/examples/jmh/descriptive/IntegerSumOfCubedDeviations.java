@@ -34,9 +34,9 @@ import java.util.function.LongConsumer;
  *
  * <ul>
  *  <li>No overflow is possible given the maximum values of intermediate terms;
- *      allows removing the scaling of input.
+ *      allows removing the scaling of input.</li>
  *  <li>No handling of infinite or NaN is required; allows removing computation
- *      of the non-finite value.
+ *      of the non-finite value.</li>
  * </ul>
  *
  * <p>This class does not copy the moment hierarchy from the {@code double}

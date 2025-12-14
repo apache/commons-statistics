@@ -75,17 +75,17 @@ import org.apache.commons.statistics.inference.BrentOptimizer.PointValuePair;
  * <li>
  * Barnard, G.A. (1947).
  * <a href="https://doi.org/10.1093/biomet/34.1-2.123">Significance tests for 2x2 tables.</a>
- * Biometrika, 34, Issue 1-2, 123–138.
+ * Biometrika, 34, Issue 1-2, 123–138.</li>
  * <li>
  * Boschloo, R.D. (1970).
  * <a href="https://doi.org/10.1111/j.1467-9574.1970.tb00104.x">Raised conditional level of
  * significance for the 2 × 2-table when testing the equality of two probabilities.</a>
- * Statistica neerlandica, 24(1), 1–9.
+ * Statistica neerlandica, 24(1), 1–9.</li>
  * <li>
  * Suisaa, A and Shuster, J.J. (1985).
  * <a href="https://doi.org/10.2307/2981892">Exact Unconditional Sample Sizes
  * for the 2 × 2 Binomial Trial.</a>
- * Journal of the Royal Statistical Society. Series A (General), 148(4), 317-327.
+ * Journal of the Royal Statistical Society. Series A (General), 148(4), 317-327.</li>
  * </ol>
  *
  * @see FisherExactTest
@@ -162,9 +162,9 @@ public final class UnconditionedExactTest {
          *
          * <p>The more extreme tables are identified using the {@link AlternativeHypothesis}:
          * <ul>
-         * <li>greater: \( T(X) \ge T(X_0) \)
-         * <li>less: \( T(X) \le T(X_0) \)
-         * <li>two-sided: \( | T(X) | \ge | T(X_0) | \)
+         * <li>greater: \( T(X) \ge T(X_0) \)</li>
+         * <li>less: \( T(X) \le T(X_0) \)</li>
+         * <li>two-sided: \( | T(X) | \ge | T(X_0) | \)</li>
          * </ul>
          *
          * <p>The use of the Z statistic was suggested by Suissa and Shuster (1985).
@@ -552,10 +552,10 @@ public final class UnconditionedExactTest {
      * Return an instance using the default options.
      *
      * <ul>
-     * <li>{@link AlternativeHypothesis#TWO_SIDED}
-     * <li>{@link Method#BOSCHLOO}
-     * <li>{@linkplain #withInitialPoints(int) points = 33}
-     * <li>{@linkplain #withOptimize(boolean) optimize = true}
+     * <li>{@link AlternativeHypothesis#TWO_SIDED}</li>
+     * <li>{@link Method#BOSCHLOO}</li>
+     * <li>{@linkplain #withInitialPoints(int) points = 33}</li>
+     * <li>{@linkplain #withOptimize(boolean) optimize = true}</li>
      * </ul>
      *
      * @return default instance

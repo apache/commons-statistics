@@ -26,8 +26,8 @@ public enum AlternativeHypothesis {
     /**
      * Represents a two-sided test.
      * <ul>
-     * <li>Null hypothesis (H<sub>0</sub>): {@code p = p0}
-     * <li>Alternative hypothesis (H<sub>1</sub>): {@code p != p0}
+     * <li>Null hypothesis (H<sub>0</sub>): {@code p = p0}</li>
+     * <li>Alternative hypothesis (H<sub>1</sub>): {@code p != p0}</li>
      * </ul>
      */
     TWO_SIDED,
@@ -35,8 +35,8 @@ public enum AlternativeHypothesis {
     /**
      * Represents a right-sided test.
      * <ul>
-     * <li>Null hypothesis (H<sub>0</sub>): {@code p <= p0}
-     * <li>Alternative hypothesis (H<sub>1</sub>): {@code p > p0}
+     * <li>Null hypothesis (H<sub>0</sub>): {@code p <= p0}</li>
+     * <li>Alternative hypothesis (H<sub>1</sub>): {@code p > p0}</li>
      * </ul>
      */
     GREATER_THAN,
@@ -44,8 +44,8 @@ public enum AlternativeHypothesis {
     /**
      * Represents a left-sided test.
      * <ul>
-     * <li>Null hypothesis (H<sub>0</sub>): {@code p >= p0}
-     * <li>Alternative hypothesis (H<sub>1</sub>): {@code p < p0}
+     * <li>Null hypothesis (H<sub>0</sub>): {@code p >= p0}</li>
+     * <li>Alternative hypothesis (H<sub>1</sub>): {@code p < p0}</li>
      * </ul>
      */
     LESS_THAN

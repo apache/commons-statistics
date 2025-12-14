@@ -34,8 +34,8 @@ import org.apache.commons.rng.sampling.distribution.ZigguratSampler;
  *
  * <p>Note the special cases:
  * <ul>
- * <li>\( k = 1 \) is the exponential distribution
- * <li>\( k = 2 \) is the Rayleigh distribution with scale \( \sigma = \frac {\lambda}{\sqrt{2}} \)
+ * <li>\( k = 1 \) is the exponential distribution</li>
+ * <li>\( k = 2 \) is the Rayleigh distribution with scale \( \sigma = \frac {\lambda}{\sqrt{2}} \)</li>
  * </ul>
  *
  * @see <a href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull distribution (Wikipedia)</a>
@@ -110,9 +110,9 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
      *
      * <p>Returns the limit when {@code x = 0}:
      * <ul>
-     * <li>{@code shape < 1}: Infinity
-     * <li>{@code shape == 1}: 1 / scale
-     * <li>{@code shape > 1}: 0
+     * <li>{@code shape < 1}: Infinity</li>
+     * <li>{@code shape == 1}: 1 / scale</li>
+     * <li>{@code shape > 1}: 0</li>
      * </ul>
      */
     @Override
@@ -145,9 +145,9 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
      *
      * <p>Returns the limit when {@code x = 0}:
      * <ul>
-     * <li>{@code shape < 1}: Infinity
-     * <li>{@code shape == 1}: log(1 / scale)
-     * <li>{@code shape > 1}: -Infinity
+     * <li>{@code shape < 1}: Infinity</li>
+     * <li>{@code shape == 1}: log(1 / scale)</li>
+     * <li>{@code shape > 1}: -Infinity</li>
      * </ul>
      */
     @Override

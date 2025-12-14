@@ -25,9 +25,9 @@ import org.apache.commons.numbers.arrays.Selection;
  *
  * <p>For values of length {@code n}, let {@code k = n / 2}:
  * <ul>
- * <li>The result is {@code NaN} if {@code n = 0}.
- * <li>The result is {@code values[k]} if {@code n} is odd.
- * <li>The result is {@code (values[k - 1] + values[k]) / 2} if {@code n} is even.
+ * <li>The result is {@code NaN} if {@code n = 0}.</li>
+ * <li>The result is {@code values[k]} if {@code n} is odd.</li>
+ * <li>The result is {@code (values[k - 1] + values[k]) / 2} if {@code n} is even.</li>
  * </ul>
  *
  * <p>This implementation respects the ordering imposed by
@@ -67,8 +67,8 @@ public final class Median {
      * Return a new instance with the default options.
      *
      * <ul>
-     * <li>{@linkplain #withCopy(boolean) Copy = false}
-     * <li>{@linkplain #with(NaNPolicy) NaN policy = include}
+     * <li>{@linkplain #withCopy(boolean) Copy = false}</li>
+     * <li>{@linkplain #with(NaNPolicy) NaN policy = include}</li>
      * </ul>
      *
      * <p>Note: The default options configure for processing in-place and including
@@ -107,13 +107,13 @@ public final class Median {
      * <ul>
      * <li>{@link NaNPolicy#INCLUDE}: {@code NaN} values are moved to the end of the data;
      * the size of the data <em>includes</em> the {@code NaN} values and the median will be
-     * {@code NaN} if any value used for median interpolation is {@code NaN}.
+     * {@code NaN} if any value used for median interpolation is {@code NaN}.</li>
      * <li>{@link NaNPolicy#EXCLUDE}: {@code NaN} values are moved to the end of the data;
      * the size of the data <em>excludes</em> the {@code NaN} values and the median will
      * never be {@code NaN} for non-zero size. If all data are {@code NaN} then the size is zero
-     * and the result is {@code NaN}.
+     * and the result is {@code NaN}.</li>
      * <li>{@link NaNPolicy#ERROR}: An exception is raised if the data contains {@code NaN}
-     * values.
+     * values.</li>
      * </ul>
      *
      * <p>Note that the result is identical for all policies if no {@code NaN} values are present.

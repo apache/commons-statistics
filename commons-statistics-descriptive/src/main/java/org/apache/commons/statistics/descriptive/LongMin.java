@@ -23,7 +23,7 @@ import java.math.BigInteger;
  * underlying function to compute the {@code minimum}.
  *
  * <ul>
- *   <li>The result is {@link Long#MAX_VALUE} if no values are added.
+ *   <li>The result is {@link Long#MAX_VALUE} if no values are added.</li>
  * </ul>
  *
  * <p>This class is designed to work with (though does not require)

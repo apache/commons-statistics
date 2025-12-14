@@ -47,8 +47,8 @@ final class Searches {
      * <p>The function is only evaluated between the closed interval {@code [a, b]}.
      * Special cases:
      * <ul>
-     * <li>If {@code value(a) <= x} the returned index is {@code a}.
-     * <li>If {@code value(b) > x} the returned index is {@code b + 1}.
+     * <li>If {@code value(a) <= x} the returned index is {@code a}.</li>
+     * <li>If {@code value(b) > x} the returned index is {@code b + 1}.</li>
      * </ul>
      *
      * @param a Lower limit (inclusive).
@@ -79,8 +79,8 @@ final class Searches {
      * <p>The function is only evaluated between the closed interval {@code [a, b]}.
      * Special cases:
      * <ul>
-     * <li>If {@code value(a) > x} the returned index is {@code a - 1}.
-     * <li>If {@code value(b) <= x} the returned index is {@code b}.
+     * <li>If {@code value(a) > x} the returned index is {@code a - 1}.</li>
+     * <li>If {@code value(b) <= x} the returned index is {@code b}.</li>
      * </ul>
      *
      * @param a Lower limit (inclusive).

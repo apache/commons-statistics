@@ -25,10 +25,10 @@ package org.apache.commons.statistics.descriptive;
  * <p>where \( \overline{x} \) is the sample mean, and \( n \) is the number of samples.
  *
  * <ul>
- *   <li>The result is {@code NaN} if no values are added.
- *   <li>The result is {@code NaN} if any of the values is {@code NaN} or infinite.
- *   <li>The result is {@code NaN} if the sum of the squared deviations from the mean is infinite.
- *   <li>The result is zero if there is one finite value in the data set.
+ *   <li>The result is {@code NaN} if no values are added.</li>
+ *   <li>The result is {@code NaN} if any of the values is {@code NaN} or infinite.</li>
+ *   <li>The result is {@code NaN} if the sum of the squared deviations from the mean is infinite.</li>
+ *   <li>The result is zero if there is one finite value in the data set.</li>
  * </ul>
  *
  * <p>The use of the term \( n − 1 \) is called Bessel's correction. Omitting the square root,
@@ -75,11 +75,11 @@ package org.apache.commons.statistics.descriptive;
  *   <li>Chan and Lewis (1979)
  *       Computing standard deviations: accuracy.
  *       Communications of the ACM, 22, 526-531.
- *       <a href="https://doi.acm.org/10.1145/359146.359152">doi: 10.1145/359146.359152</a>
+ *       <a href="https://doi.acm.org/10.1145/359146.359152">doi: 10.1145/359146.359152</a></li>
  *   <li>Chan, Golub and Levesque (1983)
  *       Algorithms for Computing the Sample Variance: Analysis and Recommendations.
  *       American Statistician, 37, 242-247.
- *       <a href="https://doi.org/10.2307/2683386">doi: 10.2307/2683386</a>
+ *       <a href="https://doi.org/10.2307/2683386">doi: 10.2307/2683386</a></li>
  * </ul>
  *
  * @see <a href="https://en.wikipedia.org/wiki/Standard_deviation">Standard deviation (Wikipedia)</a>
