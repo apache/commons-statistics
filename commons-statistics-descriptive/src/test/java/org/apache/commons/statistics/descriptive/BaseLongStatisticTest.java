@@ -1243,7 +1243,7 @@ abstract class BaseLongStatisticTest<S extends LongStatistic & StatisticAccumula
             }
             // final value
             if (end != n) {
-                // Merging with the previous pair will make the the end statistic
+                // Merging with the previous pair will make the end statistic
                 // progressively larger than the others. However the final merge should
                 // be limited to below a 1:2 ratio.
                 // Note: Set up the indices and copy the above code.
