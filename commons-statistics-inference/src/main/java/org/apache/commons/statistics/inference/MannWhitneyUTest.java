@@ -50,7 +50,7 @@ public final class MannWhitneyUTest {
      * The value should only be accessed, checked for size and optionally
      * modified when holding the lock. When the storage is determined to be the correct
      * size it can be returned for read/write to the array when not holding the lock. */
-    private static SoftReference<double[][][]> cacheF = new SoftReference<>(null);
+    private static SoftReference<double[][][]> cacheF = new SoftReference<>(null); //NOPMD @GuardedBy("LOCK")
     /** Default instance. */
     private static final MannWhitneyUTest DEFAULT = new MannWhitneyUTest(
         AlternativeHypothesis.TWO_SIDED, PValueMethod.AUTO, true, 0);
