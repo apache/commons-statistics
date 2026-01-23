@@ -147,7 +147,10 @@
   <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts">
     <properties>
       <property name="violationSuppressXPath"
-        value="./ancestor-or-self::ClassDeclaration[@SimpleName='AbstractContinuousDistribution']"/>
+        value="./ancestor-or-self::ClassDeclaration[@SimpleName='AbstractContinuousDistribution' 
+        or @SimpleName='SumOfFourthDeviations' 
+        or @SimpleName='SumOfCubedDeviations'
+        or @SimpleName='BrentOptimizer']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/NcssCount">
