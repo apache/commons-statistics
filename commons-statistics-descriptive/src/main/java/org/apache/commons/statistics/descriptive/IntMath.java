@@ -319,7 +319,7 @@ final class IntMath {
 
     /**
      * Return the whole number that is nearest to the {@code double} argument {@code x}
-     * as an {@code long}, with ties rounding towards positive infinity.
+     * as a {@code long}, with ties rounding towards positive infinity.
      *
      * <p>This will raise an {@link ArithmeticException} if the closest
      * integer result is not within the range {@code [-2^63, 2^63)},
@@ -341,7 +341,7 @@ final class IntMath {
 
     /**
      * Return the whole number that is nearest to the {@code double} argument {@code x}
-     * as an {@code int}, with ties rounding towards positive infinity.
+     * as a {@code BigInteger}, with ties rounding towards positive infinity.
      *
      * <p>This will raise an {@link ArithmeticException} if the argument {@code x}
      * is not finite.
