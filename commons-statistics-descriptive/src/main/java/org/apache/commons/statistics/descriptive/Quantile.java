@@ -31,7 +31,7 @@ import org.apache.commons.numbers.arrays.Selection;
  * <li>Otherwise the result is computed using the {@link EstimationMethod}.</li>
  * </ul>
  *
- * <p>Computation of multiple quantiles and will handle duplicate and unordered
+ * <p>Computation of multiple quantiles will handle duplicate and unordered
  * probabilities. Passing ordered probabilities is recommended if the order is already
  * known as this can improve efficiency; for example using uniform spacing through the
  * array data, or to identify extreme values from the data such as {@code [0.001, 0.999]}.
