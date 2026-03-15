@@ -235,12 +235,17 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
     /** {@inheritDoc} */
     @Override
     public Sampler createSampler(UniformRandomProvider rng) {
+        // Map the bounds to a standard normal distribution
+        final double u = parentNormal.getMean();
+        final double s = parentNormal.getStandardDeviation();
+        final double a = (lower - u) / s;
+        final double b = (upper - u) / s;
         // If the truncation covers a reasonable amount of the normal distribution
         // then a rejection sampler can be used.
         double threshold = REJECTION_THRESHOLD;
         // If the truncation is entirely in the upper or lower half then adjust the
         // threshold as twice the samples can be used
-        if (lower >= 0 || upper <= 0) {
+        if (a >= 0 || b <= 0) {
             threshold *= 0.5;
         }
 
@@ -249,21 +254,16 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
             final ZigguratSampler.NormalizedGaussian sampler = ZigguratSampler.NormalizedGaussian.of(rng);
             final DoubleSupplier gen;
             // Use mirroring if possible
-            if (lower >= 0) {
+            if (a >= 0) {
                 // Return the upper-half of the Gaussian
                 gen = () -> Math.abs(sampler.sample());
-            } else if (upper <= 0) {
+            } else if (b <= 0) {
                 // Return the lower-half of the Gaussian
                 gen = () -> -Math.abs(sampler.sample());
             } else {
                 // Return the full range of the Gaussian
                 gen = sampler::sample;
             }
-            // Map the bounds to a standard normal distribution
-            final double u = parentNormal.getMean();
-            final double s = parentNormal.getStandardDeviation();
-            final double a = (lower - u) / s;
-            final double b = (upper - u) / s;
             // Sample in [a, b] using rejection
             return () -> {
                 double x = gen.getAsDouble();
