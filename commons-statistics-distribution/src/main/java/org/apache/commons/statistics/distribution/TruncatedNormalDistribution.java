@@ -161,6 +161,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      *
      * @return the parent mean.
      * @see #getMean
+     * @since 1.3
      */
     public double getParentMean() {
         return parentNormal.getMean();
@@ -174,6 +175,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      * This is the {@code sd} parameter used to construct the truncated distribution.
      *
      * @return the parent standard deviation.
+     * @since 1.3
      */
     public double getParentStandardDeviation() {
         return parentNormal.getStandardDeviation();
