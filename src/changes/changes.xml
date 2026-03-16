@@ -53,7 +53,13 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.3" date="TBD" description="Adds new features (requires Java 8).">
-      <action dev="ggregory" type="update">Bump org.apache.commons:commons-parent from 88 to 97.</action>
+      <action dev="aherbert" due-to="kevinmilner" type="fix" issue="STATISTICS-92">
+        "TruncatedNormalDistribution": Fix the cases where the sampler would:
+        (1) generate a biased distribution if the truncated bounds are fully-positive
+        or fully-negative;
+        (2) infinite loop if the truncated bounds are positive and fully below the
+        mean value or are negative and fully above the mean value.
+      </action>
     </release>
 
     <release version="1.2" date="2025-09-17" description="
