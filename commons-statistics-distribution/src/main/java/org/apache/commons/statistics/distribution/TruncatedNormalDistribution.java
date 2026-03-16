@@ -152,6 +152,33 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
         return new TruncatedNormalDistribution(parent, z, lower, upper);
     }
 
+    /**
+     * Gets the mean for the parent distribution.
+     *
+     * <p>Note that the mean is of the parent normal distribution,
+     * and not the true mean of the truncated normal distribution.
+     * This is the {@code mean} parameter used to construct the truncated distribution.
+     *
+     * @return the parent mean.
+     * @see #getMean
+     */
+    public double getParentMean() {
+        return parentNormal.getMean();
+    }
+
+    /**
+     * Gets the standard deviation for the parent distribution.
+     *
+     * <p>Note that the standard deviation (SD) is of the parent normal distribution,
+     * and not the true standard deviation of the truncated normal distribution.
+     * This is the {@code sd} parameter used to construct the truncated distribution.
+     *
+     * @return the parent standard deviation.
+     */
+    public double getParentStandardDeviation() {
+        return parentNormal.getStandardDeviation();
+    }
+
     /** {@inheritDoc} */
     @Override
     public double density(double x) {

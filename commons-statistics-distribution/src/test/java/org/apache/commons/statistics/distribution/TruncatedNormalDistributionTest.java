@@ -55,8 +55,7 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
     @Override
     String[] getParameterNames() {
         // Input mean and standard deviation refer to the underlying normal distribution.
-        // The constructor arguments do not match the mean and SD of the truncated distribution.
-        return new String[] {null, null, "SupportLowerBound", "SupportUpperBound"};
+        return new String[] {"ParentMean", "ParentStandardDeviation", "SupportLowerBound", "SupportUpperBound"};
     }
 
     @Override
