@@ -17,8 +17,10 @@
 
 package org.apache.commons.statistics.distribution;
 
+import java.time.Duration;
 import org.apache.commons.numbers.gamma.Erf;
 import org.apache.commons.numbers.gamma.Erfcx;
+import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -349,6 +351,44 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
         } else {
             assertVariance(lower, upper, variance, varianceRelativeError);
         }
+    }
+
+    /**
+     * This tests that the sampler can correctly sample values when the range
+     * is positive but fully below the mean value. This tests the case where
+     * the rejection sampler threshold is met, and fails due to a timeout
+     * if the rejection sampler incorrectly triggers the upper-half clause and
+     * is stuck in an infinite loop.
+     */
+    @Test
+    void testSamplerPositiveBelowMeanWithRejection() {
+        // this triggers the rejection-sampler case in TruncatedNormalDistribution.createSampler(...)
+        final TruncatedNormalDistribution dist = TruncatedNormalDistribution.of(1d, 0.1, 0.7, 0.99);
+
+        final double x = Assertions.assertTimeoutPreemptively(Duration.ofSeconds(1),
+                () -> dist.createSampler(RandomSource.XO_SHI_RO_256_PP.create(123456789L)).sample());
+
+        Assertions.assertTrue(x >= dist.getSupportLowerBound() && x <= dist.getSupportUpperBound(),
+                () -> "Sample outside support: " + x);
+    }
+
+    /**
+     * This tests that the sampler can correctly sample values when the range
+     * is negative but fully above the mean value. This tests the case where
+     * the rejection sampler threshold is met, and fails due to a timeout
+     * if the rejection sampler incorrectly triggers the lower-half clause and
+     * is stuck in an infinite loop.
+     */
+    @Test
+    void testSamplerNegativeAboveMeanWithRejection() {
+        // this triggers the rejection-sampler case in TruncatedNormalDistribution.createSampler(...)
+        final TruncatedNormalDistribution dist = TruncatedNormalDistribution.of(-1d, 0.1, -0.99, -0.7);
+
+        final double x = Assertions.assertTimeoutPreemptively(Duration.ofSeconds(1),
+                () -> dist.createSampler(RandomSource.XO_SHI_RO_256_PP.create(123456789L)).sample());
+
+        Assertions.assertTrue(x >= dist.getSupportLowerBound() && x <= dist.getSupportUpperBound(),
+                () -> "Sample outside support: " + x);
     }
 
     /**
