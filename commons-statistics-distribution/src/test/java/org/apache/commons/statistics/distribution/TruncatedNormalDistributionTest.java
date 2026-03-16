@@ -359,6 +359,7 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
      * the rejection sampler threshold is met, and fails due to a timeout
      * if the rejection sampler incorrectly triggers the upper-half clause and
      * is stuck in an infinite loop.
+     * See STATISTICS-92.
      */
     @Test
     void testSamplerPositiveBelowMeanWithRejection() {
@@ -378,6 +379,7 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
      * the rejection sampler threshold is met, and fails due to a timeout
      * if the rejection sampler incorrectly triggers the lower-half clause and
      * is stuck in an infinite loop.
+     * See STATISTICS-92.
      */
     @Test
     void testSamplerNegativeAboveMeanWithRejection() {
