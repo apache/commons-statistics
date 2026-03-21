@@ -211,17 +211,6 @@
         </configuration>
       </plugin>
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>buildnumber-maven-plugin</artifactId>
-        <configuration>
-          <!-- buildnumber-maven-plugin:
-            "for git getLastChangedRevision() returns null instead of the last revision"
-            Override CP to use the last revision of the repository (OK for release jars). -->
-          <useLastCommittedRevision>false</useLastCommittedRevision>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
