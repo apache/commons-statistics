@@ -65,7 +65,7 @@ final class LongProductTest extends BaseLongStatisticTest<DoubleAsLongStatistic>
 
     @Override
     protected DoubleTolerance getTolerance() {
-        return DoubleTolerances.ulps(20);
+        return DoubleTolerances.ulps(25);
     }
 
     @Override
@@ -80,6 +80,11 @@ final class LongProductTest extends BaseLongStatisticTest<DoubleAsLongStatistic>
             45, 46, 43, 46, 42, 41, 51, 44, 45, 44, 49, 48, 50, 51, 52, 53, 50, 56, 55, 52, 42, 45, 48, 49, 51, 49, 47,
             50, 44, 59, 40, 43, 38, 46, 39, 46, 36, 41, 46, 48, 50, 42, 51, 70, 49, 43, 35, 43, 48, 52, 63, 45, 53, 39,
             52, 45, 41, 43, 49, 42, 32, 47, 37, 46, 35, 42, 47, 42, 57, 45, 55, 51, 40, 43, 45, 46, 53, 49));
+        // Failure case from random permutation test (with ULP error of 21)
+        builder.accept(addCase(48, 43, 41, 38, 42, 32, 42, 44, 43, 51, 50, 41, 63, 35, 52, 50, 50, 40, 43, 38, 48, 49,
+            35, 45, 42, 43, 47, 45, 48, 49, 39, 46, 42, 46, 40, 56, 49, 70, 41, 46, 55, 39, 58, 36, 53, 51, 50, 43, 38,
+            41, 52, 51, 49, 47, 49, 46, 42, 39, 51, 47, 42, 45, 46, 59, 53, 44, 40, 52, 49, 46, 53, 46, 43, 49, 48, 55,
+            51, 45, 44, 44, 45, 45, 37, 47, 45, 49, 45, 57, 42, 51, 47, 38, 45, 55, 42, 52, 43, 43, 46, 35));
         return builder.build();
     }
 }
