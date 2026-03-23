@@ -19,6 +19,7 @@ package org.apache.commons.statistics.descriptive;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
@@ -63,7 +64,7 @@ class QuantileTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = {"testProbabilities"})
+    @MethodSource
     void testProbabilities(int n, double p1, double p2, double[] expected) {
         Assertions.assertArrayEquals(expected, Quantile.probabilities(n, p1, p2), 1e-10);
     }
@@ -96,6 +97,8 @@ class QuantileTest {
             Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values2, 0, values2.length, new double[] {p}));
             Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(10, i -> 1, p));
             Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(10, i -> 1, new double[] {p}));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateAsLong(10, i -> 1, p));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateAsLong(10, i -> 1, new double[] {p}));
         }
     }
 
@@ -114,6 +117,8 @@ class QuantileTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values2, 0, values2.length, new double[0]));
         Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(10, i -> 1));
         Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(10, i -> 1, new double[0]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateAsLong(10, i -> 1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateAsLong(10, i -> 1, new double[0]));
     }
 
     @Test
@@ -122,6 +127,8 @@ class QuantileTest {
         for (final int n : new int[] {-1, -42, Integer.MIN_VALUE}) {
             Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(n, i -> 1, 0.5));
             Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(n, i -> 1, 0.5, 0.75));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateAsLong(n, i -> 1, 0.5));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateAsLong(n, i -> 1, 0.5, 0.75));
         }
     }
 
@@ -142,7 +149,7 @@ class QuantileTest {
     }
 
     @ParameterizedTest
-    @MethodSource(value = {"testDoubleQuantile"})
+    @MethodSource
     void testDoubleQuantile(double[] values, double[] p, double[][] expected, double delta) {
         assertQuantile(Quantile.withDefaults(), values, p, expected, delta,
             Quantile::evaluate, Quantile::evaluate);
@@ -186,7 +193,7 @@ class QuantileTest {
 
     @ParameterizedTest
     @MethodSource(value = {"testDoubleQuantile"})
-    void testQuantileSorted(double[] values, double[] p, double[][] expected, double delta) {
+    void testDoubleQuantileSorted(double[] values, double[] p, double[][] expected, double delta) {
         assertQuantile(Quantile.withDefaults(), values, p, expected, delta,
             (q, x, pp) -> {
                 // No clone here as later calls with the same array will also sort it
@@ -532,7 +539,7 @@ class QuantileTest {
 
     @ParameterizedTest
     @MethodSource(value = {"testIntQuantile"})
-    void testQuantileSorted(int[] values, double[] p, double[][] expected, double delta) {
+    void testIntQuantileSorted(int[] values, double[] p, double[][] expected, double delta) {
         assertQuantile(Quantile.withDefaults(), values, p, expected, delta,
             (q, x, pp) -> {
                 // No clone here as later calls with the same array will also sort it
@@ -777,5 +784,436 @@ class QuantileTest {
         Assertions.assertArrayEquals(original, values, msg);
         Assertions.assertEquals(expected, q.evaluateRange(copy, from, to, p[0]), msg);
         Assertions.assertArrayEquals(original, copy, msg);
+    }
+
+    // long[]
+
+    // Note: The long[] quantile is tested with the same reference double
+    // values as the int[] and double[] quantile. Additional tests
+    // are added for values that are outside the range of a 32-bit integer
+    // to test rounding to the double and long result.
+
+    /**
+     * Interface to test the quantile for a single probability.
+     */
+    interface LongQuantileFunction {
+        StatisticResult evaluate(Quantile q, long[] values, double p);
+    }
+
+    /**
+     * Interface to test the quantiles for a multiple probabilities.
+     */
+    interface LongQuantileFunctionN {
+        StatisticResult[] evaluate(Quantile q, long[] values, double[] p);
+    }
+
+    /**
+     * Test the long quantile using the expected double result. This asserts
+     * that using a long array will create the same result as the equivalent
+     * int array.
+     */
+    @ParameterizedTest
+    @MethodSource
+    void testLongQuantile(long[] values, double[] p, double[][] expected, double delta) {
+        assertQuantile(Quantile.withDefaults(), values, p, expected, delta,
+            Quantile::evaluate, Quantile::evaluate);
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"testLongQuantile"})
+    void testLongQuantileSorted(long[] values, double[] p, double[][] expected, double delta) {
+        assertQuantile(Quantile.withDefaults(), values, p, expected, delta,
+            (m, x, q) -> {
+                // No clone here as later calls with the same array will also sort it
+                Arrays.sort(x);
+                return m.evaluateAsLong(x.length, i -> x[i], q);
+            },
+            (m, x, q) -> {
+                // No clone here as later calls with the same array will also sort it
+                Arrays.sort(x);
+                return m.evaluateAsLong(x.length, i -> x[i], q);
+            });
+    }
+
+    private static void assertQuantile(Quantile q, long[] values, double[] p,
+        double[][] expected, double delta,
+        LongQuantileFunction f1, LongQuantileFunctionN fn) {
+        Assertions.assertEquals(expected.length, TYPES.length);
+        for (int i = 0; i < TYPES.length; i++) {
+            final EstimationMethod type = TYPES[i];
+            q = q.with(type);
+            // Single quantiles
+            for (int j = 0; j < p.length; j++) {
+                if (f1 != null) {
+                    assertEqualsOrExactlyEqual(expected[i][j],
+                        f1.evaluate(q, values.clone(), p[j]).getAsDouble(), delta,
+                        type::toString);
+                }
+                assertEqualsOrExactlyEqual(expected[i][j],
+                    fn.evaluate(q, values.clone(), new double[] {p[j]})[0].getAsDouble(), delta,
+                    type::toString);
+            }
+            // Bulk quantiles
+            final double[] result = Arrays.stream(fn.evaluate(q, values.clone(), p))
+                .mapToDouble(StatisticResult::getAsDouble).toArray();
+            if (delta < 0) {
+                Assertions.assertArrayEquals(expected[i], result, type::toString);
+            } else {
+                Assertions.assertArrayEquals(expected[i], result, delta, type::toString);
+            }
+        }
+    }
+
+    static Stream<Arguments> testLongQuantile() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        // Special cases
+        final double nan = Double.NaN;
+        addLongQuantiles(builder, new long[] {}, new double[] {0.75}, 1e-5,
+            new double[] {nan, nan, nan, nan, nan, nan, nan, nan, nan});
+        addLongQuantiles(builder, new long[] {42}, new double[] {0.75}, 1e-5,
+            new double[] {42, 42, 42, 42, 42, 42, 42, 42, 42});
+        // Cases from Commons Math PercentileTest
+        addLongQuantiles(builder, new long[] {1, 2, 3}, new double[] {0.75}, 1e-5,
+            new double[] {3, 3, 2, 2.25, 2.75, 3, 2.5, 2.83333, 2.81250});
+        addLongQuantiles(builder, new long[] {0, 1}, new double[] {0.25}, 1e-5,
+            new double[] {0, 0, 0, 0, 0, 0, 0.25, 0, 0});
+        final long[] d = new long[] {1, 3, 2, 4};
+        addLongQuantiles(builder, d, new double[] {0.3, 0.25, 0.75, 0.5}, 1e-5,
+            new double[] {2, 2, 1, 1.2, 1.7, 1.5, 1.9, 1.63333, 1.65},
+            new double[] {1, 1.5, 1, 1, 1.5, 1.25, 1.75, 1.41667, 1.43750},
+            new double[] {3, 3.5, 3, 3, 3.5, 3.75, 3.25, 3.58333, 3.56250},
+            new double[] {2, 2.5, 2, 2, 2.5, 2.5, 2.5, 2.5, 2.5});
+        // NIST example
+        // Scale example 1 by 1e4
+        addLongQuantiles(builder,
+            new long[] {951772, 951567, 951937, 951959, 951442, 950610, 951591, 951195, 951772, 950925,
+                951990, 951682},
+            new double[] {0.9}, 1e-1,
+            new double[] {951959.0, 951959.0, 951959.0, 951954.6, 951968.3, 951980.7, 951956.8, 951972.4, 951971.4});
+        // Scale example 2 by 10
+        addLongQuantiles(builder,
+            new long[] {125, 120, 118, 142, 149, 145, 210, 82, 103, 113, 141, 99, 122, 120, 121, 110,
+                198, 110, 100, 88, 90, 123},
+            new double[] {0.05}, 1e-3,
+            new double[] {88.000, 88.000, 82.000, 82.600, 85.600, 82.900, 88.100, 84.700, 84.925});
+        // min/max test. This hits edge cases for bounds clipping when computing
+        // the index in [0, n).
+        addLongQuantiles(builder,
+            new long[] {5, 4, 3, 2, 1},
+            new double[] {0.0, 1.0}, -1,
+            new double[] {1, 1, 1, 1, 1, 1, 1, 1, 1},
+            new double[] {5, 5, 5, 5, 5, 5, 5, 5, 5});
+        // Interpolation between zeros
+        addLongQuantiles(builder,
+            new long[] {0, 0, 0, 0, 0},
+            new double[] {0.45}, -1,
+            new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
+
+        // Test data samples using R version 4.3.3
+        // require(stats)
+        // x = as.integer(c(1, 2, 3))   %% data
+        // p = c(0.1, 0.25, 0.5, 0.975) %% probabilities
+        // for (t in c(1:9)) { cat('{', paste(quantile(x, p, type=t), collapse=', '), "}, \n", sep="") }
+
+        final double[] p = {0.1, 0.25, 0.5, 0.975};
+
+        /** Poisson samples: scipy.stats.poisson.rvs(45, size=100). */
+        final long[] v4 = {42, 51, 38, 38, 49, 48, 42, 47, 51, 46, 45, 35, 39, 42, 49, 55, 53, 46, 49, 56,
+            42, 46, 42, 53, 43, 55, 49, 52, 51, 45, 40, 49, 39, 40, 46, 43, 46, 48, 36, 44, 40, 49, 49, 43, 45, 44, 41, 55,
+            52, 45, 57, 41, 43, 44, 38, 52, 44, 45, 43, 42, 38, 37, 47, 42, 47, 45, 70, 45, 50, 47, 46, 50, 47, 35, 43, 52,
+            51, 41, 45, 42, 45, 53, 46, 48, 51, 43, 63, 48, 49, 41, 58, 51, 59, 43, 39, 32, 35, 46, 50, 50};
+
+        builder.add(Arguments.of(v4, p, new double[][] {
+            {38, 42, 46, 59},
+            {38.5, 42, 46, 59},
+            {38, 42, 46, 59},
+            {38, 42, 46, 58.5},
+            {38.5, 42, 46, 59},
+            {38.1, 42, 46, 60.9},
+            {38.9, 42, 46, 58.525},
+            {38.3666666666667, 42, 46, 59.6333333333333},
+            {38.4, 42, 46, 59.475},
+        }, 1e-12));
+
+        // Discrete 'normal' samples: scipy.stats.norm.rvs(loc=3.4, scale=2250000, size=100).astype(int)
+        final long[] v = {659592, -849723, -1765944, 2610353, 2192883, -265784, 1126824, 1412069, 918175, -1066899,
+            -1289922, -1359925, 549577, 2891935, 5498383, 649055, -3774137, 3026349, 4317084, 16068, 1747179, -94833,
+            -891275, 146951, 659679, -1298483, -9717, -2372749, -213892, -956213, -2380241, -3265588, 515620, 334156,
+            2595489, -463102, -1490342, -700231, -245959, -1596233, 1702451, 1265231, 2338985, -1298796, -2493882,
+            -1679698, 251933, -3446511, 3437103, -2940127, -1996991, -695605, -3127437, 2895523, 1659299, 935033,
+            609115, -1245544, -1131839, 1645603, -1673754, -4318740, -163129, -1733950, 2609546, -536282, -2873472,
+            -204545, 872775, 448272, 1048969, -1781997, -3602571, -2346653, 2084923, 1289364, 2450980, -1809052,
+            -422631, 1895287, 72169, -4933595, 2602830, -1106753, 1295126, 1671634, 929809, -3094175, -787509, -769431,
+            -209387, 1517866, -1861080, 1863380, -699593, -174200, 2132930, 1957489, -340803, -2263330};
+
+        builder.add(Arguments.of(v, p, new double[][] {
+            {-2873472, -1490342, -204545, 3437103},
+            {-2683677, -1425133.5, -189372.5, 3437103},
+            {-2873472, -1490342, -204545, 3437103},
+            {-2873472, -1490342, -204545, 3231726},
+            {-2683677, -1425133.5, -189372.5, 3437103},
+            {-2835513, -1457737.75, -189372.5, 3855093.975},
+            {-2531841, -1392529.25, -189372.5, 3241994.85},
+            {-2734289, -1436001.58333333, -189372.5, 3576433.325},
+            {-2721636, -1433284.5625, -189372.5, 3541600.74374999},
+        }, 1e-8));
+
+        return builder.build();
+    }
+
+    /**
+     * Adds the quantiles.
+     *
+     * @param builder Builder.
+     * @param x Data.
+     * @param p Quantiles to compute.
+     * @param expected Expected result for each p for every estimation type.
+     */
+    private static void addLongQuantiles(Stream.Builder<Arguments> builder,
+        long[] x, double[] p, double delta, double[]... expected) {
+        Assertions.assertEquals(p.length, expected.length);
+        for (final double[] e : expected) {
+            Assertions.assertEquals(e.length, TYPES.length);
+        }
+        // Transpose
+        final double[][] t = new double[TYPES.length][p.length];
+        for (int i = 0; i < t.length; i++) {
+            for (int j = 0; j < p.length; j++) {
+                t[i][j] = expected[j][i];
+            }
+        }
+        builder.add(Arguments.of(x, p, t, delta));
+    }
+
+    @Test
+    void testLongQuantileWithCopy() {
+        final long[] values = {3, 4, 2, 1, 0};
+        final long[] original = values.clone();
+        TestHelper.assertEquals(() -> 2,
+            Quantile.withDefaults().withCopy(true).evaluate(values, 0.5),
+            null, () -> "copy=true");
+        Assertions.assertArrayEquals(original, values);
+        TestHelper.assertEquals(() -> 2,
+            Quantile.withDefaults().withCopy(false).evaluate(values, 0.5),
+            null, () -> "copy=false");
+        Assertions.assertFalse(Arrays.equals(original, values));
+    }
+
+    @Test
+    void testLongQuantileWithCopy2() {
+        final long[] values = {3, 4, 2, 1, 0};
+        final long[] original = values.clone();
+        TestHelper.assertEquals(() -> 2,
+            Quantile.withDefaults().withCopy(true).evaluate(values, new double[] {0.5})[0],
+            null, () -> "copy=true");
+        Assertions.assertArrayEquals(original, values);
+        TestHelper.assertEquals(() -> 2,
+            Quantile.withDefaults().withCopy(false).evaluate(values, new double[] {0.5})[0],
+            null, () -> "copy=false");
+        Assertions.assertFalse(Arrays.equals(original, values));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
+    final void testLongQuantileRangeThrows(int from, int to, int length) {
+        final long[] values = new long[length];
+        final Supplier<String> msg = () -> String.format("range [%d, %d) in length %d", from, to, length);
+        final Quantile q = Quantile.withDefaults();
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> q.evaluateRange(values, from, to, 0.5), msg);
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> q.evaluateRange(values, from, to, 0.25, 0.5), msg);
+    }
+
+    /**
+     * Test data with an internal region evaluates exactly the same when using
+     * a copy of the internal region evaluated as a full length array,
+     * or the range method on the full array.
+     */
+    @Test
+    void testLongQuantileRange() {
+        // Empty range
+        assertQuantileRange(new long[] {1, 2, 3, 4, 5}, 2, 2);
+        // Range range
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        for (int count = RANDOM_TRIALS; --count >= 0;) {
+            final int n = 10 + count;
+            final long[] x = rng.longs(n).toArray();
+            final int i = rng.nextInt(n);
+            final int j = rng.nextInt(n);
+            assertQuantileRange(x, Math.min(i, j), Math.max(i, j));
+        }
+    }
+
+    private static void assertQuantileRange(long[] values, int from, int to) {
+        // Using p={0, 1} ensures quantiles with no interpolation are included
+        for (final double p : new double[] {0, 0.5, 0.75, 1}) {
+            assertQuantileRange(values.clone(), from, to, p);
+        }
+    }
+
+    private static void assertQuantileRange(long[] values, int from, int to, double prob) {
+        final Supplier<String> msg = () -> String.format("p=%.2f range [%d, %d) in length %d",
+            prob, from, to, values.length);
+        final long[] original = values.clone();
+        final long[] x = Arrays.copyOfRange(values, from, to);
+        final double[] p = {prob};
+        // Test with/without modification of the input
+        final Quantile q = Quantile.withDefaults().withCopy(false);
+        final Quantile qCopy = Quantile.withDefaults().withCopy(true);
+        // Reference result operating in-place
+        final StatisticResult expected = q.evaluate(x, p[0]);
+        // With copy the input is unchanged
+        TestHelper.assertEquals(expected, qCopy.evaluateRange(values, from, to, p[0]), null, msg);
+        Assertions.assertArrayEquals(original, values, msg);
+        TestHelper.assertEquals(expected, qCopy.evaluateRange(values, from, to, p)[0], null, msg);
+        Assertions.assertArrayEquals(original, values, msg);
+        // Without copy only the values inside the range should be modified.
+        // Compose the expected result.
+        System.arraycopy(x, 0, original, from, x.length);
+        final long[] copy = values.clone();
+        TestHelper.assertEquals(expected, q.evaluateRange(values, from, to, p)[0], null, msg);
+        Assertions.assertArrayEquals(original, values, msg);
+        TestHelper.assertEquals(expected, q.evaluateRange(copy, from, to, p[0]), null, msg);
+        Assertions.assertArrayEquals(original, copy, msg);
+    }
+
+    /**
+     * Test the long quantile using the double and long result.
+     */
+    @ParameterizedTest
+    @MethodSource
+    void testLongQuantileStatisticResult(long[] values, double[] p) {
+        assertQuantileStatisticResult(Quantile.withDefaults(), values, p,
+            Quantile::evaluate, Quantile::evaluate);
+    }
+
+    private static void assertQuantileStatisticResult(Quantile q, long[] values, double[] p,
+        LongQuantileFunction f1, LongQuantileFunctionN fn) {
+
+        final long[] sorted = values.clone();
+        Arrays.sort(sorted);
+        final StatisticResult[] expected = new StatisticResult[p.length];
+
+        for (final EstimationMethod type : TYPES) {
+            q = q.with(type);
+
+            // Expected result
+            for (int j = 0; j < p.length; j++) {
+                // index = i + g
+                final double index = type.index(p[j], values.length);
+                final int i = (int) index;
+                final double g = index - i;
+                if (g != 0) {
+                    expected[j] = TestHelper.interpolate(sorted[i], sorted[i + 1], g);
+                } else {
+                    expected[j] = (LongStatisticResult) () -> sorted[i];
+                }
+            }
+
+            // Single quantiles
+            for (int j = 0; j < p.length; j++) {
+                if (f1 != null) {
+                    TestHelper.assertEquals(expected[j],
+                        f1.evaluate(q, values.clone(), p[j]), null,
+                        type::toString);
+                }
+                TestHelper.assertEquals(expected[j],
+                    fn.evaluate(q, values.clone(), new double[] {p[j]})[0], null,
+                    type::toString);
+            }
+
+            // Bulk quantiles
+            final StatisticResult[] result = fn.evaluate(q, values.clone(), p);
+            for (int j = 0; j < p.length; j++) {
+                TestHelper.assertEquals(expected[j], result[j], null, type::toString);
+            }
+        }
+    }
+
+    static Stream<Arguments> testLongQuantileStatisticResult() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+
+        // Interpolate extreme values
+        builder.add(Arguments.of(
+            new long[] {Long.MIN_VALUE, Long.MAX_VALUE},
+            new double[] {0, 0.223, 0.5, 0.69, 1}));
+        builder.add(Arguments.of(
+            new long[] {Long.MIN_VALUE, Long.MAX_VALUE, Long.MAX_VALUE, Long.MAX_VALUE},
+            new double[] {0.0012, 0.15, 0.223, 0.77}));
+
+        // Large result requiring rounding.
+        // Use of the binary representation shows these are random numbers.
+        final long randomNegative = 0b1010001000000110000110011001000110000010111110000111001010101110L;
+        builder.add(Arguments.of(
+            LongStream.range(randomNegative, randomNegative + 123).toArray(),
+            new double[] {0, 0.1, 0.22, 0.5, 0.789, 0.99, 1}));
+        final long randomPositive = 0b100111100101101001111011010010111000001101000011101111110010L;
+        builder.add(Arguments.of(
+            LongStream.range(randomPositive - 42, randomPositive).toArray(),
+            new double[] {0, 0.1, 0.22, 0.5, 0.789, 0.99, 1}));
+
+        // Random values and quantiles from the full 64-bit range
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        for (int count = RANDOM_TRIALS; --count >= 0;) {
+            final int n = 50 + count;
+            final long[] x = rng.longs(n).toArray();
+            final double[] p = rng.doubles(10).toArray();
+            builder.add(Arguments.of(x, p));
+        }
+
+        return builder.build();
+    }
+
+    @Test
+    final void testLongQuantileAsLongThrowsWithNoLength() {
+        final Quantile q = Quantile.withDefaults();
+        final double p = 0.123;
+        final double[] multiP = {p};
+        final StatisticResult r1 = q.evaluate(new long[0], p);
+        Assertions.assertThrows(ArithmeticException.class, () -> r1.getAsLong(), "zero length");
+        final StatisticResult r2 = q.evaluateRange(new long[10], 0, 0, p);
+        Assertions.assertThrows(ArithmeticException.class, () -> r2.getAsLong(), "zero range");
+        final StatisticResult r3 = q.evaluateAsLong(0, i -> Long.MAX_VALUE, p);
+        Assertions.assertThrows(ArithmeticException.class, () -> r3.getAsLong(), "zero size sorted");
+        final StatisticResult r4 = q.evaluate(new long[0], multiP)[0];
+        Assertions.assertThrows(ArithmeticException.class, () -> r4.getAsLong(), "zero length, multi p");
+        final StatisticResult r5 = q.evaluateRange(new long[10], 0, 0, multiP)[0];
+        Assertions.assertThrows(ArithmeticException.class, () -> r5.getAsLong(), "zero range, multi p");
+        final StatisticResult r6 = q.evaluateAsLong(0, i -> Long.MAX_VALUE, multiP)[0];
+        Assertions.assertThrows(ArithmeticException.class, () -> r6.getAsLong(), "zero size sorted, multi p");
+    }
+
+
+    @Test
+    final void testLongQuantileAsIntThrowsWithOverflow() {
+        final Quantile q = Quantile.withDefaults();
+        final long[] data = {Long.MAX_VALUE};
+        final double p = 0.123;
+        final double[] multiP = {p};
+        final StatisticResult r1 = q.evaluate(data, p);
+        Assertions.assertThrows(ArithmeticException.class, () -> r1.getAsInt(), "overflow");
+        final StatisticResult r2 = q.evaluateRange(data, 0, 1, p);
+        Assertions.assertThrows(ArithmeticException.class, () -> r2.getAsInt(), "overflow range");
+        final StatisticResult r3 = q.evaluateAsLong(1, i -> Long.MAX_VALUE, p);
+        Assertions.assertThrows(ArithmeticException.class, () -> r3.getAsInt(), "overflow sorted");
+        final StatisticResult r4 = q.evaluate(data, multiP)[0];
+        Assertions.assertThrows(ArithmeticException.class, () -> r4.getAsInt(), "overflow, multi p");
+        final StatisticResult r5 = q.evaluateRange(data, 0, 1, multiP)[0];
+        Assertions.assertThrows(ArithmeticException.class, () -> r5.getAsInt(), "overflow range, multi p");
+        final StatisticResult r6 = q.evaluateAsLong(1, i -> Long.MAX_VALUE, multiP)[0];
+        Assertions.assertThrows(ArithmeticException.class, () -> r6.getAsInt(), "overflow sorted, multi p");
+    }
+
+    @Test
+    final void testLongQuantileExample() {
+        // Javadoc example
+        long[] values = {1, 2, 3};
+        double[] p = Quantile.probabilities(10);
+        Quantile q = Quantile.withDefaults();
+        long[] result = Arrays.stream(q.evaluate(values, p))
+                              .mapToLong(StatisticResult::getAsLong)
+                              .toArray();
+        Assertions.assertEquals(p.length, result.length);
     }
 }

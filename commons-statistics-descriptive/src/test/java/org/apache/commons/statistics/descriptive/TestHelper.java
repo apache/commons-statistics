@@ -19,6 +19,7 @@ package org.apache.commons.statistics.descriptive;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntSupplier;
@@ -508,6 +509,49 @@ final class TestHelper {
         }
 
         return rel;
+    }
+
+    /**
+     * Linear interpolation between values using the interpolant {@code t}.
+     *
+     * <pre>
+     * value = a + t * (b - a)
+     * </pre>
+     *
+     * <p>The {@code double} value is the closest representable {@code double} to the result.
+     * In some cases this may be outside the range {@code [a, b]} due to rounding
+     * to a 53-bit representation.
+     *
+     * <p>The {@code long} value is the nearest whole number to the result, with ties
+     * rounding towards positive infinity. This value will be in {@code [a, b]}.
+     *
+     * @param a Value.
+     * @param b Value.
+     * @param t Interpolant.
+     * @return the value
+     */
+    static StatisticResult interpolate(long a, long b, double t) {
+        final BigDecimal aa = BigDecimal.valueOf(a);
+        final BigDecimal bb = BigDecimal.valueOf(b);
+        final BigDecimal tt = new BigDecimal(t);
+        final BigDecimal expected = bb.subtract(aa).multiply(tt).add(aa);
+
+        final double d = expected.doubleValue();
+        // Round to closest, ties to positive infinity
+        final RoundingMode m = d > 0 ? RoundingMode.HALF_UP : RoundingMode.HALF_DOWN;
+        final long l = expected.setScale(0, m).longValue();
+
+        return new LongStatisticResult() {
+            @Override
+            public double getAsDouble() {
+                return d;
+            }
+
+            @Override
+            public long getAsLong() {
+                return l;
+            }
+        };
     }
 
     /**

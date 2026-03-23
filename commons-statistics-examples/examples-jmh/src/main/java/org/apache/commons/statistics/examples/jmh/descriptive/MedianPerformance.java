@@ -20,6 +20,7 @@ package org.apache.commons.statistics.examples.jmh.descriptive;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import org.apache.commons.statistics.descriptive.Median;
 import org.apache.commons.statistics.examples.jmh.descriptive.QuantilePerformance.AbstractDataSource;
@@ -79,8 +80,17 @@ public class MedianPerformance {
      */
     @State(Scope.Benchmark)
     public static class DoubleFunctionSource {
-        /** Name of the source. */
-        @Param({JDK, CM3, CM4, STATISTICS})
+        /**
+         * Name of the source.
+         *
+         * <p>Note: CM3 and CM4 are not run by default. The default data source
+         * uses the Bentley and McIlroy data which includes data that is
+         * very slow using a single-pivot quickselect method with a median-of-3
+         * pivot strategy. This is the method used by Commons Math and each
+         * benchmark iteration may take orders of magnitude longer than the target
+         * measurement time of 1 second.
+         */
+        @Param({JDK, STATISTICS})
         private String name;
 
         /** The action. */
@@ -99,8 +109,6 @@ public class MedianPerformance {
         @Setup
         public void setup() {
             // Note: Functions defensively copy the data by default
-            // Note: KeyStratgey does not matter for single / paired keys but
-            // we set it anyway for completeness.
             Objects.requireNonNull(name);
             if (JDK.equals(name)) {
                 function = DoubleFunctionSource::sortMedian;
@@ -176,8 +184,6 @@ public class MedianPerformance {
         @Setup
         public void setup() {
             // Note: Functions defensively copy the data by default
-            // Note: KeyStratgey does not matter for single / paired keys but
-            // we set it anyway for completeness.
             Objects.requireNonNull(name);
             if (JDK.equals(name)) {
                 function = IntFunctionSource::sortMedian;
@@ -221,6 +227,73 @@ public class MedianPerformance {
     }
 
     /**
+     * Source of a {@link Function} for a {@code long[]}.
+     */
+    @State(Scope.Benchmark)
+    public static class LongFunctionSource {
+        /** Name of the source. */
+        @Param({JDK, STATISTICS})
+        private String name;
+
+        /** The action. */
+        private Function<long[], Object> function;
+
+        /**
+         * @return the function
+         */
+        public Function<long[], Object> getFunction() {
+            return function;
+        }
+
+        /**
+         * Create the function.
+         */
+        @Setup
+        public void setup() {
+            // Note: Functions defensively copy the data by default
+            Objects.requireNonNull(name);
+            if (JDK.equals(name)) {
+                function = LongFunctionSource::sortMedian;
+            } else if (STATISTICS.equals(name)) {
+                function = Median.withDefaults()::evaluate;
+            } else {
+                throw new IllegalStateException("Unknown long[] function: " + name);
+            }
+        }
+
+        /**
+         * Sort the values and compute the median.
+         *
+         * @param values Values.
+         * @return the median
+         */
+        private static Double sortMedian(long[] values) {
+            // Implicit NPE
+            final int n = values.length;
+            // Special cases
+            if (n <= 2) {
+                switch (n) {
+                case 2:
+                    return (values[0] + values[1]) * 0.5;
+                case 1:
+                    return (double) values[0];
+                default:
+                    return Double.NaN;
+                }
+            }
+            // A sort is required
+            Arrays.sort(values);
+            final int k = n >>> 1;
+            // Odd
+            if ((n & 0x1) == 0x1) {
+                return (double) values[k];
+            }
+            // Even
+            return (values[k - 1] + values[k]) * 0.5;
+        }
+    }
+
+    /**
      * Create the statistic using an array.
      *
      * @param function Source of the function.
@@ -249,6 +322,22 @@ public class MedianPerformance {
         final ToDoubleFunction<int[]> fun = function.getFunction();
         for (int j = -1; ++j < size;) {
             bh.consume(fun.applyAsDouble(source.getIntData(j)));
+        }
+    }
+
+    /**
+     * Create the statistic using an array.
+     *
+     * @param function Source of the function.
+     * @param source Source of the data.
+     * @param bh Data sink.
+     */
+    @Benchmark
+    public void longMedian(LongFunctionSource function, DataSource source, Blackhole bh) {
+        final int size = source.size();
+        final Function<long[], Object> fun = function.getFunction();
+        for (int j = -1; ++j < size;) {
+            bh.consume(fun.apply(source.getLongData(j)));
         }
     }
 }

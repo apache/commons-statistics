@@ -501,7 +501,7 @@ final class Statistics {
     /**
      * Copy the specified range of data.
      *
-     * <p>This is a simplification of {@link Arrays#copyOfRange(double[], int, int)}
+     * <p>This is a simplification of {@link Arrays#copyOfRange(int[], int, int)}
      * and does not support range checks or padding of the original input to
      * a longer output.
      *
@@ -515,5 +515,34 @@ final class Statistics {
         final int[] copy = new int[length];
         System.arraycopy(data, from, copy, 0, length);
         return copy;
+    }
+
+    /**
+     * Copy the specified range of data.
+     *
+     * <p>This is a simplification of {@link Arrays#copyOfRange(long[], int, int)}
+     * and does not support range checks or padding of the original input to
+     * a longer output.
+     *
+     * @param data Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the copy
+     */
+    static long[] copy(long[] data, int from, int to) {
+        final int length = to - from;
+        final long[] copy = new long[length];
+        System.arraycopy(data, from, copy, 0, length);
+        return copy;
+    }
+
+    /**
+     * Creates the statistic result using a {@code long} value.
+     *
+     * @param value Value.
+     * @return the statistic result
+     */
+    static StatisticResult createStatisticResult(long value) {
+        return (LongStatisticResult) () -> value;
     }
 }

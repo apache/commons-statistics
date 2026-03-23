@@ -50,6 +50,13 @@
     <Bug pattern="FE_FLOATING_POINT_EQUALITY" />
   </Match>
 
+  <!-- Rounding double-double requires comparison to 0.5 -->
+  <Match>
+    <Class name="org.apache.commons.statistics.descriptive.Interpolation" />
+    <Method name="interpolate" />
+    <Bug pattern="FE_FLOATING_POINT_EQUALITY" />
+  </Match>
+
   <Match>
     <Class name="org.apache.commons.statistics.inference.UnconditionedExactTest" />
     <Or>
