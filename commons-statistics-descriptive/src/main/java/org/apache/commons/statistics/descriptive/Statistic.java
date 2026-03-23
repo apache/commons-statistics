@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * A statistic that can be computed on univariate data, for example a stream of
+ * Enumerates statistics that can be computed on univariate data, for example a stream of
  * {@code double} values.
  *
  * <p>{@code Statistic} is an enum representing the statistics that can be computed

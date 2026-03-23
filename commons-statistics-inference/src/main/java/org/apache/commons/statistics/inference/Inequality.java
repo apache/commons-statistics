@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.inference;
 
 /**
- * Represents a non-equal comparison between two numbers.
+ * Enumerates non-equal comparisons between two numbers.
  *
  * @see <a href="https://en.wikipedia.org/wiki/Inequality_(mathematics)">Inequality (Wikipedia)</a>
  * @since 1.1

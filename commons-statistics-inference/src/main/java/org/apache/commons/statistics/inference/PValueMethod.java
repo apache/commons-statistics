@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.inference;
 
 /**
- * Represents a method for computing a p-value for a test statistic.
+ * Enumerates methods for computing a p-value for a test statistic.
  *
  * @since 1.1
  */

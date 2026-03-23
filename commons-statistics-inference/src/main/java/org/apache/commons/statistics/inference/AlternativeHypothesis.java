@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.inference;
 
 /**
- * Represents an alternative hypothesis for a hypothesis test.
+ * Enumerates alternative hypotheses for a hypothesis test.
  *
  * @see <a href="https://en.wikipedia.org/wiki/Alternative_hypothesis">Alternative hypothesis (Wikipedia)</a>
  * @since 1.1

@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.descriptive;
 
 /**
- * Defines the policy for {@link Double#NaN NaN} values found in data.
+ * Enumerates the policies for {@link Double#NaN NaN} values found in data.
  *
  * @since 1.1
  */

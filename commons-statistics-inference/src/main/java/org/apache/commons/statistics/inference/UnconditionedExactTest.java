@@ -146,7 +146,7 @@ public final class UnconditionedExactTest {
     private final boolean optimize;
 
     /**
-     * Define the method to determine the more extreme tables.
+     * Enumerates methods to determine the more extreme tables.
      *
      * @since 1.1
      */

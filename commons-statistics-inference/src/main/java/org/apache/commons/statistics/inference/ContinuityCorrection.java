@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.inference;
 
 /**
- * Represents an optional adjustment that is made when a discrete distribution is approximated by
+ * Enumerates optional adjustments that is made when a discrete distribution is approximated by
  * a continuous distribution.
  *
  * @see <a href="https://en.wikipedia.org/wiki/Continuity_correction">

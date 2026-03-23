@@ -17,7 +17,7 @@
 package org.apache.commons.statistics.inference;
 
 /**
- * Represents an assumption on the dispersion of data.
+ * Enumerates assumptions on the dispersion of data.
  *
  * @see <a href="https://en.wikipedia.org/wiki/Homoscedasticity_and_heteroscedasticity">
  * Homoscedasticity and heteroscedasticity (Wikipedia)</a>

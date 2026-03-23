@@ -732,7 +732,7 @@ public final class Quantile {
     }
 
     /**
-     * Estimation methods for a quantile. Provides the nine quantile algorithms
+     * Enumerates estimation methods for a quantile. Provides the nine quantile algorithms
      * defined in Hyndman and Fan (1996)[1] as {@code HF1 - HF9}.
      *
      * <p>Samples quantiles are defined by:
