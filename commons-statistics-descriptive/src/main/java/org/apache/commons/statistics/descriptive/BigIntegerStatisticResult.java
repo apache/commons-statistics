@@ -26,7 +26,7 @@ import java.math.BigInteger;
  * @since 1.1
  */
 @FunctionalInterface
-interface BigIntegerStatisticResult extends StatisticResult  {
+interface BigIntegerStatisticResult extends StatisticResult {
 
     @Override
     BigInteger getAsBigInteger();
