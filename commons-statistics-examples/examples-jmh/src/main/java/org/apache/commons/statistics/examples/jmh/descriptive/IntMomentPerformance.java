@@ -181,7 +181,7 @@ public class IntMomentPerformance {
             if (DOUBLE_MEAN.equals(name)) {
                 action = () -> {
                     final Mean m = Mean.create();
-                    return createIntStatistic(m, m);
+                    return createDoubleAsIntStatistic(m, m);
                 };
             } else if (INT_MEAN.equals(name)) {
                 action = () -> {
@@ -196,7 +196,7 @@ public class IntMomentPerformance {
             } else if (DOUBLE_VAR.equals(name)) {
                 action = () -> {
                     final Variance m = Variance.create();
-                    return createIntStatistic(m, m);
+                    return createDoubleAsIntStatistic(m, m);
                 };
             } else if (INT_VAR.equals(name)) {
                 action = () -> {
@@ -206,12 +206,12 @@ public class IntMomentPerformance {
             } else if (DOUBLE_SKEWNESS.equals(name)) {
                 action = () -> {
                     final Skewness m = Skewness.create();
-                    return createIntStatistic((DoubleConsumer) m, m);
+                    return createDoubleAsIntStatistic((DoubleConsumer) m, m);
                 };
             } else if (DOUBLE_KURTOSIS.equals(name)) {
                 action = () -> {
                     final Kurtosis m = Kurtosis.create();
-                    return createIntStatistic(m, m);
+                    return createDoubleAsIntStatistic(m, m);
                 };
             } else if (INT_SKEWNESS.equals(name)) {
                 action = () -> {
@@ -250,7 +250,7 @@ public class IntMomentPerformance {
          * @param s Supplier.
          * @return the statistic
          */
-        private static IntStatistic createIntStatistic(DoubleConsumer c, DoubleSupplier s) {
+        private static IntStatistic createDoubleAsIntStatistic(DoubleConsumer c, DoubleSupplier s) {
             return new IntStatistic() {
                 @Override
                 public void accept(int value) {
@@ -368,7 +368,7 @@ public class IntMomentPerformance {
             if (DOUBLE_MEAN.equals(name)) {
                 action = () -> {
                     final Mean m = Mean.create();
-                    return createLongStatistic(m, m);
+                    return createDoubleAsLongStatistic(m, m);
                 };
             } else if (LONG_MEAN.equals(name)) {
                 action = () -> {
@@ -383,7 +383,7 @@ public class IntMomentPerformance {
             } else if (DOUBLE_VAR.equals(name)) {
                 action = () -> {
                     final Variance m = Variance.create();
-                    return createLongStatistic(m, m);
+                    return createDoubleAsLongStatistic(m, m);
                 };
             } else if (LONG_VAR.equals(name)) {
                 action = () -> {
@@ -398,12 +398,12 @@ public class IntMomentPerformance {
             } else if (DOUBLE_SKEWNESS.equals(name)) {
                 action = () -> {
                     final Skewness m = Skewness.create();
-                    return createLongStatistic((DoubleConsumer) m, m);
+                    return createDoubleAsLongStatistic((DoubleConsumer) m, m);
                 };
             } else if (DOUBLE_KURTOSIS.equals(name)) {
                 action = () -> {
                     final Kurtosis m = Kurtosis.create();
-                    return createLongStatistic(m, m);
+                    return createDoubleAsLongStatistic(m, m);
                 };
             } else {
                 throw new IllegalStateException("Unknown long action: " + name);
@@ -437,7 +437,7 @@ public class IntMomentPerformance {
          * @param s Supplier.
          * @return the statistic
          */
-        private static LongStatistic createLongStatistic(DoubleConsumer c, DoubleSupplier s) {
+        private static LongStatistic createDoubleAsLongStatistic(DoubleConsumer c, DoubleSupplier s) {
             return new LongStatistic() {
                 @Override
                 public void accept(long value) {
