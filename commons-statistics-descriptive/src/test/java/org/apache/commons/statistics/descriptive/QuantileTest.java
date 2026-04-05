@@ -41,9 +41,9 @@ class QuantileTest {
 
     @Test
     void testNullPropertyThrows() {
-        final Quantile m = Quantile.withDefaults();
-        Assertions.assertThrows(NullPointerException.class, () -> m.with((NaNPolicy) null));
-        Assertions.assertThrows(NullPointerException.class, () -> m.with((EstimationMethod) null));
+        final Quantile q = Quantile.withDefaults();
+        Assertions.assertThrows(NullPointerException.class, () -> q.with((NaNPolicy) null));
+        Assertions.assertThrows(NullPointerException.class, () -> q.with((EstimationMethod) null));
     }
 
     @Test
@@ -84,18 +84,18 @@ class QuantileTest {
     void testBadQuantileThrows() {
         final double[] values1 = {3, 4, 2, 1, 0};
         final int[] values2 = {3, 4, 2, 1, 0};
-        final Quantile m = Quantile.withDefaults();
+        final Quantile q = Quantile.withDefaults();
         for (final double p : new double[] {-0.5, 1.2, Double.NaN}) {
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values1, p));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values1, new double[] {p}));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values2, p));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values2, new double[] {p}));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values1, 0, values1.length, p));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values1, 0, values1.length, new double[] {p}));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values2, 0, values2.length, p));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values2, 0, values2.length, new double[] {p}));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(10, i -> 1, p));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(10, i -> 1, new double[] {p}));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values1, p));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values1, new double[] {p}));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values2, p));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values2, new double[] {p}));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values1, 0, values1.length, p));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values1, 0, values1.length, new double[] {p}));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values2, 0, values2.length, p));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values2, 0, values2.length, new double[] {p}));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(10, i -> 1, p));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(10, i -> 1, new double[] {p}));
         }
     }
 
@@ -103,25 +103,25 @@ class QuantileTest {
     void testNoQuantilesThrows() {
         final double[] values1 = {3, 4, 2, 1, 0};
         final int[] values2 = {3, 4, 2, 1, 0};
-        final Quantile m = Quantile.withDefaults();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values1, new double[0]));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values2));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(values2, new double[0]));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values1, 0, values1.length));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values1, 0, values1.length, new double[0]));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values2, 0, values2.length));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluateRange(values2, 0, values2.length, new double[0]));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(10, i -> 1));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(10, i -> 1, new double[0]));
+        final Quantile q = Quantile.withDefaults();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values1, new double[0]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values2));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(values2, new double[0]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values1, 0, values1.length));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values1, 0, values1.length, new double[0]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values2, 0, values2.length));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluateRange(values2, 0, values2.length, new double[0]));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(10, i -> 1));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(10, i -> 1, new double[0]));
     }
 
     @Test
     void testInvalidSizeThrows() {
-        final Quantile m = Quantile.withDefaults();
+        final Quantile q = Quantile.withDefaults();
         for (final int n : new int[] {-1, -42, Integer.MIN_VALUE}) {
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(n, i -> 1, 0.5));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> m.evaluate(n, i -> 1, 0.5, 0.75));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(n, i -> 1, 0.5));
+            Assertions.assertThrows(IllegalArgumentException.class, () -> q.evaluate(n, i -> 1, 0.5, 0.75));
         }
     }
 
@@ -131,14 +131,14 @@ class QuantileTest {
      * Interface to test the quantile for a single probability.
      */
     interface DoubleQuantileFunction {
-        double evaluate(Quantile m, double[] values, double p);
+        double evaluate(Quantile q, double[] values, double p);
     }
 
     /**
      * Interface to test the quantiles for a multiple probabilities.
      */
     interface DoubleQuantileFunctionN {
-        double[] evaluate(Quantile m, double[] values, double[] p);
+        double[] evaluate(Quantile q, double[] values, double[] p);
     }
 
     @ParameterizedTest
@@ -188,40 +188,40 @@ class QuantileTest {
     @MethodSource(value = {"testDoubleQuantile"})
     void testQuantileSorted(double[] values, double[] p, double[][] expected, double delta) {
         assertQuantile(Quantile.withDefaults(), values, p, expected, delta,
-            (m, x, q) -> {
+            (q, x, pp) -> {
                 // No clone here as later calls with the same array will also sort it
                 Arrays.sort(x);
-                return m.evaluate(x.length, i -> x[i], q);
+                return q.evaluate(x.length, i -> x[i], pp);
             },
-            (m, x, q) -> {
+            (q, x, pp) -> {
                 // No clone here as later calls with the same array will also sort it
                 Arrays.sort(x);
-                return m.evaluate(x.length, i -> x[i], q);
+                return q.evaluate(x.length, i -> x[i], pp);
             });
     }
 
-    private static void assertQuantile(Quantile m, double[] values, double[] p,
+    private static void assertQuantile(Quantile q, double[] values, double[] p,
         double[][] expected, double delta,
         DoubleQuantileFunction f1, DoubleQuantileFunctionN fn) {
         Assertions.assertEquals(expected.length, TYPES.length);
         for (int i = 0; i < TYPES.length; i++) {
             final EstimationMethod type = TYPES[i];
-            m = m.with(type);
+            q = q.with(type);
             // Single quantiles
             for (int j = 0; j < p.length; j++) {
                 if (f1 != null) {
-                    assertEqualsOrExactlyEqual(expected[i][j], f1.evaluate(m, values.clone(), p[j]), delta,
+                    assertEqualsOrExactlyEqual(expected[i][j], f1.evaluate(q, values.clone(), p[j]), delta,
                         type::toString);
                 }
-                assertEqualsOrExactlyEqual(expected[i][j], fn.evaluate(m, values.clone(), new double[] {p[j]})[0], delta,
+                assertEqualsOrExactlyEqual(expected[i][j], fn.evaluate(q, values.clone(), new double[] {p[j]})[0], delta,
                     type::toString);
             }
             // Bulk quantiles
             if (delta < 0) {
-                Assertions.assertArrayEquals(expected[i], fn.evaluate(m, values.clone(), p),
+                Assertions.assertArrayEquals(expected[i], fn.evaluate(q, values.clone(), p),
                     type::toString);
             } else {
-                Assertions.assertArrayEquals(expected[i], fn.evaluate(m, values.clone(), p), delta,
+                Assertions.assertArrayEquals(expected[i], fn.evaluate(q, values.clone(), p), delta,
                     type::toString);
             }
         }
@@ -513,14 +513,14 @@ class QuantileTest {
      * Interface to test the quantile for a single probability.
      */
     interface IntQuantileFunction {
-        double evaluate(Quantile m, int[] values, double p);
+        double evaluate(Quantile q, int[] values, double p);
     }
 
     /**
      * Interface to test the quantiles for a multiple probabilities.
      */
     interface IntQuantileFunctionN {
-        double[] evaluate(Quantile m, int[] values, double[] p);
+        double[] evaluate(Quantile q, int[] values, double[] p);
     }
 
     @ParameterizedTest
@@ -534,40 +534,40 @@ class QuantileTest {
     @MethodSource(value = {"testIntQuantile"})
     void testQuantileSorted(int[] values, double[] p, double[][] expected, double delta) {
         assertQuantile(Quantile.withDefaults(), values, p, expected, delta,
-            (m, x, q) -> {
+            (q, x, pp) -> {
                 // No clone here as later calls with the same array will also sort it
                 Arrays.sort(x);
-                return m.evaluate(x.length, i -> x[i], q);
+                return q.evaluate(x.length, i -> x[i], pp);
             },
-            (m, x, q) -> {
+            (q, x, pp) -> {
                 // No clone here as later calls with the same array will also sort it
                 Arrays.sort(x);
-                return m.evaluate(x.length, i -> x[i], q);
+                return q.evaluate(x.length, i -> x[i], pp);
             });
     }
 
-    private static void assertQuantile(Quantile m, int[] values, double[] p,
+    private static void assertQuantile(Quantile q, int[] values, double[] p,
         double[][] expected, double delta,
         IntQuantileFunction f1, IntQuantileFunctionN fn) {
         Assertions.assertEquals(expected.length, TYPES.length);
         for (int i = 0; i < TYPES.length; i++) {
             final EstimationMethod type = TYPES[i];
-            m = m.with(type);
+            q = q.with(type);
             // Single quantiles
             for (int j = 0; j < p.length; j++) {
                 if (f1 != null) {
-                    assertEqualsOrExactlyEqual(expected[i][j], f1.evaluate(m, values.clone(), p[j]), delta,
+                    assertEqualsOrExactlyEqual(expected[i][j], f1.evaluate(q, values.clone(), p[j]), delta,
                         type::toString);
                 }
-                assertEqualsOrExactlyEqual(expected[i][j], fn.evaluate(m, values.clone(), new double[] {p[j]})[0], delta,
+                assertEqualsOrExactlyEqual(expected[i][j], fn.evaluate(q, values.clone(), new double[] {p[j]})[0], delta,
                     type::toString);
             }
             // Bulk quantiles
             if (delta < 0) {
-                Assertions.assertArrayEquals(expected[i], fn.evaluate(m, values.clone(), p),
+                Assertions.assertArrayEquals(expected[i], fn.evaluate(q, values.clone(), p),
                     type::toString);
             } else {
-                Assertions.assertArrayEquals(expected[i], fn.evaluate(m, values.clone(), p), delta,
+                Assertions.assertArrayEquals(expected[i], fn.evaluate(q, values.clone(), p), delta,
                     type::toString);
             }
         }
