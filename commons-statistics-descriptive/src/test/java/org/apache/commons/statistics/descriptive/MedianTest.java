@@ -173,7 +173,7 @@ class MedianTest {
     void testDoubleMedianWithCopy() {
         assertMedianWithCopy(new double[] {2, 1}, 1.5);
         assertMedianWithCopy(new double[] {3, 2, 1}, 2);
-        assertMedianWithCopy(new double[] {4, 3, 2, 1}, 2.5);
+        assertMedianWithCopy(new double[] {-1, -2, -3, -4}, -2.5);
         assertMedianWithCopy(new double[] {5, 4, 3, 2, 1}, 3);
         // Special case for 2 values with signed zeros (must be unordered)
         assertMedianWithCopy(new double[] {0.0, -0.0}, 0.0);
@@ -206,7 +206,7 @@ class MedianTest {
     void testDoubleMedianRange() {
         // Empty range
         assertMedianRange(new double[] {1, 2, 3, 4, 5}, 2, 2);
-        // Range range
+        // Random range
         final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
         for (int count = RANDOM_TRIALS; --count >= 0;) {
             final int n = 10 + count;
@@ -300,6 +300,7 @@ class MedianTest {
         // Special cases
         builder.add(Arguments.of(new int[] {}, Double.NaN));
         builder.add(Arguments.of(new int[] {-Integer.MAX_VALUE, Integer.MAX_VALUE}, 0));
+        builder.add(Arguments.of(new int[] {Integer.MIN_VALUE, Integer.MAX_VALUE}, -0.5));
         return builder.build();
     }
 
@@ -317,14 +318,14 @@ class MedianTest {
             // odd
             return x[m];
         }
-        return Interpolation.mean(x[m - 1], x[m]);
+        return 0.5 * x[m - 1] + 0.5 * x[m];
     }
 
     @Test
     void testIntMedianWithCopy() {
         assertMedianWithCopy(new int[] {2, 1}, 1.5);
         assertMedianWithCopy(new int[] {3, 2, 1}, 2);
-        assertMedianWithCopy(new int[] {4, 3, 2, 1}, 2.5);
+        assertMedianWithCopy(new int[] {-1, -2, -3, -4}, -2.5);
         assertMedianWithCopy(new int[] {5, 4, 3, 2, 1}, 3);
     }
 
@@ -355,7 +356,7 @@ class MedianTest {
     void testIntMedianRange() {
         // Empty range
         assertMedianRange(new int[] {1, 2, 3, 4, 5}, 2, 2);
-        // Range range
+        // Random range
         final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
         for (int count = RANDOM_TRIALS; --count >= 0;) {
             final int n = 10 + count;
@@ -384,5 +385,154 @@ class MedianTest {
         System.arraycopy(x, 0, original, from, x.length);
         Assertions.assertEquals(expected, m.evaluateRange(values, from, to), msg);
         Assertions.assertArrayEquals(original, values, msg);
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"testLongMedian"})
+    void testLongMedian(long[] values, StatisticResult expected) {
+        final long[] copy = values.clone();
+        TestHelper.assertEquals(expected, Median.withDefaults().evaluate(values), null, () -> "median");
+        // Test the result and data (modified in-place) match the quantile implementation.
+        // Results are either integer or half-integer so this should be exact.
+        TestHelper.assertEquals(expected, Quantile.withDefaults().evaluate(copy, 0.5), null, () -> "quantile");
+        Assertions.assertArrayEquals(values, copy);
+    }
+
+    static Stream<Arguments> testLongMedian() {
+        final Stream.Builder<Arguments> builder = Stream.builder();
+        for (final long[] x : new long[][] {
+            {1},
+            {1, 2},
+            {2, 1},
+            {1, 2, 3, 4},
+            {Long.MAX_VALUE, Long.MAX_VALUE / 2},
+            {Long.MIN_VALUE, Long.MIN_VALUE / 2},
+        }) {
+            builder.add(Arguments.of(x, evaluate(x)));
+        }
+
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        // Sizes above and below the threshold for partitioning
+        long[] x;
+        for (final int size : new int[] {5, 6, 50, 51}) {
+            final long[] values = rng.longs(size, -4500, 1500).toArray();
+            final StatisticResult expected = evaluate(values);
+            for (int i = 0; i < 20; i++) {
+                x = ArraySampler.shuffle(rng, values.clone());
+                builder.add(Arguments.of(x, expected));
+            }
+            // Special values
+            for (final long y : new long[] {0, 1, Long.MAX_VALUE, Long.MIN_VALUE}) {
+                x = new long[size];
+                Arrays.fill(x, y);
+                builder.add(Arguments.of(x, (LongStatisticResult) () -> y));
+            }
+        }
+        // Special cases
+        builder.add(Arguments.of(new long[] {}, (StatisticResult) () -> Double.NaN));
+        builder.add(Arguments.of(new long[] {-Long.MAX_VALUE, Long.MAX_VALUE}, (StatisticResult) () -> 0));
+        builder.add(Arguments.of(new long[] {Long.MIN_VALUE, Long.MAX_VALUE}, (StatisticResult) () -> -0.5));
+        return builder.build();
+    }
+
+    /**
+     * Evaluate the median using a full sort on a copy of the data.
+     *
+     * @param values Value.
+     * @return the median
+     */
+    private static StatisticResult evaluate(long[] values) {
+        final long[] x = values.clone();
+        Arrays.sort(x);
+        final int m = x.length >> 1;
+        if ((x.length & 0x1) == 1) {
+            // odd
+            return (LongStatisticResult) () -> x[m];
+        }
+        return TestHelper.interpolate(x[m - 1], x[m], 0.5);
+    }
+
+    @Test
+    void testLongMedianWithCopy() {
+        assertMedianWithCopy(new long[] {2, 1}, () -> 1.5);
+        assertMedianWithCopy(new long[] {3, 2, 1}, () -> 2);
+        assertMedianWithCopy(new long[] {-1, -2, -3, -4}, () -> -2.5);
+        assertMedianWithCopy(new long[] {5, 4, 3, 2, 1}, () -> 3);
+    }
+
+    private static void assertMedianWithCopy(long[] values, StatisticResult expected) {
+        final long[] original = values.clone();
+        TestHelper.assertEquals(expected, Median.withDefaults().withCopy(true).evaluate(values), null, () -> "copy=true");
+        Assertions.assertArrayEquals(original, values);
+        TestHelper.assertEquals(expected, Median.withDefaults().withCopy(false).evaluate(values), null, () -> "copy=false");
+        Assertions.assertFalse(Arrays.equals(original, values));
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = {"org.apache.commons.statistics.descriptive.TestData#arrayRangeTestData"})
+    final void testLongMedianRangeThrows(int from, int to, int length) {
+        final long[] values = new long[length];
+        final Median m = Median.withDefaults();
+        Assertions.assertThrows(IndexOutOfBoundsException.class,
+            () -> m.evaluateRange(values, from, to),
+            () -> String.format("range [%d, %d) in length %d", from, to, length));
+    }
+
+    /**
+     * Test data with an internal region evaluates exactly the same when using
+     * a copy of the internal region evaluated as a full length array,
+     * or the range method on the full array.
+     */
+    @Test
+    void testLongMedianRange() {
+        // Empty range
+        assertMedianRange(new long[] {1, 2, 3, 4, 5}, 2, 2);
+        // Random range
+        final UniformRandomProvider rng = RandomSource.XO_SHI_RO_128_PP.create();
+        for (int count = RANDOM_TRIALS; --count >= 0;) {
+            final int n = 10 + count;
+            final long[] x = rng.longs(n).toArray();
+            final int i = rng.nextInt(n);
+            final int j = rng.nextInt(n);
+            assertMedianRange(x, Math.min(i, j), Math.max(i, j));
+        }
+    }
+
+    private static void assertMedianRange(long[] values, int from, int to) {
+        final Supplier<String> msg = () -> String.format("range [%d, %d) in length %d",
+            from, to, values.length);
+        final long[] original = values.clone();
+        final long[] x = Arrays.copyOfRange(values, from, to);
+        // Test with/without modification of the input
+        final Median m = Median.withDefaults().withCopy(false);
+        final Median mCopy = Median.withDefaults().withCopy(true);
+        // Reference result operating in-place
+        final StatisticResult expected = m.evaluate(x);
+        // With copy the input is unchanged
+        TestHelper.assertEquals(expected, mCopy.evaluateRange(values, from, to), null, msg);
+        Assertions.assertArrayEquals(original, values, msg);
+        // Without copy only the values inside the range should be modified.
+        // Compose the expected result.
+        System.arraycopy(x, 0, original, from, x.length);
+        TestHelper.assertEquals(expected, m.evaluateRange(values, from, to), null, msg);
+        Assertions.assertArrayEquals(original, values, msg);
+    }
+
+    @Test
+    final void testLongMedianAsLongThrowsWithNoLength() {
+        final Median m = Median.withDefaults();
+        final StatisticResult r1 = m.evaluate(new long[0]);
+        Assertions.assertThrows(ArithmeticException.class, () -> r1.getAsLong(), "zero length");
+        final StatisticResult r2 = m.evaluateRange(new long[10], 0, 0);
+        Assertions.assertThrows(ArithmeticException.class, () -> r2.getAsLong(), "zero range");
+    }
+
+    @Test
+    final void testLongMedianAsIntThrowsWithOverflow() {
+        final Median m = Median.withDefaults();
+        final StatisticResult r1 = m.evaluate(new long[] {Long.MAX_VALUE});
+        Assertions.assertThrows(ArithmeticException.class, () -> r1.getAsInt(), "overflow");
+        final StatisticResult r2 = m.evaluateRange(new long[] {Long.MAX_VALUE}, 0, 1);
+        Assertions.assertThrows(ArithmeticException.class, () -> r2.getAsInt(), "overflow range");
     }
 }

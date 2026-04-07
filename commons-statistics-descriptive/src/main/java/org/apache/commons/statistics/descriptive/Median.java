@@ -38,6 +38,29 @@ import org.apache.commons.numbers.arrays.Selection;
  *
  * <p>Instances of this class are immutable and thread-safe.
  *
+ * <p><strong>Support for {@code long} arrays</strong>
+ *
+ * <p>The result on {@code long} values can be returned as a {@code double} or
+ * a {@code long} using a {@link StatisticResult}.
+ *
+ * <p>The {@code double} result is the closest representable value
+ * following floating-point rounding rules. This may be outside the
+ * range defined by the minimum and maximum of the input array following
+ * rounding to a 53-bit floating point representation.
+ * For example the median of an array containing only {@link Long#MAX_VALUE}
+ * as a {@code double} is 2<sup>63</sup>, which is the closest representation of
+ * 2<sup>63</sup> - 1.
+ *
+ * <p>The {@code long} result is returned using the nearest whole number.
+ * In the event of ties the result is rounded towards positive infinity.
+ * For example the median of {@code [2, 3]} is 3, and of {@code [-2, -3]} is -2.
+ * This value will always be within the range defined by the minimum and maximum
+ * of the input array. Due to interpolation it may be a value not observed in
+ * the input values.
+ *
+ * <p>If the array length {@code n} is zero the result as a {@code double} is
+ * {@code NaN} and the result as a {@code long} will raise an {@link ArithmeticException}.
+ *
  * @see #with(NaNPolicy)
  * @see <a href="https://en.wikipedia.org/wiki/Median">Median (Wikipedia)</a>
  * @since 1.1
@@ -281,6 +304,102 @@ public final class Median {
         if ((n & 0x1) == 1) {
             Selection.select(x, start, end, m);
             return x[m];
+        }
+        // Even: require (m-1, m)
+        Selection.select(x, start, end, new int[] {m - 1, m});
+        return Interpolation.mean(x[m - 1], x[m]);
+    }
+
+
+    /**
+     * Evaluate the median.
+     *
+     * <p>If the input length is even the result requires interpolation of two values.
+     * The returned median will interpolate the {@code double} or {@code long} result
+     * on demand. This is more efficient when only one result is required. Consumers
+     * of the result should store the appropriate evaluated value if repeated use is
+     * required.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @return the median
+     * @since 1.3
+     */
+    public StatisticResult evaluate(long[] values) {
+        return compute(values, 0, values.length);
+    }
+
+    /**
+     * Evaluate the median of the specified range.
+     *
+     * <p>If the input sub-range length is even the result requires interpolation of two values.
+     * The returned median will interpolate the {@code double} or {@code long} result
+     * on demand. This is more efficient when only one result is required. Consumers
+     * of the result should store the appropriate evaluated value if repeated use is
+     * required.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the median
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.3
+     */
+    public StatisticResult evaluateRange(long[] values, int from, int to) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to);
+    }
+
+    /**
+     * Compute the median of the specified range.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @return the median
+     */
+    private StatisticResult compute(long[] values, int from, int to) {
+        final long[] x;
+        final int start;
+        final int end;
+        if (copy) {
+            x = Statistics.copy(values, from, to);
+            start = 0;
+            end = x.length;
+        } else {
+            x = values;
+            start = from;
+            end = to;
+        }
+        final int n = end - start;
+        // Special cases
+        if (n <= 2) {
+            switch (n) {
+            case 2:
+                // Sorting the array matches the behaviour of Quantile for n==2
+                if (x[start + 1] < x[start]) {
+                    final long t = x[start];
+                    x[start] = x[start + 1];
+                    x[start + 1] = t;
+                }
+                return Interpolation.mean(x[start], x[start + 1]);
+            case 1:
+                return Statistics.createStatisticResult(x[start]);
+            default:
+                return () -> Double.NaN;
+            }
+        }
+        // Median index (including the offset)
+        final int m = (start + end) >>> 1;
+        // Odd
+        if ((n & 0x1) == 1) {
+            Selection.select(x, start, end, m);
+            return Statistics.createStatisticResult(x[m]);
         }
         // Even: require (m-1, m)
         Selection.select(x, start, end, new int[] {m - 1, m});

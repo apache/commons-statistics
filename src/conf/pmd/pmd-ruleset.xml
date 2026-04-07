@@ -141,7 +141,7 @@
       <property name="methodReportLevel" value="20"/>
       <property name="violationSuppressXPath"
         value="./ancestor-or-self::ClassDeclaration[@SimpleName='KolmogorovSmirnovTest'
-            or @SimpleName='DD' or @SimpleName='BrentOptimizer']"/>
+            or @SimpleName='Quantile' or @SimpleName='BrentOptimizer']"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts">
@@ -233,9 +233,10 @@
   </rule>
   <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor">
     <properties>
-      <!-- Exact conversion from double to BigInteger is required. -->
+      <!-- Exact conversion from double is required. -->
       <property name="violationSuppressXPath"
-        value="./ancestor-or-self::MethodDeclaration[@Name='toBigIntegerExact']"/>
+        value="./ancestor-or-self::MethodDeclaration[@Name='toBigIntegerExact'
+          or @Name='interpolate']"/>
     </properties>
   </rule>
   <rule ref="category/java/errorprone.xml/AssignmentInOperand">

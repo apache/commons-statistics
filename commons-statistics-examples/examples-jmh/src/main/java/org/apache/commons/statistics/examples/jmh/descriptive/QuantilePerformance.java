@@ -104,8 +104,9 @@ public class QuantilePerformance {
         private static final String ALL = "all";
         /** All distributions / modifications in the Bentley and McIlroy test suite. */
         private static final String BM = "bm";
-        /** All distributions in the Valois test suite. These currently ignore the seed.
-         * To replicate Valois used a fixed seed and the copy modification. */
+        /** All distributions in the Valois test suite. These do not use the seed
+         * in {@link #createDistributions(EnumSet, UniformRandomProvider, int, int, int)}.
+         * To replicate Valois use a fixed seed and the copy modification. */
         private static final String VALOIS = "valois";
         /** Flag to determine if the data size should be logged. This is useful to be
          * able to determine the execution time per sample when the number of samples
@@ -262,10 +263,22 @@ public class QuantilePerformance {
         /**
          * Gets the sample for the given {@code index}.
          *
+         * <p>This is returned in a randomized order per iteration.
+         *
          * @param index Index.
          * @return the data sample
          */
-        protected double[] getDataSample(int index) {
+        public long[] getLongData(int index) {
+            return getLongDataSample(order[index]);
+        }
+
+        /**
+         * Gets the sample for the given {@code index}.
+         *
+         * @param index Index.
+         * @return the data sample
+         */
+        private double[] getDataSample(int index) {
             final int[] a = data[index];
             final double[] x = new double[a.length];
             for (int i = -1; ++i < a.length;) {
@@ -280,10 +293,25 @@ public class QuantilePerformance {
          * @param index Index.
          * @return the data sample
          */
-        protected int[] getIntDataSample(int index) {
+        private int[] getIntDataSample(int index) {
             // For parity with other methods do not use data.clone()
             final int[] a = data[index];
             final int[] x = new int[a.length];
+            for (int i = -1; ++i < a.length;) {
+                x[i] = a[i];
+            }
+            return x;
+        }
+
+        /**
+         * Gets the sample for the given {@code index}.
+         *
+         * @param index Index.
+         * @return the data sample
+         */
+        private long[] getLongDataSample(int index) {
+            final int[] a = data[index];
+            final long[] x = new long[a.length];
             for (int i = -1; ++i < a.length;) {
                 x[i] = a[i];
             }
@@ -911,8 +939,16 @@ public class QuantilePerformance {
      */
     @State(Scope.Benchmark)
     public static class DoubleQuantileFunctionSource {
-        /** Name of the source. */
-        @Param({JDK, CM3, CM4, STATISTICS})
+        /**
+         * Name of the source.
+         *
+         * <p>Note: CM3 and CM4 are not run by default. The default data source
+         * uses the Bentley and McIlroy data which includes data that is
+         * very slow using a single-pivot quickselect method with a median-of-3
+         * pivot strategy. This is the method used by Commons Math and each
+         * benchmark iteration may take orders of magnitude longer than the target
+         * measurement time of 1 second.
+         */
         private String name;
 
         /** The action. */
@@ -1014,14 +1050,13 @@ public class QuantilePerformance {
         }
     }
 
-
     /**
      * Source of a {@link BiFunction} for an {@code int[]} and quantiles.
      */
     @State(Scope.Benchmark)
     public static class IntQuantileFunctionSource {
         /** Name of the source. */
-        @Param({JDK, CM3, CM4, STATISTICS})
+        @Param({JDK, STATISTICS})
         private String name;
 
         /** The action. */
@@ -1062,6 +1097,84 @@ public class QuantilePerformance {
             final int n = values.length;
             if (p.length == 0) {
                 throw new IllegalArgumentException("No quantiles specified for int[] data");
+            }
+            for (final double pp : p) {
+                checkQuantile(pp);
+            }
+            // Special cases
+            final double[] q = new double[p.length];
+            if (n <= 1) {
+                Arrays.fill(q, n == 0 ? Double.NaN : values[0]);
+                return q;
+            }
+            // A sort is required
+            Arrays.sort(values);
+            for (int i = 0; i < p.length; i++) {
+                // EstimationMethod.HF6 (as per the Apache Commons Math Percentile
+                // legacy implementation)
+                final double pos = p[i] * (n + 1);
+                final double fpos = Math.floor(pos);
+                final int j = (int) fpos;
+                final double g = pos - fpos;
+                if (j < 1) {
+                    q[i] = values[0];
+                } else if (j >= n) {
+                    q[i] = values[n - 1];
+                } else {
+                    q[i] = (1 - g) * values[j - 1] + g * values[j];
+                }
+            }
+            return q;
+        }
+    }
+
+    /**
+     * Source of a {@link BiFunction} for an {@code long[]} and quantiles.
+     */
+    @State(Scope.Benchmark)
+    public static class LongQuantileFunctionSource {
+        /** Name of the source. */
+        @Param({JDK, STATISTICS})
+        private String name;
+
+        /** The action. */
+        private BiFunction<long[], double[], Object> function;
+
+        /**
+         * @return the function
+         */
+        public BiFunction<long[], double[], Object> getFunction() {
+            return function;
+        }
+
+        /**
+         * Create the function.
+         */
+        @Setup
+        public void setup() {
+            // Note: Functions should not defensively copy the data
+            // as a clone is passed in from the data source.
+            if (JDK.equals(name)) {
+                function = LongQuantileFunctionSource::sortQuantile;
+            } else if (STATISTICS.equals(name)) {
+                function = Quantile.withDefaults()::evaluate;
+            } else {
+                throw new IllegalStateException("Unknown long[] function: " + name);
+            }
+        }
+
+        /**
+         * Sort the values and compute the median.
+         *
+         * @param values Values.
+         * @param p p-th quantiles to compute.
+         * @return the quantiles
+         */
+        private static double[] sortQuantile(long[] values, double[] p) {
+            // Implicit NPE
+            final int n = values.length;
+            if (p.length == 0) {
+                throw new IllegalArgumentException("No quantiles specified for long[] data");
             }
             for (final double pp : p) {
                 checkQuantile(pp);
@@ -1178,6 +1291,44 @@ public class QuantilePerformance {
         final BiFunction<int[], double[], double[]> fun = function.getFunction();
         for (int j = -1; ++j < size;) {
             bh.consume(fun.apply(source.getIntData(j), p));
+        }
+    }
+
+    /**
+     * Create the statistic using an array and given quantiles.
+     *
+     * @param function Source of the function.
+     * @param source Source of the data.
+     * @param quantiles Source of the quantiles.
+     * @param bh Data sink.
+     */
+    @Benchmark
+    public void longQuantiles(LongQuantileFunctionSource function, DataSource source,
+            QuantileSource quantiles, Blackhole bh) {
+        final int size = source.size();
+        final double[] p = quantiles.getData();
+        final BiFunction<long[], double[],  Object> fun = function.getFunction();
+        for (int j = -1; ++j < size;) {
+            bh.consume(fun.apply(source.getLongData(j), p));
+        }
+    }
+
+    /**
+     * Create the statistic using an array and given quantiles.
+     *
+     * @param function Source of the function.
+     * @param source Source of the data.
+     * @param quantiles Source of the quantiles.
+     * @param bh Data sink.
+     */
+    @Benchmark
+    public void longQuantileRange(LongQuantileFunctionSource function, DataSource source,
+            QuantileRangeSource quantiles, Blackhole bh) {
+        final int size = source.size();
+        final double[] p = quantiles.getData();
+        final BiFunction<long[], double[], Object> fun = function.getFunction();
+        for (int j = -1; ++j < size;) {
+            bh.consume(fun.apply(source.getLongData(j), p));
         }
     }
 }

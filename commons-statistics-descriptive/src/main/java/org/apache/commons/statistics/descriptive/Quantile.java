@@ -19,6 +19,7 @@ package org.apache.commons.statistics.descriptive;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.IntToDoubleFunction;
+import java.util.function.IntToLongFunction;
 import org.apache.commons.numbers.arrays.Selection;
 
 /**
@@ -43,6 +44,42 @@ import org.apache.commons.numbers.arrays.Selection;
  * <p>The {@link NaNPolicy} can be used to change the behaviour on {@code NaN} values.
  *
  * <p>Instances of this class are immutable and thread-safe.
+ *
+ * <p><strong>Support for {@code long} arrays</strong>
+ *
+ * <p>The result on {@code long} values can be returned as a {@code double} or
+ * a {@code long} using a {@link StatisticResult}.
+ *
+ * <p>The {@code double} result is computed within 1 ULP of the exact result. In some
+ * cases this may be outside the range defined by the minimum and maximum of the input
+ * array following rounding to a 53-bit floating point representation. For example a
+ * quantile of an array containing only {@link Long#MAX_VALUE} as a {@code double} is
+ * 2<sup>63</sup>, which is the closest representation of 2<sup>63</sup> - 1.
+ *
+ * <p>The {@code long} result is returned using the nearest whole number.
+ * In the event of ties the result is rounded towards positive infinity.
+ * This value will always be within the range defined by the minimum and maximum
+ * of the input array. Due to interpolation it may be a value not observed in
+ * the input values.
+ *
+ * <p>Interpolation between two {@code long} values requires extended precision
+ * floating-point arithmetic. This can be avoided using a discontinuous {@link EstimationMethod}.
+ * In this case the {@code long} quantile will be a value observed in the input values.
+ *
+ * <p>If the array length {@code n} is zero the result as a {@code double} is
+ * {@code NaN} and the result as a {@code long} will raise an {@link ArithmeticException}.
+ *
+ * <p>Multiple quantile results required as only one of the primitive values can be converted
+ * to a primitive array using a stream, for example:
+ *
+ * <pre>{@code
+ * long[] values = ...
+ * double[] p = Quantile.probabilities(10);
+ * Quantile q = Quantile.withDefaults();
+ * long[] result = Arrays.stream(q.evaluate(values, p))
+ *                       .mapToLong(StatisticResult::getAsLong)
+ *                       .toArray();
+ * }</pre>
  *
  * @see #with(NaNPolicy)
  * @see <a href="https://en.wikipedia.org/wiki/Quantile">Quantile (Wikipedia)</a>
@@ -467,7 +504,7 @@ public final class Quantile {
         // Partition and compute
         if (pos > ip) {
             Selection.select(x, start, end, new int[] {i, i + 1});
-            return Interpolation.interpolate(x[i], x[i + 1], pos - ip);
+            return Interpolation.interpolate((double) x[i], (double) x[i + 1], pos - ip);
         }
         Selection.select(x, start, end, i);
         return x[i];
@@ -560,7 +597,7 @@ public final class Quantile {
             final int ip = (int) q[k];
             final int i = start + ip;
             if (q[k] > ip) {
-                q[k] = Interpolation.interpolate(x[i], x[i + 1], q[k] - ip);
+                q[k] = Interpolation.interpolate((double) x[i], (double) x[i + 1], q[k] - ip);
             } else {
                 q[k] = x[i];
             }
@@ -571,7 +608,209 @@ public final class Quantile {
     /**
      * Evaluate the {@code p}-th quantile of the values.
      *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * <p><strong>Performance</strong>
+     *
+     * <p>It is not recommended to use this method for repeat calls for different
+     * quantiles within the same values. The {@link #evaluate(long[], double...)} method
+     * should be used which provides better performance.
+     *
+     * @param values Values.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range
+     * {@code [0, 1]}
+     * @see #evaluate(long[], double...)
+     * @since 1.3
+     */
+    public StatisticResult evaluate(long[] values, double p) {
+        return compute(values, 0, values.length, p);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantile of the specified range of values.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * <p><strong>Performance</strong>
+     *
+     * <p>It is not recommended to use this method for repeat calls for different quantiles
+     * within the same values. The {@link #evaluateRange(long[], int, int, double...)} method should be used
+     * which provides better performance.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]}
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @see #evaluateRange(long[], int, int, double...)
+     * @since 1.3
+     */
+    public StatisticResult evaluateRange(long[] values, int from, int to, double p) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to, p);
+    }
+
+    /**
+     * Compute the {@code p}-th quantile of the specified range of values.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if the probability {@code p} is not in the range {@code [0, 1]}
+     * @since 1.3
+     */
+    private StatisticResult compute(long[] values, int from, int to, double p) {
+        checkProbability(p);
+        final int n = to - from;
+        // Special cases
+        if (n <= 1) {
+            return n == 0 ?
+                () -> Double.NaN :
+                Statistics.createStatisticResult(values[from]);
+        }
+
+        // Create the range
+        final long[] x;
+        final int start;
+        final int end;
+        if (copy) {
+            x = Statistics.copy(values, from, to);
+            start = 0;
+            end = n;
+        } else {
+            x = values;
+            start = from;
+            end = to;
+        }
+
+        final double pos = estimationType.index(p, n);
+        final int ip = (int) pos;
+        final int i = start + ip;
+
+        // Partition and compute
+        if (pos > ip) {
+            Selection.select(x, start, end, new int[] {i, i + 1});
+            return Interpolation.interpolate(x[i], x[i + 1], pos - ip);
+        }
+        Selection.select(x, start, end, i);
+        return Statistics.createStatisticResult(x[i]);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantiles of the values.
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
+     * or no probabilities are specified.
+     * @since 1.3
+     */
+    public StatisticResult[] evaluate(long[] values, double... p) {
+        return compute(values, 0, values.length, p);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantiles of the specified range of values..
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
+     * or no probabilities are specified.
+     * @throws IndexOutOfBoundsException if the sub-range is out of bounds
+     * @since 1.3
+     */
+    public StatisticResult[] evaluateRange(long[] values, int from, int to, double... p) {
+        Statistics.checkFromToIndex(from, to, values.length);
+        return compute(values, from, to, p);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantiles of the specified range of values..
+     *
+     * <p>Note: This method may partially sort the input values if not configured to
+     * {@link #withCopy(boolean) copy} the input data.
+     *
+     * @param values Values.
+     * @param from Inclusive start of the range.
+     * @param to Exclusive end of the range.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if any probability {@code p} is not in the range {@code [0, 1]};
+     * or no probabilities are specified.
+     */
+    private StatisticResult[] compute(long[] values, int from, int to, double... p) {
+        checkProbabilities(p);
+        final int n = to - from;
+        // Special cases
+        final StatisticResult[] result = new StatisticResult[p.length];
+        if (n <= 1) {
+            final StatisticResult r = n == 0 ?
+                () -> Double.NaN :
+                Statistics.createStatisticResult(values[from]);
+            Arrays.fill(result, r);
+            return result;
+        }
+
+        // Create the range
+        final long[] x;
+        final int start;
+        final int end;
+        if (copy) {
+            x = Statistics.copy(values, from, to);
+            start = 0;
+            end = n;
+        } else {
+            x = values;
+            start = from;
+            end = to;
+        }
+
+        // Collect interpolation positions
+        final double[] q = new double[p.length];
+        final int[] indices = computeIndices(n, p, q, start);
+
+        // Partition
+        Selection.select(x, start, end, indices);
+
+        // Compute
+        for (int k = 0; k < p.length; k++) {
+            // ip in [0, n); i in [start, end)
+            final int ip = (int) q[k];
+            final int i = start + ip;
+            if (q[k] > ip) {
+                result[k] = Interpolation.interpolate(x[i], x[i + 1], q[k] - ip);
+            } else {
+                result[k] = Statistics.createStatisticResult(x[i]);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantile of the sorted values provided as a {@code double}.
+     *
      * <p>This method can be used when the values of known size are already sorted.
+     * It can be used for primitive types not supported by other evaluation methods.
+     * Numeric types {@code byte}, {@code short} and {@code float} can be converted to
+     * type {@code double} without loss of precision.
      *
      * <pre>{@code
      * short[] x = ...
@@ -579,12 +818,18 @@ public final class Quantile {
      * double q = Quantile.withDefaults().evaluate(x.length, i -> x[i], 0.05);
      * }</pre>
      *
+     * <p>If the sorted array is a {@code long} datatype this method can lose information
+     * about the precision of the quantiles due to primitive type conversion. Use
+     * the method {@link #evaluateAsLong(int, IntToLongFunction, double)} to compute
+     * the {@code long} quantile result.
+     *
      * @param n Size of the values.
      * @param values Values function.
      * @param p Probability for the quantile to compute.
      * @return the quantile
      * @throws IllegalArgumentException if {@code size < 0}; or if the probability {@code p} is
      * not in the range {@code [0, 1]}.
+     * @see #evaluateAsLong(int, IntToLongFunction, double)
      */
     public double evaluate(int n, IntToDoubleFunction values, double p) {
         checkSize(n);
@@ -604,9 +849,12 @@ public final class Quantile {
     }
 
     /**
-     * Evaluate the {@code p}-th quantiles of the values.
+     * Evaluate the {@code p}-th quantiles of the sorted values provided as a {@code double}.
      *
      * <p>This method can be used when the values of known size are already sorted.
+     * It can be used for primitive types not supported by other evaluation methods.
+     * Numeric types {@code byte}, {@code short} and {@code float} can be converted to
+     * type {@code double} without loss of precision.
      *
      * <pre>{@code
      * short[] x = ...
@@ -614,12 +862,18 @@ public final class Quantile {
      * double[] q = Quantile.withDefaults().evaluate(x.length, i -> x[i], 0.25, 0.5, 0.75);
      * }</pre>
      *
+     * <p>If the sorted array is a {@code long} datatype this method can lose information
+     * about the precision of the quantiles due to primitive type conversion. Use
+     * the method {@link #evaluateAsLong(int, IntToLongFunction, double...)} to compute
+     * the {@code long} quantile result.
+     *
      * @param n Size of the values.
      * @param values Values function.
      * @param p Probabilities for the quantiles to compute.
      * @return the quantiles
      * @throws IllegalArgumentException if {@code size < 0}; if any probability {@code p} is
      * not in the range {@code [0, 1]}; or no probabilities are specified.
+     * @see #evaluateAsLong(int, IntToLongFunction, double...)
      */
     public double[] evaluate(int n, IntToDoubleFunction values, double... p) {
         checkSize(n);
@@ -642,6 +896,95 @@ public final class Quantile {
             }
         }
         return q;
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantile of the sorted values provided as a {@code long}.
+     *
+     * <p>This method can be used when the values of known size are already sorted.
+     *
+     * <pre>{@code
+     * long[] x = ...
+     * Arrays.sort(x);
+     * StatisticResult q = Quantile.withDefaults().evaluate(x.length, i -> x[i], 0.05);
+     * }</pre>
+     *
+     * <p>Note: It is not recommended to sort data for use only in the quantile computation.
+     * The {@link #evaluate(long[], double)} method will partially sort the data as required
+     * and in most cases will be more efficient.
+     *
+     * @param n Size of the values.
+     * @param values Values function.
+     * @param p Probability for the quantile to compute.
+     * @return the quantile
+     * @throws IllegalArgumentException if {@code size < 0}; or if the probability {@code p} is
+     * not in the range {@code [0, 1]}.
+     */
+    public StatisticResult evaluateAsLong(int n, IntToLongFunction values, double p) {
+        checkSize(n);
+        checkProbability(p);
+        // Special case
+        if (n <= 1) {
+            return n == 0 ?
+                () -> Double.NaN :
+                Statistics.createStatisticResult(values.applyAsLong(0));
+        }
+        final double pos = estimationType.index(p, n);
+        final int i = (int) pos;
+        final long v1 = values.applyAsLong(i);
+        if (pos > i) {
+            final long v2 = values.applyAsLong(i + 1);
+            return Interpolation.interpolate(v1, v2, pos - i);
+        }
+        return Statistics.createStatisticResult(v1);
+    }
+
+    /**
+     * Evaluate the {@code p}-th quantiles of the sorted values provided as a {@code long}.
+     *
+     * <p>This method can be used when the values of known size are already sorted.
+     *
+     * <pre>{@code
+     * long[] x = ...
+     * Arrays.sort(x);
+     * StatisticResult[] q = Quantile.withDefaults().evaluate(x.length, i -> x[i], 0.25, 0.5, 0.75);
+     * }</pre>
+     *
+     * <p>Note: It is not recommended to sort data for use only in the quantile computation.
+     * The {@link #evaluate(long[], double...)} method will partially sort the data as required
+     * and in most cases will be more efficient.
+     *
+     * @param n Size of the values.
+     * @param values Values function.
+     * @param p Probabilities for the quantiles to compute.
+     * @return the quantiles
+     * @throws IllegalArgumentException if {@code size < 0}; if any probability {@code p} is
+     * not in the range {@code [0, 1]}; or no probabilities are specified.
+     */
+    public StatisticResult[] evaluateAsLong(int n, IntToLongFunction values, double... p) {
+        checkSize(n);
+        checkProbabilities(p);
+        // Special case
+        final StatisticResult[] result = new StatisticResult[p.length];
+        if (n <= 1) {
+            final StatisticResult r = n == 0 ?
+                () -> Double.NaN :
+                Statistics.createStatisticResult(values.applyAsLong(0));
+            Arrays.fill(result, r);
+            return result;
+        }
+        for (int k = 0; k < p.length; k++) {
+            final double pos = estimationType.index(p[k], n);
+            final int i = (int) pos;
+            final long v1 = values.applyAsLong(i);
+            if (pos > i) {
+                final long v2 = values.applyAsLong(i + 1);
+                result[k] = Interpolation.interpolate(v1, v2, pos - i);
+            } else {
+                result[k] = Statistics.createStatisticResult(v1);
+            }
+        }
+        return result;
     }
 
     /**
