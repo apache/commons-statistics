@@ -320,7 +320,6 @@
           <inputExcludes>
             <exclude>.ekstazi/**</exclude>
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
-            <exclude>src/site/resources/txt/userguide/stress/**</exclude>
             <exclude>dist-archive/**</exclude>
             <exclude>**/site-content/**</exclude>
           </inputExcludes>
@@ -359,7 +358,6 @@
           <inputExcludes>
             <exclude>.ekstazi/**</exclude>
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
-            <exclude>src/site/resources/txt/userguide/stress/**</exclude>
             <exclude>dist-archive/**</exclude>
             <exclude>**/site-content/**</exclude>
           </inputExcludes>
