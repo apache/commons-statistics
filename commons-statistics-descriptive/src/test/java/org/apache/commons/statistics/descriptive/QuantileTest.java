@@ -1171,17 +1171,17 @@ class QuantileTest {
         final double p = 0.123;
         final double[] multiP = {p};
         final StatisticResult r1 = q.evaluate(new long[0], p);
-        Assertions.assertThrows(ArithmeticException.class, () -> r1.getAsLong(), "zero length");
+        Assertions.assertThrows(ArithmeticException.class, r1::getAsLong, "zero length");
         final StatisticResult r2 = q.evaluateRange(new long[10], 0, 0, p);
-        Assertions.assertThrows(ArithmeticException.class, () -> r2.getAsLong(), "zero range");
+        Assertions.assertThrows(ArithmeticException.class, r2::getAsLong, "zero range");
         final StatisticResult r3 = q.evaluateAsLong(0, i -> Long.MAX_VALUE, p);
-        Assertions.assertThrows(ArithmeticException.class, () -> r3.getAsLong(), "zero size sorted");
+        Assertions.assertThrows(ArithmeticException.class, r3::getAsLong, "zero size sorted");
         final StatisticResult r4 = q.evaluate(new long[0], multiP)[0];
-        Assertions.assertThrows(ArithmeticException.class, () -> r4.getAsLong(), "zero length, multi p");
+        Assertions.assertThrows(ArithmeticException.class, r4::getAsLong, "zero length, multi p");
         final StatisticResult r5 = q.evaluateRange(new long[10], 0, 0, multiP)[0];
-        Assertions.assertThrows(ArithmeticException.class, () -> r5.getAsLong(), "zero range, multi p");
+        Assertions.assertThrows(ArithmeticException.class, r5::getAsLong, "zero range, multi p");
         final StatisticResult r6 = q.evaluateAsLong(0, i -> Long.MAX_VALUE, multiP)[0];
-        Assertions.assertThrows(ArithmeticException.class, () -> r6.getAsLong(), "zero size sorted, multi p");
+        Assertions.assertThrows(ArithmeticException.class, r6::getAsLong, "zero size sorted, multi p");
     }
 
 
@@ -1192,17 +1192,17 @@ class QuantileTest {
         final double p = 0.123;
         final double[] multiP = {p};
         final StatisticResult r1 = q.evaluate(data, p);
-        Assertions.assertThrows(ArithmeticException.class, () -> r1.getAsInt(), "overflow");
+        Assertions.assertThrows(ArithmeticException.class, r1::getAsInt, "overflow");
         final StatisticResult r2 = q.evaluateRange(data, 0, 1, p);
-        Assertions.assertThrows(ArithmeticException.class, () -> r2.getAsInt(), "overflow range");
+        Assertions.assertThrows(ArithmeticException.class, r2::getAsInt, "overflow range");
         final StatisticResult r3 = q.evaluateAsLong(1, i -> Long.MAX_VALUE, p);
-        Assertions.assertThrows(ArithmeticException.class, () -> r3.getAsInt(), "overflow sorted");
+        Assertions.assertThrows(ArithmeticException.class, r3::getAsInt, "overflow sorted");
         final StatisticResult r4 = q.evaluate(data, multiP)[0];
-        Assertions.assertThrows(ArithmeticException.class, () -> r4.getAsInt(), "overflow, multi p");
+        Assertions.assertThrows(ArithmeticException.class, r4::getAsInt, "overflow, multi p");
         final StatisticResult r5 = q.evaluateRange(data, 0, 1, multiP)[0];
-        Assertions.assertThrows(ArithmeticException.class, () -> r5.getAsInt(), "overflow range, multi p");
+        Assertions.assertThrows(ArithmeticException.class, r5::getAsInt, "overflow range, multi p");
         final StatisticResult r6 = q.evaluateAsLong(1, i -> Long.MAX_VALUE, multiP)[0];
-        Assertions.assertThrows(ArithmeticException.class, () -> r6.getAsInt(), "overflow sorted, multi p");
+        Assertions.assertThrows(ArithmeticException.class, r6::getAsInt, "overflow sorted, multi p");
     }
 
     @Test

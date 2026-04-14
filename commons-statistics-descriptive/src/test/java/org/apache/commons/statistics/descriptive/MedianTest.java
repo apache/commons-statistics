@@ -522,17 +522,17 @@ class MedianTest {
     final void testLongMedianAsLongThrowsWithNoLength() {
         final Median m = Median.withDefaults();
         final StatisticResult r1 = m.evaluate(new long[0]);
-        Assertions.assertThrows(ArithmeticException.class, () -> r1.getAsLong(), "zero length");
+        Assertions.assertThrows(ArithmeticException.class, r1::getAsLong, "zero length");
         final StatisticResult r2 = m.evaluateRange(new long[10], 0, 0);
-        Assertions.assertThrows(ArithmeticException.class, () -> r2.getAsLong(), "zero range");
+        Assertions.assertThrows(ArithmeticException.class, r2::getAsLong, "zero range");
     }
 
     @Test
     final void testLongMedianAsIntThrowsWithOverflow() {
         final Median m = Median.withDefaults();
         final StatisticResult r1 = m.evaluate(new long[] {Long.MAX_VALUE});
-        Assertions.assertThrows(ArithmeticException.class, () -> r1.getAsInt(), "overflow");
+        Assertions.assertThrows(ArithmeticException.class, r1::getAsInt, "overflow");
         final StatisticResult r2 = m.evaluateRange(new long[] {Long.MAX_VALUE}, 0, 1);
-        Assertions.assertThrows(ArithmeticException.class, () -> r2.getAsInt(), "overflow range");
+        Assertions.assertThrows(ArithmeticException.class, r2::getAsInt, "overflow range");
     }
 }
