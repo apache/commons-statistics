@@ -316,19 +316,14 @@
         <artifactId>apache-rat-plugin</artifactId>
         <!-- Note: commons-parent binds the check goal to the validate phase -->
         <configuration>
-          <!--  Should agree with apache-rat-plugin config under <build> -->
-          <excludes combine.children="append">
-            <!-- apache-rat-plugin uses .gitignore but does not exclude
-                 development files recursively in sub-modules. -->
+          <!--  Should agree with apache-rat-plugin config under <reporting> -->
+          <inputExcludes>
             <exclude>.ekstazi/**</exclude>
-            <exclude>**/site-content/**</exclude>
-            <exclude>**/.classpath</exclude>
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.checkstyle</exclude>
-            <exclude>**/target/**</exclude>
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
-          </excludes>
+            <exclude>src/site/resources/txt/userguide/stress/**</exclude>
+            <exclude>dist-archive/**</exclude>
+            <exclude>**/site-content/**</exclude>
+          </inputExcludes>
         </configuration>
       </plugin>
       <plugin>
@@ -361,20 +356,13 @@
         <artifactId>apache-rat-plugin</artifactId>
         <configuration>
           <!--  Should agree with apache-rat-plugin config under <build> -->
-          <excludes combine.children="append">
-            <!-- version 0.8 of apache-rat-plugin does not exclude properly
-                 some default development tools files (see RAT-126) -->
+          <inputExcludes>
             <exclude>.ekstazi/**</exclude>
-            <exclude>**/site-content/**</exclude>
-            <exclude>**/.classpath</exclude>
-            <exclude>**/.project</exclude>
-            <exclude>**/.settings/**</exclude>
-            <exclude>**/.checkstyle</exclude>
-            <exclude>**/target/**</exclude>
             <exclude>src/site/resources/release-notes/RELEASE-NOTES-*.txt</exclude>
             <exclude>src/site/resources/txt/userguide/stress/**</exclude>
             <exclude>dist-archive/**</exclude>
-          </excludes>
+            <exclude>**/site-content/**</exclude>
+          </inputExcludes>
         </configuration>
       </plugin>
 
