@@ -124,7 +124,7 @@ public class StatisticCreationPerformance {
          * @param values Values.
          * @param from Inclusive start of the range.
          * @param to Exclusive end of the range.
-         * @return object.
+         * @return result
          */
         R apply(T values, int from, int to);
     }
