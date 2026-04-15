@@ -111,6 +111,25 @@ public class StatisticCreationPerformance {
     }
 
     /**
+     * Function for creating an object from a range of values.
+     *
+     * @param <T> the type of the input to the function
+     * @param <R> the type of the result of the function
+     */
+    @FunctionalInterface
+    interface RangeFunction<T, R> {
+        /**
+         * Returns an object created using the specified range of {@code values}.
+         *
+         * @param values Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return object.
+         */
+        R apply(T values, int from, int to);
+    }
+
+    /**
      * Source of a {@code Statistic}.
      */
     @State(Scope.Benchmark)
@@ -124,6 +143,9 @@ public class StatisticCreationPerformance {
 
         /** Statistic factory using input data. */
         private Function<double[], DoubleStatistic> factory;
+
+        /** Statistic factory using a range of input data. */
+        private RangeFunction<double[], DoubleStatistic> rangeFactory;
 
         /**
          * @return a statistic instance
@@ -141,6 +163,16 @@ public class StatisticCreationPerformance {
         }
 
         /**
+         * @param x Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return a statistic instance
+         */
+        public DoubleStatistic create(double[] x, int from, int to) {
+            return rangeFactory.apply(x, from, to);
+        }
+
+        /**
          * Create the factory functions.
          */
         @Setup(Level.Trial)
@@ -149,50 +181,62 @@ public class StatisticCreationPerformance {
             case GEOMETRIC_MEAN:
                 supplier = GeometricMean::create;
                 factory = GeometricMean::of;
+                rangeFactory = GeometricMean::ofRange;
                 break;
             case KURTOSIS:
                 supplier = Kurtosis::create;
                 factory = Kurtosis::of;
+                rangeFactory = Kurtosis::ofRange;
                 break;
             case MAX:
                 supplier = Max::create;
                 factory = Max::of;
+                rangeFactory = Max::ofRange;
                 break;
             case MEAN:
                 supplier = Mean::create;
                 factory = Mean::of;
+                rangeFactory = Mean::ofRange;
                 break;
             case MIN:
                 supplier = Min::create;
                 factory = Min::of;
+                rangeFactory = Min::ofRange;
                 break;
             case PRODUCT:
                 supplier = Product::create;
                 factory = Product::of;
+                rangeFactory = Product::ofRange;
                 break;
             case SKEWNESS:
                 supplier = Skewness::create;
                 factory = Skewness::of;
+                rangeFactory = Skewness::ofRange;
                 break;
             case STANDARD_DEVIATION:
                 supplier = StandardDeviation::create;
                 factory = StandardDeviation::of;
+                rangeFactory = StandardDeviation::ofRange;
                 break;
             case SUM:
                 supplier = Sum::create;
                 factory = Sum::of;
+                rangeFactory = Sum::ofRange;
                 break;
             case SUM_OF_LOGS:
                 supplier = SumOfLogs::create;
                 factory = SumOfLogs::of;
+                rangeFactory = SumOfLogs::ofRange;
                 break;
             case SUM_OF_SQUARES:
                 supplier = SumOfSquares::create;
                 factory = SumOfSquares::of;
+                rangeFactory = SumOfSquares::ofRange;
                 break;
             case VARIANCE:
                 supplier = Variance::create;
                 factory = Variance::of;
+                rangeFactory = Variance::ofRange;
                 break;
             default:
                 throw new IllegalStateException("Unsupported statistic: " + statistic);
@@ -214,6 +258,9 @@ public class StatisticCreationPerformance {
         /** Statistic factory using input data. */
         private Function<double[], DoubleSupplier> factory;
 
+        /** Statistic factory using a range of input data. */
+        private RangeFunction<double[], DoubleSupplier> rangeFactory;
+
         /**
          * @param x Values.
          * @return a statistic instance
@@ -223,14 +270,26 @@ public class StatisticCreationPerformance {
         }
 
         /**
+         * @param x Values.
+         * @param from Inclusive start of the range.
+         * @param to Exclusive end of the range.
+         * @return a statistic instance
+         */
+        public DoubleSupplier create(double[] x, int from, int to) {
+            return rangeFactory.apply(x, from, to);
+        }
+
+        /**
          * Create the factory functions.
          */
         @Setup(Level.Trial)
         public void setup() {
             if ("min".equals(statistic)) {
                 factory = CMin::of;
+                rangeFactory = CMin::ofRange;
             } else if ("product".equals(statistic)) {
                 factory = CProduct::of;
+                rangeFactory = CProduct::ofRange;
             } else {
                 throw new IllegalStateException("Unsupported custom statistic: " + statistic);
             }
@@ -257,6 +316,20 @@ public class StatisticCreationPerformance {
                 double s = Double.POSITIVE_INFINITY;
                 for (final double x : values) {
                     s = Math.min(s, x);
+                }
+                return new CMin(s);
+            }
+
+            /**
+             * @param values Values.
+             * @param from Inclusive start of the range.
+             * @param to Exclusive end of the range.
+             * @return instance.
+             */
+            static CMin ofRange(double[] values, int from, int to) {
+                double s = Double.POSITIVE_INFINITY;
+                for (int i = from; i < to; i++) {
+                    s = Math.min(s, values[i]);
                 }
                 return new CMin(s);
             }
@@ -288,6 +361,20 @@ public class StatisticCreationPerformance {
                 double s = 1;
                 for (final double x : values) {
                     s *= x;
+                }
+                return new CProduct(s);
+            }
+
+            /**
+             * @param values Values.
+             * @param from Inclusive start of the range.
+             * @param to Exclusive end of the range.
+             * @return instance.
+             */
+            static CProduct ofRange(double[] values, int from, int to) {
+                double s = 1;
+                for (int i = from; i < to; i++) {
+                    s *= values[i];
                 }
                 return new CProduct(s);
             }
@@ -373,7 +460,7 @@ public class StatisticCreationPerformance {
     }
 
     /**
-     * Create the statistic using an array.
+     * Create the statistic using a range of the array.
      *
      * @param dataSource Source of the data.
      * @param statisticSource Source of the statistic.
@@ -383,12 +470,11 @@ public class StatisticCreationPerformance {
     public double arrayRange(DataSource dataSource, StatisticSource statisticSource) {
         final int from = dataSource.from();
         final int to = dataSource.to();
-        final double[] data = Arrays.copyOfRange(dataSource.getData(), from, to);
-        return statisticSource.create(data).getAsDouble();
+        return statisticSource.create(dataSource.getData(), from, to).getAsDouble();
     }
 
     /**
-     * Create the statistic using an array.
+     * Create the statistic using a range of the array.
      *
      * @param dataSource Source of the data.
      * @param statisticSource Source of the statistic.
@@ -396,6 +482,35 @@ public class StatisticCreationPerformance {
      */
     @Benchmark
     public double customArrayRange(DataSource dataSource, CustomStatisticSource statisticSource) {
+        final int from = dataSource.from();
+        final int to = dataSource.to();
+        return statisticSource.create(dataSource.getData(), from, to).getAsDouble();
+    }
+
+    /**
+     * Create the statistic using a copy of a range of the array.
+     *
+     * @param dataSource Source of the data.
+     * @param statisticSource Source of the statistic.
+     * @return the statistic
+     */
+    @Benchmark
+    public double arrayCopyOfRange(DataSource dataSource, StatisticSource statisticSource) {
+        final int from = dataSource.from();
+        final int to = dataSource.to();
+        final double[] data = Arrays.copyOfRange(dataSource.getData(), from, to);
+        return statisticSource.create(data).getAsDouble();
+    }
+
+    /**
+     * Create the statistic using a copy of a range of the array.
+     *
+     * @param dataSource Source of the data.
+     * @param statisticSource Source of the statistic.
+     * @return the statistic
+     */
+    @Benchmark
+    public double customArrayCopyOfRange(DataSource dataSource, CustomStatisticSource statisticSource) {
         final int from = dataSource.from();
         final int to = dataSource.to();
         final double[] data = Arrays.copyOfRange(dataSource.getData(), from, to);
@@ -422,14 +537,14 @@ public class StatisticCreationPerformance {
     }
 
     /**
-     * Create the statistic using a for-each loop on a range of the data.
+     * Create the statistic using a for-each loop on a copy of a range of the data.
      *
      * @param dataSource Source of the data.
      * @param statisticSource Source of the statistic.
      * @return the statistic
      */
     @Benchmark
-    public double forEachLoopRange(DataSource dataSource, StatisticSource statisticSource) {
+    public double forEachLoopCopyOfRange(DataSource dataSource, StatisticSource statisticSource) {
         final int from = dataSource.from();
         final int to = dataSource.to();
         final double[] data = Arrays.copyOfRange(dataSource.getData(), from, to);
