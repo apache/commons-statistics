@@ -919,6 +919,7 @@ public final class Quantile {
      * @return the quantile
      * @throws IllegalArgumentException if {@code size < 0}; or if the probability {@code p} is
      * not in the range {@code [0, 1]}.
+     * @since 1.3
      */
     public StatisticResult evaluateAsLong(int n, IntToLongFunction values, double p) {
         checkSize(n);
@@ -960,6 +961,7 @@ public final class Quantile {
      * @return the quantiles
      * @throws IllegalArgumentException if {@code size < 0}; if any probability {@code p} is
      * not in the range {@code [0, 1]}; or no probabilities are specified.
+     * @since 1.3
      */
     public StatisticResult[] evaluateAsLong(int n, IntToLongFunction values, double... p) {
         checkSize(n);
