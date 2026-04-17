@@ -53,6 +53,8 @@
     <checkstyle.skip>true</checkstyle.skip>
     <changes.jira.skip>true</changes.jira.skip>
     <skipSurefireReport>true</skipSurefireReport>
+    <spdx.skip>true</spdx.skip>
+    <japicmp.skip>true</japicmp.skip>
   </properties>
 
   <!-- Depend on all other modules -->
