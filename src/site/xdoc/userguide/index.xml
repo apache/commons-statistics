@@ -365,6 +365,34 @@ double[] q = Quantile.withDefaults()
                      .evaluate(data, 0.25, 0.5, 0.75);   // probabilities
 // q ~ [25.0, 50.0, 75.0]
 </source>
+      <p>
+        Computation of quantiles requires partial sorting of array data.
+        Quantile support for pre-sorted numeric data of type <code>double</code> or
+        <code>long</code> uses the interfaces <code>IntToDoubleFunction</code> and
+        <code>IntToLongFunction</code> to specify the value at each position in the sorted data.
+        This allows computation on numeric types such as <code>short</code> or <code>float</code>
+        not supported by the array computation methods.
+      </p>
+<source class="prettyprint">
+int size = 10000;
+int exclusiveBound = 101;
+short[] data = new short[size];
+SplittableRandom rng = new SplittableRandom(123);
+for (int i = 0; i &lt; size; i++) {
+    data[i] = (short) rng.nextInt(exclusiveBound);
+}
+// Sorted data
+Arrays.sort(data);
+double[] q = Quantile.withDefaults()
+                     .evaluate(size, i -&gt; data[i], 0.25, 0.5, 0.75);
+// q ~ [25.0, 50.0, 75.0]
+</source>
+      <p>
+        Note it is not recommended to sort data <b>only</b> for use in the quantile evaluation.
+        However if the data must be sorted for other reasons, or is already sorted, then these
+        methods can be used on <code>double</code> or <code>long</code> array data to compute
+        the same result without the cost of partial array sorting.
+      </p>
       </subsection>
     </section>
 

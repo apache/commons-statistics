@@ -193,4 +193,22 @@ class UserGuideTest {
         Assertions.assertEquals(50.0, q[1], 0.5);
         Assertions.assertEquals(75.0, q[2], 0.5);
     }
+
+    @Test
+    void testQuantileSorted() {
+        int size = 10000;
+        int exclusiveBound = 101;
+        short[] data = new short[size];
+        SplittableRandom rng = new SplittableRandom(123);
+        for (int i = 0; i < size; i++) {
+            data[i] = (short) rng.nextInt(exclusiveBound);
+        }
+        // Sorted data
+        Arrays.sort(data);
+        double[] q = Quantile.withDefaults()
+                             .evaluate(size, i -> data[i], 0.25, 0.5, 0.75);
+        Assertions.assertEquals(25.0, q[0], 1.0);
+        Assertions.assertEquals(50.0, q[1], 1.0);
+        Assertions.assertEquals(75.0, q[2], 1.0);
+    }
 }
