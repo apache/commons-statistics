@@ -575,7 +575,7 @@ double q2 = chi2.survivalProbability(168);
           much further into the long tail as shown in the following table:
         </p>
         <table border="1" style="width: auto">
-          <tr><th colspan="3"><font size="+1">Chi-squared distribution, 42 degrees of freedom</font></th></tr>
+          <tr><th colspan="3">Chi-squared distribution, 42 degrees of freedom</th></tr>
           <tr><th>x</th><th>1 - p</th><th>q</th></tr>
           <tr><td>166</td><td>1.11e-16</td><td>1.16e-16</td></tr>
           <tr><td>167</td><td>1.11e-16</td><td>7.96e-17</td></tr>
