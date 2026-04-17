@@ -906,7 +906,8 @@ public final class Quantile {
      * <pre>{@code
      * long[] x = ...
      * Arrays.sort(x);
-     * StatisticResult q = Quantile.withDefaults().evaluate(x.length, i -> x[i], 0.05);
+     * StatisticResult q = Quantile.withDefaults()
+     *                             .evaluateAsLong(x.length, i -> x[i], 0.05);
      * }</pre>
      *
      * <p>Note: It is not recommended to sort data for use only in the quantile computation.
@@ -948,7 +949,8 @@ public final class Quantile {
      * <pre>{@code
      * long[] x = ...
      * Arrays.sort(x);
-     * StatisticResult[] q = Quantile.withDefaults().evaluate(x.length, i -> x[i], 0.25, 0.5, 0.75);
+     * StatisticResult[] q = Quantile.withDefaults()
+     *                               .evaluateAsLong(x.length, i -> x[i], 0.25, 0.5, 0.75);
      * }</pre>
      *
      * <p>Note: It is not recommended to sort data for use only in the quantile computation.
