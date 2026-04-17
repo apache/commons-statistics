@@ -388,10 +388,11 @@ double[] q = Quantile.withDefaults()
 // q ~ [25.0, 50.0, 75.0]
 </source>
       <p>
-        Note it is not recommended to sort data <b>only</b> for use in the quantile evaluation.
+        Note it is not recommended to sort supported array types
+        <b>only</b> for use in the quantile evaluation.
         However if the data must be sorted for other reasons, or is already sorted, then these
-        methods can be used on <code>double</code> or <code>long</code> array data to compute
-        the same result without the cost of partial array sorting.
+        methods can be used on supported array data to compute
+        the same result without the cost of partial re-sorting of sorted data.
       </p>
       </subsection>
     </section>
