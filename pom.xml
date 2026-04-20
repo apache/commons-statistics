@@ -56,21 +56,6 @@
     </site>
   </distributionManagement>
 
-  <!-- TODO: Remove this when Commons Numbers 1.3 is released -->
-  <repositories>
-    <repository>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>snapshots</id>
-      <name>Snapshots Repository</name>
-      <url>https://repository.apache.org/snapshots</url>
-    </repository>
-  </repositories>
-
   <developers>
     <developer>
       <name>Gilles Sadowski</name>
@@ -153,8 +138,7 @@
 
     <!-- Dependency versions -->
     <statistics.commons.rng.version>1.6</statistics.commons.rng.version>
-    <!-- TODO: Remove the snapshot repository when Commons Numbers 1.3 is released -->
-    <statistics.commons.numbers.version>1.3-SNAPSHOT</statistics.commons.numbers.version>
+    <statistics.commons.numbers.version>1.3</statistics.commons.numbers.version>
     <statistics.commons.math3.version>3.6.1</statistics.commons.math3.version>
     <statistics.commons.math4.version>4.0-beta1</statistics.commons.math4.version>
 
