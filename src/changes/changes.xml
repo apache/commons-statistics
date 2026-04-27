@@ -52,7 +52,7 @@ If the output is not quite correct, check for invisible trailing spaces!
     <title>Apache Commons Statistics Release Notes</title>
   </properties>
   <body>
-    <release version="1.3" date="TBD" description="Adds new features (requires Java 8).">
+    <release version="1.3" date="2026-05-01" description="Adds new features (requires Java 8).">
       <action dev="aherbert" type="add" issue="STATISTICS-94">
         "Median/Quantile": Support median and quantile for long datatype.
       </action>
@@ -65,7 +65,8 @@ If the output is not quite correct, check for invisible trailing spaces!
         (1) generate a biased distribution if the truncated bounds are fully-positive
         or fully-negative;
         (2) infinite loop if the truncated bounds are positive and fully below the
-        mean value or are negative and fully above the mean value.
+        parent distribution positive mean value, or are negative and fully above the
+        parent distribution negative mean value.
       </action>
     </release>
 
