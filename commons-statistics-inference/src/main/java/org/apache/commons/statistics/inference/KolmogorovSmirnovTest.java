@@ -1125,7 +1125,7 @@ public final class KolmogorovSmirnovTest {
      * <p>The returned probability is exact, implemented using the stabilized inner method
      * presented in Viehmann (2021).
      *
-     * <p>This is optimized for {@code m <= n}. If {@code m > n} and index-out-of-bounds
+     * <p>This is optimized for {@code m <= n}. If {@code m > n} an index-out-of-bounds
      * exception can occur.
      *
      * @param d Integral D-statistic value (in [2, lcm])
