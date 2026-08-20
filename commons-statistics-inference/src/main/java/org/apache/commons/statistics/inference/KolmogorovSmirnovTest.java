@@ -1071,7 +1071,7 @@ public final class KolmogorovSmirnovTest {
      * <p>Note: This requires the greatest common divisor of n and m. The integral D statistic
      * in the range [0, n*m] is separated by increments of the gcd. The method will only
      * compute p-values for valid values of D by calculating for D/gcd.
-     * Strict inquality is performed using the next valid value for D.
+     * Strict inequality is performed using the next valid value for D.
      *
      * @param dnm Integral D-statistic value (in [0, n*m]).
      * @param n First sample size.
