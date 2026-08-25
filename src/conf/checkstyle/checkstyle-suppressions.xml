@@ -47,4 +47,5 @@
   <suppress checks="IllegalCatch" files=".*[/\\]TestHelper.java" lines="295-410" />
   <suppress checks="IllegalCatch" files=".*[/\\]BaseStatisticTest.java" lines="280-400" />
   <suppress checks="IllegalCatch" files=".*[/\\]IntMathTest.java" lines="170-185" />
+  <suppress checks="SummaryJavadoc" files="[\\/]examples[\\/].*" />
 </suppressions>
