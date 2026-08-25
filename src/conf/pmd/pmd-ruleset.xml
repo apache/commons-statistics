@@ -118,6 +118,11 @@
         value="./ancestor-or-self::MethodDeclaration[@Name='getSupportLowerBound']"/>
     </properties>
   </rule>
+  <rule ref="category/java/codestyle.xml/VariableDeclarationUsageDistance">
+    <properties>
+      <property name="maxDistance" value="10"/>
+    </properties>
+  </rule>
 
   <rule ref="category/java/documentation.xml/CommentSize">
     <properties>
