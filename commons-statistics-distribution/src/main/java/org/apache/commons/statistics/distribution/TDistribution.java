@@ -53,7 +53,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
          * This is immutable and thread-safe and can be used across instances. */
         private static final NormalDistribution STANDARD_NORMAL = NormalDistribution.of(0, 1);
 
-        /**
+        /** Create an instance.
          * @param degreesOfFreedom Degrees of freedom.
          */
         NormalTDistribution(double degreesOfFreedom) {
@@ -124,7 +124,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
         /** Cached value for inverse probability function. */
         private final double variance;
 
-        /**
+        /** Create an instance.
          * @param degreesOfFreedom Degrees of freedom.
          * @param variance Precomputed variance
          */
@@ -138,7 +138,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
             this.variance = variance;
         }
 
-        /**
+        /** Compute the variance.
          * @param degreesOfFreedom Degrees of freedom.
          * @return the variance
          */
@@ -225,7 +225,7 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
         }
     }
 
-    /**
+    /** Create an instance.
      * @param degreesOfFreedom Degrees of freedom.
      */
     TDistribution(double degreesOfFreedom) {

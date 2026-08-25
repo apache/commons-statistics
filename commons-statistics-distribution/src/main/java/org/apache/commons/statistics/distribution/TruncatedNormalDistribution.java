@@ -89,7 +89,7 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      * a probability into the range of the parent normal distribution. */
     private final double sfBeta;
 
-    /**
+    /** Create an instance.
      * @param parent Parent distribution.
      * @param z Probability of the parent distribution for {@code [lower, upper]}.
      * @param lower Lower bound (inclusive) of the distribution, can be {@link Double#NEGATIVE_INFINITY}.

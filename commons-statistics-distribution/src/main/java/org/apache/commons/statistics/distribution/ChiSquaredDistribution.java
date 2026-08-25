@@ -36,7 +36,7 @@ public final class ChiSquaredDistribution extends AbstractContinuousDistribution
     /** Internal Gamma distribution. */
     private final GammaDistribution gamma;
 
-    /**
+    /** Create an instance.
      * @param degreesOfFreedom Degrees of freedom.
      */
     private ChiSquaredDistribution(double degreesOfFreedom) {

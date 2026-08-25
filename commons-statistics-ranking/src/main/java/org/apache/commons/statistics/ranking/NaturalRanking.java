@@ -192,7 +192,7 @@ public class NaturalRanking implements RankingAlgorithm {
             Objects.requireNonNull(randomIntFunction, NULL_RANDOM_SOURCE));
     }
 
-    /**
+    /** Create an instance.
      * @param nanStrategy NaNStrategy to use.
      * @param tiesStrategy TiesStrategy to use.
      * @param randomIntFunction Source of random index data.
@@ -471,7 +471,7 @@ public class NaturalRanking implements RankingAlgorithm {
         /** The list data. Initialised with space to store a tie of 2 values. */
         private int[] data = new int[2];
 
-        /**
+        /** Create an instance.
          * @param max Maximum size of array to allocate. Can use the length of the parent array
          * for which this is used to track indices.
          */

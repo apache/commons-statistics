@@ -52,7 +52,7 @@ public final class GumbelDistribution extends AbstractContinuousDistribution {
     /** Scale parameter. */
     private final double beta;
 
-    /**
+    /** Create an instance.
      * @param mu Location parameter.
      * @param beta Scale parameter (must be positive).
      */

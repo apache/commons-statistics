@@ -59,7 +59,7 @@ public final class HypergeometricDistribution extends AbstractDiscreteDistributi
      * Used for the cumulative probability functions. */
     private double[] midpoint;
 
-    /**
+    /** Create an instance.
      * @param populationSize Population size.
      * @param numberOfSuccesses Number of successes in the population.
      * @param sampleSize Sample size.

@@ -48,7 +48,7 @@ public final class LogUniformDistribution extends AbstractContinuousDistribution
     /** log(log(b) - log(a)). */
     private final double logLogBmLogA;
 
-    /**
+    /** Create an instance.
      * @param lower Lower bound of this distribution (inclusive).
      * @param upper Upper bound of this distribution (inclusive).
      */

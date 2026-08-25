@@ -42,7 +42,7 @@ public final class PoissonDistribution extends AbstractDiscreteDistribution {
     /** Mean of the distribution. */
     private final double mean;
 
-    /**
+    /** Create an instance.
      * @param mean Poisson mean.
      * probabilities.
      */

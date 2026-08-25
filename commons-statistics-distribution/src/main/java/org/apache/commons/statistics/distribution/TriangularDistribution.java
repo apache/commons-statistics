@@ -50,7 +50,7 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
     /** Survival probability at the mode. */
     private final double sfMode;
 
-    /**
+    /** Create an instance.
      * @param a Lower limit of this distribution (inclusive).
      * @param c Mode of this distribution.
      * @param b Upper limit of this distribution (inclusive).

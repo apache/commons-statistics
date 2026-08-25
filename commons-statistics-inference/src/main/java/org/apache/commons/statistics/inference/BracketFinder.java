@@ -221,14 +221,14 @@ class BracketFinder {
         return lo < mid && mid < hi;
     }
 
-    /**
+    /** Get the evaluations.
      * @return the number of evaluations.
      */
     int getEvaluations() {
         return evaluations;
     }
 
-    /**
+    /** Get the lower bound.
      * @return the lower bound of the bracket.
      * @see #getFLo()
      */
@@ -236,7 +236,7 @@ class BracketFinder {
         return lo;
     }
 
-    /**
+    /** Get the function value at the lower bound.
      * Get function value at {@link #getLo()}.
      * @return function value at {@link #getLo()}
      */
@@ -244,7 +244,7 @@ class BracketFinder {
         return fLo;
     }
 
-    /**
+    /** Get the higher bound.
      * @return the higher bound of the bracket.
      * @see #getFHi()
      */
@@ -252,7 +252,7 @@ class BracketFinder {
         return hi;
     }
 
-    /**
+    /** Get the function value at the higher bound.
      * Get function value at {@link #getHi()}.
      * @return function value at {@link #getHi()}
      */
@@ -260,7 +260,7 @@ class BracketFinder {
         return fHi;
     }
 
-    /**
+    /** Get a mid-point.
      * @return a point in the middle of the bracket.
      * @see #getFMid()
      */
@@ -268,7 +268,7 @@ class BracketFinder {
         return mid;
     }
 
-    /**
+    /** Get the function value at the mid-point.
      * Get function value at {@link #getMid()}.
      * @return function value at {@link #getMid()}
      */

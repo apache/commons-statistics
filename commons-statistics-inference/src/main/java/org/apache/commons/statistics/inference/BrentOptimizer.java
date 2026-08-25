@@ -68,7 +68,7 @@ final class BrentOptimizer {
         /** Value of the objective function at the point. */
         private final double value;
 
-        /**
+        /** Create an instance.
          * @param point Point.
          * @param value Value of an objective function at the point.
          */

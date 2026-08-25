@@ -51,7 +51,7 @@ public final class GTest {
     /** Degrees of freedom adjustment. */
     private final int degreesOfFreedomAdjustment;
 
-    /**
+    /** Create an instance.
      * @param degreesOfFreedomAdjustment Degrees of freedom adjustment.
      */
     private GTest(int degreesOfFreedomAdjustment) {

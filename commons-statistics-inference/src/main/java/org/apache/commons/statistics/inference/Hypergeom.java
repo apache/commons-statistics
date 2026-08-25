@@ -51,7 +51,7 @@ class Hypergeom {
     /** Upper mode. */
     private final int m2;
 
-    /**
+    /** Create an instance.
      * @param populationSize Population size.
      * @param numberOfSuccesses Number of successes in the population.
      * @param sampleSize Sample size.

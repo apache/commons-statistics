@@ -54,7 +54,7 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
     /** Sigma multiplied by sqrt(2 * pi). */
     private final double sigmaSqrt2Pi;
 
-    /**
+    /** Create an instance.
      * @param mu Mean of the natural logarithm of the distribution values.
      * @param sigma Standard deviation of the natural logarithm of the distribution values.
      */

@@ -49,7 +49,7 @@ public final class BinomialDistribution extends AbstractDiscreteDistribution {
     /** Cached value for pmf(x=n). */
     private final double pmfn;
 
-    /**
+    /** Create an instance.
      * @param trials Number of trials.
      * @param p Probability of success.
      */

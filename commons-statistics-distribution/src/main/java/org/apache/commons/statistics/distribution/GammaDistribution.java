@@ -51,7 +51,7 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
     /** Cached value for inverse probability function. */
     private final double variance;
 
-    /**
+    /** Create an instance.
      * @param shape Shape parameter.
      * @param scale Scale parameter.
      */

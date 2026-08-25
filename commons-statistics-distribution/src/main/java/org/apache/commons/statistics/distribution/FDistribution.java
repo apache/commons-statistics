@@ -58,7 +58,7 @@ public final class FDistribution extends AbstractContinuousDistribution {
     /** Cached value for inverse probability function. */
     private final double variance;
 
-    /**
+    /** Create an instance.
      * @param numeratorDegreesOfFreedom Numerator degrees of freedom.
      * @param denominatorDegreesOfFreedom Denominator degrees of freedom.
      */

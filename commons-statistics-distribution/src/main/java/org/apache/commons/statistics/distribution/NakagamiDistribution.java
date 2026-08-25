@@ -56,7 +56,7 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
     /** Cached value for inverse probability function. */
     private final double variance;
 
-    /**
+    /** Create an instance.
      * @param mu Shape parameter (must be positive).
      * @param omega Scale parameter (must be positive). Controls the spread of the distribution.
      */

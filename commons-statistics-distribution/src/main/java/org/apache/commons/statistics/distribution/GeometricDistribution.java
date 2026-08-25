@@ -52,7 +52,7 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
     /** Implementation of PMF(x). Assumes that {@code x > 0}. */
     private final IntToDoubleFunction pmf;
 
-    /**
+    /** Create an instance.
      * @param p Probability of success.
      */
     private GeometricDistribution(double p) {

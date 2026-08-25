@@ -70,7 +70,7 @@ public final class PascalDistribution extends AbstractDiscreteDistribution {
      * and {@code n} is the number of successes, stored for faster computation. */
     private final double probabilityOfSuccessPowNumOfSuccesses;
 
-    /**
+    /** Create an instance.
      * @param r Number of successes.
      * @param p Probability of success.
      */

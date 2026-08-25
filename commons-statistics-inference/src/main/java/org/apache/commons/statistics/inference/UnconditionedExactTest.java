@@ -222,7 +222,7 @@ public final class UnconditionedExactTest {
             this.pi = 0.5;
         }
 
-        /**
+        /** Create an instance.
          * @param statistic Test statistic.
          * @param pi Nuisance parameter.
          * @param p Result p-value.
@@ -532,7 +532,7 @@ public final class UnconditionedExactTest {
         double value(Hypergeom dist, int x);
     }
 
-    /**
+    /** Create an instance.
      * @param alternative Alternative hypothesis.
      * @param method Method to identify more extreme tables.
      * @param points Number of initial points.

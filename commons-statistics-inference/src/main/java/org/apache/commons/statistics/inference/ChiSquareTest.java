@@ -42,7 +42,7 @@ public final class ChiSquareTest {
     /** Degrees of freedom adjustment. */
     private final int degreesOfFreedomAdjustment;
 
-    /**
+    /** Create an instance.
      * @param degreesOfFreedomAdjustment Degrees of freedom adjustment.
      */
     private ChiSquareTest(int degreesOfFreedomAdjustment) {

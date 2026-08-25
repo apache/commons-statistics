@@ -47,7 +47,7 @@ public final class UniformContinuousDistribution extends AbstractContinuousDistr
     /** Cache of the log density. */
     private final double logPdf;
 
-    /**
+    /** Create an instance.
      * @param lower Lower bound of this distribution (inclusive).
      * @param upper Upper bound of this distribution (inclusive).
      */

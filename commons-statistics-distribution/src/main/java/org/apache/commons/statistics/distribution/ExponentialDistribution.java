@@ -46,7 +46,7 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
     /** The logarithm of the mean, stored to reduce computing time. */
     private final double logMean;
 
-    /**
+    /** Create an instance.
      * @param mean Mean of this distribution.
      */
     private ExponentialDistribution(double mean) {

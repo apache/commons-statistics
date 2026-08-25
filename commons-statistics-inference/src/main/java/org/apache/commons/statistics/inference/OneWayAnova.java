@@ -64,7 +64,7 @@ public final class OneWayAnova {
         /** nO value used to partition the variance. */
         private final double nO;
 
-        /**
+        /** Create an instance.
          * @param dfbg Degrees of freedom in numerator (between groups).
          * @param dfwg Degrees of freedom in denominator (within groups).
          * @param msbg Mean square between groups.

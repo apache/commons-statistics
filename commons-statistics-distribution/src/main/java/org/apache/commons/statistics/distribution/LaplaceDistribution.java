@@ -38,7 +38,7 @@ public final class LaplaceDistribution extends AbstractContinuousDistribution {
     /** log(2 * beta). */
     private final double log2beta;
 
-    /**
+    /** Create an instance.
      * @param mu Location parameter.
      * @param beta Scale parameter (must be positive).
      */

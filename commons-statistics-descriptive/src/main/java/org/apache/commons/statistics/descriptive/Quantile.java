@@ -107,7 +107,7 @@ public final class Quantile {
     /** Estimation type used to determine the value from the quantile. */
     private final EstimationMethod estimationType;
 
-    /**
+    /** Create an instance.
      * @param copy Flag to indicate if the data should be copied.
      * @param nanPolicy NaN policy.
      * @param estimationType Estimation type used to determine the value from the quantile.

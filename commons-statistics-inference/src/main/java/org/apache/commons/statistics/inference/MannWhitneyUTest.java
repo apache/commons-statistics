@@ -114,7 +114,7 @@ public final class MannWhitneyUTest {
         }
     }
 
-    /**
+    /** Create an instance.
      * @param alternative Alternative hypothesis.
      * @param method P-value method.
      * @param continuityCorrection true to perform continuity correction.

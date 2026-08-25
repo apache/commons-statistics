@@ -81,7 +81,7 @@ public final class TTest {
         }
     }
 
-    /**
+    /** Create an instance.
      * @param alternative Alternative hypothesis.
      * @param equalVariances Assume the two samples have the same population variance.
      * @param mu true value of the mean (or difference in means for a two sample test).

@@ -100,7 +100,7 @@ final class SquareMatrixSupport {
         /** Matrix scale. */
         private final int exp;
 
-        /**
+        /** Create an instance.
          * @param dimension Matrix dimension.
          * @param data Matrix data.
          * @param scale Matrix scale.

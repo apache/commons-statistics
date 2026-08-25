@@ -49,7 +49,7 @@ public final class UniformDiscreteDistribution extends AbstractDiscreteDistribut
     /** Value of survival probability for x=0. Used in the inverse survival function. */
     private final double sf0;
 
-    /**
+    /** Create an instance.
      * @param lower Lower bound (inclusive) of this distribution.
      * @param upper Upper bound (inclusive) of this distribution.
      */

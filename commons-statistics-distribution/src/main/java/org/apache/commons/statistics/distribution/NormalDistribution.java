@@ -62,7 +62,7 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
      */
     private final double sdSqrt2pi;
 
-    /**
+    /** Create an instance.
      * @param mean Mean for this distribution.
      * @param sd Standard deviation for this distribution.
      */

@@ -35,7 +35,7 @@ public final class BinomialTest {
     /** Alternative hypothesis. */
     private final AlternativeHypothesis alternative;
 
-    /**
+    /** Create an instance.
      * @param alternative Alternative hypothesis.
      */
     private BinomialTest(AlternativeHypothesis alternative) {

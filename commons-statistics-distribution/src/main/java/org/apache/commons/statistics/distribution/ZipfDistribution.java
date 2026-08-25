@@ -46,7 +46,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     /** Cached value of the log of the nth generalized harmonic. */
     private final double logNthHarmonic;
 
-    /**
+    /** Create an instance.
      * @param numberOfElements Number of elements.
      * @param exponent Exponent.
      */

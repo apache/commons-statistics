@@ -44,7 +44,7 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
     /** Logarithm of "scale". */
     private final double logScale;
 
-    /**
+    /** Create an instance.
      * @param mu Location parameter.
      * @param scale Scale parameter (must be positive).
      */

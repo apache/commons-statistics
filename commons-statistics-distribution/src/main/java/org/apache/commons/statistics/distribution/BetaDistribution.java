@@ -53,7 +53,7 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
     /** Cached value for inverse probability function. */
     private final double variance;
 
-    /**
+    /** Create an instance.
      * @param alpha First shape parameter (must be positive).
      * @param beta Second shape parameter (must be positive).
      */

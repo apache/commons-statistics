@@ -47,7 +47,7 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
     /** Half of c (for calculations). */
     private final double halfC;
 
-    /**
+    /** Create an instance.
      * @param mu Location parameter.
      * @param c Scale parameter.
      */

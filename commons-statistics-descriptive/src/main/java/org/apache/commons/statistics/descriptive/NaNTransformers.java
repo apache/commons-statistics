@@ -54,7 +54,7 @@ final class NaNTransformers {
         /** Set to {@code true} to use a copy of the data. */
         private final boolean copy;
 
-        /**
+        /** Create an instance.
          * @param copy Set to {@code true} to use a copy of the data.
          */
         IncludeNaNTransformer(boolean copy) {
@@ -81,7 +81,7 @@ final class NaNTransformers {
         /** Set to {@code true} to use a copy of the data. */
         private final boolean copy;
 
-        /**
+        /** Create an instance.
          * @param copy Set to {@code true} to use a copy of the data.
          */
         ExcludeNaNTransformer(boolean copy) {
@@ -125,7 +125,7 @@ final class NaNTransformers {
         /** Set to {@code true} to use a copy of the data. */
         private final boolean copy;
 
-        /**
+        /** Create an instance.
          * @param copy Set to {@code true} to use a copy of the data.
          */
         ErrorNaNTransformer(boolean copy) {

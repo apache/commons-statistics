@@ -55,7 +55,7 @@ public final class WeibullDistribution extends AbstractContinuousDistribution {
     /** log(shape / scale). */
     private final double logShapeOverScale;
 
-    /**
+    /** Create an instance.
      * @param shape Shape parameter.
      * @param scale Scale parameter.
      */

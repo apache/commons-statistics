@@ -52,7 +52,7 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
     /** Implementation of log PDF(x). Assumes that {@code x >= scale}. */
     private final DoubleUnaryOperator logpdf;
 
-    /**
+    /** Create an instance.
      * @param scale Scale parameter (minimum possible value of X).
      * @param shape Shape parameter (Pareto index).
      */

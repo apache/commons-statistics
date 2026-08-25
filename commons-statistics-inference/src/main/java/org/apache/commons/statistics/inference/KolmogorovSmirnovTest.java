@@ -274,7 +274,7 @@ public final class KolmogorovSmirnovTest {
         }
     }
 
-    /**
+    /** Create an instance.
      * @param alternative Alternative hypothesis.
      * @param method P-value method.
      * @param strict true to use a strict inequality.

@@ -79,7 +79,7 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
         /** Cached value for inverse probability function. */
         private final double variance;
 
-        /**
+        /** Create an instance.
          * @param mu Location parameter.
          * @param sigma Scale parameter.
          */
@@ -172,7 +172,7 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
         /** The value of {@code log(sigma) + 0.5 * log(2*PI)} stored for faster computation. */
         private final double logSigmaPlusHalfLog2Pi;
 
-        /**
+        /** Create an instance.
          * @param sigma Scale parameter.
          */
         HalfNormalDistribution(double sigma) {
@@ -266,7 +266,7 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
         }
     }
 
-    /**
+    /** Create an instance.
      * @param sigma Scale parameter.
      */
     FoldedNormalDistribution(double sigma) {

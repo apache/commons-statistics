@@ -76,7 +76,7 @@ public final class Median {
     /** Transformer for NaN data. */
     private final NaNTransformer nanTransformer;
 
-    /**
+    /** Create an instance.
      * @param copy Flag to indicate if the data should be copied.
      * @param nanPolicy NaN policy.
      */

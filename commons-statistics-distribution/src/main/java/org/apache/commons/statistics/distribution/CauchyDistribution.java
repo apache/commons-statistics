@@ -43,7 +43,7 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
     /** Density factor (scale^2). */
     private final double scale2;
 
-    /**
+    /** Create an instance.
      * @param location Location parameter.
      * @param scale Scale parameter.
      */

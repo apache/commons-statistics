@@ -51,7 +51,7 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
     /** Upper limit of this distribution (inclusive). */
     protected final double d;
 
-    /**
+    /** Create an instance.
      * Specialisation of the trapezoidal distribution used when the distribution simplifies
      * to an alternative distribution.
      */
@@ -59,7 +59,7 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
         /** Distribution delegate. */
         private final ContinuousDistribution delegate;
 
-        /**
+        /** Create an instance.
          * @param a Lower limit of this distribution (inclusive).
          * @param b Start of the trapezoid constant density.
          * @param c End of the trapezoid constant density.
@@ -129,7 +129,7 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
      * <p>This delegates all methods to the triangular distribution.
      */
     private static class TriangularTrapezoidalDistribution extends DelegatedTrapezoidalDistribution {
-        /**
+        /** Create an instance.
          * @param a Lower limit of this distribution (inclusive).
          * @param b Start/end of the trapezoid constant density (mode).
          * @param d Upper limit of this distribution (inclusive).
@@ -145,7 +145,7 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
      * <p>This delegates all methods to the uniform distribution.
      */
     private static class UniformTrapezoidalDistribution extends DelegatedTrapezoidalDistribution {
-        /**
+        /** Create an instance.
          * @param a Lower limit of this distribution (inclusive).
          * @param d Upper limit of this distribution (inclusive).
          */
@@ -173,7 +173,7 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
         /** Survival probability at c. */
         private final double sfC;
 
-        /**
+        /** Create an instance.
          * @param a Lower limit of this distribution (inclusive).
          * @param b Start of the trapezoid constant density.
          * @param c End of the trapezoid constant density.
@@ -347,7 +347,7 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
         }
     }
 
-    /**
+    /** Create an instance.
      * @param a Lower limit of this distribution (inclusive).
      * @param b Start of the trapezoid constant density.
      * @param c End of the trapezoid constant density.
