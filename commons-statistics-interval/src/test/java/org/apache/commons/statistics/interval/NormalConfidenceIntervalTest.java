@@ -49,6 +49,21 @@ class NormalConfidenceIntervalTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> method.fromErrorRate(mean, variance, n, -0.01));
         Assertions.assertThrows(IllegalArgumentException.class, () -> method.fromErrorRate(mean, variance, n, 1.01));
         Assertions.assertThrows(IllegalArgumentException.class, () -> method.fromErrorRate(mean, variance, n, Double.NaN));
+        // mean must be finite
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> method.fromErrorRate(Double.NaN, variance, n, alpha));
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> method.fromErrorRate(Double.POSITIVE_INFINITY, variance, n, alpha));
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> method.fromErrorRate(Double.NEGATIVE_INFINITY, variance, n, alpha));
+        // variance must be positive and finite
+        Assertions.assertDoesNotThrow(() -> method.fromErrorRate(mean, 0.0, n, alpha));
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> method.fromErrorRate(mean, Double.NaN, n, alpha));
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> method.fromErrorRate(mean, Double.POSITIVE_INFINITY, n, alpha));
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> method.fromErrorRate(mean, -1.0, n, alpha));
     }
 
     @ParameterizedTest
@@ -86,6 +101,9 @@ class NormalConfidenceIntervalTest {
             0.10712827588348012, 1e-14);
         add(builder, method, 2.9535381946732131, 5.2628380291790835, 50, 0.1, 3.887312567406342, 7.6002576083181186,
             1e-14);
+
+        // Edge cases of zero variance: the interval should be [0, 0]
+        add(builder, method, 1.23, 0.0, 100, 0.05, 0.0, 0.0, 0.0);
 
         // Approximate formula for asymptotic distributions at large n uses z critical value
         // from a normal distribution, here z_{0.025} = 1.96

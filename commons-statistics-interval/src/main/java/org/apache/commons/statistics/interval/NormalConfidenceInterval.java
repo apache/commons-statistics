@@ -72,12 +72,20 @@ public enum NormalConfidenceInterval {
      * @param alpha Desired error rate that the true value falls
      * <em>outside</em> the returned interval.
      * @return Confidence interval containing the target with error rate {@code alpha}
-     * @throws IllegalArgumentException if {@code n <= 1}, or if {@code alpha} is not in
+     * @throws IllegalArgumentException if {@code n <= 1}; if {@code mean} is not finite;
+     * if {@code variance} is not positive and finite; or if {@code alpha} is not in
      * the open interval {@code (0, 1)}.
      */
     public Interval fromErrorRate(double mean, double variance, long n, double alpha) {
         if (n <= 1) {
             throw new IllegalArgumentException("Sample size is not above one: " + n);
+        }
+        if (!Double.isFinite(mean)) {
+            throw new IllegalArgumentException("Mean is not finite: " + mean);
+        }
+        if (!(variance >= 0 && variance < Double.POSITIVE_INFINITY)) {
+            // negative, infinite or nan
+            throw new IllegalArgumentException("Variance is not positive and finite: " + variance);
         }
         ArgumentUtils.checkErrorRate(alpha);
         return create(mean, variance, n, alpha);

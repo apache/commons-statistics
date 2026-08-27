@@ -53,6 +53,9 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
+      <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-95">
+        "NormalConfidenceInterval": Validate mean is finite and variance is positive finite.
+      </action>
     </release>
 
     <release version="1.3" date="2026-05-01" description="Adds new features (requires Java 8).">
