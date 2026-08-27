@@ -96,14 +96,16 @@ public final class ParetoDistribution extends AbstractContinuousDistribution {
      * @param shape Shape parameter (Pareto index).
      * @return the distribution
      * @throws IllegalArgumentException if {@code scale <= 0}, {@code scale} is
-     * infinite, or {@code shape <= 0}.
+     * infinite, or {@code shape <= 0}; or a parameter is {@code NaN}.
      */
     public static ParetoDistribution of(double scale,
                                         double shape) {
-        if (scale <= 0 || scale == Double.POSITIVE_INFINITY) {
+        if (!(scale > 0 && scale < Double.POSITIVE_INFINITY)) {
+            // zero, negative, infinite or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE_FINITE, scale);
         }
-        if (shape <= 0) {
+        if (!(shape > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
         }
         return new ParetoDistribution(scale, shape);

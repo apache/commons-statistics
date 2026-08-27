@@ -42,6 +42,8 @@ class DistributionException extends IllegalArgumentException {
     static final String NOT_STRICTLY_POSITIVE = "Number %s is not greater than 0";
     /** Error message for "not strictly positive finite" condition when {@code x <= 0 || x == inf}. */
     static final String NOT_STRICTLY_POSITIVE_FINITE = "Number %s is not greater than 0 and finite";
+    /** Error message for a NaN parameter, formatted with the parameter name. */
+    static final String NAN = "%s is NaN";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20180119L;

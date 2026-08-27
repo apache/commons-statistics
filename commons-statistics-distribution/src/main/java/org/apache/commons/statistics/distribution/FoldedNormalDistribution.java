@@ -285,11 +285,15 @@ public abstract class FoldedNormalDistribution extends AbstractContinuousDistrib
      * @param mu Location parameter.
      * @param sigma Scale parameter.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code sigma <= 0}.
+     * @throws IllegalArgumentException if {@code sigma <= 0} or is {@code NaN};
+     * or {@code mu} is {@code NaN}.
      */
     public static FoldedNormalDistribution of(double mu,
                                               double sigma) {
         if (sigma > 0) {
+            if (Double.isNaN(mu)) {
+                throw new DistributionException(DistributionException.NAN, "Mu");
+            }
             if (mu == 0) {
                 return new HalfNormalDistribution(sigma);
             }

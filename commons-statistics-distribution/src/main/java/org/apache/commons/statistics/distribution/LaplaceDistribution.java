@@ -55,12 +55,17 @@ public final class LaplaceDistribution extends AbstractContinuousDistribution {
      * @param mu Location parameter.
      * @param beta Scale parameter (must be positive).
      * @return the distribution
-     * @throws IllegalArgumentException if {@code beta <= 0}
+     * @throws IllegalArgumentException if {@code beta <= 0} or is {@code NaN};
+     * or {@code mu} is NaN
      */
     public static LaplaceDistribution of(double mu,
                                          double beta) {
-        if (beta <= 0) {
+        if (!(beta > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, beta);
+        }
+        if (Double.isNaN(mu)) {
+            throw new DistributionException(DistributionException.NAN, "Location");
         }
         return new LaplaceDistribution(mu, beta);
     }

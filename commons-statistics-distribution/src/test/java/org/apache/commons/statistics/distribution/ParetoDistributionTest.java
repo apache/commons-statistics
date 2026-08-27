@@ -51,6 +51,8 @@ class ParetoDistributionTest extends BaseContinuousDistributionTest {
             {1.0, 0.0},
             {1.0, -0.1},
             {Double.POSITIVE_INFINITY, 1.0},
+            {Double.NaN, 1.0},
+            {1.0, Double.NaN},
         };
     }
 

@@ -61,13 +61,18 @@ public final class LogisticDistribution extends AbstractContinuousDistribution {
      * @param mu Location parameter.
      * @param scale Scale parameter (must be positive).
      * @return the distribution
-     * @throws IllegalArgumentException if {@code scale <= 0}.
+     * @throws IllegalArgumentException if {@code scale <= 0} or is {@code NaN};
+     * or {@code mu} is NaN.
      */
     public static LogisticDistribution of(double mu,
                                           double scale) {
-        if (scale <= 0) {
+        if (!(scale > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             scale);
+        }
+        if (Double.isNaN(mu)) {
+            throw new DistributionException(DistributionException.NAN, "Location");
         }
         return new LogisticDistribution(mu, scale);
     }

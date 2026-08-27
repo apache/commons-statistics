@@ -39,7 +39,9 @@ class FoldedNormalDistributionTest extends BaseContinuousDistributionTest {
     Object[][] makeInvalidParameters() {
         return new Object[][] {
             {0.0, 0.0},
-            {0.0, -0.1}
+            {0.0, -0.1},
+            {Double.NaN, 1.0},
+            {0.0, Double.NaN}
         };
     }
 

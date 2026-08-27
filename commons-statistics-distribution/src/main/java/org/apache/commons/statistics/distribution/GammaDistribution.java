@@ -70,14 +70,17 @@ public final class GammaDistribution extends AbstractContinuousDistribution {
      * @param shape Shape parameter.
      * @param scale Scale parameter.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code shape <= 0} or {@code scale <= 0}.
+     * @throws IllegalArgumentException if {@code shape <= 0} or {@code scale <= 0};
+     * or a parameter is {@code NaN}.
      */
     public static GammaDistribution of(double shape,
                                        double scale) {
-        if (shape <= 0) {
+        if (!(shape > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, shape);
         }
-        if (scale <= 0) {
+        if (!(scale > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
         }
         return new GammaDistribution(shape, scale);

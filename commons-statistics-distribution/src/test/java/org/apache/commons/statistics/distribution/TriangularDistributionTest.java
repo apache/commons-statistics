@@ -50,6 +50,9 @@ class TriangularDistributionTest extends BaseContinuousDistributionTest {
             {1.0, 4.0, 3.0},
             {1.0, 2.0, -1.0},
             {1.0, 2.0, 1.5},
+            {Double.NaN, 2.0, 3.0},
+            {1.0, Double.NaN, 3.0},
+            {1.0, 2.0, Double.NaN},
         };
     }
 

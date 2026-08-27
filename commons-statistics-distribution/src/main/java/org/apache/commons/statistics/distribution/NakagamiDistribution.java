@@ -77,15 +77,17 @@ public final class NakagamiDistribution extends AbstractContinuousDistribution {
      * @param mu Shape parameter (must be positive).
      * @param omega Scale parameter (must be positive). Controls the spread of the distribution.
      * @return the distribution
-     * @throws IllegalArgumentException  if {@code mu <= 0} or if
-     * {@code omega <= 0}.
+     * @throws IllegalArgumentException if {@code mu <= 0} or if
+     * {@code omega <= 0}; or a parameter is {@code NaN}.
      */
     public static NakagamiDistribution of(double mu,
                                           double omega) {
-        if (mu <= 0) {
+        if (!(mu > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, mu);
         }
-        if (omega <= 0) {
+        if (!(omega > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, omega);
         }
         return new NakagamiDistribution(mu, omega);

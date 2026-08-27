@@ -79,10 +79,12 @@ public final class GeometricDistribution extends AbstractDiscreteDistribution {
      *
      * @param p Probability of success.
      * @return the geometric distribution
-     * @throws IllegalArgumentException if {@code p <= 0} or {@code p > 1}.
+     * @throws IllegalArgumentException if {@code p <= 0} or {@code p > 1};
+     * or {@code p} is {@code NaN}.
      */
     public static GeometricDistribution of(double p) {
-        if (p <= 0 || p > 1) {
+        if (!(p > 0 && p <= 1)) {
+            // out of range (0, 1] or nan
             throw new DistributionException(DistributionException.INVALID_NON_ZERO_PROBABILITY, p);
         }
         return new GeometricDistribution(p);

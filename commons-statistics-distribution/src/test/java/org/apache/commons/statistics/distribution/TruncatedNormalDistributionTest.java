@@ -49,6 +49,15 @@ class TruncatedNormalDistributionTest extends BaseContinuousDistributionTest {
             {0.0, 1.0, 1.0, -1.0},
             // No usable probability range
             {0.0, 1.0, 100.0, 101.0},
+            // NaN parameters
+            {Double.NaN, 1.0, -1.0, 1.0},
+            {0.0, Double.NaN, -1.0, 1.0},
+            {0.0, 1.0, Double.NaN, 1.0},
+            {0.0, 1.0, -1.0, Double.NaN},
+            // Infinite parameters
+            {Double.NEGATIVE_INFINITY, 1.0, -1.0, 1.0},
+            {Double.POSITIVE_INFINITY, 1.0, -1.0, 1.0},
+            {0.0, Double.POSITIVE_INFINITY, -1.0, 1.0},
         };
     }
 

@@ -373,22 +373,26 @@ public abstract class TrapezoidalDistribution extends AbstractContinuousDistribu
      * @param d Upper limit of this distribution (inclusive).
      * @return the distribution
      * @throws IllegalArgumentException if {@code a >= d}, if {@code b < a}, if
-     * {@code c < b} or if {@code c > d}.
+     * {@code c < b} or if {@code c > d}; or a parameter is {@code NaN}.
      */
     public static TrapezoidalDistribution of(double a, double b, double c, double d) {
-        if (a >= d) {
+        if (!(a < d)) {
+            // a >= d or nan
             throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH,
                                             a, d);
         }
-        if (b < a) {
+        if (!(b >= a)) {
+            // b < a or nan
             throw new DistributionException(DistributionException.TOO_SMALL,
                                             b, a);
         }
-        if (c < b) {
+        if (!(c >= b)) {
+            // c < b or nan
             throw new DistributionException(DistributionException.TOO_SMALL,
                                             c, b);
         }
-        if (c > d) {
+        if (!(c <= d)) {
+            // c > d or nan
             throw new DistributionException(DistributionException.TOO_LARGE,
                                             c, d);
         }

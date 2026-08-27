@@ -53,6 +53,10 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
+      <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-96">
+        "commons-statistics-distribution": Checks added to distribution factory
+        functions for NaN parameters that invalidate the distribution.
+      </action>
       <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-95">
         "NormalConfidenceInterval": Validate mean is finite and variance is positive finite.
       </action>

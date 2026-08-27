@@ -64,13 +64,18 @@ public final class LevyDistribution extends AbstractContinuousDistribution {
      * @param mu Location parameter.
      * @param c Scale parameter.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code c <= 0}.
+     * @throws IllegalArgumentException if {@code c <= 0} or is {@code NaN};
+     * or {@code mu} is NaN.
      */
     public static LevyDistribution of(double mu,
                                       double c) {
-        if (c <= 0) {
+        if (!(c > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             c);
+        }
+        if (Double.isNaN(mu)) {
+            throw new DistributionException(DistributionException.NAN, "Location");
         }
         return new LevyDistribution(mu, c);
     }

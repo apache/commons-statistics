@@ -40,6 +40,7 @@ class PoissonDistributionTest extends BaseDiscreteDistributionTest {
         return new Object[][] {
             {0.0},
             {-0.1},
+            {Double.NaN},
         };
     }
 

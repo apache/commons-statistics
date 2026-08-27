@@ -57,6 +57,10 @@ class TrapezoidalDistributionTest extends BaseContinuousDistributionTest {
             {1.0, 2.0, 3.0, 1.5}, // d < b
             {1.0, 2.0, 1.5, 4.0}, // c < b
             {1.0, 2.0, 3.0, 2.5}, // d < c
+            {Double.NaN, 2.0, 3.0, 4.0}, // a = nan
+            {1.0, Double.NaN, 3.0, 4.0}, // b = nan
+            {1.0, 2.0, Double.NaN, 4.0}, // c = nan
+            {1.0, 2.0, 3.0, Double.NaN}, // d = nan
         };
     }
 

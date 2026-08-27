@@ -73,14 +73,17 @@ public final class BetaDistribution extends AbstractContinuousDistribution {
      * @param alpha First shape parameter (must be positive).
      * @param beta Second shape parameter (must be positive).
      * @return the distribution
-     * @throws IllegalArgumentException if {@code alpha <= 0} or {@code beta <= 0}.
+     * @throws IllegalArgumentException if {@code alpha <= 0} or {@code beta <= 0};
+     * or a parameter is {@code NaN}.
      */
     public static BetaDistribution of(double alpha,
                                       double beta) {
-        if (alpha <= 0) {
+        if (!(alpha > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, alpha);
         }
-        if (beta <= 0) {
+        if (!(beta > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, beta);
         }
         return new BetaDistribution(alpha, beta);

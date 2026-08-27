@@ -73,12 +73,17 @@ public final class LogNormalDistribution extends AbstractContinuousDistribution 
      * @param mu Mean of the natural logarithm of the distribution values.
      * @param sigma Standard deviation of the natural logarithm of the distribution values.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code sigma <= 0}.
+     * @throws IllegalArgumentException if {@code sigma <= 0} or is {@code NaN};
+     * or {@code mu} is NaN.
      */
     public static LogNormalDistribution of(double mu,
                                            double sigma) {
-        if (sigma <= 0) {
+        if (!(sigma > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sigma);
+        }
+        if (Double.isNaN(mu)) {
+            throw new DistributionException(DistributionException.NAN, "Mu");
         }
         return new LogNormalDistribution(mu, sigma);
     }

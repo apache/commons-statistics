@@ -59,10 +59,11 @@ public final class ExponentialDistribution extends AbstractContinuousDistributio
      *
      * @param mean Mean of this distribution. This is a scale parameter.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code mean <= 0}.
+     * @throws IllegalArgumentException if {@code mean <= 0} or is {@code NaN}.
      */
     public static ExponentialDistribution of(double mean) {
-        if (mean <= 0) {
+        if (!(mean > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, mean);
         }
         return new ExponentialDistribution(mean);

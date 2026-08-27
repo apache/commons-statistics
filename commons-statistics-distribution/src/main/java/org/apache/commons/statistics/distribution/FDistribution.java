@@ -95,15 +95,17 @@ public final class FDistribution extends AbstractContinuousDistribution {
      * @param denominatorDegreesOfFreedom Denominator degrees of freedom.
      * @return the distribution
      * @throws IllegalArgumentException if {@code numeratorDegreesOfFreedom <= 0} or
-     * {@code denominatorDegreesOfFreedom <= 0}.
+     * {@code denominatorDegreesOfFreedom <= 0}; or a parameter is {@code NaN}.
      */
     public static FDistribution of(double numeratorDegreesOfFreedom,
                                    double denominatorDegreesOfFreedom) {
-        if (numeratorDegreesOfFreedom <= 0) {
+        if (!(numeratorDegreesOfFreedom > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             numeratorDegreesOfFreedom);
         }
-        if (denominatorDegreesOfFreedom <= 0) {
+        if (!(denominatorDegreesOfFreedom > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             denominatorDegreesOfFreedom);
         }

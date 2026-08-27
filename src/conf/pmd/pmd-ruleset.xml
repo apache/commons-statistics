@@ -195,7 +195,7 @@
       <!-- Logic inversion allows detection of NaN for parameters that are expected in a range -->
       <property name="violationSuppressXPath"
         value="./ancestor-or-self::ClassDeclaration[@SimpleName='Arguments'
-          or @Name='Quantile']"/>
+          or @Name='Quantile' or matches(@SimpleName, '^.*Distribution$')]"/>
     </properties>
   </rule>
   <rule ref="category/java/design.xml/UselessOverridingMethod">

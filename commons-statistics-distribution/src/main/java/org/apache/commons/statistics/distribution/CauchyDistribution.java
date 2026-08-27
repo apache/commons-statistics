@@ -61,12 +61,17 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
      * @param location Location parameter.
      * @param scale Scale parameter.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code scale <= 0}.
+     * @throws IllegalArgumentException if {@code scale <= 0} or is {@code NaN};
+     * or {@code location} is NaN.
      */
     public static CauchyDistribution of(double location,
                                         double scale) {
-        if (scale <= 0) {
+        if (!(scale > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, scale);
+        }
+        if (Double.isNaN(location)) {
+            throw new DistributionException(DistributionException.NAN, "Location");
         }
         return new CauchyDistribution(location, scale);
     }

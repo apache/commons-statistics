@@ -64,8 +64,8 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
      * @param numberOfElements Number of elements.
      * @param exponent Exponent.
      * @return the distribution
-     * @exception IllegalArgumentException if {@code numberOfElements <= 0}
-     * or {@code exponent <= 0}.
+     * @exception IllegalArgumentException if {@code numberOfElements <= 0};
+     * or {@code exponent <= 0} or is {@code NaN}.
      */
     public static ZipfDistribution of(int numberOfElements,
                                       double exponent) {
@@ -73,7 +73,8 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             numberOfElements);
         }
-        if (exponent < 0) {
+        if (!(exponent >= 0)) {
+            // negative or nan
             throw new DistributionException(DistributionException.NEGATIVE,
                                             exponent);
         }

@@ -75,20 +75,23 @@ public final class TriangularDistribution extends AbstractContinuousDistribution
      * @param b Upper limit of this distribution (inclusive).
      * @return the distribution
      * @throws IllegalArgumentException if {@code a >= b}, if {@code c > b} or if
-     * {@code c < a}.
+     * {@code c < a}; or a parameter is {@code NaN}.
      */
     public static TriangularDistribution of(double a,
                                             double c,
                                             double b) {
-        if (a >= b) {
+        if (!(a < b)) {
+            // a >= b or nan
             throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH,
                                             a, b);
         }
-        if (c < a) {
+        if (!(c >= a)) {
+            // c < a or nan
             throw new DistributionException(DistributionException.TOO_SMALL,
                                             c, a);
         }
-        if (c > b) {
+        if (!(c <= b)) {
+            // c > b or nan
             throw new DistributionException(DistributionException.TOO_LARGE,
                                             c, b);
         }

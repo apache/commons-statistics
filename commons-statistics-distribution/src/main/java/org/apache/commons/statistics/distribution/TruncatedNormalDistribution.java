@@ -120,14 +120,17 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
      * @param lower Lower bound (inclusive) of the distribution, can be {@link Double#NEGATIVE_INFINITY}.
      * @param upper Upper bound (inclusive) of the distribution, can be {@link Double#POSITIVE_INFINITY}.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code sd <= 0}; if {@code lower >= upper}; or if
-     * the truncation covers no probability range in the parent distribution.
+     * @throws IllegalArgumentException if {@code sd <= 0}; if {@code lower >= upper}; if
+     * the truncation covers no probability range in the parent distribution;
+     * or a parameter is {@code NaN}.
      */
     public static TruncatedNormalDistribution of(double mean, double sd, double lower, double upper) {
-        if (sd <= 0) {
+        if (!(sd > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE, sd);
         }
-        if (lower >= upper) {
+        if (!(lower < upper)) {
+            // lower >= upper, or nan bounds
             throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GTE_HIGH, lower, upper);
         }
 
@@ -137,7 +140,8 @@ public final class TruncatedNormalDistribution extends AbstractContinuousDistrib
 
         // If there is no computable range then raise an exception.
         final double z = parent.probability(lower, upper);
-        if (z <= MIN_P) {
+        if (!(z > MIN_P)) {
+            // z <= MIN_P, or z is nan
             // Map the bounds to a standard normal distribution for the message
             final double a = (lower - mean) / sd;
             final double b = (upper - mean) / sd;

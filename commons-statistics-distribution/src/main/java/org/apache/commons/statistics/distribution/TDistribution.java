@@ -237,10 +237,11 @@ public abstract class TDistribution extends AbstractContinuousDistribution {
      *
      * @param degreesOfFreedom Degrees of freedom.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code degreesOfFreedom <= 0}
+     * @throws IllegalArgumentException if {@code degreesOfFreedom <= 0} or is {@code NaN}.
      */
     public static TDistribution of(double degreesOfFreedom) {
-        if (degreesOfFreedom <= 0) {
+        if (!(degreesOfFreedom > 0)) {
+            // zero, negative or nan
             throw new DistributionException(DistributionException.NOT_STRICTLY_POSITIVE,
                                             degreesOfFreedom);
         }

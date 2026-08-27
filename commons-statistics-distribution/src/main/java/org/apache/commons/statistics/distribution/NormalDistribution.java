@@ -84,11 +84,15 @@ public final class NormalDistribution extends AbstractContinuousDistribution {
      * @param mean Mean for this distribution.
      * @param sd Standard deviation for this distribution.
      * @return the distribution
-     * @throws IllegalArgumentException if {@code sd <= 0}.
+     * @throws IllegalArgumentException if {@code sd <= 0} or is {@code NaN};
+     * or {@code mean} is NaN.
      */
     public static NormalDistribution of(double mean,
                                         double sd) {
         if (sd > 0) {
+            if (Double.isNaN(mean)) {
+                throw new DistributionException(DistributionException.NAN, "Mean");
+            }
             return new NormalDistribution(mean, sd);
         }
         // zero, negative or nan
