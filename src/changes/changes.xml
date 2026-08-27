@@ -53,27 +53,33 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
-      <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-98">
+      <action dev="aherbert" type="update" due-to="Security scan, Alex Herbert">
+        "UnconditionedExactTest": Update documentation on possible long runtime and
+        high memory consumption for large table counts. For performance sensitive
+        code with large 2x2 contigency counts users can switch to an alternative such
+        as a chi-square or G test.
+      </action>
+      <action dev="aherbert" type="fix" due-to="Security scan, Alex Herbert" issue="STATISTICS-98">
         "SignificanceResult": Raise an exception if the p-value is invalid when
         comparing the p-value to a significance level. Corrects silent rejection
         of the null hypothesis if the computed p-value is NaN.
       </action>
-      <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-97">
+      <action dev="aherbert" type="fix" due-to="Security scan, Alex Herbert" issue="STATISTICS-97">
         "TTest/OneWayAnova": Checks added for arguments that invalidate the test
         statistic: non-finite values in input arrays; and NaN mean arguments.
       </action>
-      <action dev="aherbert" type="update" due-to="Security scan, Aex Herbert">
+      <action dev="aherbert" type="update" due-to="Security scan, Alex Herbert">
         "FisherExactTest/HypergeometricDistribution": Update documentation
         on possible long runtime when the hypergeometric distribution
         cumulative probability functions are evaluated with parameters that
         create a very large support width. Users are advised to guard the
         arguments to the FisherExactTest and HypergeometricDistribution.
       </action>
-      <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-96">
+      <action dev="aherbert" type="fix" due-to="Security scan, Alex Herbert" issue="STATISTICS-96">
         "commons-statistics-distribution": Checks added to distribution factory
         functions for NaN parameters that invalidate the distribution.
       </action>
-      <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-95">
+      <action dev="aherbert" type="fix" due-to="Security scan, Alex Herbert" issue="STATISTICS-95">
         "NormalConfidenceInterval": Validate mean is finite and variance is positive finite.
       </action>
     </release>

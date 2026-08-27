@@ -70,6 +70,16 @@ import org.apache.commons.statistics.inference.BrentOptimizer.PointValuePair;
  * number of points}. The best candidates are optionally used as the start point for an
  * {@linkplain #withOptimize(boolean) optimized} search for a local maxima.
  *
+ * <p><strong>Maximum number of tables</strong>
+ *
+ * <p>The maximum number of tables is equal to (m + 1) * (n + 1). The p-value computation
+ * must track all tables as or more extreme than the observed table. This is done using an
+ * expandable {@code int[]} array, and computation is limited to the maximum capacity of
+ * an array. When the input counts are large this can result in excessive computation and
+ * memory consumption. If performance is a limiting factor, users are advised to check the
+ * table if the counts are potentially large, or from untrusted input, and consider
+ * switching to an alternative such as the {@link ChiSquareTest} or {@link GTest}.
+ *
  * <p>References:
  * <ol>
  * <li>
