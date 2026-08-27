@@ -35,6 +35,18 @@ import java.util.function.DoublePredicate;
  *
  * <p>is the binomial coefficient.
  *
+ * <p><strong>Note:</strong> The cumulative probability functions
+ * {@link #cumulativeProbability(int) cumulativeProbability} and
+ * {@link #survivalProbability(int) survivalProbability}, and the inverse probability
+ * functions {@link #inverseCumulativeProbability(double) inverseCumulativeProbability}
+ * and {@link #inverseSurvivalProbability(double) inverseSurvivalProbability}, are
+ * computed by summation of the probability mass function over the support. The cost of
+ * a call is {@code O(min(K, n))}. Parameters that create a very large support width,
+ * for example a population size of order 2<sup>31</sup> with a comparable number of
+ * successes and sample size, may require in the order of 10<sup>9</sup> function
+ * evaluations per call. Take this run-time cost into account when the parameters are
+ * derived from untrusted input, and bound the parameter magnitudes accordingly.
+ *
  * @see <a href="https://en.wikipedia.org/wiki/Hypergeometric_distribution">Hypergeometric distribution (Wikipedia)</a>
  * @see <a href="https://mathworld.wolfram.com/HypergeometricDistribution.html">Hypergeometric distribution (MathWorld)</a>
  */

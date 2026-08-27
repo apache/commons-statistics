@@ -53,6 +53,13 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
+      <action dev="aherbert" type="update" due-to="Security scan, Aex Herbert">
+        "FisherExactTest/HypergeometricDistribution": Update documentation
+        on possible long runtime when the hypergeometric distribution
+        cumulative probability functions are evaluated with parameters that
+        create a very large support width. Users are advised to guard the
+        arguments to the FisherExactTest and HypergeometricDistribution.
+      </action>
       <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-96">
         "commons-statistics-distribution": Checks added to distribution factory
         functions for NaN parameters that invalidate the distribution.

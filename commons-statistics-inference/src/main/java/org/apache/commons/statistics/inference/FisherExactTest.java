@@ -28,6 +28,14 @@ import org.apache.commons.statistics.distribution.HypergeometricDistribution;
  * <p>Fisher's test applies in the case that the row sums and column sums are fixed in advance
  * and not random.
  *
+ * <p><strong>Note:</strong> The p-value is computed using the hypergeometric
+ * distribution conditioned on the table margins. The computation sums the probability
+ * mass function over the support of the distribution; the run time of
+ * {@link #test(int[][]) test} scales linearly with the magnitude of the table entries
+ * and a table with a sum approaching 2<sup>31</sup> may require in the order of
+ * 10<sup>9</sup> function evaluations. Take this cost into account when the table
+ * counts are derived from untrusted input, and bound the table sum accordingly.
+ *
  * @see <a href="https://en.wikipedia.org/wiki/Fisher%27s_exact_test">Fisher&#39;s exact test (Wikipedia)</a>
  * @since 1.1
  */
@@ -125,6 +133,10 @@ public final class FisherExactTest {
      * <li>'less': the odds ratio of the underlying population is less than one; the p-value
      * is the probability that a random table has {@code x <= a}.</li>
      * </ul>
+     *
+     * <p><strong>Note:</strong> The run time scales linearly with the magnitude of the
+     * table entries. See the {@linkplain FisherExactTest class-level} documentation
+     * for details.
      *
      * @param table 2-by-2 contingency table.
      * @return test result
