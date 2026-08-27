@@ -54,6 +54,10 @@ If the output is not quite correct, check for invisible trailing spaces!
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
       <action dev="aherbert" type="update" due-to="Security scan, Alex Herbert">
+        "ZipfDistribution": Update documentation on possible long runtimes when
+        using the distribution with a large number of elements.
+      </action>
+      <action dev="aherbert" type="update" due-to="Security scan, Alex Herbert">
         "UnconditionedExactTest": Update documentation on possible long runtime and
         high memory consumption for large table counts. For performance sensitive
         code with large 2x2 contigency counts users can switch to an alternative such

@@ -34,6 +34,20 @@ import org.apache.commons.rng.sampling.distribution.RejectionInversionZipfSample
  * <a href="https://en.wikipedia.org/wiki/Harmonic_number#Generalized_harmonic_numbers">
  * generalized harmonic number</a> of order N of s.
  *
+ * <p><strong>Note:</strong> The generalized harmonic number \( H_{N,s} \) is computed
+ * by direct summation of \( N \) terms. Construction of the distribution, and each
+ * call to {@link #getMean()} or {@link #getVariance()}, is \( O(N) \); each call to
+ * {@link #cumulativeProbability(int) cumulativeProbability(x)} or
+ * {@link #survivalProbability(int) survivalProbability(x)} is \( O(x) \) (the
+ * partial harmonic sum is not cached between calls); the inverse probability
+ * functions perform a search using \( O(\log N) \) cumulative probability
+ * evaluations. A number of elements of order 2<sup>31</sup> requires billions of
+ * {@code Math.pow} evaluations for construction alone. Take this run-time cost into
+ * account when the parameters are derived from untrusted input, and bound the number
+ * of elements accordingly. Sampling (see {@link #createSampler(UniformRandomProvider)
+ * createSampler}) uses a rejection method with a cost per sample that does not depend
+ * on the number of elements.
+ *
  * @see <a href="https://en.wikipedia.org/wiki/Zipf's_law">Zipf distribution (Wikipedia)</a>
  */
 public final class ZipfDistribution extends AbstractDiscreteDistribution {
@@ -60,6 +74,11 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
 
     /**
      * Creates a Zipf distribution.
+     *
+     * <p><strong>Note:</strong> Construction computes the normalizing constant
+     * \( H_{N,s} \) by direct summation of {@code numberOfElements} terms and is
+     * {@code O(numberOfElements)}. See the {@linkplain ZipfDistribution class-level}
+     * documentation for details.
      *
      * @param numberOfElements Number of elements.
      * @param exponent Exponent.
