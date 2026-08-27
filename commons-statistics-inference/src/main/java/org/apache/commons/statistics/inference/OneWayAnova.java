@@ -208,8 +208,9 @@ public final class OneWayAnova {
      * @param data Category summary data.
      * @return F statistic
      * @throws IllegalArgumentException if the number of categories is less than
-     * two; a contained category does not have at least one value; or all
-     * categories have only one value (zero degrees of freedom within groups)
+     * two; a contained category does not have at least one value; all
+     * categories have only one value (zero degrees of freedom within groups);
+     * or any category contains non-finite values
      */
     public double statistic(Collection<double[]> data) {
         final double[] f = new double[1];
@@ -233,8 +234,9 @@ public final class OneWayAnova {
      * @param data Category summary data.
      * @return test result
      * @throws IllegalArgumentException if the number of categories is less than
-     * two; a contained category does not have at least one value; or all
-     * categories have only one value (zero degrees of freedom within groups)
+     * two; a contained category does not have at least one value; all
+     * categories have only one value (zero degrees of freedom within groups);
+     * or any category contains non-finite values
      */
     public Result test(Collection<double[]> data) {
         return aov(data, null);
@@ -252,8 +254,9 @@ public final class OneWayAnova {
      * @param statistic Result for the F statistic (or null).
      * @return test result (or null)
      * @throws IllegalArgumentException if the number of categories is less than two; a
-     * contained category does not have at least one value; or all categories have only
-     * one value (zero degrees of freedom within groups)
+     * contained category does not have at least one value; all categories have only
+     * one value (zero degrees of freedom within groups); or any category contains
+     * non-finite values
      */
     private static Result aov(Collection<double[]> data, double[] statistic) {
         Arguments.checkCategoriesRequiredSize(data.size(), 2);
@@ -261,6 +264,7 @@ public final class OneWayAnova {
         for (final double[] array : data) {
             n += array.length;
             Arguments.checkValuesRequiredSize(array.length, 1);
+            Arguments.checkFinite(array);
         }
         final long dfwg = n - data.size();
         if (dfwg == 0) {

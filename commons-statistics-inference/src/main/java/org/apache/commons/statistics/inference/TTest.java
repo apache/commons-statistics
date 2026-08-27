@@ -160,11 +160,12 @@ public final class TTest {
      * @param v Sample variance.
      * @param n Sample size.
      * @return t statistic
-     * @throws IllegalArgumentException if the number of samples is {@code < 2}; or the
-     * variance is negative
+     * @throws IllegalArgumentException if the number of samples is {@code < 2}; the
+     * variance is negative or NaN; or the mean is NaN
      * @see #withMu(double)
      */
     public double statistic(double m, double v, long n) {
+        Arguments.checkNonNaN(m);
         Arguments.checkNonNegative(v);
         checkSampleSize(n);
         return computeT(m - mu, v, n);
@@ -175,12 +176,14 @@ public final class TTest {
      *
      * @param x Sample values.
      * @return t statistic
-     * @throws IllegalArgumentException if the number of samples is {@code < 2}
+     * @throws IllegalArgumentException if the number of samples is {@code < 2}; or the
+     * sample contains non-finite values
      * @see #statistic(double, double, long)
      * @see #withMu(double)
      */
     public double statistic(double[] x) {
         final long n = checkSampleSize(x.length);
+        Arguments.checkFinite(x);
         final DoubleStatistics s = DoubleStatistics.of(
             EnumSet.of(Statistic.MEAN, Statistic.VARIANCE), x);
         final double m = s.getAsDouble(Statistic.MEAN);
@@ -200,12 +203,14 @@ public final class TTest {
      * @param x First sample values.
      * @param y Second sample values.
      * @return t statistic
-     * @throws IllegalArgumentException if the number of samples is {@code < 2}; or the
-     * the size of the samples is not equal
+     * @throws IllegalArgumentException if the number of samples is {@code < 2}; the
+     * size of the samples is not equal; or the samples contain non-finite values
      * @see #withMu(double)
      */
     public double pairedStatistic(double[] x, double[] y) {
         final long n = checkSampleSize(x.length);
+        Arguments.checkFinite(x);
+        Arguments.checkFinite(y);
         final double m = StatisticUtils.meanDifference(x, y);
         final double v = StatisticUtils.varianceDifference(x, y, m);
         return computeT(m - mu, v, n);
@@ -237,12 +242,14 @@ public final class TTest {
      * @param n2 Second sample size.
      * @return t statistic
      * @throws IllegalArgumentException if the number of samples in either dataset is
-     * {@code < 2}; or the variances are negative.
+     * {@code < 2}; the variances are negative; or the means are NaN.
      * @see #withMu(double)
      * @see #with(DataDispersion)
      */
     public double statistic(double m1, double v1, long n1,
                             double m2, double v2, long n2) {
+        Arguments.checkNonNaN(m1);
+        Arguments.checkNonNaN(m2);
         Arguments.checkNonNegative(v1);
         Arguments.checkNonNegative(v2);
         checkSampleSize(n1);
@@ -261,13 +268,16 @@ public final class TTest {
      * @param x First sample values.
      * @param y Second sample values.
      * @return t statistic
-     * @throws IllegalArgumentException if the number of samples in either dataset is {@code < 2}
+     * @throws IllegalArgumentException if the number of samples in either dataset is
+     * {@code < 2}; or the samples contain non-finite values
      * @see #withMu(double)
      * @see #with(DataDispersion)
      */
     public double statistic(double[] x, double[] y) {
         final long n1 = checkSampleSize(x.length);
         final long n2 = checkSampleSize(y.length);
+        Arguments.checkFinite(x);
+        Arguments.checkFinite(y);
         final DoubleStatistics.Builder b = DoubleStatistics.builder(Statistic.MEAN, Statistic.VARIANCE);
         final DoubleStatistics s1 = b.build(x);
         final double m1 = s1.getAsDouble(Statistic.MEAN);
@@ -386,7 +396,7 @@ public final class TTest {
      * @param y Second sample values.
      * @return the test result
      * @throws IllegalArgumentException if the number of samples in either dataset
-     * is {@code < 2}
+     * is {@code < 2}; or the samples contain non-finite values
      * @see #statistic(double[], double[])
      * @see #test(double, double, long, double, double, long)
      */
@@ -395,6 +405,8 @@ public final class TTest {
         // requires the variance. So repeat the computation and compute p.
         final long n1 = checkSampleSize(x.length);
         final long n2 = checkSampleSize(y.length);
+        Arguments.checkFinite(x);
+        Arguments.checkFinite(y);
         final DoubleStatistics.Builder b = DoubleStatistics.builder(Statistic.MEAN, Statistic.VARIANCE);
         final DoubleStatistics s1 = b.build(x);
         final double m1 = s1.getAsDouble(Statistic.MEAN);

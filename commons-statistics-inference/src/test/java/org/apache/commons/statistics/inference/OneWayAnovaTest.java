@@ -54,6 +54,12 @@ class OneWayAnovaTest {
         final List<double[]> allLength1 = Arrays.asList(new double[] {1}, new double[] {2}, new double[] {3});
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> action.accept(allLength1), "degrees", "freedom", "within", "group", "zero");
+
+        for (final double v : new double[] {Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}) {
+            final List<double[]> nanContents = Arrays.asList(new double[] {1, 2, 3}, new double[] {4, v});
+            TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+                () -> action.accept(nanContents), "finite", Double.toString(v));
+        }
     }
 
     @ParameterizedTest

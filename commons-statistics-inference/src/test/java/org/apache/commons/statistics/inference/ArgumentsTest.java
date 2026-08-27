@@ -95,18 +95,26 @@ class ArgumentsTest {
         Assertions.assertTrue(ex.getMessage().contains(Double.toString(v)));
     }
 
-    @Test
-    void testCheckNonNanArrayThrows() {
-        Assertions.assertDoesNotThrow(() -> Arguments.checkNonNaN(new double[0]));
+    @ParameterizedTest
+    @ValueSource(doubles = {Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY})
+    void testCheckFiniteArrayThrows(double v) {
+        Assertions.assertDoesNotThrow(() -> Arguments.checkFinite(new double[0]));
         final double[] a = new double[3];
-        Assertions.assertDoesNotThrow(() -> Arguments.checkNonNaN(a));
+        Assertions.assertDoesNotThrow(() -> Arguments.checkFinite(a));
         for (int i = 0; i < a.length; i++) {
-            a[i] = Double.NaN;
+            a[i] = v;
             final IllegalArgumentException ex = Assertions.assertThrows(IllegalArgumentException.class,
-                () -> Arguments.checkNonNaN(a));
-            Assertions.assertTrue(ex.getMessage().contains("NaN"));
+                () -> Arguments.checkFinite(a));
+            Assertions.assertTrue(ex.getMessage().contains(Double.toString(v)));
             a[i] = 0;
         }
+    }
+
+    @Test
+    void testCheckNonNanThrows() {
+        final IllegalArgumentException ex = Assertions.assertThrows(IllegalArgumentException.class,
+            () -> Arguments.checkNonNaN(Double.NaN));
+        Assertions.assertTrue(ex.getMessage().contains("NaN"));
     }
 
     @Test

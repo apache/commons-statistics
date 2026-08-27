@@ -67,6 +67,10 @@ class TTestTest {
             () -> action.accept(m, v, 1), "values", "size");
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> action.accept(m, -1, n), "negative");
+        TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+            () -> action.accept(m, Double.NaN, n), "NaN");
+        TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+            () -> action.accept(Double.NaN, v, n), "NaN");
     }
 
     @ParameterizedTest
@@ -120,6 +124,12 @@ class TTestTest {
     private static void assertOneSampleThrows(Consumer<double[]> action) {
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> action.accept(new double[1]), "values", "size");
+
+        for (final double v : new double[] {Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}) {
+            final double[] badSample = {1, 2, 3, v};
+            TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+                () -> action.accept(badSample), "finite", Double.toString(v));
+        }
     }
 
     @ParameterizedTest
@@ -182,6 +192,13 @@ class TTestTest {
             () -> action.accept(sample, unequalSize), "values", "size", "mismatch");
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> action.accept(unequalSize, sample), "values", "size", "mismatch");
+        for (final double v : new double[] {Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}) {
+            final double[] badSample = {1, 2, 3, v};
+            TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+                () -> action.accept(badSample, sample), "finite", Double.toString(v));
+            TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+                () -> action.accept(sample, badSample), "finite", Double.toString(v));
+        }
     }
 
     @ParameterizedTest
@@ -254,6 +271,14 @@ class TTestTest {
             () -> action.accept(m, -1, n, m, v, n), "negative");
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> action.accept(m, v, n, m, -1, n), "negative");
+        TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+            () -> action.accept(Double.NaN, v, n, m, v, n), "NaN");
+        TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+            () -> action.accept(m, Double.NaN, n, m, v, n), "NaN");
+        TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+            () -> action.accept(m, v, n, Double.NaN, v, n), "NaN");
+        TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+            () -> action.accept(m, v, n, m, Double.NaN, n), "NaN");
     }
 
     @ParameterizedTest
@@ -344,6 +369,13 @@ class TTestTest {
             () -> action.accept(sample, tooSmall), "values", "size");
         TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
             () -> action.accept(tooSmall, sample), "values", "size");
+        for (final double v : new double[] {Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY}) {
+            final double[] badSample = {1, 2, 3, v};
+            TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+                () -> action.accept(badSample, sample), "finite", Double.toString(v));
+            TestUtils.assertThrowsWithMessage(IllegalArgumentException.class,
+                () -> action.accept(sample, badSample), "finite", Double.toString(v));
+        }
     }
 
     @ParameterizedTest

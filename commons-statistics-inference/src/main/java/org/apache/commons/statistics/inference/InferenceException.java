@@ -48,6 +48,8 @@ class InferenceException extends IllegalArgumentException {
     static final String INVALID_SIGNIFICANCE = "Not a significance: %s is out of range (0, 0.5]";
     /** Error message for "not strictly positive" condition when "{@code x <= 0}". */
     static final String NOT_STRICTLY_POSITIVE = "Number %s is not greater than 0";
+    /** Error message for "not finite" condition when "{@code x}" is not finite. */
+    static final String NOT_FINITE = "Number %s is not finite";
     /** Error message for "no data" condition. */
     static final String NO_DATA = "No data";
     /** Error message for "too large" condition when "{@code x > y}". */
@@ -56,6 +58,8 @@ class InferenceException extends IllegalArgumentException {
     static final String X_GTE_Y = "%s >= %s";
     /** Error message for "too small" condition when "{@code x < y}". */
     static final String X_LT_Y = "%s < %s";
+    /** Error message for a NaN value. */
+    static final String NAN = "NaN input value";
 
     /** Serializable version identifier. */
     private static final long serialVersionUID = 20221203L;

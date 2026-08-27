@@ -63,7 +63,7 @@ final class Arguments {
      * Check that the value is {@code >= 0}.
      *
      * @param v Value to be tested.
-     * @throws IllegalArgumentException if the value is less than 0.
+     * @throws IllegalArgumentException if the value is less than 0, or is NaN.
      */
     static void checkNonNegative(double v) {
         if (v >= 0) {
@@ -118,7 +118,7 @@ final class Arguments {
      *
      * @param v Value to be tested.
      * @return the value
-     * @throws IllegalArgumentException if the value is not strictly positive.
+     * @throws IllegalArgumentException if the value is not strictly positive finite.
      */
     static double checkStrictlyPositive(double v) {
         if (v > 0) {
@@ -132,7 +132,7 @@ final class Arguments {
      * Check that all values are {@code > 0}.
      *
      * @param values Values to be tested.
-     * @throws IllegalArgumentException if any values are not strictly positive.
+     * @throws IllegalArgumentException if any values are not strictly positive finite.
      */
     static void checkStrictlyPositive(double[] values) {
         for (final double v : values) {
@@ -152,23 +152,37 @@ final class Arguments {
      */
     static double checkFinite(double v) {
         if (!Double.isFinite(v)) {
-            throw new InferenceException("Non-finite input value: " + v);
+            throw new InferenceException(InferenceException.NOT_FINITE, v);
         }
         return v;
     }
 
     /**
-     * Check that all values are not {@link Double#NaN}.
+     * Check that all the values are finite.
      *
      * @param values Values to be tested.
-     * @throws IllegalArgumentException if any values are NaN.
+     * @throws IllegalArgumentException if any values are not finite.
      */
-    static void checkNonNaN(double[] values) {
+    static void checkFinite(double[] values) {
         for (final double v : values) {
-            if (Double.isNaN(v)) {
-                throw new InferenceException("NaN input value");
+            if (!Double.isFinite(v)) {
+                throw new InferenceException(InferenceException.NOT_FINITE, v);
             }
         }
+    }
+
+    /**
+     * Check that the value is not {@link Double#NaN}.
+     *
+     * @param v Value to be tested.
+     * @return the value
+     * @throws IllegalArgumentException if the value is NaN.
+     */
+    static double checkNonNaN(double v) {
+        if (Double.isNaN(v)) {
+            throw new InferenceException(InferenceException.NAN);
+        }
+        return v;
     }
 
     /**

@@ -53,6 +53,10 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
+      <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-97">
+        "TTest/OneWayAnova": Checks added for arguments that invalidate the test
+        statistic: non-finite values in input arrays; and NaN mean arguments.
+      </action>
       <action dev="aherbert" type="update" due-to="Security scan, Aex Herbert">
         "FisherExactTest/HypergeometricDistribution": Update documentation
         on possible long runtime when the hypergeometric distribution
