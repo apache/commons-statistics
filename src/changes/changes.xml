@@ -53,6 +53,11 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
+      <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-98">
+        "SignificanceResult": Raise an exception if the p-value is invalid when
+        comparing the p-value to a significance level. Corrects silent rejection
+        of the null hypothesis if the computed p-value is NaN.
+      </action>
       <action dev="aherbert" type="fix" due-to="Security scan, Aex Herbert" issue="STATISTICS-97">
         "TTest/OneWayAnova": Checks added for arguments that invalidate the test
         statistic: non-finite values in input arrays; and NaN mean arguments.

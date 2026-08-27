@@ -46,6 +46,20 @@ final class Arguments {
     }
 
     /**
+     * Check the probability {@code p} is in the interval {@code [0, 1]}.
+     *
+     * @param p Probability
+     * @throws IllegalArgumentException if {@code p < 0} or {@code p > 1}
+     */
+    static void checkProbability(double p) {
+        if (p >= 0 && p <= 1) {
+            return;
+        }
+        // Out-of-range or NaN
+        throw new InferenceException(InferenceException.INVALID_PROBABILITY, p);
+    }
+
+    /**
      * Check that the value is {@code >= 0}.
      *
      * @param v Value to be tested.

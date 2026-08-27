@@ -37,6 +37,21 @@ class ArgumentsTest {
     }
 
     @ParameterizedTest
+    @ValueSource(doubles = {-0.0, 0.0, Double.MIN_VALUE, 1 - 0x1.0p-53, 1})
+    void testCheckProbability(double p) {
+        Assertions.assertDoesNotThrow(() -> Arguments.checkProbability(p), () -> Double.toString(p));
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {-Double.MIN_VALUE, -0.1, -1, -2, 1.0 + 0x1.0p-52, 1.1, -Double.MAX_VALUE,
+        Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN})
+    void testCheckProbabilityThrows(double p) {
+        final IllegalArgumentException ex = Assertions.assertThrows(IllegalArgumentException.class,
+            () -> Arguments.checkProbability(p), () -> Double.toString(p));
+        Assertions.assertTrue(ex.getMessage().contains(Double.toString(p)));
+    }
+
+    @ParameterizedTest
     @ValueSource(ints = {Integer.MIN_VALUE, -1})
     void testCheckNonNegativeIntThrows(double v) {
         final IllegalArgumentException ex = Assertions.assertThrows(IllegalArgumentException.class,

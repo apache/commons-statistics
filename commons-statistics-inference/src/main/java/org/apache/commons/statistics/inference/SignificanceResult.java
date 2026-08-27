@@ -47,10 +47,14 @@ public interface SignificanceResult {
      *
      * @param alpha Significance level of the test.
      * @return true iff null hypothesis can be rejected with confidence {@code 1 - alpha}
-     * @throws IllegalArgumentException if {@code alpha} is not in the range {@code (0, 0.5]}.
+     * @throws IllegalArgumentException if {@code alpha} is not in the interval {@code (0, 0.5]};
+     * or if the computed {@code p} is not in the interval {@code [0, 1]}
+     * @see #getPValue()
      */
     default boolean reject(double alpha) {
         Arguments.checkSignificance(alpha);
-        return getPValue() < alpha;
+        final double p = getPValue();
+        Arguments.checkProbability(p);
+        return p < alpha;
     }
 }

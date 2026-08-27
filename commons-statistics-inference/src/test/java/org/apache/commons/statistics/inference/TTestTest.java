@@ -448,4 +448,36 @@ class TTestTest {
             new double[] {0.50953294711549812, 0.25476647355774906, 0.74523352644225094}));
         return builder.build();
     }
+
+    /**
+     * This test asserts the current behaviour of the TTest when a mean is not finite.
+     * The TTest rejects non-finite samples in array arguments, but it cannot reject
+     * non-finite means as this can produce a valid result (t=infinity; p=0) because
+     * the variance can be provided as strictly positive finite.
+     * When the statistic is NaN, the p-value is NaN and the significance result
+     * will raise an exception when attempting to reject the null hypothesis.
+     *
+     * See STATISTICS-97; STATISTICS-98.
+     */
+    @Test
+    void testRejectWithInvalidStatistic() {
+        final TTest test = TTest.withDefaults();
+        // Single infinity in one sample can compute a valid statistic
+        // thus we cannot validate the mean is finite for the paired test.
+        final SignificanceResult r1 = test.test(Double.POSITIVE_INFINITY, 1, 2,
+                                                1, 1, 2);
+        Assertions.assertEquals(Double.POSITIVE_INFINITY, r1.getStatistic());
+        Assertions.assertEquals(0, r1.getPValue());
+        // The two samples are not the same
+        Assertions.assertTrue(() -> r1.reject(0.05), "p=0 should reject any non-zero significance level");
+
+        // Infinity mean in both samples cannot compute a valid statistic.
+        // This is returned and will throw if the result is used to reject a null hypothesis.
+        final SignificanceResult r2 = test.test(Double.POSITIVE_INFINITY, 1, 2,
+                                                Double.POSITIVE_INFINITY, 1, 2);
+        Assertions.assertEquals(Double.NaN, r2.getStatistic());
+        Assertions.assertEquals(Double.NaN, r2.getPValue());
+        Assertions.assertThrows(IllegalArgumentException.class,
+            () -> r2.reject(0.05));
+    }
 }

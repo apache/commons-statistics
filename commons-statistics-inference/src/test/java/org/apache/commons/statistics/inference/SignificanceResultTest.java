@@ -40,7 +40,7 @@ class SignificanceResultTest {
 
     @ParameterizedTest
     @ValueSource(doubles = {-1, -Double.MIN_VALUE, 0, 0.5000000000000001})
-    void testRejectThrows(double alpha) {
+    void testRejectThrowsWithBadAlpha(double alpha) {
         final SignificanceResult r = new SignificanceResult() {
             @Override
             public double getStatistic() {
@@ -52,6 +52,23 @@ class SignificanceResultTest {
             }
         };
         Assertions.assertThrows(IllegalArgumentException.class, () -> r.reject(alpha));
+    }
+
+    @ParameterizedTest
+    @ValueSource(doubles = {-Double.MIN_VALUE, -0.1, -1, -2, 1.0 + 0x1.0p-52, 1.1, -Double.MAX_VALUE,
+        Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN})
+    void testRejectThrowsWithBadPValue(double p) {
+        final SignificanceResult r = new SignificanceResult() {
+            @Override
+            public double getStatistic() {
+                return 0;
+            }
+            @Override
+            public double getPValue() {
+                return p;
+            }
+        };
+        Assertions.assertThrows(IllegalArgumentException.class, () -> r.reject(0.05));
     }
 
     @ParameterizedTest
