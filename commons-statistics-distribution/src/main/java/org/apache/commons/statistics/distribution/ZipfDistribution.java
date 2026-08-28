@@ -72,7 +72,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
                              double exponent) {
         this.numberOfElements = numberOfElements;
         this.exponent = exponent;
-        this.nthHarmonic = generalizedHarmonic(numberOfElements, exponent);
+        this.nthHarmonic = generalizedHarmonic(1, numberOfElements, exponent);
         logNthHarmonic = Math.log(nthHarmonic);
     }
 
@@ -151,7 +151,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
             return 1;
         }
 
-        return generalizedHarmonic(x, exponent) / nthHarmonic;
+        return generalizedHarmonic(1, x, exponent) / nthHarmonic;
     }
 
     /** {@inheritDoc} */
@@ -163,18 +163,9 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
             return 0;
         }
 
-        // See http://www.math.wm.edu/~leemis/chart/UDR/PDFs/Zipf.pdf
-        // S(x) = P(X > x) = ((x+1)^a Hn,a - (x+1)^a Hx+1,a + 1) / ((x+1)^a Hn,a)
-        // where a = exponent and Hx,a is the generalized harmonic for x with exponent a.
-        final double z = Math.pow(x + 1.0, exponent);
-        // Compute generalizedHarmonic(x, exponent) and generalizedHarmonic(x+1, exponent)
-        final double hx = generalizedHarmonic(x, exponent);
-        final double hx1 = hx + Math.pow(x + 1.0, -exponent);
-        // Compute the survival function
-        final double p = (z * (nthHarmonic - hx1) + 1) / (z * nthHarmonic);
-        // May overflow for large exponent so validate the probability.
-        // If this occurs revert to 1 - CDF(x), reusing the generalized harmonic for x
-        return p <= 1.0 ? p : 1.0 - hx / nthHarmonic;
+        // Compute summation of terms omitted in the CDF.
+        // The raw sums in CDF(x) + SF(x) = N-th harmonic
+        return generalizedHarmonic(x + 1, numberOfElements, exponent) / nthHarmonic;
     }
 
     /**
@@ -249,26 +240,29 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Calculates the Nth generalized harmonic number. See
+     * Calculates the sum of terms of the
      * <a href="https://mathworld.wolfram.com/HarmonicSeries.html">Harmonic
      * Series</a>.
      *
      * <pre>
      *          1
-     *   sum  -----  for k in [1, n]
+     *   sum  -----  for k in [from, to]
      *         k^m
      * </pre>
      *
+     * <p>When {@code from = 1} the result is the N-th harmonic number where {@code N = to}.
+     *
      * <p>Assumes {@code exponent > 0} to arrange the terms to sum from small to large.
      *
-     * @param n Term in the series to calculate (must be larger than 0)
+     * @param from First term in the series to calculate.
+     * @param to Last term in the series to calculate.
      * @param m Exponent (special case {@code m = 1} is the harmonic series).
-     * @return the n<sup>th</sup> generalized harmonic number.
+     * @return the sum
      */
-    private static double generalizedHarmonic(final int n, final double m) {
+    private static double generalizedHarmonic(final int from, final int to, final double m) {
         double value = 0;
         // Sum small to large
-        for (int k = n; k >= 1; k--) {
+        for (int k = to; k >= from; k--) {
             value += Math.pow(k, -m);
         }
         return value;

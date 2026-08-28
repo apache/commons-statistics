@@ -87,20 +87,34 @@ class ZipfDistributionTest extends BaseDiscreteDistributionTest {
     }
 
     static Stream<Arguments> testAdditionlSurvivalProbabilityHighPrecision() {
-        // computed using scipy.stats (1.7.1) zipfian
+        // Computed from the generalized harmonic number and the upper
+        // series of terms using Matlab R2023a VPA, e.g.:
+        // vpa(symsum(1/k^10, k, 1, 60), 30)
+        // vpa(symsum(1/k^10, k, 58, 60), 30)
+        // vpa(symsum(1/k^10, k, 60, 60), 30)
+        // Generalized harmonic numbers, the upper summations are inlined below
+        final double k60e10 = 1.00099457512781807511565108861;
+        final double k60e505 = 1.00000000000000062803698427773;
+        final double k60e1005 = 1.0;
         return Stream.of(
             Arguments.of(60, 10,
                 new int[] {57, 59},
-                new double[] {2.3189337454689757e-18, 1.6521739576668957e-18},
-                DoubleTolerances.absolute(1e-25)),
+                new double[] {
+                    0.00000000000000000593155740928262062795573723513 / k60e10,
+                    0.0000000000000000016538171687920201866246676489 / k60e10},
+                DoubleTolerances.relative(1e-14)),
             Arguments.of(60, 50.5,
                 new int[] {57, 59},
-                new double[] {8.8488396450491320e-90, 1.5972093932264611e-90},
-                DoubleTolerances.absolute(1e-95)),
+                new double[] {
+                    1.41783221158702775324465028711e-89 / k60e505,
+                    1.59720939322646230873883366414e-90 / k60e505},
+                DoubleTolerances.relative(1e-14)),
             Arguments.of(60, 100.5,
                 new int[] {57, 59},
-                new double[] {5.9632998443758656e-178, 1.9760564023408183e-179},
-                DoubleTolerances.absolute(1e-185))
+                new double[] {
+                    7.23087851232732627244617172568e-178 / k60e1005,
+                    1.9760564023408181841715991846e-179 / k60e1005},
+                DoubleTolerances.relative(1e-14))
         );
     }
 
