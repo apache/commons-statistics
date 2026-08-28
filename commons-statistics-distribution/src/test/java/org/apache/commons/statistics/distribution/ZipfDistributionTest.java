@@ -24,13 +24,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test cases for {@link ZipfDistribution}.
  * Extends {@link BaseDiscreteDistributionTest}. See javadoc of that class for details.
  */
-class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
+class ZipfDistributionTest extends BaseDiscreteDistributionTest {
     @Override
     DiscreteDistribution makeDistribution(Object... parameters) {
         final int n = (Integer) parameters[0];
@@ -60,6 +61,24 @@ class ZipfDistributionTest  extends BaseDiscreteDistributionTest {
     }
 
     //-------------------- Additional test cases -------------------------------
+
+    /**
+     * Test additional moments.
+     */
+    @ParameterizedTest
+    @CsvSource({
+        // Generated using scipy 1.16.3 using scipy.stats.zipfian.stats(exp, n)
+        "150, 0.512, 52.707637767916495, 1966.9356468021338",
+        "73, 1.67, 4.937625767687036, 87.76033876340095",
+        "999, 2.1, 3.5725516349635846, 343.7153292773371",
+    })
+    void testAdditionalMoments(int n, double exp, double mean, double variance) {
+        final DoubleTolerance tolerance = createRelTolerance(1e-14);
+        final ZipfDistribution dist = ZipfDistribution.of(n, exp);
+        testMoments(dist, mean, variance, tolerance);
+        // Run twice to check the cached N-th harmonic numbers
+        testMoments(dist, mean, variance, tolerance);
+    }
 
     @ParameterizedTest
     @MethodSource

@@ -35,7 +35,7 @@ import org.apache.commons.rng.sampling.distribution.RejectionInversionZipfSample
  * generalized harmonic number</a> of order N of s.
  *
  * <p><strong>Note:</strong> The generalized harmonic number \( H_{N,s} \) is computed
- * by direct summation of \( N \) terms. Construction of the distribution, and each
+ * by direct summation of \( N \) terms. Construction of the distribution, and the first
  * call to {@link #getMean()} or {@link #getVariance()}, is \( O(N) \); each call to
  * {@link #cumulativeProbability(int) cumulativeProbability(x)} or
  * {@link #survivalProbability(int) survivalProbability(x)} is \( O(x) \) (the
@@ -59,6 +59,10 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     private final double nthHarmonic;
     /** Cached value of the log of the nth generalized harmonic. */
     private final double logNthHarmonic;
+    /** Cached value of the nth generalized harmonic using (exponent - 1). */
+    private double nthHarmonicM1 = Double.NaN;
+    /** Cached value of the nth generalized harmonic using (exponent - 2). */
+    private double nthHarmonicM2 = Double.NaN;
 
     /** Create an instance.
      * @param numberOfElements Number of elements.
@@ -186,11 +190,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public double getMean() {
-        final int N = getNumberOfElements();
-        final double s = getExponent();
-
-        final double Hs1 = generalizedHarmonicAscendingSum(N, s - 1);
-
+        final double Hs1 = nthHarmonicExpMinus1();
         return Hs1 / nthHarmonic;
     }
 
@@ -207,14 +207,45 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
      */
     @Override
     public double getVariance() {
-        final int N = getNumberOfElements();
-        final double s = getExponent();
-
-        final double Hs2 = generalizedHarmonicAscendingSum(N, s - 2);
-        final double Hs1 = generalizedHarmonicAscendingSum(N, s - 1);
+        final double Hs2 = nthHarmonicExpMinus2();
+        final double Hs1 = nthHarmonicExpMinus1();
         final double Hs = nthHarmonic;
+        // (Hs2 / Hs) - ((Hs1 * Hs1) / (Hs * Hs))
+        // Values are ascending magnitude: Hs < Hs1 < Hs2.
+        // (small * large) - (mid * mid) with a common denominator:
+        return (Hs2 * Hs - Hs1 * Hs1) / (Hs * Hs);
+    }
 
-        return (Hs2 / Hs) - ((Hs1 * Hs1) / (Hs * Hs));
+    /**
+     * Compute the N-th harmonic number using the {@code exponent - 1}.
+     * This is cached to avoid repeat expensive computation across all N
+     * for the mean and variance.
+     *
+     * @return the number
+     */
+    private double nthHarmonicExpMinus1() {
+        double h = nthHarmonicM1;
+        if (Double.isNaN(h)) {
+            h = generalizedHarmonicAscendingSum(getNumberOfElements(), getExponent() - 1);
+            nthHarmonicM1 = h;
+        }
+        return h;
+    }
+
+    /**
+     * Compute the N-th harmonic number using the {@code exponent - 2}.
+     * This is cached to avoid repeat expensive computation across all N
+     * for the variance.
+     *
+     * @return the number
+     */
+    private double nthHarmonicExpMinus2() {
+        double h = nthHarmonicM2;
+        if (Double.isNaN(h)) {
+            h = generalizedHarmonicAscendingSum(getNumberOfElements(), getExponent() - 2);
+            nthHarmonicM2 = h;
+        }
+        return h;
     }
 
     /**
