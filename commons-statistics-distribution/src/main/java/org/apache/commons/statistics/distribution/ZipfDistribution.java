@@ -253,9 +253,15 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
      * <a href="https://mathworld.wolfram.com/HarmonicSeries.html">Harmonic
      * Series</a>.
      *
+     * <pre>
+     *          1
+     *   sum  -----  for k in [1, n]
+     *         k^m
+     * </pre>
+     *
      * <p>Assumes {@code exponent > 0} to arrange the terms to sum from small to large.
      *
-     * @param n Term in the series to calculate (must be larger than 1)
+     * @param n Term in the series to calculate (must be larger than 0)
      * @param m Exponent (special case {@code m = 1} is the harmonic series).
      * @return the n<sup>th</sup> generalized harmonic number.
      */
