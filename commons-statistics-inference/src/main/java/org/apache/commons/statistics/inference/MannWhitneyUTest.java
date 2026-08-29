@@ -51,6 +51,12 @@ public final class MannWhitneyUTest {
      * modified when holding the lock. When the storage is determined to be the correct
      * size it can be returned for read/write to the array when not holding the lock. */
     private static SoftReference<double[][][]> cacheF = new SoftReference<>(null); // @GuardedBy("LOCK")
+    /** Limit on the tabulation byte allocation size for the exact
+     * p-value computation. The default 2^29, or 512 MiB, is larger than any
+     * tabulation created using the limits configured for the
+     * {@linkplain PValueMethod#AUTO auto} p-value mode. */
+    private static final long MAX_BYTES = Long.getLong(
+        "org.apache.commons.statistics.inference.MannWhitneyUTest.maxBytes", 1L << 29);
     /** Default instance. */
     private static final MannWhitneyUTest DEFAULT = new MannWhitneyUTest(
         AlternativeHypothesis.TWO_SIDED, PValueMethod.AUTO, true, 0);
@@ -157,6 +163,11 @@ public final class MannWhitneyUTest {
     /**
      * Return an instance with the configured p-value method.
      *
+     * <p><strong>Note:</strong> Use of the {@link PValueMethod#EXACT} method may require
+     * a large memory allocation for the computation tables. This is limited to 512 MiB
+     * but can be increased using a system property. See the
+     * {@link #test(double[], double[])} documentation for details.
+     *
      * @param v Value.
      * @return an instance
      * @throws IllegalArgumentException if the value is not in the allowed options or is null
@@ -259,7 +270,12 @@ public final class MannWhitneyUTest {
      * or {@code min(n, m) <= 37} for any {@code max(n, m)}.
      * An {@link OutOfMemoryError} is not expected using the
      * limits configured for the {@linkplain PValueMethod#AUTO auto} p-value computation
-     * as the maximum required memory is approximately 23 MiB.
+     * as the maximum required memory is approximately 2.9 MiB.
+     * To avoid memory errors the tabulation size is limited to {@code 2^29} bytes
+     * (512 MiB); a <em>user-requested</em> exact computation that would
+     * exceed this limit reverts to the asymptotic approximation. The limit is
+     * configurable using the system property
+     * {@code org.apache.commons.statistics.inference.MannWhitneyUTest.maxBytes}.
      *
      * @param x First sample values.
      * @param y Second sample values.
@@ -409,6 +425,12 @@ public final class MannWhitneyUTest {
         final int n1 = Math.min(m, n);
         final int n2 = Math.max(m, n);
 
+        // Limit the size of the tabulation storage.
+        // Note: the CDF is computed using k <= min(u1, u2).
+        if (isOversizedAllocation(Math.min(u1, u2) + 1.0, n1 + 1.0, n2 + 1.0)) {
+            return -1;
+        }
+
         // Return the correct side:
         if (alternative == AlternativeHypothesis.GREATER_THAN) {
             // sf(u1 - 1)
@@ -546,6 +568,22 @@ public final class MannWhitneyUTest {
                 // and copying all old values.
                 final int sn = Math.max(n1, n + 1);
                 final int sk = Math.max(k1, k + 1);
+                // Growing combines the dimensions of the previous and requested
+                // storage; this can exceed the table size limit even when each
+                // individual request is below it. In that case discard the previous
+                // computation and allocate the requested size (which has been checked
+                // against the limit by the caller). Any other thread using the
+                // previous storage is not affected.
+                if (isOversizedAllocation(Math.max(m1, m + 1.0), sn, sk)) {
+                    f = new double[m + 1][n + 1][k + 1];
+                    for (final double[][] a : f) {
+                        for (final double[] b : a) {
+                            initialize(b);
+                        }
+                    }
+                    cacheF = new SoftReference<>(f);
+                    return f;
+                }
                 if (growM) {
                     // Entirely new region
                     f = Arrays.copyOf(f, m + 1);
@@ -585,6 +623,21 @@ public final class MannWhitneyUTest {
         } finally {
             LOCK.unlock();
         }
+    }
+
+    /**
+     * Test an allocation of an array of size [x][y][z] against the
+     * the configured maximum number of bytes.
+     *
+     * <p>Uses floating-point arguments to avoid overflow.
+     *
+     * @param x Size x (assumed to be positive)
+     * @param y Size y (assumed to be positive)
+     * @param z Size z (assumed to be positive)
+     * @return true if the byte size is too large
+     */
+    private static boolean isOversizedAllocation(double x, double y, double z) {
+        return x * y * z * Double.BYTES > MAX_BYTES;
     }
 
     /**

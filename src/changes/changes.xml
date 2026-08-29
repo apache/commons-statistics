@@ -53,12 +53,17 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
+      <action dev="aherbert" type="fix" due-to="Security scan, Alex Herbert" issue="STATISTICS-99">
+        "MannWhitneyUTest": Limit the allocation size for the exact p-value
+        computation. The maximum byte allocation can be configured using a system
+        property. Behaviour using the default AUTO p-value computation is unchanged.
+      </action>
       <action dev="aherbert" type="update" due-to="Security scan, Alex Herbert">
         "KolmogorovSmirnovTest": Bound the maximum number of terms allowed during
         the exact p-value computation for the two-sample two-sided statistic with
         unequal sample sizes. The caller will fall-back to the aysymptotic
         computation to avoid an impractical computation. Behaviour using the
-        default AUTO limit is unchanged.
+        default AUTO p-value computation is unchanged.
       </action>
       <action dev="aherbert" type="update" due-to="Security scan, Alex Herbert">
         "ZipfDistribution": Update documentation on possible long runtimes when

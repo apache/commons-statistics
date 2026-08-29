@@ -350,6 +350,18 @@ class MannWhitneyUTestTest {
         Assertions.assertEquals(-1, MannWhitneyUTest.calculateExactPValue(1L << 32, m, n, AlternativeHypothesis.TWO_SIDED));
     }
 
+    @Test
+    void testCalculateExactPValueTableSizeLimit() {
+        // The tabulation of f, of size (n1+1)*(n2+1)*(min(u1, u2)+1), is limited to a
+        // maximum size (2^26 values by default).
+        // Larger user-requested exact computations cannot be computed exactly and
+        // revert to the asymptotic approximation. binom(m + n, m) is finite for both.
+        Assertions.assertEquals(-1,
+            MannWhitneyUTest.calculateExactPValue(1234, 37, 1000000, AlternativeHypothesis.TWO_SIDED));
+        Assertions.assertEquals(-1,
+            MannWhitneyUTest.calculateExactPValue(125000, 500, 500, AlternativeHypothesis.TWO_SIDED));
+    }
+
     /**
      * Test the exact CDF computation.
      * This hits all edge cases for expanding the cache of f.
@@ -361,7 +373,7 @@ class MannWhitneyUTestTest {
     @Order(1)
     void testCDF(int u, int m, int n, double p) {
         // Use 'less than' to compute the wilcox distribution CDF(u)
-        TestUtils.assertProbability(p, MannWhitneyUTest.calculateExactPValue(u, m, n, AlternativeHypothesis.LESS_THAN), 1e-14, "p-value");
+        TestUtils.assertProbability(p, MannWhitneyUTest.calculateExactPValue(u, m, n, AlternativeHypothesis.LESS_THAN), 5e-14, "p-value");
     }
 
     static Stream<Arguments> testCDF() {
@@ -407,6 +419,20 @@ class MannWhitneyUTestTest {
         builder.add(Arguments.of(7890, 100, 100, 0.99999999999990418775));
         // 22.447 sec
         builder.add(Arguments.of(8901, 100, 100, 1.0));
+
+        // Coverage test for discarding the current f(m, n, k) table.
+        //
+        // Create an allowed allocation that in combination with
+        // the existing table size exceeds the max byte limit.
+        // Max size = 2^26 values = 67,108,864
+        // 601 * 331 * 331 = 65,846,161  (0.981184259)
+        // 601 * 341 * 321 = 65,786,061  (0.980288699)
+        // Combined size is too large:
+        // 601 * 341 * 331 = 67,835,471  (1.010827288)
+        // Expected results from R computed within milliseconds.
+        // These results have the highest relative error of the test cases.
+        builder.add(Arguments.of(600, 330, 330, 6.1399257003662415563e-173)); // rel.error 1.36e-14
+        builder.add(Arguments.of(600, 340, 320, 8.3097576360262207539e-173)); // rel.error 4.98e-14
         return builder.build();
     }
 
