@@ -562,6 +562,12 @@ class KolmogorovSmirnovTestTest {
         builder.add(Arguments.of(Integer.MAX_VALUE, 37, 3L * Integer.MAX_VALUE, false, -1, 0));
         builder.add(Arguments.of(Integer.MAX_VALUE, 37, 3L * Integer.MAX_VALUE, true, -1, 0));
 
+        // Case where the lcm limit passes but the computation work is bounded.
+        // Commensurate sizes: gcd(2000000, 1000000) = 1000000; n*m/gcd = 2000000 (2^20.9)
+        // but the work for a large D is ~ min(n*(m+1), 2*dnm + 2n) ~ 2^41.4.
+        builder.add(Arguments.of(2000000, 1000000, 1500000000000L, false, -1, 0));
+        builder.add(Arguments.of(2000000, 1000000, 1500000000000L, true, -1, 0));
+
         // Square underflow. These match the 2 * p1 where p1 is the one-sided p-value
         builder.add(Arguments.of(538, 538, 538 * 538, false, 2 * 4.9E-323, 0));
         builder.add(Arguments.of(539, 539, 539 * 539, false, 2 * 1.5E-323, 0));

@@ -90,6 +90,15 @@ public final class KolmogorovSmirnovTest {
      * than LARGE_SAMPLE^2 so all AUTO p-values attempt an exact computation, i.e.
      * at least 10000^2 ~ 2^26.56. */
     private static final long MAX_LCM_TWO_SAMPLE_EXACT_P = 1L << 31;
+    /** The maximum number of terms to process in the exact p-value computation for the
+     * two-sample two-sided statistic with unequal sample sizes. The lcm limit
+     * ({@link #MAX_LCM_TWO_SAMPLE_EXACT_P}) bounds the number of distinct p-values but
+     * not the work required to compute one; Sample sizes with a large greatest common
+     * divisor pass the lcm limit with {@code O(n * m)} work. This limit bounds the work.
+     * It must be larger than LARGE_SAMPLE^2 so all AUTO p-values attempt an exact
+     * computation. To avoid overflow during computation this uses half the maximum number
+     * of terms to compute. */
+    private static final long HALF_MAX_TERMS_TWO_SAMPLE_EXACT_P = 1L << 30;
     /** Placeholder to use for the two-sample sign array when the value can be ignored. */
     private static final int[] IGNORED_SIGN = new int[1];
     /** Placeholder to use for the two-sample ties D array when the value can be ignored. */
@@ -1151,6 +1160,15 @@ public final class KolmogorovSmirnovTest {
         // Largest intermediate value is (dnm + im + n) which is within 2^63
         // if n and m are 2^31-1, i = n, dnm = n*m: (2^31-1)^2 + (2^31-1)^2 + 2^31-1 < 2^63
         final long dnm = d * gcd;
+
+        // The lcm bounds the number of distinct p-values, not the work to compute one.
+        // The inner loop processes a window of approximately 2*dnm/n + 1 values of j
+        // for each of the n values of i: terms <= min(n * (m + 1), 2 * dnm + 2 * n).
+        // Fail-fast when the work is impractical; the caller falls back to the
+        // asymptotic p-value approximation. Avoid overflow in 2 * dnm using a half-threshold.
+        if (Math.min(n * (m + 1L) >>> 1, dnm + n) > HALF_MAX_TERMS_TWO_SAMPLE_EXACT_P) {
+            return -1;
+        }
 
         // Viehmann (2021): Updated for i in [0, n], j in [0, m]
         // C_i,j = 1                                      if |i/n - j/m| >= d
