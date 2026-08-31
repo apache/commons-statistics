@@ -72,7 +72,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
                              double exponent) {
         this.numberOfElements = numberOfElements;
         this.exponent = exponent;
-        this.nthHarmonic = generalizedHarmonic(1, numberOfElements, exponent);
+        this.nthHarmonic = generalizedHarmonic(numberOfElements, exponent);
         logNthHarmonic = Math.log(nthHarmonic);
     }
 
@@ -151,7 +151,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
             return 1;
         }
 
-        return generalizedHarmonic(1, x, exponent) / nthHarmonic;
+        return generalizedHarmonic(x, exponent) / nthHarmonic;
     }
 
     /** {@inheritDoc} */
@@ -240,6 +240,31 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
+     * Calculates the {@code n}-th generalized harmonic number.
+     *
+     * <pre>
+     *          1
+     *   sum  -----  for k in [1, n]
+     *         k^m
+     * </pre>
+     *
+     * <p>Assumes {@code exponent > 0} to arrange the terms to sum from small to large.
+     *
+     * @param n Last term in the series to calculate.
+     * @param m Exponent (special case {@code m = 1} is the harmonic series).
+     * @return the sum
+     */
+    private static double generalizedHarmonic(final int n, final double m) {
+        double value = 0;
+        // Sum small to large
+        for (int k = n; k >= 2; k--) {
+            value += Math.pow(k, -m);
+        }
+        // 1^-m = 1
+        return value + 1.0;
+    }
+
+    /**
      * Calculates the sum of terms of the
      * <a href="https://mathworld.wolfram.com/HarmonicSeries.html">Harmonic
      * Series</a>.
@@ -269,7 +294,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
     }
 
     /**
-     * Calculates the Nth generalized harmonic number.
+     * Calculates the {@code n}-th generalized harmonic number.
      *
      * <p>Checks the value of the {@code exponent} to arrange the terms to sum from from small to large.
      *
@@ -278,17 +303,21 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
      * @return the n<sup>th</sup> generalized harmonic number.
      */
     private static double generalizedHarmonicAscendingSum(final int n, final double m) {
-        double value = 0;
-        // Sum small to large
-        // If m < 0 then sum ascending, otherwise descending
+        double value;
+        // Sum small to large.
+        // If m < 0 then sum ascending, otherwise descending.
+        // Note: 1^-m = 1
         if (m < 0) {
-            for (int k = 1; k <= n; k++) {
+            value = 1.0;
+            for (int k = 2; k <= n; k++) {
                 value += Math.pow(k, -m);
             }
         } else {
-            for (int k = n; k >= 1; k--) {
+            value = 0;
+            for (int k = n; k >= 2; k--) {
                 value += Math.pow(k, -m);
             }
+            value += 1.0;
         }
         return value;
     }
