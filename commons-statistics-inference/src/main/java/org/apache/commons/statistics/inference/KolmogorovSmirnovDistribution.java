@@ -547,11 +547,6 @@ final class KolmogorovSmirnovDistribution {
             // This is the form for K0.
             // Compute all together over odd integers and divide factors
             // of (k + 1/2)^b by 2^b.
-            double k0 = 0;
-            double k1 = 0;
-            double k2 = 0;
-            double k3 = 0;
-
             final double rootN = Math.sqrt(n);
             final double z = x * rootN;
             final double z3 = z * z2;
@@ -579,6 +574,10 @@ final class KolmogorovSmirnovDistribution {
             // 0 = k^2 - k + log(eps) * 2z^2 / pi^2
             // Solve using quadratic equation and eps = ulp(1.0): 4a ~ -288
             final int max = (int) Math.ceil((1 + Math.sqrt(1 - FOUR_A * z2 / PI2)) / 2);
+            double k0 = 0;
+            double k1 = 0;
+            double k2 = 0;
+            double k3 = 0;
             // Sum smallest terms first
             for (int k = max; k > 0; k--) {
                 final int j = 2 * k - 1;

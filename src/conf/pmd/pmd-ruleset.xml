@@ -104,6 +104,14 @@
         value="./ancestor-or-self::MethodDeclaration[@Name='twoSampleTwoSidedPStabilizedInner']"/>
     </properties>
   </rule>
+  <rule ref="category/java/codestyle.xml/VariableDeclarationUsageDistance">
+    <properties>
+      <!-- Brent algorithm state must persist across iterations. -->
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::MethodDeclaration[@Name='optimize'
+          and ancestor::ClassDeclaration[@SimpleName='BrentOptimizer']]"/>
+    </properties>
+  </rule>
   <rule ref="category/java/codestyle.xml/LinguisticNaming">
     <properties>
       <!-- Allow builder pattern for configuring statistics for fluent chaining -->

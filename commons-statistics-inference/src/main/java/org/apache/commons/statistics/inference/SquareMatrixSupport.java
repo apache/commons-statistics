@@ -153,8 +153,6 @@ final class SquareMatrixSupport {
 
             // Working arrays
             final double[] col = new double[dim];
-            double[] b = new double[data.length];
-            double[] tmp;
 
             // Initialise result as A^1.
             final double[] a = data;
@@ -168,6 +166,8 @@ final class SquareMatrixSupport {
             int bits = n << shift;
 
             // Process remaining bits below highest set bit.
+            double[] b = new double[data.length];
+            double[] tmp;
             for (int i = 32 - shift; i != 0; i--, bits <<= 1) {
                 // Square the result
                 er = multiply(r, er, r, er, col, b);
