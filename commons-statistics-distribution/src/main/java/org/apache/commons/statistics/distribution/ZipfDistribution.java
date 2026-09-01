@@ -134,6 +134,29 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
 
     /** {@inheritDoc} */
     @Override
+    public double probability(int x0,
+                              int x1) {
+        if (x0 > x1) {
+            throw new DistributionException(DistributionException.INVALID_RANGE_LOW_GT_HIGH, x0, x1);
+        }
+        if (x0 == x1 || x1 < 1) {
+            // (x0, x1] does not overlap [1, n]
+            return 0;
+        }
+        // If the range is outside the bounds use the appropriate cumulative probability
+        if (x0 < 1) {
+            return cumulativeProbability(x1);
+        }
+        if (x1 >= numberOfElements) {
+            return survivalProbability(x0);
+        }
+        // Here: 1 <= x0 < x1 < n:
+        // sum(pdf(x)) for x in (x0, x1]
+        return generalizedHarmonic(x0 + 1, x1, exponent) / nthHarmonic;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public double logProbability(int x) {
         if (x <= 0 || x > numberOfElements) {
             return Double.NEGATIVE_INFINITY;
