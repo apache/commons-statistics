@@ -40,6 +40,11 @@
     <!-- Reproducible builds -->
     <project.build.outputTimestamp>${statistics.build.outputTimestamp}</project.build.outputTimestamp>
     <statistics.jira.component>distribution</statistics.jira.component>
+
+    <!-- Change from commons-parent of 1.0 -->
+    <!-- HurwitzZeta factor table is large and not all values are used in the test suite. -->
+    <commons.jacoco.branchRatio>0.999</commons.jacoco.branchRatio>
+    <commons.jacoco.complexityRatio>0.999</commons.jacoco.complexityRatio>
   </properties>
 
   <dependencies>

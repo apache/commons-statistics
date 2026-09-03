@@ -53,7 +53,7 @@ class ExtendedPrecisionTest {
      * Class to compute the root mean squared error (RMS).
      * @see <a href="https://en.wikipedia.org/wiki/Root_mean_square">Wikipedia: RMS</a>
      */
-    private static final class RMS {
+    static final class RMS {
         private double ss;
         private double max;
         private int n;
@@ -249,12 +249,28 @@ class ExtendedPrecisionTest {
         assertPrecision(EXPMHXX_RMS2, 400, 60);
     }
 
-    private static void assertPrecision(RMS rms, double maxError, double rmsError) {
+    /**
+     * Assert the precision of the RMS statistics.
+     *
+     * @param rms RMS statistics.
+     * @param maxError Allowed maximum error.
+     * @param rmsError Allowed RMS error.
+     */
+    static void assertPrecision(RMS rms, double maxError, double rmsError) {
         Assertions.assertTrue(rms.getMax() < maxError, () -> "max error: " + rms.getMax());
         Assertions.assertTrue(rms.getRMS() < rmsError, () -> "rms error: " + rms.getRMS());
     }
 
-    private static void addError(double z, BigDecimal expected, double e, RMS rms) {
+    /**
+     * Adds the error to the RMS statistics.
+     *
+     * @param z Value.
+     * @param expected Expected value.
+     * @param e Expected value as a double.
+     * @param rms RMS statistics.
+     * @return the error in units of least precision (ULPs)
+     */
+    static double addError(double z, BigDecimal expected, double e, RMS rms) {
         double error;
         if (z == e) {
             error = 0;
@@ -264,5 +280,6 @@ class ExtendedPrecisionTest {
                 .divide(new BigDecimal(Math.ulp(e)), MathContext.DECIMAL64).doubleValue();
         }
         rms.add(error);
+        return error;
     }
 }

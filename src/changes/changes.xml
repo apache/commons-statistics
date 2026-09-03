@@ -53,6 +53,10 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
+      <action dev="aherbert" type="update" due-to="Alex Herbert" issue="STATISTICS-100">
+        "ZipfDistribution": Use the Hurwitz zeta function when parameters are suitable
+        for a significant performance improvment when the number of elements is large.
+      </action>
       <action dev="aherbert" type="fix" due-to="Security scan, Alex Herbert" issue="STATISTICS-99">
         "MannWhitneyUTest": Limit the allocation size for the exact p-value
         computation. The maximum byte allocation can be configured using a system

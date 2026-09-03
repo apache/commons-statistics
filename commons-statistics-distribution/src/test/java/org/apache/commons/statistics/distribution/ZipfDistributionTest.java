@@ -68,12 +68,20 @@ class ZipfDistributionTest extends BaseDiscreteDistributionTest {
     @ParameterizedTest
     @CsvSource({
         // Generated using scipy 1.16.3 using scipy.stats.zipfian.stats(exp, n)
-        "150, 0.512, 52.707637767916495, 1966.9356468021338",
-        "73, 1.67, 4.937625767687036, 87.76033876340095",
-        "999, 2.1, 3.5725516349635846, 343.7153292773371",
+        "150, 0.512, 52.707637767916495, 1966.9356468021338, 2e-15",
+        "73, 1.67, 4.937625767687036, 87.76033876340095, 1e-15",
+        "999, 2.1, 3.5725516349635846, 343.7153292773371, 1e-15",
+        // Attempt to use the zeta function but the two values are close: zeta(s-1, 1) - zeta(s-1, 1+n)
+        "100, 2.02, 3.080144872398558, 48.00225370319864, 1e-15",
+        "1000, 2.001, 4.5415154015097565, 584.4277334272527, 1e-15",
+        // Large n is not practical without the zeta function.
+        // Ensure n - 2 > 1 to use the zeta function for the variance.
+        "999999, 3.1, 1.3184365884771752, 5.083318190566237, 1e-15",
+        "987654321, 3.4, 1.2148826443135665, 1.2508670058966394, 1e-15",
+        "987654321, 5.4, 1.0312467279214397, 0.045058034902836094, 2e-14",
     })
-    void testAdditionalMoments(int n, double exp, double mean, double variance) {
-        final DoubleTolerance tolerance = createRelTolerance(1e-14);
+    void testAdditionalMoments(int n, double exp, double mean, double variance, double eps) {
+        final DoubleTolerance tolerance = createRelTolerance(eps);
         final ZipfDistribution dist = ZipfDistribution.of(n, exp);
         testMoments(dist, mean, variance, tolerance);
         // Run twice to check the cached N-th harmonic numbers
