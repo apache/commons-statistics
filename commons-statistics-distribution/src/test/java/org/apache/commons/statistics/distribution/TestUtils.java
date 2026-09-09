@@ -395,7 +395,7 @@ public final class TestUtils {
      * @param counts Counts for each quartile.
      * @param quartiles Quartiles.
      */
-    static void updateCounts(double value, long[] counts, int[] quartiles) {
+    static void updateCounts(int value, long[] counts, int[] quartiles) {
         if (value > quartiles[1]) {
             counts[value <= quartiles[2] ? 2 : 3]++;
         } else {
