@@ -79,6 +79,8 @@ class ZipfDistributionTest extends BaseDiscreteDistributionTest {
         "999999, 3.1, 1.3184365884771752, 5.083318190566237, 1e-15",
         "987654321, 3.4, 1.2148826443135665, 1.2508670058966394, 1e-15",
         "987654321, 5.4, 1.0312467279214397, 0.045058034902836094, 2e-14",
+        // n=2^31-1 : n+1 overflows
+        "2147483647, 5.4, 1.0312467279214397, 0.045058034902836094, 2e-14",
     })
     void testAdditionalMoments(int n, double exp, double mean, double variance, double eps) {
         final DoubleTolerance tolerance = createRelTolerance(eps);

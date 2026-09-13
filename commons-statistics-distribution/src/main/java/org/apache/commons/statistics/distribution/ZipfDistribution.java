@@ -171,7 +171,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
         public double value(int a, int b) {
             if (b - a >= MIN_TERMS) {
                 final double z1 = a == 1 ? zeta1 : HurwitzZeta.value(s, a);
-                final double z2 = b == n ? zeta1pN : HurwitzZeta.value(s, 1 + b);
+                final double z2 = b == n ? zeta1pN : HurwitzZeta.value(s, b + 1.0);
                 if (allowedDifference(z1, z2)) {
                     return applyBounds(z1 - z2);
                 }
@@ -258,7 +258,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
         // it so the threshold is 4 * MIN_TERMS.
         if (exponent > 1 && (numberOfElements >>> 2) > MIN_TERMS) {
             final double zeta1 = HurwitzZeta.value(exponent, 1);
-            final double zeta1pN = HurwitzZeta.value(exponent, 1 + numberOfElements);
+            final double zeta1pN = HurwitzZeta.value(exponent, numberOfElements + 1.0);
             if (allowedDifference(zeta1, zeta1pN)) {
                 return new ZipfDistribution(numberOfElements, exponent, zeta1 - zeta1pN,
                     new ZetaHarmonicSeries(numberOfElements, exponent, zeta1, zeta1pN));
@@ -482,7 +482,7 @@ public final class ZipfDistribution extends AbstractDiscreteDistribution {
         // to compute the harmonic series.
         if (m > 1 && (n >>> 2) > MIN_TERMS) {
             final double z1 = HurwitzZeta.value(m, 1);
-            final double z2 = HurwitzZeta.value(m, 1 + n);
+            final double z2 = HurwitzZeta.value(m, n + 1.0);
             if (allowedDifference(z1, z2)) {
                 return z1 - z2;
             }
