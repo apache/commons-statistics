@@ -53,6 +53,10 @@ If the output is not quite correct, check for invisible trailing spaces!
   </properties>
   <body>
     <release version="1.4" date="TBD" description="Adds new features (requires Java 8).">
+      <action dev="aherbert" type="add" due-to="Alex Herbert" issue="STATISTICS-101">
+        "ZetaDistribution": Add a zeta distribution. This is the large N limit
+        of the ZipfDistribution.
+      </action>
       <action dev="aherbert" type="update" due-to="Alex Herbert" issue="STATISTICS-100">
         "ZipfDistribution": Use the Hurwitz zeta function when parameters are suitable
         for a significant performance improvment when the number of elements is large.
