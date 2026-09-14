@@ -657,7 +657,7 @@ class HurwitzZetaTest {
             Arguments.of(61.76, 30.23, 4.27875492887441652081612955782e-92, 2),
 
             // s -> large, a == 1
-            // Asymptote of Reimann zeta function: 1 + 2^-s
+            // Asymptote of Riemann zeta function: 1 + 2^-s
             Arguments.of(25.67, 1, 1.00000001873152459253171691257, 0),
             Arguments.of(29.67, 1, 1.00000000117069191296622655835, 0),
             Arguments.of(39.67, 1, 1.00000000000114324712238181431, 0),
