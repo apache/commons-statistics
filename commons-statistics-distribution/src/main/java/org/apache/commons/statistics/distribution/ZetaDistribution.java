@@ -67,7 +67,7 @@ import org.apache.commons.rng.UniformRandomProvider;
  *
  * <p>This may incur significant cancellation in the two zeta terms. The
  * {@link #cumulativeProbability(int) cdf(x)} method should be considered imprecise as the
- * value approaches 0. Precision loss is limited to {@code b}-bits for a value \( > 2^{-b+1} \).
+ * value approaches 0. Precision loss is limited to {@code b}-bits for a value \( \gt 2^{-b+1} \).
  * The {@link #probability(int, int) probability(a, b)} method should be considered potentially
  * imprecise for any range {@code b - a >= 10}.
  *
@@ -251,7 +251,7 @@ public final class ZetaDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For \( s > 2 \) the mean is:
+     * <p>For \( s \gt 2 \) the mean is:
      *
      * <p>\[ \frac{\zeta(s - 1)}{\zeta(s)} \]
      *
@@ -274,7 +274,7 @@ public final class ZetaDistribution extends AbstractDiscreteDistribution {
     /**
      * {@inheritDoc}
      *
-     * <p>For \( s > 3 \) the variance is:
+     * <p>For \( s \gt 3 \) the variance is:
      *
      * <p>\[ \frac{\zeta(s)\zeta(s-2) - \zeta(s-1)^2}{\zeta(s)^2} \]
      *
