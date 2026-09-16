@@ -91,6 +91,7 @@ import org.apache.commons.rng.UniformRandomProvider;
  * @see <a href="https://en.wikipedia.org/wiki/Zeta_distribution">Zeta distribution (Wikipedia)</a>
  * @see <a href="https://en.wikipedia.org/wiki/Riemann_zeta_function">Riemann zeta function (Wikipedia)</a>
  * @see <a href="https://en.wikipedia.org/wiki/Hurwitz_zeta_function">Hurwitz zeta function (Wikipedia)</a>
+ * @since 1.4
  */
 public final class ZetaDistribution extends AbstractDiscreteDistribution {
     /** Minimum number of terms required to use the Hurwitz zeta function for cumulative
