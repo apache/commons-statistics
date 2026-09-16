@@ -19,26 +19,26 @@ package org.apache.commons.statistics.examples.distribution;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.statistics.distribution.DiscreteDistribution;
-import org.apache.commons.statistics.distribution.ZipfDistribution;
+import org.apache.commons.statistics.distribution.ZetaDistribution;
 import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 /**
- * Command for the {@link ZipfDistribution}.
+ * Command for the {@link ZetaDistribution}.
  */
-@Command(name = "zipf",
-         description = "Zipf distribution.",
+@Command(name = "zeta",
+         description = "Zeta distribution.",
          subcommands = {
-             ZipfCommand.Check.class,
-             ZipfCommand.PMF.class,
-             ZipfCommand.LPMF.class,
-             ZipfCommand.CDF.class,
-             ZipfCommand.SF.class,
-             ZipfCommand.ICDF.class,
-             ZipfCommand.ISF.class,
+             ZetaCommand.Check.class,
+             ZetaCommand.PMF.class,
+             ZetaCommand.LPMF.class,
+             ZetaCommand.CDF.class,
+             ZetaCommand.SF.class,
+             ZetaCommand.ICDF.class,
+             ZetaCommand.ISF.class,
          })
-class ZipfCommand extends AbstractDistributionCommand {
+class ZetaCommand extends AbstractDistributionCommand {
 
     /** Base command for the distribution that defines the parameters. */
     private abstract static class BaseCommand extends AbstractDiscreteDistributionCommand {
@@ -48,19 +48,12 @@ class ZipfCommand extends AbstractDistributionCommand {
 
         /** Parameters class. */
         static class Params {
-            /** The distribution number of elements. */
-            @Option(names = {"-n", "--number-of-elements"},
-                    arity = "1..*",
-                    split = ",",
-                    description = {"number of elements (default: ${DEFAULT-VALUE})."})
-            private int[] n = {10};
-
             /** The distribution exponent. */
             @Option(names = {"-e", "--exponent"},
                     arity = "1..*",
                     split = ",",
                     description = {"exponent (default: ${DEFAULT-VALUE})."})
-            private double[] e = {1, 2, 3, 4};
+            private double[] e = {1.1, 2.1, 3.1};
         }
 
         /** Extend the options to set the default values for this distribution. */
@@ -74,18 +67,11 @@ class ZipfCommand extends AbstractDistributionCommand {
 
         @Override
         protected List<Distribution<DiscreteDistribution>> getDistributions() {
-            int[] n = params.n;
-            double[] e = params.e;
-            final int max = DistributionUtils.validateLengths(n.length, e.length);
-
-            n = DistributionUtils.expandToLength(n, max);
-            e = DistributionUtils.expandToLength(e, max);
-
             // Create distributions
             final ArrayList<Distribution<DiscreteDistribution>> list = new ArrayList<>();
-            for (int i = 0; i < max; i++) {
-                final DiscreteDistribution d = ZipfDistribution.of(n[i], e[i]);
-                list.add(new Distribution<>(d, "n=" + n[i] + ",e=" + e[i]));
+            for (double e : params.e) {
+                final DiscreteDistribution d = ZetaDistribution.of(e);
+                list.add(new Distribution<>(d, "e=" + e));
             }
             return list;
         }
@@ -118,38 +104,38 @@ class ZipfCommand extends AbstractDistributionCommand {
     /** Verification checks command. */
     @Command(name = "check",
              hidden = true,
-             description = "Zipf distribution verification checks.")
+             description = "Zeta distribution verification checks.")
     static class Check extends ProbabilityCommand {}
 
     /** PMF command. */
     @Command(name = "pmf",
              aliases = {"pdf"},
-             description = "Zipf distribution PMF.")
+             description = "Zeta distribution PMF.")
     static class PMF extends ProbabilityCommand {}
 
     /** LPMF command. */
     @Command(name = "lpmf",
              aliases = {"lpdf"},
-             description = "Zipf distribution natural logarithm of the PMF.")
+             description = "Zeta distribution natural logarithm of the PMF.")
     static class LPMF extends ProbabilityCommand {}
 
     /** CDF command. */
     @Command(name = "cdf",
-             description = "Zipf distribution CDF.")
+             description = "Zeta distribution CDF.")
     static class CDF extends ProbabilityCommand {}
 
     /** SF command. */
     @Command(name = "sf",
-             description = "Zipf distribution survival probability.")
+             description = "Zeta distribution survival probability.")
     static class SF extends ProbabilityCommand {}
 
     /** ICDF command. */
     @Command(name = "icdf",
-             description = "Zipf distribution inverse CDF.")
+             description = "Zeta distribution inverse CDF.")
     static class ICDF extends InverseProbabilityCommand {}
 
     /** ISF command. */
     @Command(name = "isf",
-             description = "Zipf distribution inverse SF.")
+             description = "Zeta distribution inverse SF.")
     static class ISF extends InverseProbabilityCommand {}
 }

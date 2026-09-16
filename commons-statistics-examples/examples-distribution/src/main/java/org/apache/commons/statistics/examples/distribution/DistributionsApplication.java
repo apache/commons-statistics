@@ -96,6 +96,7 @@ public final class DistributionsApplication {
                  UniformContinuousCommand.class,
                  UniformDiscreteCommand.class,
                  WeibullCommand.class,
+                 ZetaCommand.class,
                  ZipfCommand.class,
              })
     static class DistributionsCommand extends AbstractDistributionCommand {
