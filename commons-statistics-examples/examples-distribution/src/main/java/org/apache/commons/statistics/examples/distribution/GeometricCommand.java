@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          aliases = {"geo"},
          description = "Geometric distribution.",
          subcommands = {
+             GeometricCommand.Info.class,
              GeometricCommand.Check.class,
              GeometricCommand.PMF.class,
              GeometricCommand.LPMF.class,
@@ -57,13 +58,13 @@ class GeometricCommand extends AbstractDistributionCommand {
             private double[] p = {0.2, 0.5, 0.8};
         }
 
-        /** Extend the options to set the default values for this distribution. */
-        static final class Options extends DiscreteDistributionOptions {
-            /** Set defaults. */
-            private Options() {
-                min = 0;
-                max = 10;
-            }
+        /**
+         * Create an instance.
+         *
+         * @param outputOptions the output options
+         */
+        BaseCommand(OutputOptions outputOptions) {
+            super(outputOptions);
         }
 
         @Override
@@ -78,27 +79,29 @@ class GeometricCommand extends AbstractDistributionCommand {
         }
     }
 
-    /** Base command for the distribution that defines the parameters. */
+    /** Base command for the distribution that defines the parameters for probability functions. */
     private abstract static class ProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private Options distributionOptions = new Options();
-
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+        /** Default constructor. */
+        ProbabilityCommand() {
+            super(new DiscreteDistributionOptions(0, 10));
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseDiscreteDistributionOptions distributionOptions = new InverseDiscreteDistributionOptions();
+        /** Default constructor. */
+        InverseProbabilityCommand() {
+            super(new InverseDiscreteDistributionOptions());
+        }
+    }
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+    /** Information command. */
+    @Command(name = "info",
+             description = "Geometric distribution information.")
+    static class Info extends BaseCommand {
+        /** Default constructor. */
+        Info() {
+            super(new OutputOptions());
         }
     }
 

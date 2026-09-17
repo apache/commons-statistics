@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          aliases = {"hyge"},
          description = "Hypergeometric distribution.",
          subcommands = {
+             HypergeometricCommand.Info.class,
              HypergeometricCommand.Check.class,
              HypergeometricCommand.PMF.class,
              HypergeometricCommand.LPMF.class,
@@ -73,13 +74,13 @@ class HypergeometricCommand extends AbstractDistributionCommand {
             private int[] n = {100, 200, 300};
         }
 
-        /** Extend the options to set the default values for this distribution. */
-        static final class Options extends DiscreteDistributionOptions {
-            /** Set defaults. */
-            private Options() {
-                min = 0;
-                max = 60;
-            }
+        /**
+         * Create an instance.
+         *
+         * @param outputOptions the output options
+         */
+        BaseCommand(OutputOptions outputOptions) {
+            super(outputOptions);
         }
 
         @Override
@@ -103,27 +104,29 @@ class HypergeometricCommand extends AbstractDistributionCommand {
         }
     }
 
-    /** Base command for the distribution that defines the parameters. */
+    /** Base command for the distribution that defines the parameters for probability functions. */
     private abstract static class ProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private Options distributionOptions = new Options();
-
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+        /** Default constructor. */
+        ProbabilityCommand() {
+            super(new DiscreteDistributionOptions(0, 60));
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseDiscreteDistributionOptions distributionOptions = new InverseDiscreteDistributionOptions();
+        /** Default constructor. */
+        InverseProbabilityCommand() {
+            super(new InverseDiscreteDistributionOptions());
+        }
+    }
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+    /** Information command. */
+    @Command(name = "info",
+             description = "Hypergeometric distribution information.")
+    static class Info extends BaseCommand {
+        /** Default constructor. */
+        Info() {
+            super(new OutputOptions());
         }
     }
 

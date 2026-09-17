@@ -31,7 +31,7 @@ class DiscreteDistributionOptions extends DistributionOptions {
     /** The maximum point to evaluate. */
     @Option(names = { "--max" },
             description = {"Maximum point to evaluate (default: ${DEFAULT-VALUE})."})
-    protected int max = 20;
+    protected int max;
 
     /** The increment from minimum to the maximum. */
     @Option(names = { "-i", "--increment" },
@@ -49,4 +49,15 @@ class DiscreteDistributionOptions extends DistributionOptions {
     @Option(names = { "--format" },
             description = {"Format for the output values (default: ${DEFAULT-VALUE})."})
     protected String format = "%s";
+
+    /**
+     * Create an instance.
+     *
+     * @param min the minimum point to evaluate
+     * @param max the maximum point to evaluate
+     */
+    DiscreteDistributionOptions(int min, int max) {
+        this.min = min;
+        this.max = max;
+    }
 }

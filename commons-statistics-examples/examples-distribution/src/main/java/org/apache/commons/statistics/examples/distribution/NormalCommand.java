@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          aliases = {"norm"},
          description = "Normal distribution.",
          subcommands = {
+             NormalCommand.Info.class,
              NormalCommand.Check.class,
              NormalCommand.PDF.class,
              NormalCommand.LPDF.class,
@@ -65,13 +66,13 @@ class NormalCommand extends AbstractDistributionCommand {
             private double[] sigma = {Math.sqrt(0.2), 1, Math.sqrt(5), Math.sqrt(0.5)};
         }
 
-        /** Extend the options to set the default values for this distribution. */
-        static final class Options extends ContinuousDistributionOptions {
-            /** Set defaults. */
-            private Options() {
-                min = -5;
-                max = 5;
-            }
+        /**
+         * Create an instance.
+         *
+         * @param outputOptions the output options
+         */
+        BaseCommand(OutputOptions outputOptions) {
+            super(outputOptions);
         }
 
         @Override
@@ -93,27 +94,29 @@ class NormalCommand extends AbstractDistributionCommand {
         }
     }
 
-    /** Base command for the distribution that defines the parameters. */
+    /** Base command for the distribution that defines the parameters for probability functions. */
     private abstract static class ProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private Options distributionOptions = new Options();
-
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+        /** Default constructor. */
+        ProbabilityCommand() {
+            super(new ContinuousDistributionOptions(-5, 5));
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+        /** Default constructor. */
+        InverseProbabilityCommand() {
+            super(new InverseContinuousDistributionOptions());
+        }
+    }
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+    /** Information command. */
+    @Command(name = "info",
+             description = "Normal distribution information.")
+    static class Info extends BaseCommand {
+        /** Default constructor. */
+        Info() {
+            super(new OutputOptions());
         }
     }
 

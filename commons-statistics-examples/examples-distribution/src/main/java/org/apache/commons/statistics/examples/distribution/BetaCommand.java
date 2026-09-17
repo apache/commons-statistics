@@ -30,6 +30,7 @@ import picocli.CommandLine.Option;
 @Command(name = "beta",
          description = "Beta distribution.",
          subcommands = {
+             BetaCommand.Info.class,
              BetaCommand.Check.class,
              BetaCommand.PDF.class,
              BetaCommand.LPDF.class,
@@ -63,13 +64,13 @@ class BetaCommand extends AbstractDistributionCommand {
             private double[] beta = {0.5, 1, 3, 2, 5};
         }
 
-        /** Extend the options to set the default values for this distribution. */
-        static final class Options extends ContinuousDistributionOptions {
-            /** Set defaults. */
-            private Options() {
-                min = 0;
-                max = 1;
-            }
+        /**
+         * Create an instance.
+         *
+         * @param outputOptions the output options
+         */
+        BaseCommand(OutputOptions outputOptions) {
+            super(outputOptions);
         }
 
         @Override
@@ -91,27 +92,29 @@ class BetaCommand extends AbstractDistributionCommand {
         }
     }
 
-    /** Base command for the distribution that defines the parameters. */
+    /** Base command for the distribution that defines the parameters for probability functions. */
     private abstract static class ProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private Options distributionOptions = new Options();
-
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+        /** Default constructor. */
+        ProbabilityCommand() {
+            super(new ContinuousDistributionOptions(0, 1));
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseContinuousDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+        /** Default constructor. */
+        InverseProbabilityCommand() {
+            super(new InverseContinuousDistributionOptions());
+        }
+    }
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+    /** Information command. */
+    @Command(name = "info",
+             description = "Beta distribution information.")
+    static class Info extends BaseCommand {
+        /** Default constructor. */
+        Info() {
+            super(new OutputOptions());
         }
     }
 

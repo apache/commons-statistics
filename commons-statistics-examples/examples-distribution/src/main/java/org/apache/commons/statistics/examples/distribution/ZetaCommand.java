@@ -30,6 +30,7 @@ import picocli.CommandLine.Option;
 @Command(name = "zeta",
          description = "Zeta distribution.",
          subcommands = {
+             ZetaCommand.Info.class,
              ZetaCommand.Check.class,
              ZetaCommand.PMF.class,
              ZetaCommand.LPMF.class,
@@ -43,7 +44,7 @@ class ZetaCommand extends AbstractDistributionCommand {
     /** Base command for the distribution that defines the parameters. */
     private abstract static class BaseCommand extends AbstractDiscreteDistributionCommand {
         /** Distribution parameters. */
-        @ArgGroup(validate = false, heading = "Distribution parameters:%n", order = 1)
+        @ArgGroup(validate = false, heading = HEADING_DISTRIBUTION_PARAMETERS, order = 1)
         private Params params = new Params();
 
         /** Parameters class. */
@@ -56,13 +57,13 @@ class ZetaCommand extends AbstractDistributionCommand {
             private double[] e = {1.1, 2.1, 3.1};
         }
 
-        /** Extend the options to set the default values for this distribution. */
-        static final class Options extends DiscreteDistributionOptions {
-            /** Set defaults. */
-            private Options() {
-                min = 1;
-                max = 10;
-            }
+        /**
+         * Create an instance.
+         *
+         * @param outputOptions the output options
+         */
+        BaseCommand(OutputOptions outputOptions) {
+            super(outputOptions);
         }
 
         @Override
@@ -77,27 +78,29 @@ class ZetaCommand extends AbstractDistributionCommand {
         }
     }
 
-    /** Base command for the distribution that defines the parameters. */
+    /** Base command for the distribution that defines the parameters for probability functions. */
     private abstract static class ProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private Options distributionOptions = new Options();
-
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+        /** Default constructor. */
+        ProbabilityCommand() {
+            super(new DiscreteDistributionOptions(1, 10));
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseDiscreteDistributionOptions distributionOptions = new InverseDiscreteDistributionOptions();
+        /** Default constructor. */
+        InverseProbabilityCommand() {
+            super(new InverseDiscreteDistributionOptions());
+        }
+    }
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+    /** Information command. */
+    @Command(name = "info",
+             description = "Zeta distribution information.")
+    static class Info extends BaseCommand {
+        /** Default constructor. */
+        Info() {
+            super(new OutputOptions());
         }
     }
 

@@ -31,7 +31,7 @@ class ContinuousDistributionOptions extends DistributionOptions {
     /** The maximum point to evaluate. */
     @Option(names = { "--max" },
             description = {"Maximum point to evaluate (default: ${DEFAULT-VALUE})."})
-    protected double max = 5;
+    protected double max;
 
     /** The number of steps from minimum to the maximum. */
     @Option(names = { "--steps" },
@@ -54,4 +54,15 @@ class ContinuousDistributionOptions extends DistributionOptions {
     @Option(names = { "--format" },
             description = {"Format for the output values (default: ${DEFAULT-VALUE})."})
     protected String format = "%s";
+
+    /**
+     * Create an instance.
+     *
+     * @param min the minimum point to evaluate
+     * @param max the maximum point to evaluate
+     */
+    ContinuousDistributionOptions(double min, double max) {
+        this.min = min;
+        this.max = max;
+    }
 }

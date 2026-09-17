@@ -19,6 +19,7 @@ package org.apache.commons.statistics.examples.distribution;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.apache.commons.statistics.distribution.DiscreteDistribution;
+import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Mixin;
 
 /**
@@ -35,21 +36,44 @@ import picocli.CommandLine.Mixin;
  * evaluation.
  */
 abstract class AbstractDiscreteDistributionCommand implements Callable<Void> {
+    /** Heading for distribution parameters. */
+    static final String HEADING_DISTRIBUTION_PARAMETERS = "Distribution parameters:%n";
+    /** Heading for evaluation options. */
+    static final String HEADING_EVALUATION_OPTIONS = "Evaluation options:%n";
+
     /** The standard options. */
     @Mixin
     private StandardOptions standardOptions;
 
+    /** The distribution options. */
+    @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+    private OutputOptions outputOptions;
+
+    /**
+     * Create an instance.
+     *
+     * @param outputOptions the output options
+     */
+    AbstractDiscreteDistributionCommand(OutputOptions outputOptions) {
+        this.outputOptions = outputOptions;
+    }
+
     @Override
     public Void call() {
         final List<Distribution<DiscreteDistribution>> distributions = getDistributions();
-        final DistributionOptions distributionOptions = getDistributionOptions();
         // Set the function based on the class name
         final String name = getClass().getSimpleName();
 
         // Special handling of sub-classes which do not evaluate a function of the distribution.
         // This is done here to avoid duplicating an overridden 'call()' method for each instance.
-        // Currently this applies to a hidden 'check' command that performs verification checks
-        // on the distribution.
+        if ("Info".equals(name)) {
+            DistributionUtils.infoDiscrete(distributions, outputOptions);
+            return null;
+        }
+
+        // Assume this is an evaluation of the distribution
+        final DistributionOptions distributionOptions = (DistributionOptions) outputOptions;
+
         if ("Check".equals(name)) {
             // This is not an evaluation of a single function.
             DistributionUtils.check(distributions,
@@ -80,10 +104,12 @@ abstract class AbstractDiscreteDistributionCommand implements Callable<Void> {
     protected abstract List<Distribution<DiscreteDistribution>> getDistributions();
 
     /**
-     * Gets the distribution options.
-     * This will define the points to evaluate, and the output options.
+     * Gets the output options.
+     * Sub-classes can define the points to evaluate.
      *
-     * @return the distribution options
+     * @return the output options
      */
-    protected abstract DistributionOptions getDistributionOptions();
+    protected OutputOptions getOutputOptions() {
+        return outputOptions;
+    }
 }

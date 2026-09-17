@@ -20,24 +20,18 @@ import java.io.File;
 import picocli.CommandLine.Option;
 
 /**
- * Standard options for distribution commands.
+ * Standard output options for commands.
  */
-class DistributionOptions extends OutputOptions {
+class OutputOptions {
 
-    /** The distribution function. */
-    protected DistributionFunction distributionFunction;
+    /** The field delimiter. */
+    @Option(names = { "--delim" },
+            description = {"Output field delimiter (default: \\t)."})
+    protected String delim = "\t";
 
     /** The output file. */
-    @Option(names = { "--in" },
+    @Option(names = { "--out" },
             paramLabel = "file",
-            description = {"Input file containing points to evaluate.",
-                           "Overrides configured ranges."})
-    protected File inputFile;
-
-    /** Flag indicating if an exception should be suppressed during function evaluation.
-     * Exceptions are thrown by the ICDF and ISF functions when the input probability is not in
-     * the interval {@code [0, 1]}. */
-    @Option(names = { "--no-ex", "--no-exception" },
-            description = {"Suppress function evaluation exceptions (returns NaN or integer min value)."})
-    protected boolean suppressException;
+            description = {"Output file (default: stdout)."})
+    protected File outputFile;
 }

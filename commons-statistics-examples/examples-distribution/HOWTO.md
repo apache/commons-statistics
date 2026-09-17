@@ -36,6 +36,7 @@ named by the command. Each distribution command has the following functions:
 
 | Function | Description |
 | -------- | ----------- |
+| info | Information on the domain, mean and variance |
 | pdf | Probability Density Function (continuous distributions) |
 | pmf | Probability Mass Function (discrete distributions) |
 | cdf | Cumulative Probability Density Function |

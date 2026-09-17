@@ -341,17 +341,82 @@ final class DistributionUtils {
     }
 
     /**
+     * Show the information of the continuous distribution.
+     *
+     * @param dist Distributions
+     * @param outputOptions Output options
+     */
+    static void infoContinuous(List<Distribution<ContinuousDistribution>> dist, OutputOptions outputOptions) {
+        try (PrintWriter out = createOutput(outputOptions.outputFile)) {
+            final String format = createFormatAndWriteHeader(outputOptions, out);
+            dist.forEach(d -> {
+                final ContinuousDistribution dd = d.getDistribution();
+                final String title = dd.getClass().getSimpleName() + " " + d.getParameters();
+                final double lower = dd.getSupportLowerBound();
+                final double upper = dd.getSupportUpperBound();
+                final double mean = dd.getMean();
+                final double variance = dd.getVariance();
+                out.printf(format, title, lower, upper, mean, variance);
+            });
+        }
+    }
+
+    /**
+     * Show the information of the discrete distribution.
+     *
+     * @param dist Distributions
+     * @param outputOptions Output options
+     */
+    static void infoDiscrete(List<Distribution<DiscreteDistribution>> dist, OutputOptions outputOptions) {
+        try (PrintWriter out = createOutput(outputOptions.outputFile)) {
+            final String format = createFormatAndWriteHeader(outputOptions, out);
+            dist.forEach(d -> {
+                final DiscreteDistribution dd = d.getDistribution();
+                final String title = dd.getClass().getSimpleName() + " " + d.getParameters();
+                final int lower = dd.getSupportLowerBound();
+                final int upper = dd.getSupportUpperBound();
+                final double mean = dd.getMean();
+                final double variance = dd.getVariance();
+                out.printf(format, title, lower, upper, mean, variance);
+            });
+        }
+    }
+
+    /**
+     * Creates the format and writes the information header.
+     *
+     * @param outputOptions the output options
+     * @param out the output
+     * @return the format string for [lower, upper, mean, variance]
+     */
+    private static String createFormatAndWriteHeader(OutputOptions outputOptions, PrintWriter out) {
+        final String format = "%s %s %s %s %s%n".replace(" ", outputOptions.delim);
+        out.printf(format, "distribution", "lower", "upper", "mean", "variance");
+        return format;
+    }
+
+    /**
      * Creates the output.
      *
      * @param distributionOptions Distribution options
      * @return the print stream
      */
     private static PrintWriter createOutput(DistributionOptions distributionOptions) {
-        if (distributionOptions.outputFile != null) {
+        return createOutput(distributionOptions.outputFile);
+    }
+
+    /**
+     * Creates the output.
+     *
+     * @param outputFile Output file
+     * @return the print stream
+     */
+    private static PrintWriter createOutput(File outputFile) {
+        if (outputFile != null) {
             try {
-                return new PrintWriter(Files.newBufferedWriter(distributionOptions.outputFile.toPath()));
+                return new PrintWriter(Files.newBufferedWriter(outputFile.toPath()));
             } catch (IOException ex) {
-                throw new UncheckedIOException("Failed to create output: " + distributionOptions.outputFile, ex);
+                throw new UncheckedIOException("Failed to create output: " + outputFile, ex);
             }
         }
         return new PrintWriter(System.out) {

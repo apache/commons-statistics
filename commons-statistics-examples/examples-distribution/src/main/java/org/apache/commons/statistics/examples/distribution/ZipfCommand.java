@@ -30,6 +30,7 @@ import picocli.CommandLine.Option;
 @Command(name = "zipf",
          description = "Zipf distribution.",
          subcommands = {
+             ZipfCommand.Info.class,
              ZipfCommand.Check.class,
              ZipfCommand.PMF.class,
              ZipfCommand.LPMF.class,
@@ -63,13 +64,13 @@ class ZipfCommand extends AbstractDistributionCommand {
             private double[] e = {1, 2, 3, 4};
         }
 
-        /** Extend the options to set the default values for this distribution. */
-        static final class Options extends DiscreteDistributionOptions {
-            /** Set defaults. */
-            private Options() {
-                min = 1;
-                max = 10;
-            }
+        /**
+         * Create an instance.
+         *
+         * @param outputOptions the output options
+         */
+        BaseCommand(OutputOptions outputOptions) {
+            super(outputOptions);
         }
 
         @Override
@@ -91,27 +92,30 @@ class ZipfCommand extends AbstractDistributionCommand {
         }
     }
 
-    /** Base command for the distribution that defines the parameters. */
-    private abstract static class ProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private Options distributionOptions = new Options();
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+    /** Base command for the distribution that defines the parameters for probability functions. */
+    private abstract static class ProbabilityCommand extends BaseCommand {
+        /** Default constructor. */
+        ProbabilityCommand() {
+            super(new DiscreteDistributionOptions(1, 10));
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseDiscreteDistributionOptions distributionOptions = new InverseDiscreteDistributionOptions();
+        /** Default constructor. */
+        InverseProbabilityCommand() {
+            super(new InverseDiscreteDistributionOptions());
+        }
+    }
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+    /** Information command. */
+    @Command(name = "info",
+             description = "Zipf distribution information.")
+    static class Info extends BaseCommand {
+        /** Default constructor. */
+        Info() {
+            super(new OutputOptions());
         }
     }
 

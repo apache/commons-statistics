@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          aliases = {"negativebinomial", "nbin"},
          description = "Pascal distribution.",
          subcommands = {
+             PascalCommand.Info.class,
              PascalCommand.Check.class,
              PascalCommand.PMF.class,
              PascalCommand.LPMF.class,
@@ -67,13 +68,13 @@ class PascalCommand extends AbstractDistributionCommand {
             private double[] p = {1.0 / 11, 2.0 / 12, 3.0 / 13, 4.0 / 14, 5.0 / 15, 10.0 / 20, 20.0 / 30, 40.0 / 50};
         }
 
-        /** Extend the options to set the default values for this distribution. */
-        static final class Options extends DiscreteDistributionOptions {
-            /** Set defaults. */
-            private Options() {
-                min = 0;
-                max = 25;
-            }
+        /**
+         * Create an instance.
+         *
+         * @param outputOptions the output options
+         */
+        BaseCommand(OutputOptions outputOptions) {
+            super(outputOptions);
         }
 
         @Override
@@ -95,27 +96,29 @@ class PascalCommand extends AbstractDistributionCommand {
         }
     }
 
-    /** Base command for the distribution that defines the parameters. */
+    /** Base command for the distribution that defines the parameters for probability functions. */
     private abstract static class ProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private Options distributionOptions = new Options();
-
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+        /** Default constructor. */
+        ProbabilityCommand() {
+            super(new DiscreteDistributionOptions(0, 25));
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** The distribution options. */
-        @ArgGroup(validate = false, heading = "Evaluation options:%n", order = 2)
-        private InverseDiscreteDistributionOptions distributionOptions = new InverseDiscreteDistributionOptions();
+        /** Default constructor. */
+        InverseProbabilityCommand() {
+            super(new InverseDiscreteDistributionOptions());
+        }
+    }
 
-        @Override
-        protected DistributionOptions getDistributionOptions() {
-            return distributionOptions;
+    /** Information command. */
+    @Command(name = "info",
+             description = "Pascal distribution information.")
+    static class Info extends BaseCommand {
+        /** Default constructor. */
+        Info() {
+            super(new OutputOptions());
         }
     }
 
