@@ -190,11 +190,11 @@ abstract class AbstractDiscreteDistribution
         if (chebyshevApplies) {
             double tmp = mu - sig * Math.sqrt(q / p);
             if (tmp > lower) {
-                lower = ((int) Math.ceil(tmp)) - 1;
+                lower = (int) Math.ceil(tmp) - 1;
             }
             tmp = mu + sig * Math.sqrt(p / q);
             if (tmp < upper) {
-                upper = ((int) Math.ceil(tmp)) - 1;
+                upper = (int) Math.ceil(tmp) - 1;
             }
         }
 
