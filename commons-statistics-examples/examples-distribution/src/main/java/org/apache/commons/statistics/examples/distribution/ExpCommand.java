@@ -57,15 +57,6 @@ class ExpCommand extends AbstractDistributionCommand {
             private double[] mean = {2, 1, 2.0 / 3};
         }
 
-        /**
-         * Create an instance.
-         *
-         * @param outputOptions the output options
-         */
-        BaseCommand(OutputOptions outputOptions) {
-            super(outputOptions);
-        }
-
         @Override
         protected List<Distribution<ContinuousDistribution>> getDistributions() {
             // Create distributions
@@ -80,17 +71,33 @@ class ExpCommand extends AbstractDistributionCommand {
 
     /** Base command for the distribution that defines the parameters for probability functions. */
     private abstract static class ProbabilityCommand extends BaseCommand {
-        /** Default constructor. */
-        ProbabilityCommand() {
-            super(new ContinuousDistributionOptions(0, 5));
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private Options distributionOptions = new Options();
+
+        /** Extend the options to set the default values for this distribution. */
+        static final class Options extends ContinuousDistributionOptions {
+            /** Set defaults. */
+            private Options() {
+                super(0, 5);
+            }
+        }
+
+        @Override
+        protected DistributionOptions getOutputOptions() {
+            return distributionOptions;
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** Default constructor. */
-        InverseProbabilityCommand() {
-            super(new InverseContinuousDistributionOptions());
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private InverseDiscreteDistributionOptions distributionOptions = new InverseContinuousDistributionOptions();
+
+        @Override
+        protected DistributionOptions getOutputOptions() {
+            return distributionOptions;
         }
     }
 
@@ -98,9 +105,13 @@ class ExpCommand extends AbstractDistributionCommand {
     @Command(name = "info",
              description = "Exponential distribution information.")
     static class Info extends BaseCommand {
-        /** Default constructor. */
-        Info() {
-            super(new OutputOptions());
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
         }
     }
 

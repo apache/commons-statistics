@@ -19,7 +19,6 @@ package org.apache.commons.statistics.examples.distribution;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.apache.commons.statistics.distribution.ContinuousDistribution;
-import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Mixin;
 
 /**
@@ -45,21 +44,9 @@ abstract class AbstractContinuousDistributionCommand implements Callable<Void> {
     @Mixin
     private StandardOptions standardOptions;
 
-    /** The distribution options. */
-    @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
-    private OutputOptions outputOptions;
-
-    /**
-     * Create an instance.
-     *
-     * @param outputOptions the output options
-     */
-    AbstractContinuousDistributionCommand(OutputOptions outputOptions) {
-        this.outputOptions = outputOptions;
-    }
-
     @Override
     public Void call() {
+        final OutputOptions outputOptions = getOutputOptions();
         final List<Distribution<ContinuousDistribution>> distributions = getDistributions();
         // Set the function based on the class name
         final String name = getClass().getSimpleName();
@@ -113,7 +100,5 @@ abstract class AbstractContinuousDistributionCommand implements Callable<Void> {
      *
      * @return the output options
      */
-    protected OutputOptions getOutputOptions() {
-        return outputOptions;
-    }
+    protected abstract OutputOptions getOutputOptions();
 }

@@ -68,15 +68,6 @@ class PascalCommand extends AbstractDistributionCommand {
             private double[] p = {1.0 / 11, 2.0 / 12, 3.0 / 13, 4.0 / 14, 5.0 / 15, 10.0 / 20, 20.0 / 30, 40.0 / 50};
         }
 
-        /**
-         * Create an instance.
-         *
-         * @param outputOptions the output options
-         */
-        BaseCommand(OutputOptions outputOptions) {
-            super(outputOptions);
-        }
-
         @Override
         protected List<Distribution<DiscreteDistribution>> getDistributions() {
             int[] r = params.r;
@@ -98,17 +89,33 @@ class PascalCommand extends AbstractDistributionCommand {
 
     /** Base command for the distribution that defines the parameters for probability functions. */
     private abstract static class ProbabilityCommand extends BaseCommand {
-        /** Default constructor. */
-        ProbabilityCommand() {
-            super(new DiscreteDistributionOptions(0, 25));
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private Options distributionOptions = new Options();
+
+        /** Extend the options to set the default values for this distribution. */
+        static final class Options extends DiscreteDistributionOptions {
+            /** Set defaults. */
+            private Options() {
+                super(0, 25);
+            }
+        }
+
+        @Override
+        protected DistributionOptions getOutputOptions() {
+            return distributionOptions;
         }
     }
 
     /** Base command for the distribution that defines the parameters for inverse probability functions. */
     private abstract static class InverseProbabilityCommand extends BaseCommand {
-        /** Default constructor. */
-        InverseProbabilityCommand() {
-            super(new InverseDiscreteDistributionOptions());
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private InverseDiscreteDistributionOptions distributionOptions = new InverseDiscreteDistributionOptions();
+
+        @Override
+        protected DistributionOptions getOutputOptions() {
+            return distributionOptions;
         }
     }
 
@@ -116,9 +123,13 @@ class PascalCommand extends AbstractDistributionCommand {
     @Command(name = "info",
              description = "Pascal distribution information.")
     static class Info extends BaseCommand {
-        /** Default constructor. */
-        Info() {
-            super(new OutputOptions());
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
         }
     }
 
