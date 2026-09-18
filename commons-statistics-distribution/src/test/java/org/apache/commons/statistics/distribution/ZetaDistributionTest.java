@@ -223,7 +223,8 @@ class ZetaDistributionTest extends BaseDiscreteDistributionTest {
      */
     @ParameterizedTest
     @CsvSource({
-        // Threshold to switch the sampler extreme value bias from x=1 to x=inf
+        // Threshold to switch the sampler extreme value bias from x=1 to x=inf.
+        // This value is used in the Commons RNG ZetaSampler (RNG-203).
         "0.5, 1073741824, 1.0324376395045163",
         // Used in the class javadoc to describe truncation of the distribution
         "0.01, 2147483647, 1.2088900037546617",

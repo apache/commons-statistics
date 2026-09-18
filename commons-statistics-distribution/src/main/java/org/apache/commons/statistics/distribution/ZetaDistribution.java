@@ -17,8 +17,8 @@
 
 package org.apache.commons.statistics.distribution;
 
-import java.util.function.ToDoubleFunction;
 import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.sampling.distribution.ZetaSampler;
 
 /**
  * Implementation of the zeta distribution.
@@ -355,92 +355,7 @@ public final class ZetaDistribution extends AbstractDiscreteDistribution {
     /** {@inheritDoc} */
     @Override
     public DiscreteDistribution.Sampler createSampler(final UniformRandomProvider rng) {
-        return new ZetaSampler(rng, exponent);
-    }
-
-    /**
-     * Sample from a zeta distribution.
-     * <ol>
-     * <li>Devroye, L (2015)
-     * Non-uniform random variate generation.
-     * Springer New York, NY. pp 550-552.</li>
-     * </ol>
-     */
-    private static final class ZetaSampler implements DiscreteDistribution.Sampler {
-        /**
-         * The threshold to bias the extreme sample to 1 or infinity. Change the
-         * extreme sample of the zeta distribution using the midpoint of the support
-         * domain, i.e. x = 2^31 / 2; cdf(x; a) = sf(x; a) ~ 0.5.
-         */
-        private static final double THRESHOLD = 1.0324376395045163;
-
-        /** Source of randomness. */
-        private final UniformRandomProvider rng;
-        /** a - 1. */
-        private final double am1;
-        /** Reciprocal of (a - 1) = 1 / (a - 1). */
-        private final double ram1;
-        /** b = 2^(a-1). This constants is {@code (b-1) / b}. */
-        private final double bm1Db;
-        /** Function to compute u in [0, 1]. */
-        private final ToDoubleFunction<UniformRandomProvider> nextU;
-
-        /**
-         * Create an instance.
-         *
-         * @param rng Source of randomness.
-         * @param a Exponent of the zeta distribution ({@code a > 1}).
-         */
-        ZetaSampler(UniformRandomProvider rng, double a) {
-            this.rng = rng;
-            am1 = a - 1;
-            ram1 = 1 / am1;
-            final double b = Math.pow(2, am1);
-            bm1Db = b == Double.POSITIVE_INFINITY ? 1 : (b - 1) / b;
-            // Note:
-            // u in [0, 1]
-            // u == 0 : x == inf
-            // u == 1 : x == 1
-            // When a -> 1 then bias to infinity; otherwise bias to 1.
-            nextU = a <= THRESHOLD ?
-                // u in [0, 1)
-                UniformRandomProvider::nextDouble :
-                // u in (0, 1]
-                g -> 1.0 - g.nextDouble();
-        }
-
-        @Override
-        public int sample() {
-            double u;
-            double v;
-            double x;
-            double t;
-            for (;;) {
-                // Generate iid uniform [0, 1] random variate U, V.
-                u = nextU.applyAsDouble(rng);
-                v = rng.nextDouble();
-                // X = floor ( U^{-1/(a-1)} ) , X in [1, inf]
-                x = Math.floor(Math.pow(u, -ram1));
-                t = Math.pow(1 + 1 / x, am1);
-
-                // Until:
-                //    T-1    T
-                // VX --- <= -
-                //    b-1    b
-
-                // If (a-1) -> inf then t & b -> inf; b >= t
-                // Avoid inf / inf = NaN and accept.
-                // Large a will mostly sample X=1.
-
-                // v * x * (t - 1) / (b - 1) <= t / b
-                // Rearrange terms to ratios of similar magnitude and guard infinity:
-                // v * x <= (t / (t - 1)) * ((b - 1) / b)
-                final double tDtm1 = t == Double.POSITIVE_INFINITY ? 1 : t / (t - 1);
-                if (v * x <= tDtm1 * bm1Db) {
-                    // Truncates x >= 2^31 to integer max
-                    return (int) x;
-                }
-            }
-        }
+        // Zeta distribution sampler
+        return ZetaSampler.of(rng, exponent)::sample;
     }
 }
