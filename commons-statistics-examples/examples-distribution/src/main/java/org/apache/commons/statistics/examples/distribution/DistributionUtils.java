@@ -38,6 +38,8 @@ final class DistributionUtils {
     private static final double MAX_RELATIVE_ERROR = 1e-6;
     /** Maximum absolute error for equality to 0 or 1 for a probability. */
     private static final double DELTA_P = 1e-6;
+    /** Header format for the sample output. */
+    private static final String SAMPLE_HEADER = "# %s %s%n";
 
     /** No public construction. */
     private DistributionUtils() {}
@@ -393,6 +395,44 @@ final class DistributionUtils {
         final String format = "%s %s %s %s %s%n".replace(" ", outputOptions.delim);
         out.printf(format, "distribution", "lower", "upper", "mean", "variance");
         return format;
+    }
+
+    /**
+     * Sample the continuous distribution.
+     *
+     * @param dist Distributions
+     * @param outputOptions Output options
+     */
+    static void sampleContinuous(List<Distribution<ContinuousDistribution>> dist, SampleOptions outputOptions) {
+        try (PrintWriter out = createOutput(outputOptions.outputFile)) {
+            dist.forEach(d -> {
+                final ContinuousDistribution dd = d.getDistribution();
+                final ContinuousDistribution.Sampler s = dd.createSampler(outputOptions.source.create());
+                out.printf(SAMPLE_HEADER, dd.getClass().getSimpleName(), d.getParameters());
+                for (int i = outputOptions.samples; i > 0; i--) {
+                    out.println(s.sample());
+                }
+            });
+        }
+    }
+
+    /**
+     * Sample the discrete distribution.
+     *
+     * @param dist Distributions
+     * @param outputOptions Output options
+     */
+    static void sampleDiscrete(List<Distribution<DiscreteDistribution>> dist, SampleOptions outputOptions) {
+        try (PrintWriter out = createOutput(outputOptions.outputFile)) {
+            dist.forEach(d -> {
+                final DiscreteDistribution dd = d.getDistribution();
+                final DiscreteDistribution.Sampler s = dd.createSampler(outputOptions.source.create());
+                out.printf(SAMPLE_HEADER, dd.getClass().getSimpleName(), d.getParameters());
+                for (int i = outputOptions.samples; i > 0; i--) {
+                    out.println(s.sample());
+                }
+            });
+        }
     }
 
     /**

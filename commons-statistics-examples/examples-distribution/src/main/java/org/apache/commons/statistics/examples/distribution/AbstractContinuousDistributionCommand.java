@@ -57,6 +57,10 @@ abstract class AbstractContinuousDistributionCommand implements Callable<Void> {
             DistributionUtils.infoContinuous(distributions, outputOptions);
             return null;
         }
+        if ("Sample".equals(name)) {
+            DistributionUtils.sampleContinuous(distributions, (SampleOptions) outputOptions);
+            return null;
+        }
 
         // Assume this is an evaluation of the distribution
         final DistributionOptions distributionOptions = (DistributionOptions) outputOptions;

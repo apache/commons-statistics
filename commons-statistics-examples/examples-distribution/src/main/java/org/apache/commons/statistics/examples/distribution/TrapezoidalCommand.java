@@ -32,6 +32,7 @@ import picocli.CommandLine.Option;
          description = "Trapezoidal distribution.",
          subcommands = {
              TrapezoidalCommand.Info.class,
+             TrapezoidalCommand.Sample.class,
              TrapezoidalCommand.Check.class,
              TrapezoidalCommand.PDF.class,
              TrapezoidalCommand.LPDF.class,
@@ -145,6 +146,20 @@ class TrapezoidalCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Trapezoidal distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

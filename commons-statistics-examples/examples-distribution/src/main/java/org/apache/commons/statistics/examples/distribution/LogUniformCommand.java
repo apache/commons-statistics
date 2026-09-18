@@ -32,6 +32,7 @@ import picocli.CommandLine.Option;
          description = "Log uniform distribution.",
          subcommands = {
              LogUniformCommand.Info.class,
+             LogUniformCommand.Sample.class,
              LogUniformCommand.Check.class,
              LogUniformCommand.PDF.class,
              LogUniformCommand.LPDF.class,
@@ -125,6 +126,20 @@ class LogUniformCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Log uniform distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

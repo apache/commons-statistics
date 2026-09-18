@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          description = "Beta distribution.",
          subcommands = {
              BetaCommand.Info.class,
+             BetaCommand.Sample.class,
              BetaCommand.Check.class,
              BetaCommand.PDF.class,
              BetaCommand.LPDF.class,
@@ -122,6 +123,20 @@ class BetaCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Beta distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

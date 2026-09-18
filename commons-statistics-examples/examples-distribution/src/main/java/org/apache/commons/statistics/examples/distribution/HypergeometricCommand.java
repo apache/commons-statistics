@@ -32,6 +32,7 @@ import picocli.CommandLine.Option;
          description = "Hypergeometric distribution.",
          subcommands = {
              HypergeometricCommand.Info.class,
+             HypergeometricCommand.Sample.class,
              HypergeometricCommand.Check.class,
              HypergeometricCommand.PMF.class,
              HypergeometricCommand.LPMF.class,
@@ -134,6 +135,20 @@ class HypergeometricCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Hypergeometric distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

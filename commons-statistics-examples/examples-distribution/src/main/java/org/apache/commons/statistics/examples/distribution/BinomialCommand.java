@@ -32,6 +32,7 @@ import picocli.CommandLine.Option;
          description = "Binomial distribution.",
          subcommands = {
              BinomialCommand.Info.class,
+             BinomialCommand.Sample.class,
              BinomialCommand.Check.class,
              BinomialCommand.PMF.class,
              BinomialCommand.LPMF.class,
@@ -123,6 +124,20 @@ class BinomialCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Binomial distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

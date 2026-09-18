@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          description = "Nakagami distribution.",
          subcommands = {
              NakagamiCommand.Info.class,
+             NakagamiCommand.Sample.class,
              NakagamiCommand.Check.class,
              NakagamiCommand.PDF.class,
              NakagamiCommand.LPDF.class,
@@ -122,6 +123,20 @@ class NakagamiCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Nakagami distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

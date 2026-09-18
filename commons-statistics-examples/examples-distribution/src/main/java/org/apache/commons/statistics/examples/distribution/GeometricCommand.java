@@ -32,6 +32,7 @@ import picocli.CommandLine.Option;
          description = "Geometric distribution.",
          subcommands = {
              GeometricCommand.Info.class,
+             GeometricCommand.Sample.class,
              GeometricCommand.Check.class,
              GeometricCommand.PMF.class,
              GeometricCommand.LPMF.class,
@@ -109,6 +110,20 @@ class GeometricCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Geometric distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          description = "Exponential distribution.",
          subcommands = {
              ExpCommand.Info.class,
+             ExpCommand.Sample.class,
              ExpCommand.Check.class,
              ExpCommand.PDF.class,
              ExpCommand.LPDF.class,
@@ -108,6 +109,20 @@ class ExpCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Exponential distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

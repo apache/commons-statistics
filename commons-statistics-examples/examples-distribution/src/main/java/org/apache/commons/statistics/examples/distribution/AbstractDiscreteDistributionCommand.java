@@ -57,6 +57,10 @@ abstract class AbstractDiscreteDistributionCommand implements Callable<Void> {
             DistributionUtils.infoDiscrete(distributions, outputOptions);
             return null;
         }
+        if ("Sample".equals(name)) {
+            DistributionUtils.sampleDiscrete(distributions, (SampleOptions) outputOptions);
+            return null;
+        }
 
         // Assume this is an evaluation of the distribution
         final DistributionOptions distributionOptions = (DistributionOptions) outputOptions;

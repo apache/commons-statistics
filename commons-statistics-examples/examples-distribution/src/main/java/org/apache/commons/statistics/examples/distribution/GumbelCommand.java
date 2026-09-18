@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          description = "Gumbel distribution.",
          subcommands = {
              GumbelCommand.Info.class,
+             GumbelCommand.Sample.class,
              GumbelCommand.Check.class,
              GumbelCommand.PDF.class,
              GumbelCommand.LPDF.class,
@@ -122,6 +123,20 @@ class GumbelCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Gumbel distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

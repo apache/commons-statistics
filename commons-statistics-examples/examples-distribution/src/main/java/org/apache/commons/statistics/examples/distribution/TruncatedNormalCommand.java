@@ -32,6 +32,7 @@ import picocli.CommandLine.Option;
          description = "Truncated normal distribution.",
          subcommands = {
              TruncatedNormalCommand.Info.class,
+             TruncatedNormalCommand.Sample.class,
              TruncatedNormalCommand.Check.class,
              TruncatedNormalCommand.PDF.class,
              TruncatedNormalCommand.LPDF.class,
@@ -147,6 +148,20 @@ class TruncatedNormalCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Truncated normal distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

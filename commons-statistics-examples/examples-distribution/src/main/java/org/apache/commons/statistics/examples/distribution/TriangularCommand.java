@@ -32,6 +32,7 @@ import picocli.CommandLine.Option;
          description = "Triangular distribution.",
          subcommands = {
              TriangularCommand.Info.class,
+             TriangularCommand.Sample.class,
              TriangularCommand.Check.class,
              TriangularCommand.PDF.class,
              TriangularCommand.LPDF.class,
@@ -135,6 +136,20 @@ class TriangularCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Triangular distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

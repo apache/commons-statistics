@@ -32,6 +32,7 @@ import picocli.CommandLine.Option;
          description = "Log-normal distribution.",
          subcommands = {
              LogNormalCommand.Info.class,
+             LogNormalCommand.Sample.class,
              LogNormalCommand.Check.class,
              LogNormalCommand.PDF.class,
              LogNormalCommand.LPDF.class,
@@ -123,6 +124,20 @@ class LogNormalCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Log-normal distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {

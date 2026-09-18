@@ -31,6 +31,7 @@ import picocli.CommandLine.Option;
          description = "Discrete uniform distribution.",
          subcommands = {
              UniformDiscreteCommand.Info.class,
+             UniformDiscreteCommand.Sample.class,
              UniformDiscreteCommand.Check.class,
              UniformDiscreteCommand.PMF.class,
              UniformDiscreteCommand.LPMF.class,
@@ -124,6 +125,20 @@ class UniformDiscreteCommand extends AbstractDistributionCommand {
         /** The distribution options. */
         @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
         private OutputOptions distributionOptions = new OutputOptions();
+
+        @Override
+        protected OutputOptions getOutputOptions() {
+            return distributionOptions;
+        }
+    }
+
+    /** Information command. */
+    @Command(name = "sample",
+             description = "Discrete uniform distribution sample.")
+    static class Sample extends BaseCommand {
+        /** The distribution options. */
+        @ArgGroup(validate = false, heading = HEADING_EVALUATION_OPTIONS, order = 2)
+        private SampleOptions distributionOptions = new SampleOptions();
 
         @Override
         protected OutputOptions getOutputOptions() {
