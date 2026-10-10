@@ -16,6 +16,8 @@
 github:
   description: "Apache Commons Statistics"
   homepage: https://commons.apache.org/statistics
+  autolink_jira:
+    - STATISTICS
   labels:
     - java
     - math
