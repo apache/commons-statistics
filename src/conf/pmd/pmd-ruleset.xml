@@ -81,6 +81,13 @@
       <property name="violationSuppressXPath" value="./ancestor-or-self::ClassDeclaration[@SimpleName='NaNTransformers']"/>
     </properties>
   </rule>
+  <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray">
+    <properties>
+      <!-- Internal helper class Candidates returns the data array -->
+      <property name="violationSuppressXPath"
+        value="./ancestor-or-self::ClassDeclaration[@SimpleName='UnconditionedExactTest']"/>
+    </properties>
+  </rule>
 
   <rule ref="category/java/codestyle.xml/ShortMethodName">
     <properties>
