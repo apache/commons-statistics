@@ -59,7 +59,7 @@ If the output is not quite correct, check for invisible trailing spaces!
       </action>
       <action dev="aherbert" type="update" due-to="Alex Herbert" issue="STATISTICS-100">
         "ZipfDistribution": Use the Hurwitz zeta function when parameters are suitable
-        for a significant performance improvment when the number of elements is large.
+        for a significant performance improvement when the number of elements is large.
       </action>
       <action dev="aherbert" type="fix" due-to="Security scan, Alex Herbert" issue="STATISTICS-99">
         "MannWhitneyUTest": Limit the allocation size for the exact p-value
@@ -69,7 +69,7 @@ If the output is not quite correct, check for invisible trailing spaces!
       <action dev="aherbert" type="update" due-to="Security scan, Alex Herbert">
         "KolmogorovSmirnovTest": Bound the maximum number of terms allowed during
         the exact p-value computation for the two-sample two-sided statistic with
-        unequal sample sizes. The caller will fall-back to the aysymptotic
+        unequal sample sizes. The caller will fall-back to the asymptotic
         computation to avoid an impractical computation. Behaviour using the
         default AUTO p-value computation is unchanged.
       </action>
@@ -80,7 +80,7 @@ If the output is not quite correct, check for invisible trailing spaces!
       <action dev="aherbert" type="update" due-to="Security scan, Alex Herbert">
         "UnconditionedExactTest": Update documentation on possible long runtime and
         high memory consumption for large table counts. For performance sensitive
-        code with large 2x2 contigency counts users can switch to an alternative such
+        code with large 2x2 contingency counts users can switch to an alternative such
         as a chi-square or G test.
       </action>
       <action dev="aherbert" type="fix" due-to="Security scan, Alex Herbert" issue="STATISTICS-98">
@@ -168,7 +168,7 @@ Adds ranking, inference, descriptive and bom modules (requires Java 8).
         statistics.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-69">
-        "UncoditionedExactTest": Add an unconditioned exact test for 2x2 contingency
+        "UnconditionedExactTest": Add an unconditioned exact test for 2x2 contingency
         tables.
       </action>
       <action dev="aherbert" type="add" issue="STATISTICS-70">
