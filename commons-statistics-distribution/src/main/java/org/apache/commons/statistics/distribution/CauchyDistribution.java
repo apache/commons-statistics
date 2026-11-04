@@ -34,6 +34,8 @@ import org.apache.commons.rng.sampling.distribution.StableSampler;
  * @see <a href="https://mathworld.wolfram.com/CauchyDistribution.html">Cauchy distribution (MathWorld)</a>
  */
 public final class CauchyDistribution extends AbstractContinuousDistribution {
+    /** The value of one half. */
+    private static final double HALF = 0.5;
     /** The location of this distribution. */
     private final double location;
     /** The scale of this distribution. */
@@ -136,7 +138,7 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
         } else  if (p == 1) {
             return Double.POSITIVE_INFINITY;
         }
-        return location + scale * Math.tan(Math.PI * (p - 0.5));
+        return location + scale * tailTangent(p);
     }
 
     /**
@@ -153,7 +155,46 @@ public final class CauchyDistribution extends AbstractContinuousDistribution {
         } else  if (p == 0) {
             return Double.POSITIVE_INFINITY;
         }
-        return location - scale * Math.tan(Math.PI * (p - 0.5));
+        return location - scale * tailTangent(p);
+    }
+
+    /**
+     * Compute the value of \( \tan(\pi (p - 1/2)) \) for a probability \( p \) strictly within (0, 1).
+     *
+     * <p>The subtraction of one half from \( p \) loses the significant digits of a probability
+     * close to 0 or 1, so the tails are computed using the equivalent forms
+     * \( -\cot(\pi p) \) and \( \cot(\pi (1 - p)) \) respectively.
+     *
+     * @param p Probability.
+     * @return tan(pi (p - 1/2))
+     */
+    private static double tailTangent(double p) {
+        // The tangent is exactly zero at the median; this also avoids the rounding
+        // of pi (p - 1/2) to a non-zero value.
+        if (p == HALF) {
+            return 0;
+        }
+        // Avoid the cancellation of the significant digits of p in (p - 1/2).
+        // Assume p != 1/2; the two branches agree at the rounding of pi p.
+        return p < HALF ?
+            -cotPi(p) :
+            cotPi(1 - p);
+    }
+
+    /**
+     * Compute the cotangent of {@code pi x} for a value {@code x} in (0, 0.5].
+     *
+     * <p>For small \( x \), \( \sin(\pi x) \) has a relative error of
+     * \( (\pi x)^2 / 6 \) so the division by it is avoided.
+     *
+     * @param x Value.
+     * @return cot(pi x)
+     */
+    private static double cotPi(double x) {
+        final double px = Math.PI * x;
+        return px < HALF ?
+            1 / Math.tan(px) :
+            Math.cos(px) / Math.sin(px);
     }
 
     /**
